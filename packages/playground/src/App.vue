@@ -11,12 +11,12 @@ import {ref} from 'vue'
 
 export default {
     components: {HelloWorld},
-    setup() {
+    setup(props: any, context: any) {
 
         const simpleRequest = ref() //reactive variable
 
         //make a request
-        Request.get("https://dummyjson.com/products/1").then(async (resp)=>{
+        Request.get("https://jsonplaceholder.typicode.com/todos/1").then(async (resp: Response)=>{
             simpleRequest.value = await resp.json() //decode and set reactive variable
         })
 

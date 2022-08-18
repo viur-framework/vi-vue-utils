@@ -5,7 +5,8 @@
   "description": "Some ViUR related vue3 utils",
   "main": " ",
   "scripts": {
-    "dev": "npm run dev --workspace=playground",
+    "dev": "npm run dev --prefix=packages/playground",
+    "init": "npm install && npm install --prefix=packages/viur-vue-utils && npm install --prefix=packages/playground",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

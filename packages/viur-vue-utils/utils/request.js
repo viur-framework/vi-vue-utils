@@ -192,7 +192,7 @@ class cachedFetch {
     static buildOptions(method, body = null, headers = null, abortController = null) {
         let options = {method: method}
 
-        //options["credentials"] = 'include'
+        options["credentials"] = 'include'
         options["headers"] = {
             Accept: "application/json, text/plain, */*",
         }
