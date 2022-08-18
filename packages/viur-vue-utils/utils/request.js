@@ -1,0 +1,245 @@
+
+class HTTPError extends Error {
+    constructor(code, statusText, message, response) {
+        super(message || statusText);
+        if (arguments.length >= 4 && response) {
+            Object.assign(this, response);
+        }
+        this.statusText = statusText;
+        this.statusCode = code;
+        this.response = response;
+    }
+}
+
+export default class Request {
+
+    static buildUrl(url) {
+        if (url && (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')))) {
+            url = (import.meta.env.VITE_API_URL?import.meta.env.VITE_API_URL:window.location.origin) + url
+        }
+        return url
+    }
+
+    static post(url, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
+        function buildFormdata() {
+            const form = new FormData()
+            for (const key in dataObj) {
+                if (Array.isArray(dataObj[key])) {
+                    for (let item of dataObj[key]) {
+                        form.append(key, item);
+                    }
+                } else {
+                    form.append(key, dataObj[key]);
+                }
+            }
+            return form
+        }
+
+        let reqPromise = cachedFetch.post(Request.buildUrl(url), buildFormdata(), null, null, abortController)
+
+        reqPromise.then(function (response) {
+            if (callback) {
+                callback(response.data);
+            }
+        }).catch(function (error) {
+            if (failedCallback) {
+                failedCallback(error);
+            }
+        })
+
+        return reqPromise
+    }
+
+    static async securePost(url, {
+        dataObj = null,
+        callback = null,
+        failedCallback = null,
+        abortController = null
+    } = {}) {
+        let return_value = null
+        await this.get("/json/skey").then(
+            (resp) => {
+                console.log(resp)
+                if (!dataObj) {
+                    dataObj = {}
+                }
+                dataObj["skey"] = resp.data
+                console.log(dataObj)
+                return_value = this.post(url, {dataObj: dataObj, callback: callback, abortController: abortController})
+            }
+        )
+        return return_value
+    }
+
+
+    static get(url,
+               {
+                   dataObj = null,
+                   callback = null,
+                   failedCallback = null,
+                   cached = false,
+                   clearCache = false,
+                   abortController = null,
+                   //                  milli  sec  min  Std  Tage
+                   cacheTime = 1000 * 60 * 60 * 24 * 1
+               } = {}
+    ) {
+        let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, null, abortController)
+        reqPromise.then(function (response) {
+            if (callback) {
+                callback(response.data);
+            }
+        }).catch(function (error) {
+            if (failedCallback) {
+                failedCallback(error);
+            }
+        })
+        return reqPromise
+
+    }
+
+    static list(module, {
+        dataObj = null,
+        callback = null,
+        failedCallback = null,
+        group = null,
+        abortController = null
+    } = {}) {
+        let url = `/json/${module}/list`
+        if (group) {
+            url += `/${group}`
+        }
+
+        return this.get(url,
+            {
+                dataObj: dataObj,
+                callback: callback,
+                failedCallback: failedCallback,
+                abortController: abortController
+            })
+    }
+
+    static view(module, key, {
+        dataObj = null,
+        callback = null,
+        failedCallback = null,
+        group = null,
+        abortController = null
+    } = {}) {
+        let url = `/json/${module}/view/${key}`
+        if (group) {
+            url = `/json/${module}/view/${group}/${key}`
+        }
+
+        return this.get(url,
+            {
+                dataObj: dataObj,
+                callback: callback,
+                failedCallback: failedCallback,
+                abortController: abortController
+            })
+    }
+
+    static add(module, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
+        return this.securePost(`/json/${module}/add`,
+            {
+                dataObj: dataObj,
+                callback: callback,
+                failedCallback: failedCallback,
+                abortController: abortController
+            })
+    }
+
+    static edit(module, key, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
+        return this.securePost(`/json/${module}/edit/${key}`,
+            {
+                dataObj: dataObj,
+                callback: callback,
+                failedCallback: failedCallback,
+                abortController: abortController
+            })
+    }
+
+    static delete(module, key, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
+        return this.securePost(`/json/${module}/delete/${key}`,
+            {
+                dataObj:dataObj,
+                callback:callback,
+                failedCallback:failedCallback,
+                abortController:abortController
+            })
+    }
+
+    static downloadUrlFor(bone, thumbnail = false) {
+        if (bone && "dest" in bone) {
+            if (thumbnail && "thumbnail" in bone["dest"]) {
+                return this.buildUrl(bone["dest"]["thumbnail"])
+            } else if ("downloadUrl" in bone["dest"]) {
+                return this.buildUrl(bone["dest"]["downloadUrl"])
+            }
+            return this.buildUrl(null)
+        }
+
+        return this.buildUrl(bone)
+    }
+
+}
+
+// TODO CACHING LOGIC
+class cachedFetch {
+    withCredentials = true
+
+    static buildOptions(method, body = null, headers = null, abortController = null) {
+        let options = {method: method}
+
+        //options["credentials"] = 'include'
+        options["headers"] = {
+            Accept: "application/json, text/plain, */*",
+        }
+        if (headers) {
+            options["headers"] = {...options["headers"], ...headers}
+        }
+
+        if (body) {
+            options["body"] = body
+        }
+
+        if (abortController) {
+            options["signal"] = abortController.signal
+        }
+
+        return options
+    }
+
+    static get(url, params = null, clearCache = null, headers = null, abortController = null) {
+        console.log(url)
+        function buildGetUrl(url, params) {
+            let requestUrl = new URL(url)
+            if (params && Object.keys(params).length > 0) {
+                requestUrl.search = new URLSearchParams(params).toString();
+            }
+
+            return requestUrl.toString()
+        }
+
+        return fetch(
+            buildGetUrl(url, params),
+            cachedFetch.buildOptions("GET", null, headers, abortController))
+            .then(async response => {
+                if (response.ok) {
+                    return response
+                } else {
+                    const errorMessage = `${response.status} ${response.statusText}: ${response.headers.get('x-error-descr')}`
+                    return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response))
+                }
+            })
+    }
+
+    static post(url, params = null, clearCache = null, headers = null, abortController = null) {
+        return fetch(
+            url,
+            cachedFetch.buildOptions("POST", params, headers, abortController)
+        )
+    }
+}
+
