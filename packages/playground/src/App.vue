@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
-import {Request} from 'viur-vue-utils'
+import {Request, ListRequest} from 'viur-vue-utils'
 import {ref} from 'vue'
 
 export default {
@@ -16,9 +16,23 @@ export default {
         const simpleRequest = ref() //reactive variable
 
         //make a request
-        Request.get("https://jsonplaceholder.typicode.com/todos/1").then(async (resp: Response)=>{
-            simpleRequest.value = await resp.json() //decode and set reactive variable
+       // Request.get("https://jsonplaceholder.typicode.com/todos/1").then(async (resp: Response)=>{
+       //     simpleRequest.value = await resp.json() //decode and set reactive variable
+       // })
+
+        /*Request.get("/x").then(async (resp:Response)=>{
+          console.log(await resp.json())
+        })*/
+
+        const testList = ListRequest("teststore",{url:"/x"})
+        testList.fetch().then((resp)=>{
+          testList.next().then((resp)=>{
+            console.log(testList.structure)
+          })
         })
+      //testList.filter({"orderby":"name"})
+      //testList.fetchAll()
+      console.log(testList)
 
         return {
             simpleRequest //expose to template

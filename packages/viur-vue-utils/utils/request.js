@@ -212,7 +212,6 @@ class cachedFetch {
     }
 
     static get(url, params = null, clearCache = null, headers = null, abortController = null) {
-        console.log(url)
         function buildGetUrl(url, params) {
             let requestUrl = new URL(url)
             if (params && Object.keys(params).length > 0) {
