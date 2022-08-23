@@ -39,18 +39,21 @@ export default class Request {
         dataObj?: object;
         callback?: Function;
         failedCallback?: Function;
+        group?: string;
         abortController?: AbortSignal;
     }): Promise<Response>;
     static edit(module: string, key: string, { dataObj, callback, failedCallback, abortController }?: {
         dataObj?: object;
         callback?: Function;
         failedCallback?: Function;
+        group?: string;
         abortController?: AbortSignal;
     }): Promise<Response>;
     static delete(module: string, key: string, { dataObj, callback, failedCallback, abortController }?: {
         dataObj?: object;
         callback?: Function;
         failedCallback?: Function;
+        group?: string;
         abortController?: AbortSignal;
     }): Promise<Response>;
     static downloadUrlFor(bone: object, thumbnail?: boolean): string;

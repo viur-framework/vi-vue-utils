@@ -140,8 +140,13 @@ export default class Request {
             })
     }
 
-    static add(module, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
-        return this.securePost(`/json/${module}/add`,
+    static add(module, {dataObj = null, callback = null, failedCallback = null, group = null, abortController = null} = {}) {
+        let url = `/json/${module}/add/${key}`
+        if (group) {
+            url = `/json/${module}/add/${group}/${key}`
+        }
+
+        return this.securePost(url,
             {
                 dataObj: dataObj,
                 callback: callback,
@@ -150,8 +155,13 @@ export default class Request {
             })
     }
 
-    static edit(module, key, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
-        return this.securePost(`/json/${module}/edit/${key}`,
+    static edit(module, key, {dataObj = null, callback = null, failedCallback = null, group = null, abortController = null} = {}) {
+        let url = `/json/${module}/edit/${key}`
+        if (group) {
+            url = `/json/${module}/edit/${group}/${key}`
+        }
+
+        return this.securePost(url,
             {
                 dataObj: dataObj,
                 callback: callback,
@@ -160,8 +170,13 @@ export default class Request {
             })
     }
 
-    static delete(module, key, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
-        return this.securePost(`/json/${module}/delete/${key}`,
+    static delete(module, key, {dataObj = null, callback = null, failedCallback = null, group = null, abortController = null} = {}) {
+        let url = `/json/${module}/delete/${key}`
+        if (group) {
+            url = `/json/${module}/delete/${group}/${key}`
+        }
+
+        return this.securePost(url,
             {
                 dataObj:dataObj,
                 callback:callback,

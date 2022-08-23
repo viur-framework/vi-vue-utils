@@ -16,6 +16,7 @@ export function ListRequest(id: string, { module, params, url }?: {
         cursor: string;
         request_state: number | null;
         params: {};
+        group:string;
         state: number;
     };
     structure: object;
@@ -30,6 +31,7 @@ export function ListRequest(id: string, { module, params, url }?: {
         cursor: string;
         request_state: number | null;
         params: {};
+        group:string;
         state: number;
     };
     structure: object;
@@ -44,6 +46,7 @@ export function ListRequest(id: string, { module, params, url }?: {
         cursor: string;
         request_state: number | null;
         params: {};
+        group:string;
         state: number;
     };
     structure: object;
