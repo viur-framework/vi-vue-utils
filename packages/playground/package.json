@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "pinia": "^2.0.18",
-    "viur-vue-utils": "file:../viur-vue-utils",
+    "@viur/viur-vue-utils": "file:../viur-vue-utils",
     "vue": "^3.2.37"
   },
   "devDependencies": {
