@@ -104,7 +104,7 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
          * @returns {number|Promise<Response>}
          */
         function next() {
-            if (state.state === 2) {
+            if (state.state === 2 || state.state === -1) {
                 return 0 //nothing to do
             }
 
