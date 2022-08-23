@@ -1,2 +1,3 @@
 import Request from './utils/request.d.ts'
-export {Request}
+import {ListRequest} from "./utils/handlers.d.ts";
+export {Request, ListRequest}
