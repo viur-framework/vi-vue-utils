@@ -51,4 +51,6 @@ export function ListRequest(id: string, { module, params, url }?: {
     fetch: (do_reset?: boolean) => number | Promise<Response>;
     next: () => number | Promise<Response>;
     filter: (params: object) => number | Promise<Response>;
-}, "filter" | "next" | "fetch" | "structure" | "fetchAll">>;
+}, "filter" | "next" | "fetch" | "structure" | "reset" | "fetchAll">>;
+
+export function destroyStore(store: import("pinia").Store): void;

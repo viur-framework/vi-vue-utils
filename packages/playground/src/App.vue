@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
-import {Request, ListRequest} from 'viur-vue-utils'
+import {Request, ListRequest, destroyStore} from '@viur/viur-vue-utils'
 import {ref} from 'vue'
 
 export default {
@@ -24,15 +24,14 @@ export default {
           console.log(await resp.json())
         })*/
 
-        const testList = ListRequest("teststore",{url:"/x"})
+
+        let testList = ListRequest("teststore",{url:"/x"})
         testList.fetch().then((resp)=>{
           testList.next().then((resp)=>{
-            console.log(testList.structure)
+            destroyStore(testList)
+            testList = ListRequest("teststore",{url:"/x"})
           })
         })
-      //testList.filter({"orderby":"name"})
-      //testList.fetchAll()
-      console.log(testList)
 
         return {
             simpleRequest //expose to template

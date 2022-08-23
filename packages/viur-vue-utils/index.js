@@ -1,7 +1,8 @@
 import Request from './utils/request'
-import {ListRequest} from './utils/handlers'
+import {ListRequest,destroyStore} from './utils/handlers'
 
 export {
     Request,
-    ListRequest
+    ListRequest,
+    destroyStore
 }

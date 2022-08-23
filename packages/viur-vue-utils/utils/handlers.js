@@ -57,7 +57,7 @@ export function ListRequest(id, {module = "", params = {}, url = ""} = {}) {
             }).then(async (resp) => {
                 let data = await resp.json()
 
-                state.request_status = parseInt(resp.status)
+                state.request_state = parseInt(resp.status)
                 state.cursor = data["cursor"]
 
                 state.skellist = state.skellist.concat(data["skellist"])
@@ -72,7 +72,12 @@ export function ListRequest(id, {module = "", params = {}, url = ""} = {}) {
                 }
 
             }).catch((error) => {
-                state.request_status = parseInt(error.response.status)
+                if (error.response){
+                    state.request_state = parseInt(error.response.status)
+                }else{
+                    state.request_state = 501
+                }
+
                 state.state = -1
             })
         }
@@ -117,6 +122,7 @@ export function ListRequest(id, {module = "", params = {}, url = ""} = {}) {
             state.skellist.length = 0
             state.cursor = ""
             state.state = 0
+            state.request_state = null
         }
 
         /**
@@ -133,12 +139,17 @@ export function ListRequest(id, {module = "", params = {}, url = ""} = {}) {
         return {
             state,
             structure,
-
             fetchAll,
             fetch,
             next,
-            filter
+            filter,
+            reset
         }
     })
     return useList()
+}
+
+export function destroyStore(store){
+    store.reset()
+    store.$dispose()
 }
