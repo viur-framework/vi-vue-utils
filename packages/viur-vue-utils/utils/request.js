@@ -58,13 +58,12 @@ export default class Request {
     } = {}) {
         let return_value = null
         await Request.get("/json/skey").then(
-            (resp) => {
-                console.log(resp)
+            async(resp) => {
+                let data = await resp.json()
                 if (!dataObj) {
                     dataObj = {}
                 }
-                dataObj["skey"] = resp.data
-                console.log(dataObj)
+                dataObj["skey"] = data
                 return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController})
             }
         )
