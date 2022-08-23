@@ -3,11 +3,13 @@
  * @param id Name of the Store
  * @param module modulename. Is used to build a /json/{module}/list url
  * @param params filterobject
+ * @param group group
  * @param url a url to fetch from, overrides module url building
  */
-export function ListRequest(id: string, { module, params, url }?: {
+export function ListRequest(id: string, { module, params, group, url }?: {
     module?: string;
     params?: {};
+    group?:string;
     url?: string;
 }): import("pinia").Store<any, import("pinia")._UnwrapAll<Pick<{
     state: {

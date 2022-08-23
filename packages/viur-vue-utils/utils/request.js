@@ -57,7 +57,7 @@ export default class Request {
         abortController = null
     } = {}) {
         let return_value = null
-        await this.get("/json/skey").then(
+        await Request.get("/json/skey").then(
             (resp) => {
                 console.log(resp)
                 if (!dataObj) {
@@ -65,7 +65,7 @@ export default class Request {
                 }
                 dataObj["skey"] = resp.data
                 console.log(dataObj)
-                return_value = this.post(url, {dataObj: dataObj, callback: callback, abortController: abortController})
+                return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController})
             }
         )
         return return_value
@@ -110,7 +110,7 @@ export default class Request {
             url += `/${group}`
         }
 
-        return this.get(url,
+        return Request.get(url,
             {
                 dataObj: dataObj,
                 callback: callback,
@@ -131,7 +131,7 @@ export default class Request {
             url = `/json/${module}/view/${group}/${key}`
         }
 
-        return this.get(url,
+        return Request.get(url,
             {
                 dataObj: dataObj,
                 callback: callback,
@@ -146,7 +146,7 @@ export default class Request {
             url = `/json/${module}/add/${group}/${key}`
         }
 
-        return this.securePost(url,
+        return Request.securePost(url,
             {
                 dataObj: dataObj,
                 callback: callback,
@@ -161,7 +161,7 @@ export default class Request {
             url = `/json/${module}/edit/${group}/${key}`
         }
 
-        return this.securePost(url,
+        return Request.securePost(url,
             {
                 dataObj: dataObj,
                 callback: callback,
@@ -176,7 +176,7 @@ export default class Request {
             url = `/json/${module}/delete/${group}/${key}`
         }
 
-        return this.securePost(url,
+        return Request.securePost(url,
             {
                 dataObj:dataObj,
                 callback:callback,
@@ -188,14 +188,14 @@ export default class Request {
     static downloadUrlFor(bone, thumbnail = false) {
         if (bone && "dest" in bone) {
             if (thumbnail && "thumbnail" in bone["dest"]) {
-                return this.buildUrl(bone["dest"]["thumbnail"])
+                return Request.buildUrl(bone["dest"]["thumbnail"])
             } else if ("downloadUrl" in bone["dest"]) {
-                return this.buildUrl(bone["dest"]["downloadUrl"])
+                return Request.buildUrl(bone["dest"]["downloadUrl"])
             }
-            return this.buildUrl(null)
+            return Request.buildUrl(null)
         }
 
-        return this.buildUrl(bone)
+        return Request.buildUrl(bone)
     }
 
 }
