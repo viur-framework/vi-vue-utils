@@ -1,9 +1,6 @@
 {
   "name": "viur-vue-utils",
-  "version": "0.5.0",
   "private": true,
-  "description": "Some ViUR related vue3 utils",
-  "main": " ",
   "scripts": {
     "dev": "npm run dev --prefix=packages/playground",
     "init": "npm install && npm install --prefix=packages/viur-vue-utils && npm install --prefix=packages/playground",
