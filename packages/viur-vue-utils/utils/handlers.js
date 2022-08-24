@@ -1,4 +1,4 @@
-import Request from './request';
+import {Request, HTTPError} from './request.js';
 import {defineStore} from 'pinia'
 import {reactive, computed, toRaw} from "vue";
 
@@ -82,6 +82,7 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
                 }
 
                 state.state = -1
+                throw error
             })
         }
 
@@ -91,13 +92,14 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
          */
         function fetchAll(do_reset = true) {
             if (do_reset) reset()
-
-            try {
-                next().then((resp) => {
-                    fetchAll(false)
-                })
-            } catch (e) {//next() can return 0
+            let nextRequest = next()
+            if (nextRequest===0){
+                return 0
             }
+            return nextRequest.then((resp) => {
+                fetchAll(false)
+            })
+
         }
 
         /**

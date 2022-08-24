@@ -242,9 +242,17 @@ class cachedFetch {
                 if (response.ok) {
                     return response
                 } else {
-                    const errorMessage = `${response.status} ${response.statusText}: ${response.headers.get('x-error-descr')}`
+                    const errorMessage = `${response.status} ${response.statusText}: ${response.headers ? response.headers.get('x-error-descr') : ''}`
                     return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response))
                 }
+            }).catch((error)=>{
+                if (error instanceof TypeError){
+                    const errorMessage = `503 ${error.message}: ${error.headers?error.headers.get('x-error-descr'):''}`
+                    return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
+                }
+
+                const errorMessage = `${error.statusCode} ${error.statusText}: ${error.headers?error.headers.get('x-error-descr'):''}`
+                return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error))
             })
     }
 
@@ -256,3 +264,7 @@ class cachedFetch {
     }
 }
 
+export {
+    Request,
+    HTTPError
+}
