@@ -124,6 +124,9 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
             state.skellist = []
             state.skellist.length = 0
             state.cursor = ""
+             if (Object.keys(state.params).includes("cursor")){
+                delete state.params.cursor
+            }
             state.state = 0
             state.request_state = null
         }
