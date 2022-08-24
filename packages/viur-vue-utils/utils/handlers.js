@@ -21,6 +21,7 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
             request_state: null,
             params: params, //request params
             group: group,
+            module: module,
             state: 0, // 0:not fetched, 1:fetched, 2:all fetched, -1:error
         })
 
@@ -47,7 +48,7 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
             if (state.state === 2) return 0
 
             let request = Request.list
-            let firstparameter = module
+            let firstparameter = state.module
             if (url !== "") {
                 request = Request.get
                 firstparameter = url

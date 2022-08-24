@@ -19,6 +19,7 @@ export function ListRequest(id: string, { module, params, group, url }?: {
         request_state: number | null;
         params: {};
         group:string;
+        module: string;
         state: number;
     };
     structure: object;
