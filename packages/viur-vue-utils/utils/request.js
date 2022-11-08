@@ -64,10 +64,15 @@ export default class Request {
         await Request.get("/json/skey").then(
             async(resp) => {
                 let data = await resp.json()
-                if (!dataObj) {
-                    dataObj = {}
+                if (dataObj instanceof FormData){
+                    dataObj.append("skey", data)
+                }else{
+                    if (!dataObj) {
+                        dataObj = {}
+                    }
+                    dataObj["skey"] = data
                 }
-                dataObj["skey"] = data
+
                 return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController})
             }
         )
