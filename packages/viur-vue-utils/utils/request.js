@@ -140,9 +140,9 @@ export default class Request {
     }
 
     static add(module, {dataObj = null, callback = null, failedCallback = null, group = null, abortController = null} = {}) {
-        let url = `/json/${module}/add/${key}`
+        let url = `/json/${module}/add`
         if (group) {
-            url = `/json/${module}/add/${group}/${key}`
+            url = `/json/${module}/add/${group}`
         }
 
         return Request.securePost(url,
