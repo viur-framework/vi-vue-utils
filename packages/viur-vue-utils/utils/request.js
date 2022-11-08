@@ -22,6 +22,10 @@ export default class Request {
 
     static post(url, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
         function buildFormdata() {
+            if (dataObj instanceof FormData){
+                return dataObj // we don't need to transform anything
+            }
+
             const form = new FormData()
             for (const key in dataObj) {
                 if (Array.isArray(dataObj[key])) {
