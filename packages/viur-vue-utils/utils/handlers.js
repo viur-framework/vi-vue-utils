@@ -19,10 +19,12 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
             structure: {}, // raw skelstructure
             cursor: "", // last cursor
             request_state: null,
+			orders:[],
             params: params, //request params
             group: group,
             module: module,
             state: 0, // 0:not fetched, 1:fetched, 2:all fetched, -1:error
+
         })
 
         /**
@@ -62,6 +64,7 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
 
                 state.request_state = parseInt(resp.status)
                 state.cursor = data["cursor"]
+                state.orders = data["orders"]
 
                 state.skellist = state.skellist.concat(data["skellist"])
 
