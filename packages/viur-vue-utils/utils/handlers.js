@@ -64,7 +64,7 @@ export function ListRequest(id, {module = "", params = {}, group=null, url = ""}
 
                 state.request_state = parseInt(resp.status)
                 state.cursor = data["cursor"]
-                state.orders = data["orders"]
+                state.orders = data["orders"] || []
 
                 state.skellist = state.skellist.concat(data["skellist"])
 
