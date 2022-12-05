@@ -23,6 +23,6 @@
   },
   "homepage": "https://github.com/XeoN-GHMB/viur-vue-utils#readme",
   "devDependencies": {
-    "typescript": "^4.7.4"
+    "typescript": "^4.9.3"
   }
 }

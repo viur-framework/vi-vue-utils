@@ -1,6 +1,6 @@
 {
   "name": "@viur/viur-vue-utils",
-  "version": "0.5.12",
+  "version": "0.5.13",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,7 +14,8 @@
     "Stefan Kögl",
     "Sven Eberth",
     "Achim Schumacher",
-    "Tilman Oestereich"
+    "Tilman Oestereich",
+    "Arne Gudermann"
   ],
   "license": "MIT",
   "bugs": {
@@ -22,7 +23,7 @@
   },
   "homepage": "https://github.com/XeoN-GHMB/viur-vue-utils#readme",
   "dependencies": {
-    "pinia": "^2.0.20",
-    "vue": "^3.2.37"
+    "pinia": "^2.0.27",
+    "vue": "^3.2.45"
   }
 }
