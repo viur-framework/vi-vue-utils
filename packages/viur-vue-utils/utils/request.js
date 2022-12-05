@@ -238,7 +238,22 @@ class cachedFetch {
         function buildGetUrl(url, params) {
             let requestUrl = new URL(url)
             if (params && Object.keys(params).length > 0) {
-                requestUrl.search = new URLSearchParams(params).toString();
+				const urlparams=  new URLSearchParams()
+				for (const [key, value] of Object.entries(params)) {
+					if(Array.isArray(value))
+					{
+						for (const v of value)
+						{
+							urlparams.append(key,v);
+						}
+					}
+					else
+					{
+						urlparams.append(key,value);
+					}
+				}
+
+                requestUrl.search = urlparams.toString();
             }
 
             return requestUrl.toString()
