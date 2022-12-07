@@ -127,6 +127,27 @@ export default class Request {
             })
     }
 
+	static getStructure(module, {
+        dataObj = null,
+        callback = null,
+        failedCallback = null,
+        group = null,
+        abortController = null
+    } = {}) {
+        let url = `/vi/getStructure/${module}/`
+        if (group) {
+            url += `/${group}`
+        }
+
+        return Request.get(url,
+            {
+                dataObj: dataObj,
+                callback: callback,
+                failedCallback: failedCallback,
+                abortController: abortController
+            })
+    }
+
     static view(module, key, {
         dataObj = null,
         callback = null,
