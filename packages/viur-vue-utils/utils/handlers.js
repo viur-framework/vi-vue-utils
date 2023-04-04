@@ -66,7 +66,13 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
         state.cursor = data["cursor"]
         state.orders = data["orders"] || []
 
-        state.skellist = state.skellist.concat(data["skellist"])
+        if (state.skellist.length === 0){
+            state.skellist = data["skellist"]
+        }else{
+            for (let item of data["skellist"]) {
+                state.skellist.push(item)
+            }
+        }
 
         if (Object.keys(state.structure).length === 0) {
           const structure = await Request.getStructure(state.module)
