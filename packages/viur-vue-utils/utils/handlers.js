@@ -64,6 +64,12 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
       }).then(async (resp) => {
         let data = await resp.json()
 
+        if (Object.keys(state.structure).length === 0) {
+          const structure = await Request.getStructure(state.module)
+            .then(structureResponse => structureResponse.json().then(_structure => _structure));
+          state.structure = structure["viewSkel"];
+        }
+
         state.request_state = parseInt(resp.status)
         state.cursor = data["cursor"]
         state.orders = data["orders"] || []
@@ -76,11 +82,6 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
             }
         }
 
-        if (Object.keys(state.structure).length === 0) {
-          const structure = await Request.getStructure(state.module)
-            .then(structureResponse => structureResponse.json().then(_structure => _structure));
-          state.structure = structure["viewSkel"];
-        }
         if (data["skellist"].length === 0 || !state.cursor) {
           state.state = 2
         } else {
