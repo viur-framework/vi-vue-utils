@@ -308,6 +308,10 @@ class cachedFetch {
           const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get('x-error-descr') : ''}`
           return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
         }
+        if (error instanceof DOMException && error.name == "AbortError") {
+            const errorMessage = `${error.code} ${error.name}: ${error.headers ? error.headers.get('x-error-descr') : ''}`
+            return Promise.reject(new HTTPError(error.code, error.name, errorMessage, {"url":url}))
+        }
 
         const errorMessage = `${error.statusCode} ${error.statusText}: ${error.headers ? error.headers.get('x-error-descr') : ''}`
         return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))

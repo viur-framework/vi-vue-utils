@@ -12,7 +12,7 @@ import {reactive, computed, toRaw} from "vue";
 export function ListRequest(id, {module = "", params = {}, group = null, url = ""} = {}) {
 
   const useList = defineStore(id, () => {
-    const abortController = new AbortController()
+    let abortController = new AbortController()
 
     const state = reactive({
       skellist: [], // holds our entries
@@ -55,9 +55,11 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
         request = Request.get
         firstparameter = url
       }
+
+      abortController = new AbortController()
       return request(firstparameter, {
         dataObj: state.params,
-        abortController: abortController.signal,
+        abortController: abortController,
         group: state.group
       }).then(async (resp) => {
         let data = await resp.json()
