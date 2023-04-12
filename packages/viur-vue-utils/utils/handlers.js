@@ -17,6 +17,7 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
     const state = reactive({
       skellist: [], // holds our entries
       structure: [], // raw skelstructure
+      structure_object: {}, // raw skelstructure >= core 3.4
       cursor: "", // last cursor
       request_state: null,
       orders: [],
@@ -33,11 +34,17 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
      */
     const structure = computed(() => {
       let struct = {}
+      // we got structure object from core
+      if (state.structure_object){
+        return state.structure_object
+      }
+
       if (state.structure) {
         for (let idx in state.structure) {
           struct[state.structure[idx][0]] = toRaw(state.structure[idx][1])
         }
       }
+
       return struct
     })
 
@@ -67,7 +74,15 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
         if (Object.keys(state.structure).length === 0) {
           const structure = await Request.getStructure(state.module)
             .then(structureResponse => structureResponse.json().then(_structure => _structure));
-          state.structure = structure["viewSkel"];
+          if (Array.isArray(structure["viewSkel"])){
+            state.structure = structure["viewSkel"];
+          }else{
+            // build array object
+            state.structure_object = structure["viewSkel"];
+            for (const [name, conf] of Object.entries(structure["viewSkel"])) {
+              state.structure.push([name,conf])
+            }
+          }
         }
 
         state.request_state = parseInt(resp.status)
@@ -136,7 +151,7 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
      */
     function reset() {
       abortController.abort()
-      state.structure = {}
+      state.structure = []
       state.skellist = []
       state.skellist.length = 0
       state.cursor = ""

@@ -1,30 +1,27 @@
 {
   "name": "@viur/viur-vue-utils",
-  "version": "0.6.2",
+  "version": "0.6.5",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/XeoN-GHMB/viur-vue-utils.git"
+    "url": "git+https://github.com/viur-framework/viur-vue-utils.git"
   },
   "author": "Andreas H. Kelch",
   "contributors": [
-    "Stefan Kögl",
-    "Sven Eberth",
-    "Achim Schumacher",
     "Tilman Oestereich",
     "Arne Gudermann",
     "Kadir Balku"
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/XeoN-GHMB/viur-vue-utils/issues"
+    "url": "https://github.com/viur-framework/viur-vue-utils/issues"
   },
-  "homepage": "https://github.com/XeoN-GHMB/viur-vue-utils#readme",
+  "homepage": "https://github.com/viur-framework/viur-vue-utils#readme",
   "dependencies": {
-    "pinia": "^2.0.27",
-    "vue": "^3.2.45"
+    "pinia": "^2.0.34",
+    "vue": "^3.2.47"
   }
 }
