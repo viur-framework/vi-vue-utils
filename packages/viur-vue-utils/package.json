@@ -1,6 +1,6 @@
 {
   "name": "@viur/viur-vue-utils",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,7 +15,8 @@
     "Sven Eberth",
     "Achim Schumacher",
     "Tilman Oestereich",
-    "Arne Gudermann"
+    "Arne Gudermann",
+    "Kadir Balku"
   ],
   "license": "MIT",
   "bugs": {

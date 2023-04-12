@@ -16,7 +16,7 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
 
     const state = reactive({
       skellist: [], // holds our entries
-      structure: {}, // raw skelstructure
+      structure: [], // raw skelstructure
       cursor: "", // last cursor
       request_state: null,
       orders: [],
