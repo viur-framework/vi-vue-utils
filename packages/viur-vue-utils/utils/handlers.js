@@ -74,12 +74,18 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
         if (Object.keys(state.structure).length === 0) {
           const structure = await Request.getStructure(state.module)
             .then(structureResponse => structureResponse.json().then(_structure => _structure));
-          if (Array.isArray(structure["viewSkel"])){
-            state.structure = structure["viewSkel"];
+
+          let skeltype = "viewSkel"
+          if (Object.keys(state.params).includes("skelType")){
+            skeltype = state.params["skelType"]==="node"?"viewNodeSkel":"viewLeafSkel"
+          }
+
+          if (Array.isArray(structure[skeltype])){
+            state.structure = structure[skeltype];
           }else{
             // build array object
-            state.structure_object = structure["viewSkel"];
-            for (const [name, conf] of Object.entries(structure["viewSkel"])) {
+            state.structure_object = structure[skeltype];
+            for (const [name, conf] of Object.entries(structure[skeltype])) {
               state.structure.push([name,conf])
             }
           }
