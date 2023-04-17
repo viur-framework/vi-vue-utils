@@ -11,7 +11,6 @@ class HTTPError extends Error {
 }
 
 export default class Request {
-
   static buildUrl(url) {
     if (url && (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')))) {
       url = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) + url
@@ -57,10 +56,11 @@ export default class Request {
     dataObj = null,
     callback = null,
     failedCallback = null,
-    abortController = null
+    abortController = null,
+    renderer = import.meta.env.VITE_DEFAULT_RENDERER
   } = {}) {
     let return_value = null
-    await Request.get("/json/skey").then(
+    await Request.get(`/${renderer}/skey`).then(
       async (resp) => {
         let data = await resp.json()
         if (dataObj instanceof FormData) {
@@ -110,9 +110,10 @@ export default class Request {
     callback = null,
     failedCallback = null,
     group = null,
-    abortController = null
+    abortController = null,
+    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
   } = {}) {
-    let url = `/json/${module}/list`
+    let url = `/${renderer}/${module}/list`
     if (group) {
       url += `/${group}`
     }
@@ -131,7 +132,7 @@ export default class Request {
     callback = null,
     failedCallback = null,
     group = null,
-    abortController = null
+    abortController = null,
   } = {}) {
     let url = `/vi/getStructure/${module}/`
     if (group) {
@@ -152,11 +153,12 @@ export default class Request {
     callback = null,
     failedCallback = null,
     group = null,
-    abortController = null
+    abortController = null,
+    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
   } = {}) {
-    let url = `/json/${module}/view/${key}`
+    let url = `/${renderer}/${module}/view/${key}`
     if (group) {
-      url = `/json/${module}/view/${group}/${key}`
+      url = `/${renderer}/${module}/view/${group}/${key}`
     }
 
     return Request.get(url,
@@ -173,11 +175,12 @@ export default class Request {
     callback = null,
     failedCallback = null,
     group = null,
-    abortController = null
+    abortController = null,
+    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
   } = {}) {
-    let url = `/json/${module}/add`
+    let url = `/${renderer}/${module}/add`
     if (group) {
-      url = `/json/${module}/add/${group}`
+      url = `/${renderer}/${module}/add/${group}`
     }
 
     return Request.securePost(url,
@@ -194,11 +197,12 @@ export default class Request {
     callback = null,
     failedCallback = null,
     group = null,
-    abortController = null
+    abortController = null,
+    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
   } = {}) {
-    let url = `/json/${module}/edit/${key}`
+    let url = `/${renderer}/${module}/edit/${key}`
     if (group) {
-      url = `/json/${module}/edit/${group}/${key}`
+      url = `/${renderer}/${module}/edit/${group}/${key}`
     }
 
     return Request.securePost(url,
@@ -215,11 +219,12 @@ export default class Request {
     callback = null,
     failedCallback = null,
     group = null,
-    abortController = null
+    abortController = null,
+    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
   } = {}) {
-    let url = `/json/${module}/delete/${key}`
+    let url = `/${renderer}/${module}/delete/${key}`
     if (group) {
-      url = `/json/${module}/delete/${group}/${key}`
+      url = `/${renderer}/${module}/delete/${group}/${key}`
     }
 
     return Request.securePost(url,
