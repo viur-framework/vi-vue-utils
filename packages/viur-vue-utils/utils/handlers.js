@@ -9,7 +9,7 @@ import {reactive, computed, toRaw} from "vue";
  * @param params filterobject
  * @param url a url to fetch from, overrides module url building
  */
-export function ListRequest(id, {module = "", params = {}, group = null, url = ""} = {}) {
+export function ListRequest(id, {module = "", params = {}, group = null, url = "", renderer = "json"} = {}) {
 
   const useList = defineStore(id, () => {
     let abortController = new AbortController()
@@ -25,6 +25,7 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
       group: group,
       module: module,
       state: 0, // 0:not fetched, 1:fetched, 2:all fetched, -1:error
+      renderer: renderer,
 
     })
 
@@ -67,7 +68,9 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
       return request(firstparameter, {
         dataObj: state.params,
         abortController: abortController,
-        group: state.group
+        group: state.group,
+        renderer:state.renderer
+
       }).then(async (resp) => {
         let data = await resp.json()
 

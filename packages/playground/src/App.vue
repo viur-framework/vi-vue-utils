@@ -25,11 +25,11 @@ export default {
         })*/
 
 
-        let testList = ListRequest("teststore",{url:"/x"})
+        let testList = ListRequest("teststore",{module:"test",renderer:"vi"})
         testList.fetch().then((resp)=>{
           testList.next().then((resp)=>{
             destroyStore(testList)
-            testList = ListRequest("teststore",{url:"/x"})
+            testList = ListRequest("teststore",{module:"test"})
           })
         })
 

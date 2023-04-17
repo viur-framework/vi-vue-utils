@@ -5,12 +5,14 @@
  * @param params filterobject
  * @param group group
  * @param url a url to fetch from, overrides module url building
+ * @param url a url to fetch from, overrides module url building
  */
-export function ListRequest(id: string, {module, params, group, url}?: {
+export function ListRequest(id: string, {module, params, group, url, renderer}?: {
   module?: string;
   params?: {};
   group?: string;
   url?: string;
+  renderer?: string ;
 }): import("pinia").Store<any, import("pinia")._UnwrapAll<Pick<{
   state: {
     skellist: object[];
