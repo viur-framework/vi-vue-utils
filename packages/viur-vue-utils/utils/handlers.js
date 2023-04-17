@@ -71,7 +71,7 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
       }).then(async (resp) => {
         let data = await resp.json()
 
-        if (Object.keys(state.structure).length === 0) {
+        if (Object.keys(data.structure).length === 0) {
           const structure = await Request.getStructure(state.module)
             .then(structureResponse => structureResponse.json().then(_structure => _structure));
 
@@ -86,6 +86,16 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
             // build array object
             state.structure_object = structure[skeltype];
             for (const [name, conf] of Object.entries(structure[skeltype])) {
+              state.structure.push([name,conf])
+            }
+          }
+        }else{
+          if (Array.isArray(data["structure"])){
+            state.structure = data["structure"];
+          }else{
+            // build array object
+            state.structure_object = data["structure"];
+            for (const [name, conf] of Object.entries(data["structure"])) {
               state.structure.push([name,conf])
             }
           }
