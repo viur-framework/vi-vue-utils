@@ -57,7 +57,7 @@ export default class Request {
     callback = null,
     failedCallback = null,
     abortController = null,
-    renderer = import.meta.env.VITE_DEFAULT_RENDERER
+    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
   } = {}) {
     let return_value = null
     await Request.get(`/${renderer}/skey`).then(
