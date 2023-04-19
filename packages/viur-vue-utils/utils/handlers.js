@@ -7,9 +7,17 @@ import {reactive, computed, toRaw} from "vue";
  * @param id Name of the Store
  * @param module modulename. Is used to build a /json/{module}/list url
  * @param params filterobject
+ * @param group
  * @param url a url to fetch from, overrides module url building
+ * @param renderer
  */
-export function ListRequest(id, {module = "", params = {}, group = null, url = ""} = {}) {
+export function ListRequest(id, {
+  module = "",
+  params = {},
+  group = null,
+  url = "",
+  renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
+} = {}) {
 
   const useList = defineStore(id, () => {
     let abortController = new AbortController()
@@ -67,7 +75,8 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
       return request(firstparameter, {
         dataObj: state.params,
         abortController: abortController,
-        group: state.group
+        group: state.group,
+        renderer:renderer
       }).then(async (resp) => {
         let data = await resp.json()
 
