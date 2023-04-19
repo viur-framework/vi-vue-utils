@@ -35,7 +35,7 @@ export function ListRequest(id, {module = "", params = {}, group = null, url = "
     const structure = computed(() => {
       let struct = {}
       // we got structure object from core
-      if (state.structure_object){
+      if (Object.keys(state.structure_object).length>0){
         return state.structure_object
       }
 
