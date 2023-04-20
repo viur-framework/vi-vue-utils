@@ -60,7 +60,7 @@ export function ListRequest(id, {
      * Fetch
      * @returns {number|Promise<Response>}
      */
-    function fetch(do_reset = true) {
+    function fetch(do_reset = true,next = false) {
       if (do_reset) reset()
       if (state.state === 2) return 0
 
@@ -99,27 +99,28 @@ export function ListRequest(id, {
             }
           }
         }else{
-          if (Array.isArray(data["structure"])){
-            state.structure = data["structure"];
-          }else{
-            // build array object
-            state.structure_object = data["structure"];
-            for (const [name, conf] of Object.entries(data["structure"])) {
-              state.structure.push([name,conf])
+          if (!next) { // when we have the next request we not change the structure
+            if (Array.isArray(data["structure"])) {
+              state.structure = data["structure"];
+            } else {
+              // build array object
+              state.structure_object = data["structure"];
+              for (const [name, conf] of Object.entries(data["structure"])) {
+                state.structure.push([name, conf])
+              }
             }
           }
+
         }
 
         state.request_state = parseInt(resp.status)
         state.cursor = data["cursor"]
         state.orders = data["orders"] || []
 
-        if (state.skellist.length === 0){
-            state.skellist = data["skellist"]
-        }else{
-            for (let item of data["skellist"]) {
-                state.skellist.push(item)
-            }
+        if (state.skellist.length === 0) {
+          state.skellist = data["skellist"]
+        } else {
+          state.skellist = state.skellist.concat(data["skellist"]);
         }
 
         if (data["skellist"].length === 0 || !state.cursor) {
@@ -168,7 +169,7 @@ export function ListRequest(id, {
       if (state.cursor !== "") {
         state.params = {...state.params, "cursor": state.cursor}
       }
-      return fetch(false)
+      return fetch(false,true)
     }
 
     /**
