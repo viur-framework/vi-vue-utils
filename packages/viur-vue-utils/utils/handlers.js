@@ -169,7 +169,11 @@ export function ListRequest(id, {
       if (state.cursor !== "") {
         state.params = {...state.params, "cursor": state.cursor}
       }
-      return fetch(false,true)
+      let next = true
+      if (state.state === 0){
+        next = false // first request
+      }
+      return fetch(false, next)
     }
 
     /**
