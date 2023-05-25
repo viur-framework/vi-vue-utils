@@ -18,7 +18,7 @@ export default class Request {
     return url
   }
 
-  static post(url, {dataObj = null, callback = null, failedCallback = null, abortController = null} = {}) {
+  static post(url, {dataObj = null, callback = null, failedCallback = null, abortController = null, headers=null, mode=null} = {}) {
     function buildFormdata() {
       if (dataObj instanceof FormData) {
         return dataObj // we don't need to transform anything
@@ -37,7 +37,7 @@ export default class Request {
       return form
     }
 
-    let reqPromise = cachedFetch.post(Request.buildUrl(url), buildFormdata(), null, null, abortController)
+    let reqPromise = cachedFetch.post(Request.buildUrl(url), buildFormdata(), null, headers, abortController, mode)
 
     reqPromise.then(function (response) {
       if (callback) {
@@ -57,7 +57,9 @@ export default class Request {
     callback = null,
     failedCallback = null,
     abortController = null,
-    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
+    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
+    headers=null,
+    mode=null
   } = {}) {
     let return_value = null
     await Request.get(`/${renderer}/skey`).then(
@@ -72,7 +74,7 @@ export default class Request {
           dataObj["skey"] = data
         }
 
-        return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController})
+        return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController, headers, mode})
       }
     )
     return return_value
@@ -87,11 +89,13 @@ export default class Request {
                cached = false,
                clearCache = false,
                abortController = null,
+               headers=null,
+               mode=null,
                //                  milli  sec  min  Std  Tage
                cacheTime = 1000 * 60 * 60 * 24 * 1
              } = {}
   ) {
-    let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, null, abortController)
+    let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, headers, abortController, mode)
     reqPromise.then(function (response) {
       if (callback) {
         callback(response.data);
@@ -255,7 +259,7 @@ export default class Request {
 class cachedFetch {
   withCredentials = true
 
-  static buildOptions(method, body = null, headers = null, abortController = null) {
+  static buildOptions(method, body = null, headers = null, abortController = null, mode=null) {
     let options = {method: method}
 
     options["credentials"] = 'include'
@@ -274,10 +278,14 @@ class cachedFetch {
       options["signal"] = abortController.signal
     }
 
+    if (mode){
+      options["mode"] = mode
+    }
+
     return options
   }
 
-  static get(url, params = null, clearCache = null, headers = null, abortController = null) {
+  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode=null) {
     function buildGetUrl(url, params) {
       let requestUrl = new URL(url)
       if (params && Object.keys(params).length > 0) {
@@ -300,7 +308,7 @@ class cachedFetch {
 
     return fetch(
       buildGetUrl(url, params),
-      cachedFetch.buildOptions("GET", null, headers, abortController))
+      cachedFetch.buildOptions("GET", null, headers, abortController, mode))
       .then(async response => {
         if (response.ok) {
           return response
@@ -323,10 +331,10 @@ class cachedFetch {
       })
   }
 
-  static post(url, params = null, clearCache = null, headers = null, abortController = null) {
+  static post(url, params = null, clearCache = null, headers = null, abortController = null, mode=null) {
     return fetch(
       url,
-      cachedFetch.buildOptions("POST", params, headers, abortController)
+      cachedFetch.buildOptions("POST", params, headers, abortController, mode)
     )
   }
 }
