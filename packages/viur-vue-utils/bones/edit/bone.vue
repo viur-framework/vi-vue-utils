@@ -66,19 +66,19 @@
 //@ts-nocheck
 import {reactive, defineComponent, computed, onBeforeMount, provide, getCurrentInstance, onMounted} from 'vue'
 import wrapperMultiple from "./wrapper_multiple.vue";
-import bones from './index';
 import BoneLabel from './boneLabel.vue';
 import defaultBar from './actionbar/defaultBar.vue';
 import relationalBar from './actionbar/relationalBar.vue';
 import fileBar from './actionbar/fileBar.vue';
 import {BoneHasMultipleHandling} from "./index"
+import rawBone from "./default/rawBone.vue";
 
 export default defineComponent({
-    components: { wrapperMultiple, ...bones, BoneLabel, defaultBar, relationalBar, fileBar },
+    components: { wrapperMultiple, BoneLabel, defaultBar, relationalBar, fileBar },
     props: {
         is: {
             type: Object,
-            default: bones.raw
+            default: rawBone
         },
         name: {
             type:String,

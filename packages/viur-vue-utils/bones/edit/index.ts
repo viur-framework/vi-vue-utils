@@ -19,16 +19,40 @@ import {defineStore} from "pinia";
 
 export const useBoneStore = defineStore("boneStore", () => {
   const state = reactive({
-    bones:{}
+    additionalBones:{},
+    defaultBones:{
+      rawBone,
+      keyBone,
+      stringBone,
+      emailBone,
+      dateBone,
+      booleanBone,
+      selectBone,
+      passwordBone,
+      recordBone,
+      numericBone,
+      colorBone,
+      relationalBone,
+      jsonBone,
+      fileBone
+    },
   })
 
   function addBoneWidget(boneType,widget){
-    state.bones[boneType]=widget
+    state.additionalBones[boneType]=widget
+  }
+
+  function importWidgets(){
+    let bones = state.defaultBones
+    for(const [k,v] of Object.entries(state.additionalBones)){
+      bones.add(v)
+    }
+    return bones
   }
 
   function getBoneWidget(boneType){
-    if (Object.keys(state.bones).includes(boneType)){
-      return state.bones[boneType]
+    if (Object.keys(state.additionalBones).includes(boneType)){
+      return state.additionalBones[boneType]
     }
 
     if(boneType==="date"){
@@ -66,7 +90,8 @@ export const useBoneStore = defineStore("boneStore", () => {
   return {
     state,
     addBoneWidget,
-    getBoneWidget
+    getBoneWidget,
+    importWidgets
   }
 })
 
