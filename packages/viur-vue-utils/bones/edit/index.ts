@@ -13,6 +13,7 @@ import numericBone from './default/numericBone.vue';
 import relationalBone from './default/relationalBone.vue';
 import jsonBone from './default/jsonBone.vue';
 import fileBone from './default/fileBone.vue';
+import textBone from './default/textBone.vue';
 
 import {reactive} from "vue";
 import {defineStore} from "pinia";
@@ -34,7 +35,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       colorBone,
       relationalBone,
       jsonBone,
-      fileBone
+      fileBone,
+      textBone
     },
   })
 
@@ -81,6 +83,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return jsonBone
     }else if(boneType==="color"){
       return colorBone
+    }else if(boneType==="text"){
+      return textBone
     }
 
     return rawBone
@@ -126,5 +130,6 @@ export default {
   colorBone,
   relationalBone,
   jsonBone,
-  fileBone
+  fileBone,
+  textBone
 }
