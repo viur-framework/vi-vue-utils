@@ -37,4 +37,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
+
+sl-color-picker{
+  &::part(trigger){
+    border-radius: 0;
+  }
+}
 </style>

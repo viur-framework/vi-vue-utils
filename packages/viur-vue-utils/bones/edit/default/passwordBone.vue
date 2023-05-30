@@ -1,11 +1,27 @@
 <template>
-    <sl-input :disabled="boneState.readonly" type="password" clearable password-toggle="true" v-model="state.value1" @sl-change="changeEvent" @sl-clear="state.value1=''"  @keyup="changeEvent">
+    <sl-input :disabled="boneState.readonly"
+              :class="{ 'has-check':!boneState.readonly }"
+              type="password"
+              clearable
+              password-toggle="true"
+              v-model="state.value1"
+              @sl-change="changeEvent"
+              @sl-clear="state.value1=''"
+              @keyup="changeEvent">
       <sl-icon :name="state.equal?'check':'x'" slot="suffix"></sl-icon>
     </sl-input>
-    <sl-input v-if="!boneState.readonly" type="password" clearable password-toggle="true" v-model="state.value2" @sl-change="changeEvent" @sl-clear="state.value2=''"  @keyup="changeEvent">
+    <sl-input v-if="!boneState.readonly"
+              class="password-check"
+              type="password"
+              clearable
+              password-toggle="true"
+              v-model="state.value2"
+              @sl-change="changeEvent"
+              @sl-clear="state.value2=''"
+              @keyup="changeEvent">
       <sl-icon :name="state.equal?'check':'x'" slot="suffix"></sl-icon>
     </sl-input>
-    <ul>
+    <ul class="errors">
       <li v-for="error in state.passwordInfo">{{error}}</li>
     </ul>
 </template>
@@ -72,7 +88,37 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-    sl-input{
-        width:100%;
+  sl-input{
+      width:100%;
+
+    &::part(base){
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
+  }
+
+  .has-check{
+    &::part(base){
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  .password-check{
+    margin-top: var(--sl-spacing-x-small);
+
+    &::part(base){
+      border-top-right-radius: 0;
+      border-bottom-left-radius: var(--sl-border-radius-medium);
+    }
+  }
+
+  .errors{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-gap: 2px 7px;
+    margin-top: var(--sl-spacing-x-small);
+    font-size: .7em;
+    font-weight: bold;
+  }
+
 </style>

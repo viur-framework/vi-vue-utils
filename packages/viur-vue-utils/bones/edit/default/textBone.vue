@@ -43,7 +43,12 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-    ckeditor{
+    .ck-editor{
+      width:100%;
+
+      :deep(.ck-content){
         width:100%;
+        height: 300px;
+      }
     }
 </style>

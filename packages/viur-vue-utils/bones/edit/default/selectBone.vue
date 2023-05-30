@@ -1,5 +1,8 @@
 <template>
-    <sl-select :disabled="boneState.readonly" :value="value?.toString()" @sl-change="changeEvent" :multiple="boneState['bonestructure']['multiple']">
+    <sl-select :disabled="boneState.readonly"
+               :value="value?.toString()"
+               @sl-change="changeEvent"
+               :multiple="boneState['bonestructure']['multiple']">
       <sl-option :value="value[0]" v-for="value in boneState['bonestructure']['values']">
           {{ value[1] }}
       </sl-option>
@@ -41,7 +44,12 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-    sl-input{
+    sl-select{
         width:100%;
+
+      &::part(combobox){
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     }
 </style>

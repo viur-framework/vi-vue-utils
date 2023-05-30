@@ -1,12 +1,12 @@
 <template>
 
-  <div class="bone-wrapper">
+  <div class="bone-wrapper" :class="'bone-wrapper-' + state.bonestructure['type']">
     <bone-label>
       {{ state.bonestructure['descr'] }}
     </bone-label>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
-      <sl-tab-group v-if="state.multilanguage" placement="bottom">
+      <sl-tab-group class="lang-tab" v-if="state.multilanguage" placement="bottom">
           <template v-for="lang in state.languages" :key="lang+'_tab'">
               <sl-tab slot="nav" :panel="'lang_'+lang">
                   {{ $t(lang) }}
@@ -17,12 +17,17 @@
                   <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
 
                       <!--multilang and multiple-->
-                      <div v-if="state.bonevalue?.[lang]" v-for="(val, index) in state.bonevalue?.[lang]" :key="index">
+                      <div class="multiple-bone" v-if="state.bonevalue?.[lang].length" v-for="(val, index) in state.bonevalue?.[lang]" :key="index">
                           <wrapper-multiple :readonly="!state.readonly" @delete="removeMultipleEntry(index,lang)">
                               <component :is="is" :value="val" :index="index" :lang="lang" :name="name"
                                         @change="updateValue" @keydown.enter="multipleBonePressEnter(lang)"></component>
                           </wrapper-multiple>
                       </div>
+
+                        <div class="multiple-placeholder" v-else>
+                            <sl-input readonly size="medium" placeholder="Keine Einträge"></sl-input>
+                        </div>
+
                       <!--Bone Buttonbar -->
                       <component v-if="!state.readonly" :is="state.actionbar" :lang="lang"></component>
                   </template>
@@ -38,10 +43,13 @@
           <!--Bone rendering for multiple bones-->
           <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
 
-              <div v-if="state.bonevalue" v-for="(val, index) in state.bonevalue" :key="index">
+              <div class="multiple-bone" v-if="state.bonevalue" v-for="(val, index) in state.bonevalue" :key="index">
                   <wrapper-multiple :readonly="!state.readonly" @delete="removeMultipleEntry(index)">
                       <component :is="is" :value="val" :index="index" :name="name" @change="updateValue" @keydown.enter="multipleBonePressEnter()"></component>
                   </wrapper-multiple>
+              </div>
+              <div class="multiple-placeholder" v-else>
+                  <sl-input readonly size="medium" placeholder="Keine Einträge"></sl-input>
               </div>
               <!--Bone Buttonbar -->
               <component v-if="!state.readonly" :is="state.actionbar"></component>
@@ -326,13 +334,68 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="less">
   .bone-wrapper{
     display: grid;
     grid-template-columns: 230px 1fr;
     margin-bottom: 20px;
+
+    &.bone-wrapper-record{
+      display: flex;
+      flex-direction: column;
+
+      & > :deep(.bone-name) {
+        border-bottom-left-radius: 0;
+        border-top-right-radius: var(--sl-border-radius-medium);
+      }
+
+      & > .bone-inner-wrap{
+        padding-top: var(--sl-spacing-small);
+        border-top: 2px solid var(--sl-color-neutral-200);
+      }
+
+      .multiple-bone{
+        border-bottom: 1px solid var(--sl-color-neutral-200);
+        padding-bottom: var(--sl-spacing-2x-small);
+        margin-bottom: var(--sl-spacing-small);
+      }
+    }
   }
+
   sl-tab-panel::part(base){
     padding: 0;
+  }
+
+  .lang-tab{
+    &::part(body){
+      padding-bottom: var(--sl-spacing-x-small);
+      overflow-x: hidden;
+    }
+
+    sl-tab{
+      &::part(base){
+        padding: var(--sl-spacing-x-small);
+      }
+    }
+  }
+
+  .multiple-placeholder{
+    margin-bottom: var(--sl-spacing-x-small);
+
+    sl-input{
+      &::part(base){
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        opacity: .7;
+      }
+    }
+  }
+
+  .multiple-bone{
+    margin-bottom: var(--sl-spacing-x-small);
+
+    .bone-wrapper{
+      margin-bottom: var(--sl-spacing-x-small);;
+    }
   }
 </style>

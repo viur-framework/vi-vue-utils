@@ -1,10 +1,24 @@
 <template>
   <div class="actionbar">
-      <sl-button variant="success" v-if="boneState.multiple && !readonly" @click="handleAdd(lang)">
-        {{$t("bone.add")}} <template v-if="state.counter>1">({{ state.counter }})</template>
+      <sl-button variant="danger"
+                 v-if="boneState.multiple && !readonly"
+                 @click="removeMultipleEntries(null)"
+                 :title='$t("bone.del")'
+                 outline
+                 class="delete-btn"
+      >
+        <sl-icon name="x"></sl-icon>
       </sl-button>
-      <sl-button variant="danger" v-if="boneState.multiple && !readonly" @click="removeMultipleEntries(null)">
-        {{$t("bone.delete")}}
+
+    <sl-button variant="success"
+                 v-if="boneState.multiple && !readonly"
+                 @click="handleAdd(lang)"
+                 :title='$t("bone.add")'
+                 outline
+                 class="add-btn"
+      >
+        <sl-icon name="plus"></sl-icon>
+        {{$t("bone.add")}} <template v-if="state.counter>1">({{ state.counter }})</template>
       </sl-button>
   </div>
 </template>
@@ -61,5 +75,26 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style scoped lang="less">
+
+.actionbar{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.delete-btn{
+  &::part(base){
+    aspect-ratio: 1;
+  }
+}
+
+.add-btn{
+  margin-left: auto;
+
+  sl-icon{
+    margin-right: var(--sl-spacing-x-small);
+  }
+}
+
 </style>

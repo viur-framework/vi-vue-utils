@@ -1,12 +1,24 @@
 <template>
   <div class="actionbar">
+     <sl-button variant="danger"
+                 v-if="boneState.multiple && !readonly"
+                 @click="openSelector()"
+                :title='$t("bone.del")'
+                 outline
+                 class="delete-btn">
+         <sl-icon name="x"></sl-icon>
+      </sl-button>
+
       <sl-combobox :source="getList" hoist
       @sl-item-select="addMultipleEntry(lang, {'dest':state.skels?.[$event.detail.item.value],'rel':null})"></sl-combobox>
-      <sl-button variant="success" v-if="boneState.multiple && !readonly" @click="addMultipleEntry(lang)">
-        {{$t("bone.list")}}
-      </sl-button>
-      <sl-button variant="danger" v-if="boneState.multiple && !readonly" @click="openSelector()">
-        {{$t("bone.delete")}}
+
+      <sl-button variant="success"
+                 v-if="boneState.multiple && !readonly"
+                 @click="addMultipleEntry(lang)"
+                  :title='$t("bone.add")'
+                 outline
+                 class="add-btn">
+        <sl-icon name="plus"></sl-icon> {{$t("bone.list")}}
       </sl-button>
   </div>
 </template>
@@ -75,9 +87,29 @@ export default defineComponent({
 <style scoped lang="less">
 .actionbar{
   display: flex;
-
+  flex-direction: row;
+  flex-wrap: nowrap;
 }
+
 sl-combobox{
   width:100%
 }
+
+.delete-btn{
+  margin-right: var(--sl-spacing-x-small);
+
+  &::part(base){
+    aspect-ratio: 1;
+  }
+}
+
+.add-btn{
+  margin-left: var(--sl-spacing-x-small);
+
+  sl-icon{
+    margin-right: var(--sl-spacing-x-small);
+  }
+}
+
+
 </style>
