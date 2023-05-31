@@ -115,21 +115,3 @@ export function BoneHasMultipleHandling(boneType){
   }
   return false
 }
-
-export default {
-  rawBone,
-  keyBone,
-  stringBone,
-  emailBone,
-  dateBone,
-  booleanBone,
-  selectBone,
-  passwordBone,
-  recordBone,
-  numericBone,
-  colorBone,
-  relationalBone,
-  jsonBone,
-  fileBone,
-  textBone
-}
