@@ -5,7 +5,7 @@
       <sl-button variant="danger"
                  v-if="boneState.multiple && !readonly"
                  @click="openSelector()"
-                :title='$t("bone.delete")'
+                :title='$t("bone.del")'
                  outline
                  class="delete-btn"
       >

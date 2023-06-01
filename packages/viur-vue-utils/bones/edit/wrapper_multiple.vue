@@ -6,7 +6,7 @@
       <sl-button variant="danger"
                  outline
                  @click="$emit('delete')"
-                 :title='$t("bone.delete")'
+                 :title='$t("bone.del")'
                  class="delete-btn"
       >
         <sl-icon name="x"></sl-icon>
