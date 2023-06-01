@@ -52,4 +52,16 @@ export default defineComponent({
         border-bottom-left-radius: 0;
       }
     }
+
+    sl-option{
+      &::part(base){
+        transition: background-color ease .3s;
+      }
+
+      &:hover{
+        &::part(base){
+          background-color: var(--sl-color-gray-200);
+        }
+      }
+    }
 </style>

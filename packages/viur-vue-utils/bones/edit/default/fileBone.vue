@@ -15,6 +15,9 @@
       <sl-icon name="download" slot="prefix"></sl-icon>
     </sl-button>
     <div class="box">
+      <div class="preview">
+        <sl-icon name="file-earmark"></sl-icon>
+      </div>
       {{ value?.["dest"]?.["name"] }}
     </div>
     <sl-button v-if="!boneState.multiple"
@@ -124,7 +127,7 @@ export default defineComponent({
     .box{
       display: flex;
       align-items: center;
-      padding: 0 var(--sl-spacing-small);
+      padding: 0 var(--sl-spacing-small) 0 0;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -133,6 +136,24 @@ export default defineComponent({
       border-radius: 5px;
       min-height: 40px;
     }
+
+    .preview{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      aspect-ratio: 1;
+      border-right: 1px solid var(--sl-color-gray-500);
+      margin-right: var(--sl-spacing-small);
+      background-position: center;
+      background-size: cover;
+
+      sl-icon{
+        font-size: 1.1em;
+        color: var(--sl-color-gray-400);
+      }
+    }
+
     .file-wrapper{
       width:100%;
       display: flex;
