@@ -1,7 +1,16 @@
 <template>
     <div class="value-line">
-      <slot></slot>
-      <sl-button variant="danger" outline @click="$emit('delete')">{{ $t("bone.del") }}</sl-button>
+      <div class="value">
+        <slot></slot>
+      </div>
+      <sl-button variant="danger"
+                 outline
+                 @click="$emit('delete')"
+                 :title='$t("bone.del")'
+                 class="delete-btn"
+      >
+        <sl-icon name="x"></sl-icon>
+      </sl-button>
     </div>
 </template>
 
@@ -23,8 +32,15 @@ export default defineComponent({
 .value-line{
     display:flex;
     gap:10px;
-    & slot{
-        width:100%;
-    }
+}
+
+.value{
+  width: 100%;
+}
+
+.delete-btn{
+  &::part(base){
+    aspect-ratio: 1;
+  }
 }
 </style>

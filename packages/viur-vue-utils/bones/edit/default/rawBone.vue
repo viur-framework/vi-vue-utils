@@ -37,7 +37,12 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-    sl-input{
+sl-input{
         width:100%;
+
+      &::part(base){
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     }
 </style>

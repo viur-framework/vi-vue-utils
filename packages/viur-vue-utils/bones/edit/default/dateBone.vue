@@ -60,5 +60,10 @@ export default defineComponent({
 <style scoped lang="less">
     sl-input{
         width:100%;
+
+      &::part(base){
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
     }
 </style>

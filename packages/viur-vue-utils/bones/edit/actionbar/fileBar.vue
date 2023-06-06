@@ -1,17 +1,39 @@
 <template>
 
   <div class="actionbar" @dragover.prevent="state.droparea=true" @dragleave="state.droparea=false" @drop.prevent="handleDrop">
+
+      <sl-button variant="danger"
+                 v-if="boneState.multiple && !readonly"
+                 @click="openSelector()"
+                :title='$t("bone.del")'
+                 outline
+                 class="delete-btn"
+      >
+         <sl-icon name="x"></sl-icon>
+      </sl-button>
+
       <div class="droparea" v-if="state.droparea">Dateien hier hinziehen</div>
-      <sl-button v-if="boneState.multiple && !readonly" @click="uploadinput.click()">
-        {{$t("bone.upload")}}
-        <sl-spinner slot="suffix" v-if="state.loading"></sl-spinner>
-      </sl-button>
+
       <input hidden type="file" ref="uploadinput" :multiple="boneState.multiple" @change="handleUpload"/>
-      <sl-button variant="success" v-if="boneState.multiple && !readonly" @click="addMultipleEntry(lang)">
-        {{$t("bone.list")}}
+      <sl-button v-if="boneState.multiple && !readonly"
+                 @click="addMultipleEntry(lang)"
+                 outline
+                 :title='$t("bone.list")'
+                 class="add-btn"
+      >
+          <sl-icon name="plus"></sl-icon>
       </sl-button>
-      <sl-button variant="danger" v-if="boneState.multiple && !readonly" @click="openSelector()">
-        {{$t("bone.delete")}}
+
+      <sl-button variant="success"
+                 v-if="boneState.multiple && !readonly"
+                 @click="uploadinput.click()"
+                 outline
+                 :title='$t("bone.upload")'
+                 class="upload-btn"
+      >
+        <sl-icon name="upload"></sl-icon>
+        {{ $t("bone.upload") }}
+        <sl-spinner slot="suffix" v-if="state.loading"></sl-spinner>
       </sl-button>
   </div>
 </template>
@@ -115,6 +137,7 @@ export default defineComponent({
 .actionbar{
   display: flex;
   position: relative;
+  flex-wrap: nowrap;
 
 }
 sl-combobox{
@@ -135,5 +158,27 @@ sl-combobox{
   align-items: center;
   justify-content: center;
 
+}
+
+.delete-btn{
+  &::part(base){
+    aspect-ratio: 1;
+  }
+}
+
+.add-btn{
+  margin-left: var(--sl-spacing-x-small);
+
+  &::part(base){
+    aspect-ratio: 1;
+  }
+}
+
+.upload-btn{
+  margin-left: auto;
+
+  sl-icon{
+    margin-right: var(--sl-spacing-x-small);
+  }
 }
 </style>

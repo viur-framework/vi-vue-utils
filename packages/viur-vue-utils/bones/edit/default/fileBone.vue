@@ -1,8 +1,13 @@
 <template>
   <div class="file-wrapper" @dragover.prevent="state.droparea=true" @dragleave="state.droparea=false" @drop.prevent="handleDrop">
     <div class="droparea" v-if="state.droparea">Dateien hier hinziehen</div>
-    <sl-button v-if="!boneState.readonly && (!value || state.loading)" @click="uploadinput.click()">
-      {{$t("bone.upload")}}
+    <sl-button v-if="!boneState.readonly && (!value || state.loading)"
+               @click="uploadinput.click()"
+               :title='$t("bone.upload")'
+               outline
+               class="upload-btn"
+    >
+      <sl-icon name="upload"></sl-icon>
       <sl-spinner slot="suffix" v-if="state.loading"></sl-spinner>
     </sl-button>
     <input hidden type="file" ref="uploadinput" :multiple="boneState.multiple" @change="handleUpload"/>
@@ -10,9 +15,19 @@
       <sl-icon name="download" slot="prefix"></sl-icon>
     </sl-button>
     <div class="box">
+      <div class="preview">
+        <sl-icon name="file-earmark"></sl-icon>
+      </div>
       {{ value?.["dest"]?.["name"] }}
     </div>
-    <sl-button v-if="!boneState.multiple" variant="danger" outline @click="$emit('change',name,'',lang,index)">{{ $t("bone.del") }}</sl-button>
+    <sl-button v-if="!boneState.multiple"
+               variant="danger"
+               outline
+               @click="$emit('change',name,'',lang,index)"
+               :title='$t("bone.del")'
+               class="delete-btn">
+        <sl-icon name="x"></sl-icon>
+    </sl-button>
   </div>
 </template>
 
@@ -110,11 +125,35 @@ export default defineComponent({
 
 <style scoped lang="less">
     .box{
+      display: flex;
+      align-items: center;
+      padding: 0 var(--sl-spacing-small) 0 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       width:100%;
       border: 1px solid var(--sl-color-gray-500);
       border-radius: 5px;
       min-height: 40px;
     }
+
+    .preview{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      aspect-ratio: 1;
+      border-right: 1px solid var(--sl-color-gray-500);
+      margin-right: var(--sl-spacing-small);
+      background-position: center;
+      background-size: cover;
+
+      sl-icon{
+        font-size: 1.1em;
+        color: var(--sl-color-gray-400);
+      }
+    }
+
     .file-wrapper{
       width:100%;
       display: flex;
@@ -123,18 +162,29 @@ export default defineComponent({
     }
 
     .droparea{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  z-index: 10;
-  pointer-events: none;
-  opacity: 0.9;
-  border: 1px solid var(--sl-color-info-500);
-  background-color: var(--sl-color-info-300);
-  color:var(--sl-color-info-900);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 10;
+        pointer-events: none;
+        opacity: 0.9;
+        border: 1px solid var(--sl-color-info-500);
+        background-color: var(--sl-color-info-300);
+        color:var(--sl-color-info-900);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-}
+      .delete-btn{
+        &::part(base){
+          aspect-ratio: 1;
+        }
+      }
+
+      .upload-btn{
+        &::part(base){
+          aspect-ratio: 1;
+        }
+      }
 </style>
