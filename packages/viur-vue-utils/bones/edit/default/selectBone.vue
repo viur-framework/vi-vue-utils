@@ -1,6 +1,6 @@
 <template>
     <sl-select :disabled="boneState.readonly"
-               :value="value?.toString()"
+               :value="value"
                @sl-change="changeEvent"
                :multiple="boneState['bonestructure']['multiple']">
       <sl-option :value="value[0]" v-for="value in boneState['bonestructure']['values']">
