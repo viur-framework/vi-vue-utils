@@ -1,5 +1,5 @@
 <template>
-      <ckeditor :editor="DecoupledEditor"
+      <ckeditor :editor="ClassicEditor"
         :config="state.editorConfig"
         :disabled="!state.ready"
         @input="changeEvent"
@@ -11,7 +11,6 @@
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject} from 'vue'
-import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
@@ -50,7 +49,6 @@ export default defineComponent({
         })
 
         function onReady(editor){
-          console.log("SSS")
           editor.ui.getEditableElement().parentElement.insertBefore(
               editor.ui.view.toolbar.element,
               editor.ui.getEditableElement()
@@ -61,7 +59,7 @@ export default defineComponent({
 
         return {
             state,
-            DecoupledEditor,
+            ClassicEditor,
           boneState,
             changeEvent,
             onReady
