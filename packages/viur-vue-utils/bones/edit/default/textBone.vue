@@ -1,10 +1,17 @@
 <template>
-    <ckeditor :editor="state.editor" v-model="state.value" :config="state.editorConfig" @input="changeEvent"></ckeditor>
+      <ckeditor :editor="DecoupledEditor"
+        :config="state.editorConfig"
+        :disabled="!state.ready"
+        @input="changeEvent"
+        @ready="onReady">
+      </ckeditor>
+      {{ state.ready  }}
 </template>
 
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject} from 'vue'
+import DecoupledEditor from "@ckeditor/ckeditor5-build-decoupled-document";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default defineComponent({
@@ -19,9 +26,18 @@ export default defineComponent({
     setup(props, context) {
         const boneState = inject("boneState")
         const state = reactive({
-          editor:ClassicEditor,
+          ready:false,
           value:props.value,
-          editorConfig:{} //toolbar: [ 'bold', 'italic', '|', 'link' ]
+          editorConfig:{
+            plugins:[SourceEditing],
+            toolbar: [
+            'heading','bold', 'italic', 'underline', '|',
+            'alignment','numberedList','bulletedList','blockQuote', '|',
+            'outdent', 'indent',  '|',
+            'link','insertTable',
+            'undo', 'redo'
+
+         ]}
         })
 
         function changeEvent(event){
@@ -33,10 +49,22 @@ export default defineComponent({
             context.emit("change",props.name,props.value,props.lang,props.index) //init
         })
 
+        function onReady(editor){
+          console.log("SSS")
+          editor.ui.getEditableElement().parentElement.insertBefore(
+              editor.ui.view.toolbar.element,
+              editor.ui.getEditableElement()
+          );
+          state.ready = true
+        }
+
+
         return {
             state,
+            DecoupledEditor,
           boneState,
-            changeEvent
+            changeEvent,
+            onReady
         }
     }
 })
