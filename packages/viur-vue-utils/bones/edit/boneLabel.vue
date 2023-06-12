@@ -52,7 +52,6 @@ export default defineComponent({
   border: none;
   border-top-left-radius: var(--sl-input-border-radius-medium);
   border-bottom-left-radius: var(--sl-input-border-radius-medium);
-  gap: 10px;
   word-break: break-word;
 }
 </style>

@@ -9,8 +9,12 @@
       <sl-tooltip
         v-if="state.hasTooltip"
         :content="state.bonestructure.params['tooltip']"
-        placement="top-start"
-        >*i*</sl-tooltip
+        placement="top-center"
+        >
+        <div class="tooltip">
+          <sl-icon name="question"></sl-icon>
+        </div>
+      </sl-tooltip
       >
     </bone-label>
     <div class="bone-inner-wrap">
@@ -570,5 +574,52 @@ sl-tab-panel::part(base) {
   .bone-wrapper {
     margin-bottom: var(--sl-spacing-x-small);
   }
+}
+
+.bone-inner-wrap{
+
+  sl-alert{
+    margin-top: var(--sl-spacing-x-small);
+    background-color: transparent;
+
+    &::part(message){
+      padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
+    }
+
+    &::part(icon){
+      padding-left: var(--sl-spacing-small);
+    }
+  }
+}
+
+.tooltip{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+
+  sl-icon{
+    background-color: var(--sl-color-info-500);
+    color: #fff;
+    padding: .4em;
+    border-radius: 50%;
+    font-size: .55em;
+  }
+}
+
+sl-tooltip{
+  &::part(body){
+    background-color: var(--sl-color-info-500);
+  }
+
+  &::part(base__arrow){
+    background-color: var(--sl-color-info-500);
+  }
+}
+
+.required{
+  color: var(--sl-color-primary-500);
+  font-weight: bold;
+  margin-left: .15em;
 }
 </style>
