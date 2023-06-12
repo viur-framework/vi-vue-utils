@@ -30,7 +30,7 @@
       <div
         class="preview"
         v-if="value?.['dest']?.['mimetype'].includes('image')"
-        :style="{backgroundImage: createBackgroundImage()}"
+        :style="{backgroundImage: `url(${createBackgroundImage()})`}"
       >
       </div>
       <div class="preview" v-else>
@@ -86,7 +86,7 @@ export default defineComponent({
     }
 
     function createBackgroundImage(){
-      return Request.downloadUrlFor(props.value)
+      return Request.downloadUrlFor(props.value, false)
     }
 
     function uploadFile(file) {

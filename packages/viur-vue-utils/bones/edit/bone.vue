@@ -5,6 +5,13 @@
   >
     <bone-label>
       {{ state.bonestructure["descr"] }}
+      <span v-if="state.required" class="required"> *</span>
+      <sl-tooltip
+        v-if="state.hasTooltip"
+        :content="state.bonestructure.params['tooltip']"
+        placement="top-start"
+        >*i*</sl-tooltip
+      >
     </bone-label>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
@@ -231,6 +238,13 @@ export default defineComponent({
           ? state.bonestructure["required"]
           : false;
       }),
+      hasTooltip: computed(() => {
+        return state.bonestructure &&
+          Object.keys(state.bonestructure["params"]).includes("tooltip")
+          ? true
+          : false;
+      }),
+
       multiple: computed(() => {
         if (props.multiple) {
           return props.multiple;
@@ -280,6 +294,7 @@ export default defineComponent({
       lang: string | null = null,
       index: number = 0
     ) {
+
       if (val === undefined) return false;
       if (lang) {
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
@@ -294,6 +309,7 @@ export default defineComponent({
       }
       if (state.readonly) return false;
 
+
       context.emit("change", {
         name: name,
         value: toFormValue(),
@@ -301,6 +317,15 @@ export default defineComponent({
         index: index,
       });
       //context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
+
+    }
+
+    function validateBoneValue() {
+      if (state.required && !state.bonevalue) {
+        // This field is required and currently has no value
+        // Add your error handling logic here
+        state.errorMessages.push("This field is required.");
+      }
     }
 
     function toFormValue() {
@@ -462,6 +487,7 @@ export default defineComponent({
       } else {
         state.bonevalue = props.skel?.[props.name];
       }
+      validateBoneValue()
     });
 
     return {
