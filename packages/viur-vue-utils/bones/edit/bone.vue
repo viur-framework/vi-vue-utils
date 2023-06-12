@@ -49,7 +49,7 @@
                 </wrapper-multiple>
               </div>
 
-              <div class="multiple-placeholder" v-else>
+              <div class="multiple-placeholder" :class="{ 'readonly': state.readonly}" v-else>
                 <sl-input
                   readonly
                   size="medium"
@@ -524,7 +524,10 @@ sl-tab-panel::part(base) {
 }
 
 .multiple-placeholder {
-  margin-bottom: var(--sl-spacing-x-small);
+
+  &:not(.readonly){
+    margin-bottom: var(--sl-spacing-x-small);
+  }
 
   sl-input {
     &::part(base) {
