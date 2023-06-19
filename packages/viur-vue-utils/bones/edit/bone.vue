@@ -15,7 +15,6 @@
           <sl-icon name="question"></sl-icon>
         </div>
       </sl-tooltip>
-      {{ state.isEmpty  }}
     </bone-label>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
