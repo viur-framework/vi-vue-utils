@@ -10,12 +10,12 @@
         v-if="state.hasTooltip"
         :content="state.bonestructure.params['tooltip']"
         placement="top-center"
-        >
+      >
         <div class="tooltip">
           <sl-icon name="question"></sl-icon>
         </div>
-      </sl-tooltip
-      >
+      </sl-tooltip>
+      {{ state.isEmpty  }}
     </bone-label>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
@@ -60,7 +60,11 @@
                 </wrapper-multiple>
               </div>
 
-              <div class="multiple-placeholder" :class="{ 'readonly': state.readonly}" v-else>
+              <div
+                class="multiple-placeholder"
+                :class="{ readonly: state.readonly }"
+                v-else
+              >
                 <sl-input
                   readonly
                   size="medium"
@@ -270,11 +274,52 @@ export default defineComponent({
       actionbar: computed(() => {
         return getBoneActionbar(state.bonestructure?.["type"])
       }),
-      errors: computed(() => props.errors),
+      isEmpty: computed(() => {
+        // Function to check if an object is empty
+        function isObjectEmpty(obj) {
+          for (const [key, value] of Object.entries(obj)) {
+            if (value !== null) {
+              if (Array.isArray(value) && value.length > 0) {
+                return false;
+              } else if (!Array.isArray(value)) {
+                return false;
+              }
+            }
+          }
+          return true;
+        }
+
+        // Ignore the computation when the state is readonly
+        if (state.readonly) return false;
+
+        // Check for null or undefined values
+        if (!state.bonevalue) return true;
+
+        // Check if the value is an array with elements
+        if (Array.isArray(state.bonevalue) && state.bonevalue.length > 0)
+          return false;
+
+        // Check if the value is an object and not an array, then use helper function to check if it's empty
+        if (
+          state.bonevalue === Object(state.bonevalue) &&
+          !Array.isArray(state.bonevalue)
+        )
+          return isObjectEmpty(state.bonevalue);
+
+        return false;
+      }),
+
+      errors: computed(() => {
+        console.log("computed errors");
+        return props.errors;
+      }),
       errorMessages: computed(() => {
         let errors = [];
         for (let error of props.errors) {
-          if (error["fieldPath"][0] === props.name && error["severity"] > 2) {
+          if (
+            error["fieldPath"][0] === props.name &&
+            (error["severity"] > 2 || (state.required && state.isEmpty))
+          ) {
             //severity level???
             errors.push(error["errorMessage"]);
           }
@@ -290,7 +335,6 @@ export default defineComponent({
       lang: string | null = null,
       index: number = 0
     ) {
-
       if (val === undefined) return false;
       if (lang) {
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
@@ -305,7 +349,6 @@ export default defineComponent({
       }
       if (state.readonly) return false;
 
-
       context.emit("change", {
         name: name,
         value: toFormValue(),
@@ -313,15 +356,6 @@ export default defineComponent({
         index: index,
       });
       //context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
-
-    }
-
-    function validateBoneValue() {
-      if (state.required && !state.bonevalue) {
-        // This field is required and currently has no value
-        // Add your error handling logic here
-        state.errorMessages.push("This field is required.");
-      }
     }
 
     function toFormValue() {
@@ -483,7 +517,7 @@ export default defineComponent({
       } else {
         state.bonevalue = props.skel?.[props.name];
       }
-      validateBoneValue()
+      //validateBoneValue()
     });
 
     return {
@@ -546,8 +580,7 @@ sl-tab-panel::part(base) {
 }
 
 .multiple-placeholder {
-
-  &:not(.readonly){
+  &:not(.readonly) {
     margin-bottom: var(--sl-spacing-x-small);
   }
 
@@ -568,50 +601,49 @@ sl-tab-panel::part(base) {
   }
 }
 
-.bone-inner-wrap{
-
-  sl-alert{
+.bone-inner-wrap {
+  sl-alert {
     margin-top: var(--sl-spacing-x-small);
     background-color: transparent;
 
-    &::part(message){
+    &::part(message) {
       padding: var(--sl-spacing-x-small) var(--sl-spacing-small);
     }
 
-    &::part(icon){
+    &::part(icon) {
       padding-left: var(--sl-spacing-small);
     }
   }
 }
 
-.tooltip{
+.tooltip {
   display: flex;
   align-items: center;
   justify-content: center;
   margin-left: auto;
 
-  sl-icon{
+  sl-icon {
     background-color: var(--sl-color-info-500);
     color: #fff;
-    padding: .4em;
+    padding: 0.4em;
     border-radius: 50%;
-    font-size: .55em;
+    font-size: 0.55em;
   }
 }
 
-sl-tooltip{
-  &::part(body){
+sl-tooltip {
+  &::part(body) {
     background-color: var(--sl-color-info-500);
   }
 
-  &::part(base__arrow){
+  &::part(base__arrow) {
     background-color: var(--sl-color-info-500);
   }
 }
 
-.required{
+.required {
   color: var(--sl-color-primary-500);
   font-weight: bold;
-  margin-left: .15em;
+  margin-left: 0.15em;
 }
 </style>
