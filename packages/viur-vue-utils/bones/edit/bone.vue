@@ -348,6 +348,8 @@ export default defineComponent({
       }
       if (state.readonly) return false;
 
+      console.log(val)
+
       context.emit("change", {
         name: name,
         value: toFormValue(),

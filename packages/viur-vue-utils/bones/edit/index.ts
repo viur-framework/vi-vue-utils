@@ -14,6 +14,7 @@ import relationalBone from './default/relationalBone.vue';
 import jsonBone from './default/jsonBone.vue';
 import fileBone from './default/fileBone.vue';
 import textBone from './default/textBone.vue';
+import spatialBone from './default/spatialBone.vue';
 
 import defaultBar from './actionbar/defaultBar.vue';
 import relationalBar from './actionbar/relationalBar.vue';
@@ -40,7 +41,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       relationalBone,
       jsonBone,
       fileBone,
-      textBone
+      textBone,
+      spatialBone
     },
     actionbars:{
       "relational.tree.leaf.file.file":fileBar,
@@ -104,6 +106,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return colorBone
     }else if(boneType==="text"){
       return textBone
+    }else if(boneType==="spatial"){
+      return spatialBone
     }
 
     return rawBone
