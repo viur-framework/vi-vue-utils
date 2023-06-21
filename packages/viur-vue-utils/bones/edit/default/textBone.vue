@@ -1,17 +1,19 @@
 <template>
-      <ckeditor :editor="ClassicEditor"
+      <ckeditor v-if="boneState.bonestructure['validHtml']"
+        :editor="ClassicEditor"
         :config="state.editorConfig"
-        :disabled="!state.ready"
-        @input="changeEvent"
-        @ready="onReady">
+        :disabled="boneState.readonly"
+        v-model="state.value"
+        @ready="onReady"
+        @input="changeEvent">
       </ckeditor>
-      {{ state.ready  }}
+      <sl-textarea v-else @input="changeEventTextarea" :disabled="boneState.readonly" :value="value"></sl-textarea>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject} from 'vue'
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
+import "../../../ckeditor/ckeditor.js";
 
 export default defineComponent({
     props:{
@@ -25,44 +27,40 @@ export default defineComponent({
     setup(props, context) {
         const boneState = inject("boneState")
         const state = reactive({
-          ready:false,
-          value:props.value,
-          editorConfig:{
-            plugins:[SourceEditing],
-            toolbar: [
-            'heading','bold', 'italic', 'underline', '|',
-            'alignment','numberedList','bulletedList','blockQuote', '|',
-            'outdent', 'indent',  '|',
-            'link','insertTable',
-            'undo', 'redo'
-
-         ]}
+          value:'',
+          editorConfig:{}
         })
 
         function changeEvent(event){
             context.emit("change",props.name,state.value,props.lang,props.index)
         }
+        function changeEventTextarea(event){
+            state.value = event.target.value
+            context.emit("change",props.name,state.value,props.lang,props.index)
+        }
 
         onMounted(()=>{
-            state.value =props.value
+            if(props.value!==null){
+              state.value = props.value
+            }
+
+
             context.emit("change",props.name,props.value,props.lang,props.index) //init
         })
 
         function onReady(editor){
-          editor.ui.getEditableElement().parentElement.insertBefore(
-              editor.ui.view.toolbar.element,
-              editor.ui.getEditableElement()
-          );
-          state.ready = true
+          editor.editing.view.change( writer => {
+             writer.setStyle( 'min-height', '250px', editor.editing.view.document.getRoot() );
+          } );
         }
-
 
         return {
             state,
             ClassicEditor,
-          boneState,
+            boneState,
             changeEvent,
-            onReady
+            onReady,
+          changeEventTextarea
         }
     }
 })
