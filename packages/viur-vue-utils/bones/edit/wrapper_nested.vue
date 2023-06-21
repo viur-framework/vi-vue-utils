@@ -44,8 +44,8 @@ export default defineComponent({
           globalRegistration:false
         })
 
-        function changeEvent(data){
-            context.emit("change",data)
+        function changeEvent(val){
+            context.emit("change",val)
         }
 
         onMounted(()=>{

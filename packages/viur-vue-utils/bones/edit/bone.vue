@@ -354,7 +354,7 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      //context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
     }
 
     function toFormValue() {
@@ -375,18 +375,28 @@ export default defineComponent({
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
-                // only add key from dests
-                if (true) {
-                  //filebones are crap..., state.bonestructure["type"]==="relational.tree.leaf.file.file"
+                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                  ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")+"."+k
+                    )
+                  );
+                }else{
                   ret.push(
                     rewriteData(
                       v,
                       key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")
                     )
                   );
-                } else {
-                  ret.push(rewriteData(v, key + "." + k));
                 }
+              } else if (key.endsWith("rel")) {
+                ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "")+"."+k
+                    )
+                  );
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
@@ -438,7 +448,7 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      // context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
     }
 
     function removeMultipleEntries(lang = null) {
@@ -452,7 +462,7 @@ export default defineComponent({
         value: toFormValue(),
         lang: lang,
       });
-      // context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
     }
 
     provide("removeMultipleEntries", removeMultipleEntries);
