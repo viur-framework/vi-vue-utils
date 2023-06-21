@@ -2,6 +2,7 @@
       <ckeditor v-if="boneState.bonestructure['validHtml']"
         :editor="ClassicEditor"
         :config="state.editorConfig"
+        :disabled="boneState.readonly"
         v-model="state.value"
         @ready="onReady"
         @input="changeEvent">
@@ -26,7 +27,7 @@ export default defineComponent({
     setup(props, context) {
         const boneState = inject("boneState")
         const state = reactive({
-          value:props.value,
+          value:'',
           editorConfig:{}
         })
 
@@ -39,17 +40,19 @@ export default defineComponent({
         }
 
         onMounted(()=>{
-            state.value = props.value
+            if(props.value!==null){
+              state.value = props.value
+            }
+
+
             context.emit("change",props.name,props.value,props.lang,props.index) //init
         })
 
         function onReady(editor){
-          if(boneState.readonly){
-            console.log("GGGG")
-            editor.isReadOnly = true
-          }
+          editor.editing.view.change( writer => {
+             writer.setStyle( 'min-height', '250px', editor.editing.view.document.getRoot() );
+          } );
         }
-
 
         return {
             state,
