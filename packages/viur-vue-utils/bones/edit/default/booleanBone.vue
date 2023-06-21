@@ -53,5 +53,10 @@ export default defineComponent({
     --height: calc(var(--sl-input-height-medium) - 1em);
     --width: calc( 1.7 * (var(--sl-input-height-medium) - 0.8em) );
     --thumb-size: calc(var(--sl-input-height-medium) - 1em);
+
+    @media (max-width: 900px){
+        border-top-right-radius: 0;
+        border-bottom-left-radius: var(--sl-border-radius-medium);
+    }
 }
 </style>

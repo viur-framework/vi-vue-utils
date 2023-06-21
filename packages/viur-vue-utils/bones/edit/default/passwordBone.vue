@@ -95,6 +95,12 @@ export default defineComponent({
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
+
+    @media (max-width: 900px){
+      &::part(base){
+        border-top-right-radius: 0;
+      }
+    }
   }
 
   .has-check{
