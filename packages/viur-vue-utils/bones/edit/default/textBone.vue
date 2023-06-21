@@ -176,6 +176,28 @@ export default defineComponent({
       }
     }
 
+    .ck-toolbar{
+      height: var(--sl-input-height-medium);
+      border-color: var(--vi-border-color);
+      background-color: var(--vi-background-color);
+    }
+
+    .ck-button{
+      border-color: none;
+      background-color: var(--vi-background-color);
+      cursor: pointer;
+
+      &:hover{
+        background-color: var(--sl-color-neutral-200) !important;
+      }
+
+      &.ck-on{
+        background-color: var(--vi-background-color) !important;
+        border: 1px solid var(--sl-color-primary-500) !important;
+        color: var(--sl-color-primary-500) !important;
+      }
+    }
+
     .ck-source-editing-area{
       width:100%;
       height: 250px;
