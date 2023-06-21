@@ -15,6 +15,10 @@ import jsonBone from './default/jsonBone.vue';
 import fileBone from './default/fileBone.vue';
 import textBone from './default/textBone.vue';
 
+import defaultBar from './actionbar/defaultBar.vue';
+import relationalBar from './actionbar/relationalBar.vue';
+import fileBar from './actionbar/fileBar.vue';
+
 import {reactive} from "vue";
 import {defineStore} from "pinia";
 
@@ -38,6 +42,10 @@ export const useBoneStore = defineStore("boneStore", () => {
       fileBone,
       textBone
     },
+    actionbars:{
+      "relational.tree.leaf.file.file":fileBar,
+      "relational.":relationalBar,
+    }
   })
 
   function addBoneWidget(boneType,widget){
@@ -53,8 +61,19 @@ export const useBoneStore = defineStore("boneStore", () => {
   }
 
   function getBoneWidget(boneType){
-    if (Object.keys(state.additionalBones).includes(boneType)){
+    if (Object.keys(state.additionalBones).includes(boneType)){ //exact match
       return state.additionalBones[boneType]
+    }else{
+      let typeParts = boneType.split(".") //prefix match
+      let matchingPrefixes = Object.entries(state.additionalBones).filter(prefix=> prefix[0].startsWith(typeParts[0]+"."))
+      if(matchingPrefixes.length>0){
+        matchingPrefixes.sort((a, b) => b.length - a.length);
+        for( let prefix of matchingPrefixes){
+          if (boneType.startsWith(prefix[0])){
+            return state.additionalBones[prefix[0]]
+          }
+        }
+      }
     }
 
     if(boneType==="date"){
@@ -90,14 +109,49 @@ export const useBoneStore = defineStore("boneStore", () => {
     return rawBone
   }
 
+  function addBoneActionbar(boneType,widget){
+    state.actionbars[boneType]=widget
+  }
+
+  function getBoneActionbar(boneType){
+    if (Object.keys(state.actionbars).includes(boneType)){ //exact match
+      return state.actionbars[boneType]
+    }else{
+      let typeParts = boneType.split(".") //prefix match
+      let matchingPrefixes = Object.entries(state.actionbars).filter(prefix=> prefix[0].startsWith(typeParts[0]+"."))
+      if(matchingPrefixes.length>0){
+        matchingPrefixes.sort((a, b) => b.length - a.length);
+        for( let prefix of matchingPrefixes){
+          if (boneType.startsWith(prefix[0])){
+            return state.actionbars[prefix[0]]
+          }
+        }
+      }
+    }
+
+    return defaultBar;
+  }
 
   return {
     state,
     addBoneWidget,
     getBoneWidget,
-    importWidgets
+    importWidgets,
+
+    addBoneActionbar,
+    getBoneActionbar
   }
 })
+
+export function addBoneActionbar(boneType, widget){
+  const boneStore = useBoneStore()
+  return boneStore.addBoneActionbar(boneType, widget)
+}
+
+export function getBoneActionbar(boneType){
+  const boneStore = useBoneStore()
+  return boneStore.getBoneActionbar(boneType)
+}
 
 export function getBoneWidget(boneType){
   const boneStore = useBoneStore()

@@ -15,7 +15,6 @@
           <sl-icon name="question"></sl-icon>
         </div>
       </sl-tooltip>
-      {{ state.isEmpty  }}
     </bone-label>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
@@ -103,7 +102,7 @@
         >
           <div
             class="multiple-bone"
-            v-if="state.bonevalue"
+            v-if="state.bonevalue?.length"
             v-for="(val, index) in state.bonevalue"
             :key="index"
           >
@@ -173,7 +172,7 @@ import BoneLabel from "./boneLabel.vue";
 import defaultBar from "./actionbar/defaultBar.vue";
 import relationalBar from "./actionbar/relationalBar.vue";
 import fileBar from "./actionbar/fileBar.vue";
-import { BoneHasMultipleHandling } from "./index";
+import { BoneHasMultipleHandling, getBoneActionbar } from "./index";
 import rawBone from "./default/rawBone.vue";
 
 export default defineComponent({
@@ -272,15 +271,7 @@ export default defineComponent({
           : {};
       }),
       actionbar: computed(() => {
-        if (
-          state.bonestructure?.["type"] === "relational.tree.leaf.file.file"
-        ) {
-          return fileBar;
-        }
-        if (state.bonestructure?.["type"].startsWith("relational.")) {
-          return relationalBar;
-        }
-        return defaultBar;
+        return getBoneActionbar(state.bonestructure?.["type"])
       }),
       isEmpty: computed(() => {
         // Function to check if an object is empty
