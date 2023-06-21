@@ -559,6 +559,10 @@ export default defineComponent({
       margin-bottom: var(--sl-spacing-small);
     }
   }
+
+  @media (max-width: 900px){
+    grid-template-columns: 1fr;
+  }
 }
 
 sl-tab-panel::part(base) {
@@ -590,6 +594,15 @@ sl-tab-panel::part(base) {
       opacity: 0.7;
     }
   }
+
+  @media (max-width: 900px){
+    sl-input {
+      &::part(base) {
+        border-top-right-radius: 0;
+        border-bottom-left-radius: var(--sl-border-radius-medium);
+      }
+    }
+  }
 }
 
 .multiple-bone {
@@ -601,6 +614,8 @@ sl-tab-panel::part(base) {
 }
 
 .bone-inner-wrap {
+  min-width: 1px;
+
   sl-alert {
     margin-top: var(--sl-spacing-x-small);
     background-color: transparent;
@@ -645,4 +660,6 @@ sl-tooltip {
   color: var(--sl-color-primary-500);
   font-weight: 700;
 }
+
+
 </style>
