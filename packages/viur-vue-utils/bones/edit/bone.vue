@@ -4,7 +4,7 @@
     :class="'bone-wrapper-' + state.bonestructure['type']"
   >
     <bone-label>
-      {{ state.bonestructure["descr"] }}
+      <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
       <span v-if="state.required" class="required"> *</span>
       <sl-tooltip
         v-if="state.hasTooltip"
@@ -629,6 +629,7 @@ sl-tab-panel::part(base) {
   align-items: center;
   justify-content: center;
   margin-left: auto;
+  padding-left: .4em;
 
   sl-icon {
     background-color: var(--sl-color-info-500);
@@ -651,7 +652,6 @@ sl-tooltip {
 
 .required {
   color: var(--sl-color-primary-500);
-  font-weight: bold;
-  margin-left: 0.15em;
+  font-weight: 700;
 }
 </style>
