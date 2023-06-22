@@ -6,4 +6,11 @@ export default {
     list: "Auflisten",
   },
   lang: "Sprache",
+  bones:{
+    numeric:{
+      min: "Minimum: {val}",
+      max: "Maximum: {val}",
+      precision: "Genauigkeit: {val}"
+    }
+  }
 };
