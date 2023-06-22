@@ -4,7 +4,9 @@
     :class="'bone-wrapper-' + state.bonestructure['type']"
   >
     <bone-label>
-      <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
+      <span :class="{ required: state.required }">{{
+        state.bonestructure["descr"]
+      }}</span>
       <span v-if="state.required" class="required"> *</span>
       <sl-tooltip
         v-if="state.hasTooltip"
@@ -46,6 +48,9 @@
                 <wrapper-multiple
                   :readonly="!state.readonly"
                   @delete="removeMultipleEntry(index, lang)"
+                  @handleDragStart="handleDragStart(index, $event)"
+                  @handleDragOver="handleDragOver($event)"
+                  @handleDragEnd="handleDragEnd(index, lang)"
                 >
                   <component
                     :is="is"
@@ -109,6 +114,9 @@
             <wrapper-multiple
               :readonly="!state.readonly"
               @delete="removeMultipleEntry(index)"
+              @handleDragStart="handleDragStart(index, $event)"
+              @handleDragOver="handleDragOver($event)"
+              @handleDragEnd="handleDragEnd(index, (lang = null))"
             >
               <component
                 :is="is"
@@ -215,6 +223,7 @@ export default defineComponent({
         return props.structure?.[props.name];
       }),
       bonevalue: null,
+      dragStartIndex: null,
       multilanguage: computed(
         () => state.languages?.length && state.languages.length > 0
       ),
@@ -271,7 +280,7 @@ export default defineComponent({
           : {};
       }),
       actionbar: computed(() => {
-        return getBoneActionbar(state.bonestructure?.["type"])
+        return getBoneActionbar(state.bonestructure?.["type"]);
       }),
       isEmpty: computed(() => {
         // Function to check if an object is empty
@@ -328,6 +337,60 @@ export default defineComponent({
     });
     provide("boneState", state);
 
+    function handleDragStart(index, event) {
+      state.dragStartIndex = index;
+      console.log("dragStart");
+      console.log(event.target);
+      console.log(state.dragStartIndex);
+    }
+
+    function handleDragEnd(index, lang) {
+      console.log("dragEnd");
+      console.log(state.bonevalue);
+      if (lang === null) {
+        const dragItem = state.bonevalue.splice(state.dragStartIndex, 1)[0];
+        state.bonevalue.splice(index, 0, dragItem);
+      } else {
+        const dragItem = state.bonevalue[lang].splice(state.dragStartIndex, 1)[0];
+        state.bonevalue[lang].splice(index, 0, dragItem);
+      }
+      state.dragStartIndex = null;
+      console.log(state.bonevalue);
+
+      /* const draggedElements = document.querySelectorAll(".dragover");
+      console.log(draggedElements);
+      for (let domElement of draggedElements) {
+        console.log(domElement.classList);
+        domElement.classList.remove("dragover");
+      } */
+
+      context.emit("change", {
+        name: name,
+        value: toFormValue(),
+        lang: lang,
+        index: index,
+      });
+    }
+
+    function handleDragOver(e) {
+
+      e.preventDefault();
+      if (e.target) {
+
+        e.target.classList.add("dragover");
+      }
+    }
+
+    function handleDragLeave(e) {
+      console.log("dragleave");
+      if (e.target) {
+        console.log(e.target);
+        console.log(e.target.classList);
+        e.target.classList.remove("dragover");
+        console.log(e.target);
+      }
+    }
+
     function updateValue(
       name: string,
       val: any,
@@ -348,7 +411,7 @@ export default defineComponent({
       }
       if (state.readonly) return false;
 
-      console.log(val)
+      console.log(val);
 
       context.emit("change", {
         name: name,
@@ -356,7 +419,12 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {
+        name: name,
+        value: val,
+        lang: lang,
+        index: index,
+      });
     }
 
     function toFormValue() {
@@ -377,14 +445,19 @@ export default defineComponent({
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
-                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                if (
+                  Object.keys(state.bonestructure).includes("using") &&
+                  state.bonestructure["using"]
+                ) {
                   ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")+"."+k
+                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "") +
+                        "." +
+                        k
                     )
                   );
-                }else{
+                } else {
                   ret.push(
                     rewriteData(
                       v,
@@ -394,11 +467,13 @@ export default defineComponent({
                 }
               } else if (key.endsWith("rel")) {
                 ret.push(
-                    rewriteData(
-                      v,
-                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "")+"."+k
-                    )
-                  );
+                  rewriteData(
+                    v,
+                    key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") +
+                      "." +
+                      k
+                  )
+                );
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
@@ -450,7 +525,12 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {
+        name: props.name,
+        value: val,
+        lang: lang,
+        index: index,
+      });
     }
 
     function removeMultipleEntries(lang = null) {
@@ -464,7 +544,12 @@ export default defineComponent({
         value: toFormValue(),
         lang: lang,
       });
-      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {
+        name: props.name,
+        value: val,
+        lang: lang,
+        index: index,
+      });
     }
 
     provide("removeMultipleEntries", removeMultipleEntries);
@@ -540,6 +625,9 @@ export default defineComponent({
       removeMultipleEntries,
       BoneHasMultipleHandling,
       multipleBonePressEnter,
+      handleDragStart,
+      handleDragEnd,
+      handleDragOver,
     };
   },
 });
@@ -572,7 +660,7 @@ export default defineComponent({
     }
   }
 
-  @media (max-width: 900px){
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
@@ -607,7 +695,7 @@ sl-tab-panel::part(base) {
     }
   }
 
-  @media (max-width: 900px){
+  @media (max-width: 900px) {
     sl-input {
       &::part(base) {
         border-top-right-radius: 0;
@@ -647,7 +735,7 @@ sl-tab-panel::part(base) {
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  padding-left: .4em;
+  padding-left: 0.4em;
 
   sl-icon {
     background-color: var(--sl-color-info-500);
@@ -672,6 +760,4 @@ sl-tooltip {
   color: var(--sl-color-primary-500);
   font-weight: 700;
 }
-
-
 </style>
