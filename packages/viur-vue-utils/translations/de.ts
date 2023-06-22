@@ -10,7 +10,7 @@ export default {
     numeric:{
       min: "Minimum: {val}",
       max: "Maximum: {val}",
-      precision: "Genauigkeit: {val}"
+      precision: "Genauigkeit: {val} Stellen"
     }
   }
 };
