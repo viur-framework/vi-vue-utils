@@ -1,6 +1,6 @@
 <template>
     <sl-select :disabled="boneState.readonly"
-               :value="value"
+               :value="value?value.toString():''"
                @sl-change="changeEvent"
                :multiple="boneState['bonestructure']['multiple']">
       <sl-option :value="value[0]" v-for="value in boneState['bonestructure']['values']">
@@ -50,6 +50,13 @@ export default defineComponent({
       &::part(combobox){
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
+      }
+
+      @media (max-width: 900px){
+        &::part(combobox){
+          border-top-right-radius: 0;
+          border-bottom-left-radius: var(--sl-border-radius-medium);
+        }
       }
     }
 

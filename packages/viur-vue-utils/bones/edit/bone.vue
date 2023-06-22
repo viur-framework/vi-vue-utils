@@ -4,7 +4,7 @@
     :class="'bone-wrapper-' + state.bonestructure['type']"
   >
     <bone-label>
-      {{ state.bonestructure["descr"] }}
+      <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
       <span v-if="state.required" class="required"> *</span>
       <sl-tooltip
         v-if="state.hasTooltip"
@@ -356,7 +356,7 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      //context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
     }
 
     function toFormValue() {
@@ -377,18 +377,28 @@ export default defineComponent({
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
-                // only add key from dests
-                if (true) {
-                  //filebones are crap..., state.bonestructure["type"]==="relational.tree.leaf.file.file"
+                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                  ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")+"."+k
+                    )
+                  );
+                }else{
                   ret.push(
                     rewriteData(
                       v,
                       key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")
                     )
                   );
-                } else {
-                  ret.push(rewriteData(v, key + "." + k));
                 }
+              } else if (key.endsWith("rel")) {
+                ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "")+"."+k
+                    )
+                  );
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
@@ -440,7 +450,7 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      // context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
     }
 
     function removeMultipleEntries(lang = null) {
@@ -454,7 +464,7 @@ export default defineComponent({
         value: toFormValue(),
         lang: lang,
       });
-      // context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
     }
 
     provide("removeMultipleEntries", removeMultipleEntries);
@@ -561,6 +571,10 @@ export default defineComponent({
       margin-bottom: var(--sl-spacing-small);
     }
   }
+
+  @media (max-width: 900px){
+    grid-template-columns: 1fr;
+  }
 }
 
 sl-tab-panel::part(base) {
@@ -592,6 +606,15 @@ sl-tab-panel::part(base) {
       opacity: 0.7;
     }
   }
+
+  @media (max-width: 900px){
+    sl-input {
+      &::part(base) {
+        border-top-right-radius: 0;
+        border-bottom-left-radius: var(--sl-border-radius-medium);
+      }
+    }
+  }
 }
 
 .multiple-bone {
@@ -603,6 +626,8 @@ sl-tab-panel::part(base) {
 }
 
 .bone-inner-wrap {
+  min-width: 1px;
+
   sl-alert {
     margin-top: var(--sl-spacing-x-small);
     background-color: transparent;
@@ -622,6 +647,7 @@ sl-tab-panel::part(base) {
   align-items: center;
   justify-content: center;
   margin-left: auto;
+  padding-left: .4em;
 
   sl-icon {
     background-color: var(--sl-color-info-500);
@@ -644,7 +670,8 @@ sl-tooltip {
 
 .required {
   color: var(--sl-color-primary-500);
-  font-weight: bold;
-  margin-left: 0.15em;
+  font-weight: 700;
 }
+
+
 </style>

@@ -9,6 +9,11 @@
     >
 
     </sl-input>
+    <ul class="info">
+      <li v-if="state.minAmount!==-9223372036854776000">{{ $t('bones.numeric.min',{val:state.minAmount}) }}</li>
+      <li v-if="state.maxAmount!==9223372036854776000">{{ $t('bones.numeric.max',{val:state.maxAmount}) }}</li>
+      <li v-if="state.precision">{{ $t('bones.numeric.precision',{val:state.precision}) }}</li>
+    </ul>
 
 
 </template>
@@ -64,5 +69,20 @@ export default defineComponent({
         border-top-left-radius: 0;
         border-bottom-left-radius: 0;
       }
+
+      @media (max-width: 900px){
+        &::part(base){
+          border-top-right-radius: 0;
+          border-bottom-left-radius: var(--sl-border-radius-medium);
+        }
+      }
+    }
+
+    .info{
+      display: flex;
+      gap: 2px 7px;
+      margin-top: var(--sl-spacing-x-small);
+      font-size: .7em;
+      font-weight: bold;
     }
 </style>

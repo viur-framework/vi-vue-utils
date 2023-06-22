@@ -53,5 +53,10 @@ export default defineComponent({
   border-top-left-radius: var(--sl-input-border-radius-medium);
   border-bottom-left-radius: var(--sl-input-border-radius-medium);
   word-break: break-word;
+
+  @media (max-width: 900px){
+    border-top-right-radius: var(--sl-input-border-radius-medium);
+    border-bottom-left-radius: 0;
+  }
 }
 </style>

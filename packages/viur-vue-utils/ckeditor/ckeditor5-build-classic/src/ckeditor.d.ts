@@ -21,6 +21,8 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import { SourceEditing } from '@ckeditor/ckeditor5-source-editing';
 import { RemoveFormat } from '@ckeditor/ckeditor5-remove-format';
 import { ViURUploadAdapterPlugin } from '../../viur/viur-upload-adapter';
+import 'ckeditor.css';
+
 export default class ClassicEditor extends ClassicEditorBase {
     static builtinPlugins: (typeof TextTransformation | typeof Essentials | typeof UploadAdapter | typeof Paragraph | typeof Heading | typeof Bold | typeof Italic | typeof Underline | typeof BlockQuote | typeof CloudServices | typeof Image | typeof ImageStyle | typeof ImageToolbar | typeof ImageUpload | typeof EasyImage | typeof Indent | typeof IndentBlock | typeof Link | typeof List | typeof Table | typeof TableToolbar | typeof Alignment | typeof SourceEditing | typeof RemoveFormat | typeof ImageResizeButtons)[];
     static defaultConfig: {
@@ -69,4 +71,3 @@ export default class ClassicEditor extends ClassicEditorBase {
         viur_api_url: string;
     };
 }
-import '../../viur/theme.css';
