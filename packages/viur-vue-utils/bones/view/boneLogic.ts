@@ -94,10 +94,10 @@ const boneLogic = (skel, structure) => {
 
         } else if (boneStructure["type"] === "relational" || boneStructure["type"].startsWith("relational.")) {
             return Utils.formatString(boneStructure["format"], value)
-
         } else if (boneStructure["type"] === "hierarchy" || boneStructure["type"].startsWith("hierarchy.")) {
             return Utils.formatString(boneStructure["format"], value)
-
+          } else if (boneStructure["type"] === "record" || boneStructure["type"].startsWith("record.")) {
+            return Utils.formatString(boneStructure["format"], {'dest':value})
         } else if (boneStructure["type"] === "bool") {
             return value ? "Ja" : "Nein"
         } else {
