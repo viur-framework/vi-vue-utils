@@ -13,7 +13,11 @@
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject} from 'vue'
-import "../../../ckeditor/ckeditor.js";
+if(import.meta.env.DEV) {
+  import "../../../ckeditor/ckeditor.js";
+}else{
+  import {ClassicEditor} from '../../../ckeditor/ckeditor.js'
+}
 
 export default defineComponent({
     props:{
