@@ -11,6 +11,18 @@ class HTTPError extends Error {
 }
 
 export default class Request {
+  static state = { sKeys: [] };
+  static defaultState = { sKeys: [] };
+  static resetState() {
+    this.state = {};
+    this.state = this.defaultState;
+  }
+
+  // use value like this: if u want a state with an Object use {} for an empty Object
+  static addState(stateKey, value) {
+    this.state[stateKey] = value;
+    this.defaultState[stateKey] = value;
+  }
   static buildUrl(url) {
     if (
       url &&
@@ -116,8 +128,15 @@ export default class Request {
     return return_value;
   }
 
-  static async multiPost(modules = [], amount = 10) {
-    if (modules.length) {
+  static async getMultiSkeys(
+    amount = 10,
+    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
+  ) {
+    for (let i = 1; i <= amount; i++) {
+      await Request.get(`/${renderer}/skey`).then(async (resp) => {
+        let data = await resp.json();
+        this.state.sKeys.push(data);
+      });
     }
   }
 
