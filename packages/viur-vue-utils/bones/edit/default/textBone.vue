@@ -9,6 +9,7 @@
         @input="changeEvent">
       </ckeditor>
       <sl-textarea v-else @input="changeEventTextarea" :disabled="boneState?.readonly" :value="value"></sl-textarea>
+    </template>
 </template>
 
 <script lang="ts">
