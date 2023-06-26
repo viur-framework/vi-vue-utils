@@ -3,13 +3,12 @@
       <ckeditor v-if="boneState.bonestructure['validHtml']"
         :editor="state.editor"
         :config="state.editorConfig"
-        :disabled="boneState.readonly"
+        :disabled="boneState?.readonly"
         v-model="state.value"
         @ready="onReady"
         @input="changeEvent">
       </ckeditor>
-      <sl-textarea v-else @input="changeEventTextarea" :disabled="boneState.readonly" :value="value"></sl-textarea>
-    </template>
+      <sl-textarea v-else @input="changeEventTextarea" :disabled="boneState?.readonly" :value="value"></sl-textarea>
 </template>
 
 <script lang="ts">
@@ -65,7 +64,7 @@ export default defineComponent({
             boneState,
             changeEvent,
             onReady,
-          changeEventTextarea
+            changeEventTextarea
         }
     }
 })
