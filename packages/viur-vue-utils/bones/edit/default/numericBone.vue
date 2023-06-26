@@ -12,7 +12,7 @@
     <ul class="info">
       <li v-if="state.minAmount!==-9223372036854776000">{{ $t('bones.numeric.min',{val:state.minAmount}) }}</li>
       <li v-if="state.maxAmount!==9223372036854776000">{{ $t('bones.numeric.max',{val:state.maxAmount}) }}</li>
-      <li v-if="state.precision">{{ $t('bones.numeric.precision',{val:state.precision}) }}</li>
+      <li v-if="state.precision">{{ $t('bones.numeric.precision',{val:boneState.bonestructure["precision"]}) }}</li>
     </ul>
 
 

@@ -1,6 +1,6 @@
 <template>
     <sl-select :disabled="boneState.readonly"
-               :value="value?value.toString():''"
+               :value="state.value"
                @sl-change="changeEvent"
                :multiple="boneState['bonestructure']['multiple']">
       <sl-option :value="value[0]" v-for="value in boneState['bonestructure']['values']">
@@ -11,7 +11,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject} from 'vue'
+import {reactive, defineComponent, onMounted, inject, computed} from 'vue'
 
 export default defineComponent({
     props:{
@@ -24,7 +24,14 @@ export default defineComponent({
     emits:["change"],
     setup(props, context) {
       const boneState = inject("boneState")
-        const state = reactive({})
+        const state = reactive({
+          value:computed(()=>{
+            if (Array.isArray(props.value)){
+              return props.value.map(i=>i.toString())
+            }
+            return props.value?props.value.toString():''
+          })
+        })
 
         function changeEvent(event){
             context.emit("change",props.name,event.target.value,props.lang,props.index)
