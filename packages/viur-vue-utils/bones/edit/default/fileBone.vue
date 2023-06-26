@@ -100,7 +100,7 @@ export default defineComponent({
           .then(async (resp) => {
             let uploadURLdata = await resp.json();
             Request.post(uploadURLdata["values"]["uploadUrl"], {
-              dataObj: file,
+              body:file,
               mode: "no-cors",
             })
               .then(async (uploadresp) => {

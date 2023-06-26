@@ -15,7 +15,7 @@
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject,computed} from 'vue'
-import  ClassicEditor  from '@viur/ckeditor5-build-classic'
+import ClassicEditor from '@viur/ckeditor5-build-classic'
 
 export default defineComponent({
     props:{
@@ -166,7 +166,7 @@ export default defineComponent({
       background: transparent !important;
       border: 1px solid var(--vi-border-color) !important;
       width:100%;
-      height: 250px;
+      //height: 250px;
       border-bottom-left-radius: var(--sl-border-radius-medium) !important;
       border-bottom-right-radius: var(--sl-border-radius-medium) !important;
 
@@ -205,7 +205,7 @@ export default defineComponent({
 
     .ck-source-editing-area{
       width:100%;
-      height: 250px;
+      //height: 250px;
 
       textarea{
         background-color: transparent;
