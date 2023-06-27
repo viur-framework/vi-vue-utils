@@ -1,10 +1,14 @@
 <template>
-  <div class="value-line">
+  <div class="value-line"
+    @dragover="$emit('handleDragOver', $event)"
+    @drop="$emit('handleDrop', $event)"
+    :class="{'is-dragging': isDragging,
+        'dragging-line-bottom': draggingLineBottom,
+        'dragging-line-top': draggingLineTop}">
     <sl-button
       draggable="true"
       @dragstart="$emit('handleDragStart', $event)"
-      @drop="$emit('handleDragEnd')"
-      @dragover="$emit('handleDragOver', $event)"
+      @dragend="$emit('handleDragEnd')"
     >
       <sl-icon name="draggable"> </sl-icon>
     </sl-button>
@@ -27,7 +31,11 @@
 import { reactive, defineComponent } from "vue";
 
 export default defineComponent({
-  props: {},
+  props: {
+    isDragging: Boolean,
+    draggingLineBottom: Boolean,
+    draggingLineTop: Boolean,
+  },
   components: {},
   emits: [
     "change",
@@ -35,6 +43,7 @@ export default defineComponent({
     "handleDragStart",
     "handleDragEnd",
     "handleDragOver",
+    "handleDrop"
   ],
   setup(props, context) {
     const state = reactive({});
@@ -46,6 +55,20 @@ export default defineComponent({
 
 <style scoped lang="less">
 
+
+.is-dragging {
+  background-color: green;
+}
+
+.dragging-line-bottom {
+  border-bottom: 2px solid blue
+}
+.dragging-line-top {
+  border-top: 2px solid blue
+}
+.dragging-line-bottom {
+  border-bottom: 2px solid blue
+}
 .value-line {
   display: flex;
   gap: 10px;
