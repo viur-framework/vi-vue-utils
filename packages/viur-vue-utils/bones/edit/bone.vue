@@ -373,7 +373,7 @@ export default defineComponent({
                   ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")+"."+k
+                      key.replace(/\.dest/, "")+"."+k
                     )
                   );
                 }else{
@@ -386,6 +386,13 @@ export default defineComponent({
                 }
               } else if (key.endsWith("rel")) {
                 if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                  ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.rel/, "") + "." + k
+                    )
+                  );
+                }else{
                   ret.push(
                     rewriteData(
                       v,
