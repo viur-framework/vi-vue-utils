@@ -385,12 +385,14 @@ export default defineComponent({
                   );
                 }
               } else if (key.endsWith("rel")) {
-                ret.push(
+                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                  ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "")+"."+k
+                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") + "." + k
                     )
                   );
+                }
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
