@@ -47,10 +47,29 @@
               >
                 <wrapper-multiple
                   :readonly="!state.readonly"
+                  :is-dragging="
+                    state.isDragging['lang'] === lang &&
+                    state.isDragging['index'] === index
+                      ? true
+                      : false
+                  "
+                  :dragging-line-bottom="
+                    state.draggingLineBottom['lang'] === lang &&
+                    state.draggingLineBottom['index'] === index
+                      ? true
+                      : false
+                  "
+                  :dragging-line-top="
+                    state.draggingLineTop['lang'] === lang &&
+                    state.draggingLineTop['index'] === index
+                      ? true
+                      : false
+                  "
                   @delete="removeMultipleEntry(index, lang)"
-                  @handleDragStart="handleDragStart(index, $event)"
-                  @handleDragOver="handleDragOver($event)"
+                  @handleDragStart="handleDragStart(index, lang, $event)"
+                  @handleDragOver="handleDragOver(index, lang, $event)"
                   @handleDragEnd="handleDragEnd(index, lang)"
+                  @handleDrop="handleDrop(index, lang, $event)"
                 >
                   <component
                     :is="is"
@@ -114,9 +133,17 @@
             <wrapper-multiple
               :readonly="!state.readonly"
               @delete="removeMultipleEntry(index)"
-              @handleDragStart="handleDragStart(index, $event)"
-              @handleDragOver="handleDragOver($event)"
+              :is-dragging="state.isDragging.index === index ? true : false"
+              :dragging-line-bottom="
+                state.draggingLineBottom.index === index ? true : false
+              "
+              :dragging-line-top="
+                state.draggingLineTop.index === index ? true : false
+              "
+              @handleDragStart="handleDragStart(index, (lang = null), $event)"
+              @handleDragOver="handleDragOver(index, (lang = null), $event)"
               @handleDragEnd="handleDragEnd(index, (lang = null))"
+              @handleDrop="handleDrop(index, (lang = null), $event)"
             >
               <component
                 :is="is"
@@ -217,7 +244,26 @@ export default defineComponent({
         return props.structure?.[props.name];
       }),
       bonevalue: null,
-      dragStartIndex: null,
+      dragStartIndex: {
+        lang: null,
+        index: Number,
+      },
+      dropIndex: {
+        lang: null,
+        index: Number,
+      },
+      draggingLineBottom: {
+        lang: String,
+        index: Number,
+      },
+      draggingLineTop: {
+        lang: String,
+        index: Number,
+      },
+      isDragging: {
+        lang: String,
+        index: Number,
+      },
       multilanguage: computed(
         () => state.languages?.length && state.languages.length > 0
       ),
@@ -331,32 +377,68 @@ export default defineComponent({
     });
     provide("boneState", state);
 
-    function handleDragStart(index, event) {
-      state.dragStartIndex = index;
-      console.log("dragStart");
-      console.log(event.target);
-      console.log(state.dragStartIndex);
+    // Handle drag start event
+    function handleDragStart(index, lang, event) {
+      const startDragLine = event.target.closest(".value-line");
+
+      setStateProperties(lang, index, "isDragging");
+      setStateProperties(lang, index, "dragStartIndex");
     }
 
-    function handleDragEnd(index, lang) {
-      console.log("dragEnd");
-      console.log(state.bonevalue);
-      if (lang === null) {
-        const dragItem = state.bonevalue.splice(state.dragStartIndex, 1)[0];
-        state.bonevalue.splice(index, 0, dragItem);
-      } else {
-        const dragItem = state.bonevalue[lang].splice(state.dragStartIndex, 1)[0];
-        state.bonevalue[lang].splice(index, 0, dragItem);
-      }
-      state.dragStartIndex = null;
-      console.log(state.bonevalue);
+    // Handle drag over event
+    function handleDragOver(index, lang, event) {
+      event.preventDefault();
 
-      /* const draggedElements = document.querySelectorAll(".dragover");
-      console.log(draggedElements);
-      for (let domElement of draggedElements) {
-        console.log(domElement.classList);
-        domElement.classList.remove("dragover");
-      } */
+      const relativePosition =
+        event.clientY - event.target.getBoundingClientRect().top;
+      const dragOverLine = event.target.closest(".value-line");
+
+      if (relativePosition < dragOverLine.offsetHeight / 2) {
+        setStateProperties(lang, index, "draggingLineTop");
+        resetStateProperties("draggingLineBottom");
+      } else {
+        setStateProperties(lang, index, "draggingLineBottom");
+        resetStateProperties("draggingLineTop");
+      }
+    }
+    // Handle drop event
+    function handleDrop(index, lang, event) {
+      setStateProperties(lang, index, "dropIndex");
+
+      const relativePosition =
+        event.clientY - event.target.getBoundingClientRect().top;
+      const dragOverLine = event.target.closest(".value-line");
+
+      if (
+        relativePosition >= dragOverLine.offsetHeight / 2 &&
+        state.dropIndex.index > 0
+      ) {
+        state.dropIndex.index = index + 1;
+      }
+
+      resetStateProperties(
+        "draggingLineBottom",
+        "draggingLineTop",
+        "isDragging"
+      );
+    }
+    // Handle drag end event
+    function handleDragEnd(index, lang) {
+      let dragItem = null;
+      if (lang) {
+        dragItem = state.bonevalue[lang].splice(
+          state.dragStartIndex.index,
+          1
+        )[0];
+        adjustDropIndex();
+        state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
+      } else {
+        dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
+        adjustDropIndex();
+        state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
+      }
+
+      resetStateProperties("dragStartIndex");
 
       context.emit("change", {
         name: name,
@@ -366,22 +448,26 @@ export default defineComponent({
       });
     }
 
-    function handleDragOver(e) {
-
-      e.preventDefault();
-      if (e.target) {
-
-        e.target.classList.add("dragover");
-      }
+    // Set state properties based on lang and index
+    function setStateProperties(lang, index, property) {
+      state[property].lang = lang ? lang : null;
+      state[property].index = index;
     }
 
-    function handleDragLeave(e) {
-      console.log("dragleave");
-      if (e.target) {
-        console.log(e.target);
-        console.log(e.target.classList);
-        e.target.classList.remove("dragover");
-        console.log(e.target);
+    // Reset state properties to null values
+    function resetStateProperties(...properties) {
+      properties.forEach((property) => {
+        state[property] = {
+          lang: null,
+          index: Number,
+        };
+      });
+    }
+
+    // Adjust the drop index if necessary
+    function adjustDropIndex() {
+      if (state.dragStartIndex.index < state.dropIndex.index) {
+        state.dropIndex.index -= 1;
       }
     }
 
@@ -621,12 +707,24 @@ export default defineComponent({
       handleDragStart,
       handleDragEnd,
       handleDragOver,
+      handleDrop,
+      setStateProperties,
+      resetStateProperties,
+      adjustDropIndex,
     };
   },
 });
 </script>
 
 <style scoped lang="less">
+.dragging-top {
+  border-top: 2px solid red;
+}
+
+.dragging-bottom {
+  border-bottom: 2px solid red;
+}
+
 .bone-wrapper {
   display: grid;
   grid-template-columns: 230px 1fr;
