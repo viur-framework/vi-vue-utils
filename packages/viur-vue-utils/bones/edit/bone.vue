@@ -47,13 +47,29 @@
               >
                 <wrapper-multiple
                   :readonly="!state.readonly"
-                  :is-dragging="state.isDragging"
-                  :dragging-line-bottom="state.draggingLineBottom"
-                  :dragging-line-top="state.draggingLineTop"
+                  :is-dragging="
+                    state.isDragging['lang'] === lang &&
+                    state.isDragging['index'] === index
+                      ? true
+                      : false
+                  "
+                  :dragging-line-bottom="
+                    state.draggingLineBottom['lang'] === lang &&
+                    state.draggingLineBottom['index'] === index
+                      ? true
+                      : false
+                  "
+                  :dragging-line-top="
+                    state.draggingLineTop['lang'] === lang &&
+                    state.draggingLineTop['index'] === index
+                      ? true
+                      : false
+                  "
                   @delete="removeMultipleEntry(index, lang)"
-                  @handleDragStart="handleDragStart(index, $event)"
-                  @handleDragOver="handleDragOver($event)"
+                  @handleDragStart="handleDragStart(index, lang, $event)"
+                  @handleDragOver="handleDragOver(index, lang, $event)"
                   @handleDragEnd="handleDragEnd(index, lang)"
+                  @handleDrop="handleDrop(index, lang, $event)"
                 >
                   <component
                     :is="is"
@@ -369,6 +385,7 @@ export default defineComponent({
 
     function handleDragStart(index, lang, event) {
       console.log("dragStart");
+      console.log("lang: " + lang)
       const startDragLine = event.target.closest(".value-line");
       if (lang) {
         (state.isDragging.lang = lang), (state.isDragging.index = index);
@@ -428,15 +445,15 @@ export default defineComponent({
       const relativePosition =
         event.clientY - event.target.getBoundingClientRect().top;
       const dragOverLine = event.target.closest(".value-line");
-      if (relativePosition < dragOverLine.offsetHeight / 2) {
-        console.log("Über dem Feld")
-        console.log(dragOverLine)
-        console.log(state.dropIndex)
+      if (relativePosition >= dragOverLine.offsetHeight / 2) {
+        console.log("Unter dem Feld");
+        console.log(dragOverLine);
+        console.log(state.dropIndex);
         if (state.dropIndex.index > 0) {
-          state.dropIndex.index = index - 1;
+          state.dropIndex.index = index + 1;
         }
       }
-      console.log(state.dropIndex)
+      console.log(state.dropIndex);
       state.draggingLineBottom = {
         lang: String,
         index: Number,
@@ -451,23 +468,36 @@ export default defineComponent({
       };
     }
 
-    function handleDragEnd(index,lang) {
+    function handleDragEnd(index, lang) {
       console.log("dragEnd");
       console.log(state.bonevalue);
 
-      if (lang === null) {
-        const dropPosition = state.bonevalue[state.dropIndex.index]
-        const dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
-        console.log("DragItem: " + dragItem)
-        console.log("Drop After: " + dropPosition)
-        state.bonevalue.splice(dropPosition, 0, dragItem);
-      } else {
-        const dropPosition = state.bonevalue[lang][state.dropIndex.index]
+      if (lang) {
         const dragItem = state.bonevalue[lang].splice(
           state.dragStartIndex.index,
           1
         )[0];
-        state.bonevalue[lang].splice(dropPosition, 0, dragItem);
+        console.log("DragItem: " + dragItem);
+        console.log(state.bonevalue);
+        if (state.dragStartIndex.index < state.dropIndex.index) {
+          state.dropIndex.index -= 1;
+        }
+        console.log("Drop Position: " + state.dropIndex.index);
+        state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
+        console.log(state.bonevalue);
+      } else {
+        const dragItem = state.bonevalue.splice(
+          state.dragStartIndex.index,
+          1
+        )[0];
+        console.log("DragItem: " + dragItem);
+        console.log(state.bonevalue);
+        if (state.dragStartIndex.index < state.dropIndex.index) {
+          state.dropIndex.index -= 1;
+        }
+        console.log("Drop Position: " + state.dropIndex.index);
+        state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
+        console.log(state.bonevalue);
       }
       state.dragStartIndex = {
         lang: null,
