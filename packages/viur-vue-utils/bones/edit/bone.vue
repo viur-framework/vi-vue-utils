@@ -177,19 +177,13 @@ import {
 } from "vue";
 import wrapperMultiple from "./wrapper_multiple.vue";
 import BoneLabel from "./boneLabel.vue";
-import defaultBar from "./actionbar/defaultBar.vue";
-import relationalBar from "./actionbar/relationalBar.vue";
-import fileBar from "./actionbar/fileBar.vue";
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index";
 import rawBone from "./default/rawBone.vue";
 
 export default defineComponent({
   components: {
     wrapperMultiple,
-    BoneLabel,
-    defaultBar,
-    relationalBar,
-    fileBar,
+    BoneLabel
   },
   props: {
     is: {
@@ -452,9 +446,7 @@ export default defineComponent({
                   ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "") +
-                        "." +
-                        k
+                      key.replace(/\.dest/, "")+"."+k
                     )
                   );
                 } else {
@@ -466,14 +458,21 @@ export default defineComponent({
                   );
                 }
               } else if (key.endsWith("rel")) {
-                ret.push(
-                  rewriteData(
-                    v,
-                    key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") +
-                      "." +
-                      k
-                  )
-                );
+                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                  ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.rel/, "") + "." + k
+                    )
+                  );
+                }else{
+                  ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") + "." + k
+                    )
+                  );
+                }
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
@@ -544,12 +543,7 @@ export default defineComponent({
         value: toFormValue(),
         lang: lang,
       });
-      context.emit("change-internal", {
-        name: props.name,
-        value: val,
-        lang: lang,
-        index: index,
-      });
+      context.emit("change-internal", {name:props.name, value:toFormValue(),lang:lang})
     }
 
     provide("removeMultipleEntries", removeMultipleEntries);
@@ -618,7 +612,6 @@ export default defineComponent({
 
     return {
       state,
-      defaultBar,
       updateValue,
       addMultipleEntry,
       removeMultipleEntry,

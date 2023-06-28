@@ -99,8 +99,9 @@ export default defineComponent({
         Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
           .then(async (resp) => {
             let uploadURLdata = await resp.json();
-            Request.post(uploadURLdata["values"]["uploadUrl"], {
-              dataObj: file,
+            fetch(uploadURLdata["values"]["uploadUrl"], {
+              body:file,
+              method: "POST",
               mode: "no-cors",
             })
               .then(async (uploadresp) => {
