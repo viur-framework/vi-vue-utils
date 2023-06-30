@@ -5,6 +5,10 @@
     @dragleave="state.droparea = false"
     @drop.prevent="handleDrop"
   >
+    <div class="loader" v-if="state.loading">
+      <sl-spinner slot="suffix"></sl-spinner>
+    </div>
+
     <div class="droparea" v-if="state.droparea">Dateien hier hinziehen</div>
     <sl-button
       v-if="!boneState.readonly && (!value || state.loading)"
@@ -14,7 +18,6 @@
       class="upload-btn"
     >
       <sl-icon name="upload"></sl-icon>
-      <sl-spinner slot="suffix" v-if="state.loading"></sl-spinner>
     </sl-button>
     <input
       hidden
@@ -23,22 +26,29 @@
       :multiple="boneState.multiple"
       @change="handleUpload"
     />
-    <sl-button @click="downloadFile" v-if="value">
+    <sl-button @click="downloadFile"
+               v-if="value"
+              :title="$t('bone.download')"
+              >
       <sl-icon name="download" slot="prefix"></sl-icon>
     </sl-button>
     <div class="box">
       <div
-        class="preview"
+        class="preview has-preview"
         v-if="value?.['dest']?.['mimetype'].includes('image')"
-        :style="{backgroundImage: `url(${createBackgroundImage()})`}"
+        @click="state.previewopen = !state.previewopen"
       >
+        <img class="preview-img" :src="createBackgroundImage()" alt="">
+        <sl-dialog label="Vorschau" class="preview-overlay" :open="state.previewopen">
+          <img :src="createBackgroundImage()" alt="">
+        </sl-dialog>
       </div>
       <div class="preview" v-else>
         <sl-icon v-if="value?.['dest']?.['name']" name="file-earmark"></sl-icon>
       </div>
       <div v-if="value?.['dest']?.['name']">
         {{ decodeURIComponent(value?.["dest"]?.["name"]) }}
-        <img :src="createBackgroundImage()" alt="">
+
       </div>
     </div>
     <sl-button
@@ -74,6 +84,7 @@ export default defineComponent({
     const state = reactive({
       loading: false,
       droparea: false,
+      previewopen: false,
     });
 
     onMounted(() => {
@@ -189,23 +200,40 @@ export default defineComponent({
   width: 100%;
   border: 1px solid var(--sl-color-gray-500);
   border-radius: 5px;
-  min-height: 40px;
+  height: var(--sl-input-height-medium);
+  background-color: transparent;
 }
 
 .preview {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  height: var(--sl-input-height-medium);
+  width: var(--sl-input-height-medium);
   aspect-ratio: 1;
   border-right: 1px solid var(--sl-color-gray-500);
   margin-right: var(--sl-spacing-small);
-  background-position: center;
-  background-size: cover;
+  background-image: /* tint image */
+                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+                  /* checkered effect */
+                  linear-gradient(to right, black 50%, white 50%),
+                  linear-gradient(to bottom, black 50%, white 50%);
+  background-blend-mode: normal, difference, normal;
+  background-size: .65em .65em;
+
+  &.has-preview{
+    cursor: pointer;
+  }
 
   sl-icon {
     font-size: 1.1em;
     color: var(--sl-color-gray-400);
+  }
+
+  .preview-img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
 
@@ -237,9 +265,50 @@ export default defineComponent({
   }
 }
 
+.delete-btn{
+  &::part(base) {
+    aspect-ratio: 1;
+  }
+}
+
 .upload-btn {
   &::part(base) {
     aspect-ratio: 1;
+  }
+}
+
+.loader{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, .7);
+}
+
+.preview-overlay{
+  &::part(panel){
+    width: auto;
+    max-width: 1200px;
+  }
+
+  &::part(body){
+    background-image: /* tint image */
+                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+                  /* checkered effect */
+                  linear-gradient(to right, black 50%, white 50%),
+                  linear-gradient(to bottom, black 50%, white 50%);
+    background-blend-mode: normal, difference, normal;
+    background-size: 1.2em 1.2em;
+    padding: 0;
+  }
+
+  img{
+    width: auto;
+    height: auto;
   }
 }
 </style>
