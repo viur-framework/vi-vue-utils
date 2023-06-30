@@ -718,16 +718,17 @@ export default defineComponent({
 
 <style scoped lang="less">
 .dragging-top {
-  border-top: 2px solid red;
+  border-top: 2px solid var(--sl-color-neutral-400);
 }
 
 .dragging-bottom {
-  border-bottom: 2px solid red;
+  border-bottom: 2px solid var(--sl-color-neutral-400);
 }
 
 .bone-wrapper {
   display: grid;
-  grid-template-columns: 230px 1fr;
+  grid-template-columns: 235px 1fr;
+  grid-gap: var(--sl-spacing-small);
   margin-bottom: 20px;
 
   &.bone-wrapper-record {

@@ -39,7 +39,7 @@
         @click="state.previewopen = !state.previewopen"
       >
         <img class="preview-img" :src="createBackgroundImage()" alt="">
-        <sl-dialog label="Vorschau" class="preview-overlay" :open="state.previewopen">
+        <sl-dialog :label='decodeURIComponent(value?.["dest"]?.["name"])' class="preview-overlay" :open="state.previewopen">
           <img :src="createBackgroundImage()" alt="">
         </sl-dialog>
       </div>
@@ -296,6 +296,9 @@ export default defineComponent({
   }
 
   &::part(body){
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-image: /* tint image */
                   linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
                   /* checkered effect */
