@@ -9,6 +9,7 @@
       draggable="true"
       @dragstart="$emit('handleDragStart', $event)"
       @dragend="$emit('handleDragEnd')"
+      class="drag-button"
     >
       <sl-icon name="draggable"> </sl-icon>
     </sl-button>
@@ -55,20 +56,20 @@ export default defineComponent({
 
 <style scoped lang="less">
 
-
 .is-dragging {
-  background-color: green;
+  opacity: .4;
 }
 
 .dragging-line-bottom {
-  border-bottom: 2px solid blue
+  margin-bottom: calc(-1 * var(--sl-spacing-x-small));
+  border-bottom: var(--sl-spacing-x-small) solid var(--sl-color-neutral-300);
 }
+
 .dragging-line-top {
-  border-top: 2px solid blue
+  margin-top: calc(-1 * var(--sl-spacing-x-small));
+  border-top: var(--sl-spacing-x-small) solid var(--sl-color-neutral-300);
 }
-.dragging-line-bottom {
-  border-bottom: 2px solid blue
-}
+
 .value-line {
   display: flex;
   gap: 10px;
@@ -76,10 +77,30 @@ export default defineComponent({
 
 .value {
   width: 100%;
+
+  :deep(sl-input){
+    &::part(base){
+      border-bottom-left-radius: var(--sl-border-radius-medium);
+      border-top-left-radius: var(--sl-border-radius-medium);
+    }
+  }
+
+  :deep(.bone-wrapper){
+    sl-input::part(base){
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+    }
+  }
 }
 
 .delete-btn {
   &::part(base) {
+    aspect-ratio: 1;
+  }
+}
+
+.drag-button{
+  &::part(base){
     aspect-ratio: 1;
   }
 }

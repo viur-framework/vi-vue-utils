@@ -802,6 +802,15 @@ sl-tab-panel::part(base) {
   .bone-wrapper {
     margin-bottom: var(--sl-spacing-x-small);
   }
+
+
+  &:first-child{
+    :deep(.value-line){
+      &.dragging-line-top {
+        margin-top: 0;
+      }
+    }
+  }
 }
 
 .bone-inner-wrap {
