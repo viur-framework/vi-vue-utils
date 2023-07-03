@@ -1,3 +1,6 @@
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
     super(message || statusText);
@@ -10,19 +13,19 @@ class HTTPError extends Error {
   }
 }
 
+const useState = defineStore("requestState", () => {
+  const state = reactive({ sKeys: new Set() });
+  return {
+    state,
+  };
+});
+
 export default class Request {
-  static state = { sKeys: [] };
-  static defaultState = { sKeys: [] };
   static resetState() {
-    this.state = {};
-    this.state = this.defaultState;
+    useState().reset();
+    useState().$dispose();
   }
 
-  // use value like this: if u want a state with an Object use {} for an empty Object
-  static addState(stateKey, value) {
-    this.state[stateKey] = value;
-    this.defaultState[stateKey] = value;
-  }
   static buildUrl(url) {
     if (
       url &&
@@ -132,14 +135,13 @@ export default class Request {
     amount = 10,
     renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
   ) {
-    let state = { sKeys: [] };
-    for (let i = 1; i <= amount; i++) {
-      await Request.get(`/${renderer}/skey`).then(async (resp) => {
-        let data = await resp.json();
-        state.sKeys.push(data);
-      });
-    }
-    return state;
+    await Request.get(`/${renderer}/skey`, {
+      dataObj: { amount: amount },
+    }).then(async (resp) => {
+      let data = await resp.json();
+      // useState().state.sKeys = data;
+      data.forEach((sKey) => useState().state.sKeys.add(sKey));
+    });
   }
 
   static get(
@@ -471,4 +473,4 @@ class cachedFetch {
   }
 }
 
-export { Request, HTTPError };
+export { Request, HTTPError, useState };
