@@ -1,14 +1,20 @@
 <template>
-  <div class="value-line"
+  <div
+    class="value-line"
+    :draggable="state.isDraggable"
     @dragover="$emit('handleDragOver', $event)"
     @drop="$emit('handleDrop', $event)"
-    :class="{'is-dragging': isDragging,
-        'dragging-line-bottom': draggingLineBottom,
-        'dragging-line-top': draggingLineTop}">
+    @dragstart="$emit('handleDragStart', $event)"
+    @dragend="$emit('handleDragEnd')"
+    :class="{
+      'is-dragging': isDragging,
+      'dragging-line-bottom': draggingLineBottom,
+      'dragging-line-top': draggingLineTop,
+    }"
+  >
     <sl-button
-      draggable="true"
-      @dragstart="$emit('handleDragStart', $event)"
-      @dragend="$emit('handleDragEnd')"
+      @mousedown="state.isDraggable = true"
+      @mouseout="state.isDraggable = false"
       class="drag-button"
     >
       <sl-icon name="draggable"> </sl-icon>
@@ -44,10 +50,12 @@ export default defineComponent({
     "handleDragStart",
     "handleDragEnd",
     "handleDragOver",
-    "handleDrop"
+    "handleDrop",
   ],
   setup(props, context) {
-    const state = reactive({});
+    const state = reactive({
+      isDraggable: false,
+    });
 
     return { state };
   },
@@ -55,9 +63,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-
 .is-dragging {
-  opacity: .4;
+  opacity: 0.4;
 }
 
 .dragging-line-bottom {
@@ -78,15 +85,15 @@ export default defineComponent({
 .value {
   width: 100%;
 
-  :deep(sl-input){
-    &::part(base){
+  :deep(sl-input) {
+    &::part(base) {
       border-bottom-left-radius: var(--sl-border-radius-medium);
       border-top-left-radius: var(--sl-border-radius-medium);
     }
   }
 
-  :deep(.bone-wrapper){
-    sl-input::part(base){
+  :deep(.bone-wrapper) {
+    sl-input::part(base) {
       border-bottom-left-radius: 0;
       border-top-left-radius: 0;
     }
@@ -99,8 +106,8 @@ export default defineComponent({
   }
 }
 
-.drag-button{
-  &::part(base){
+.drag-button {
+  &::part(base) {
     aspect-ratio: 1;
   }
 }

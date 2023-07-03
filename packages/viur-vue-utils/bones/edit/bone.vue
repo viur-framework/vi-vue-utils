@@ -379,7 +379,6 @@ export default defineComponent({
 
     // Handle drag start event
     function handleDragStart(index, lang, event) {
-      const startDragLine = event.target.closest(".value-line");
 
       setStateProperties(lang, index, "isDragging");
       setStateProperties(lang, index, "dragStartIndex");
