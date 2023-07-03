@@ -4,7 +4,9 @@
     :class="'bone-wrapper-' + state.bonestructure['type']"
   >
     <bone-label>
-      <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
+      <span :class="{ required: state.required }">{{
+        state.bonestructure["descr"]
+      }}</span>
       <span v-if="state.required" class="required"> *</span>
       <sl-tooltip
         v-if="state.hasTooltip"
@@ -45,7 +47,29 @@
               >
                 <wrapper-multiple
                   :readonly="!state.readonly"
+                  :is-dragging="
+                    state.isDragging['lang'] === lang &&
+                    state.isDragging['index'] === index
+                      ? true
+                      : false
+                  "
+                  :dragging-line-bottom="
+                    state.draggingLineBottom['lang'] === lang &&
+                    state.draggingLineBottom['index'] === index
+                      ? true
+                      : false
+                  "
+                  :dragging-line-top="
+                    state.draggingLineTop['lang'] === lang &&
+                    state.draggingLineTop['index'] === index
+                      ? true
+                      : false
+                  "
                   @delete="removeMultipleEntry(index, lang)"
+                  @handleDragStart="handleDragStart(index, lang, $event)"
+                  @handleDragOver="handleDragOver(index, lang, $event)"
+                  @handleDragEnd="handleDragEnd(index, lang)"
+                  @handleDrop="handleDrop(index, lang, $event)"
                 >
                   <component
                     :is="is"
@@ -109,6 +133,17 @@
             <wrapper-multiple
               :readonly="!state.readonly"
               @delete="removeMultipleEntry(index)"
+              :is-dragging="state.isDragging.index === index ? true : false"
+              :dragging-line-bottom="
+                state.draggingLineBottom.index === index ? true : false
+              "
+              :dragging-line-top="
+                state.draggingLineTop.index === index ? true : false
+              "
+              @handleDragStart="handleDragStart(index, (lang = null), $event)"
+              @handleDragOver="handleDragOver(index, (lang = null), $event)"
+              @handleDragEnd="handleDragEnd(index, (lang = null))"
+              @handleDrop="handleDrop(index, (lang = null), $event)"
             >
               <component
                 :is="is"
@@ -169,19 +204,13 @@ import {
 } from "vue";
 import wrapperMultiple from "./wrapper_multiple.vue";
 import BoneLabel from "./boneLabel.vue";
-import defaultBar from "./actionbar/defaultBar.vue";
-import relationalBar from "./actionbar/relationalBar.vue";
-import fileBar from "./actionbar/fileBar.vue";
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index";
 import rawBone from "./default/rawBone.vue";
 
 export default defineComponent({
   components: {
     wrapperMultiple,
-    BoneLabel,
-    defaultBar,
-    relationalBar,
-    fileBar,
+    BoneLabel
   },
   props: {
     is: {
@@ -215,6 +244,26 @@ export default defineComponent({
         return props.structure?.[props.name];
       }),
       bonevalue: null,
+      dragStartIndex: {
+        lang: null,
+        index: Number,
+      },
+      dropIndex: {
+        lang: null,
+        index: Number,
+      },
+      draggingLineBottom: {
+        lang: String,
+        index: Number,
+      },
+      draggingLineTop: {
+        lang: String,
+        index: Number,
+      },
+      isDragging: {
+        lang: String,
+        index: Number,
+      },
       multilanguage: computed(
         () => state.languages?.length && state.languages.length > 0
       ),
@@ -271,7 +320,7 @@ export default defineComponent({
           : {};
       }),
       actionbar: computed(() => {
-        return getBoneActionbar(state.bonestructure?.["type"])
+        return getBoneActionbar(state.bonestructure?.["type"]);
       }),
       isEmpty: computed(() => {
         // Function to check if an object is empty
@@ -328,6 +377,99 @@ export default defineComponent({
     });
     provide("boneState", state);
 
+    // Handle drag start event
+    function handleDragStart(index, lang, event) {
+
+      setStateProperties(lang, index, "isDragging");
+      setStateProperties(lang, index, "dragStartIndex");
+    }
+
+    // Handle drag over event
+    function handleDragOver(index, lang, event) {
+      event.preventDefault();
+
+      const relativePosition =
+        event.clientY - event.target.getBoundingClientRect().top;
+      const dragOverLine = event.target.closest(".value-line");
+
+      if (relativePosition < dragOverLine.offsetHeight / 2) {
+        setStateProperties(lang, index, "draggingLineTop");
+        resetStateProperties("draggingLineBottom");
+      } else {
+        setStateProperties(lang, index, "draggingLineBottom");
+        resetStateProperties("draggingLineTop");
+      }
+    }
+    // Handle drop event
+    function handleDrop(index, lang, event) {
+      setStateProperties(lang, index, "dropIndex");
+
+      const relativePosition =
+        event.clientY - event.target.getBoundingClientRect().top;
+      const dragOverLine = event.target.closest(".value-line");
+
+      if (
+        relativePosition >= dragOverLine.offsetHeight / 2 &&
+        state.dropIndex.index > 0
+      ) {
+        state.dropIndex.index = index + 1;
+      }
+
+      resetStateProperties(
+        "draggingLineBottom",
+        "draggingLineTop",
+        "isDragging"
+      );
+    }
+    // Handle drag end event
+    function handleDragEnd(index, lang) {
+      let dragItem = null;
+      if (lang) {
+        dragItem = state.bonevalue[lang].splice(
+          state.dragStartIndex.index,
+          1
+        )[0];
+        adjustDropIndex();
+        state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
+      } else {
+        dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
+        adjustDropIndex();
+        state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
+      }
+
+      resetStateProperties("dragStartIndex");
+
+      context.emit("change", {
+        name: name,
+        value: toFormValue(),
+        lang: lang,
+        index: index,
+      });
+    }
+
+    // Set state properties based on lang and index
+    function setStateProperties(lang, index, property) {
+      state[property].lang = lang ? lang : null;
+      state[property].index = index;
+    }
+
+    // Reset state properties to null values
+    function resetStateProperties(...properties) {
+      properties.forEach((property) => {
+        state[property] = {
+          lang: null,
+          index: Number,
+        };
+      });
+    }
+
+    // Adjust the drop index if necessary
+    function adjustDropIndex() {
+      if (state.dragStartIndex.index < state.dropIndex.index) {
+        state.dropIndex.index -= 1;
+      }
+    }
+
     function updateValue(
       name: string,
       val: any,
@@ -348,13 +490,20 @@ export default defineComponent({
       }
       if (state.readonly) return false;
 
+      console.log(val);
+
       context.emit("change", {
         name: name,
         value: toFormValue(),
         lang: lang,
         index: index,
       });
-      context.emit("change-internal", {name:name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {
+        name: name,
+        value: val,
+        lang: lang,
+        index: index,
+      });
     }
 
     function toFormValue() {
@@ -375,14 +524,17 @@ export default defineComponent({
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
-                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                if (
+                  Object.keys(state.bonestructure).includes("using") &&
+                  state.bonestructure["using"]
+                ) {
                   ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")+"."+k
+                      key.replace(/\.dest/, "")+"."+k
                     )
                   );
-                }else{
+                } else {
                   ret.push(
                     rewriteData(
                       v,
@@ -391,12 +543,21 @@ export default defineComponent({
                   );
                 }
               } else if (key.endsWith("rel")) {
-                ret.push(
+                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                  ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "")+"."+k
+                      key.replace(/\.rel/, "") + "." + k
                     )
                   );
+                }else{
+                  ret.push(
+                    rewriteData(
+                      v,
+                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") + "." + k
+                    )
+                  );
+                }
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
@@ -448,7 +609,12 @@ export default defineComponent({
         lang: lang,
         index: index,
       });
-      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {
+        name: props.name,
+        value: val,
+        lang: lang,
+        index: index,
+      });
     }
 
     function removeMultipleEntries(lang = null) {
@@ -462,7 +628,7 @@ export default defineComponent({
         value: toFormValue(),
         lang: lang,
       });
-      context.emit("change-internal", {name:props.name, value:val,lang:lang,index:index})
+      context.emit("change-internal", {name:props.name, value:toFormValue(),lang:lang})
     }
 
     provide("removeMultipleEntries", removeMultipleEntries);
@@ -531,22 +697,37 @@ export default defineComponent({
 
     return {
       state,
-      defaultBar,
       updateValue,
       addMultipleEntry,
       removeMultipleEntry,
       removeMultipleEntries,
       BoneHasMultipleHandling,
       multipleBonePressEnter,
+      handleDragStart,
+      handleDragEnd,
+      handleDragOver,
+      handleDrop,
+      setStateProperties,
+      resetStateProperties,
+      adjustDropIndex,
     };
   },
 });
 </script>
 
 <style scoped lang="less">
+.dragging-top {
+  border-top: 2px solid var(--sl-color-neutral-400);
+}
+
+.dragging-bottom {
+  border-bottom: 2px solid var(--sl-color-neutral-400);
+}
+
 .bone-wrapper {
   display: grid;
-  grid-template-columns: 230px 1fr;
+  grid-template-columns: 235px 1fr;
+  grid-gap: var(--sl-spacing-small);
   margin-bottom: 20px;
 
   &.bone-wrapper-record {
@@ -570,7 +751,7 @@ export default defineComponent({
     }
   }
 
-  @media (max-width: 900px){
+  @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 }
@@ -605,7 +786,7 @@ sl-tab-panel::part(base) {
     }
   }
 
-  @media (max-width: 900px){
+  @media (max-width: 900px) {
     sl-input {
       &::part(base) {
         border-top-right-radius: 0;
@@ -620,6 +801,15 @@ sl-tab-panel::part(base) {
 
   .bone-wrapper {
     margin-bottom: var(--sl-spacing-x-small);
+  }
+
+
+  &:first-child{
+    :deep(.value-line){
+      &.dragging-line-top {
+        margin-top: 0;
+      }
+    }
   }
 }
 
@@ -645,7 +835,7 @@ sl-tab-panel::part(base) {
   align-items: center;
   justify-content: center;
   margin-left: auto;
-  padding-left: .4em;
+  padding-left: 0.4em;
 
   sl-icon {
     background-color: var(--sl-color-info-500);
@@ -670,6 +860,4 @@ sl-tooltip {
   color: var(--sl-color-primary-500);
   font-weight: 700;
 }
-
-
 </style>

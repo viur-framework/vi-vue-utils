@@ -1,6 +1,7 @@
 <template>
-      <ckeditor v-if="boneState?.bonestructure['validHtml']"
-        :editor="ClassicEditor"
+    <template v-if="state.editor">
+      <ckeditor v-if="boneState.bonestructure['validHtml']"
+        :editor="state.editor"
         :config="state.editorConfig"
         :disabled="boneState?.readonly"
         v-model="state.value"
@@ -8,16 +9,13 @@
         @input="changeEvent">
       </ckeditor>
       <sl-textarea v-else @input="changeEventTextarea" :disabled="boneState?.readonly" :value="value"></sl-textarea>
+    </template>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject} from 'vue'
-//if(import.meta.env.DEV) {
-import "../../../ckeditor/ckeditor.js";
-//}else{
-//  import {ClassicEditor} from '../../../ckeditor/ckeditor.js'
-//}
+import {reactive, defineComponent, onMounted, inject,computed} from 'vue'
+//import ClassicEditor from '@viur/ckeditor5-build-classic'
 
 export default defineComponent({
     props:{
@@ -32,7 +30,8 @@ export default defineComponent({
         const boneState = inject("boneState")
         const state = reactive({
           value:'',
-          editorConfig:{}
+          editorConfig:{},
+          editor:computed(()=>ClassicEditor)
         })
 
         function changeEvent(event){
@@ -44,6 +43,8 @@ export default defineComponent({
         }
 
         onMounted(()=>{
+          console.log("____")
+          console.log(ClassicEditor)
             if(props.value!==null){
               state.value = props.value
             }
@@ -64,7 +65,7 @@ export default defineComponent({
             boneState,
             changeEvent,
             onReady,
-          changeEventTextarea
+            changeEventTextarea
         }
     }
 })
@@ -165,7 +166,7 @@ export default defineComponent({
       background: transparent !important;
       border: 1px solid var(--vi-border-color) !important;
       width:100%;
-      height: 250px;
+      //height: 250px;
       border-bottom-left-radius: var(--sl-border-radius-medium) !important;
       border-bottom-right-radius: var(--sl-border-radius-medium) !important;
 
@@ -204,7 +205,7 @@ export default defineComponent({
 
     .ck-source-editing-area{
       width:100%;
-      height: 250px;
+      //height: 250px;
 
       textarea{
         background-color: transparent;
