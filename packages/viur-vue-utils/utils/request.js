@@ -132,12 +132,14 @@ export default class Request {
     amount = 10,
     renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
   ) {
+    let state = { sKeys: [] };
     for (let i = 1; i <= amount; i++) {
       await Request.get(`/${renderer}/skey`).then(async (resp) => {
         let data = await resp.json();
-        this.state.sKeys.push(data);
+        state.sKeys.push(data);
       });
     }
+    return state;
   }
 
   static get(
