@@ -1,9 +1,15 @@
 <template>
-  <label class="bone-name" @click="state.debug = !state.debug">
+  <label class="bone-name">
     <slot></slot>
+    <div class="debug" @click="state.debug = !state.debug">
+      <sl-icon name="bug"></sl-icon>
+    </div>
   </label>
   <div v-if="state.debug">
+    <div class="bone">{{ name }}</div>
+    <pre>
     {{ boneState }}
+    </pre>
     <VueJsonPretty :data="boneState"></VueJsonPretty>
   </div>
 </template>
@@ -24,8 +30,9 @@ export default defineComponent({
     params: Object,
   },
   components: { VueJsonPretty },
-  emits: ["change"],
+  emits: ["change", "handleClick"],
   setup(props, context) {
+    console.log(props);
     const boneState = inject("boneState");
     const state = reactive({
       debug: false,
@@ -54,9 +61,24 @@ export default defineComponent({
   border-bottom-left-radius: var(--sl-input-border-radius-medium);
   word-break: break-word;
 
-  @media (max-width: 900px){
+  @media (max-width: 900px) {
     border-top-right-radius: var(--sl-input-border-radius-medium);
     border-bottom-left-radius: 0;
+  }
+}
+.debug {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding-left: 0.4em;
+
+  sl-icon {
+    background-color: var(--sl-color-danger-500);
+    color: #fff;
+    padding: 0.4em;
+    border-radius: 50%;
+    font-size: 0.55em;
   }
 }
 </style>

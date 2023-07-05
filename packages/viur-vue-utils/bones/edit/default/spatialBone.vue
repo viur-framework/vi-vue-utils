@@ -65,7 +65,10 @@ export default defineComponent({
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index); //init
+      console.log(props.value)
       ValueInObject(props.value)
+      console.log("SpatialBone")
+      console.log(state.spatialValue)
     });
 
     return {

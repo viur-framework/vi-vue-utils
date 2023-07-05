@@ -3,11 +3,12 @@
     class="bone-wrapper"
     :class="'bone-wrapper-' + state.bonestructure['type']"
   >
-    <bone-label>
+    <bone-label :name="name">
       <span :class="{ required: state.required }">{{
         state.bonestructure["descr"]
       }}</span>
       <span v-if="state.required" class="required"> *</span>
+
       <sl-tooltip
         v-if="state.hasTooltip"
         :content="state.bonestructure.params['tooltip']"
@@ -210,7 +211,7 @@ import rawBone from "./default/rawBone.vue";
 export default defineComponent({
   components: {
     wrapperMultiple,
-    BoneLabel
+    BoneLabel,
   },
   props: {
     is: {
@@ -237,7 +238,7 @@ export default defineComponent({
     },
     errors: Object,
   },
-  emits: ["change"],
+  emits: ["change", "handleClick"],
   setup(props, context) {
     const state: any = reactive({
       bonestructure: computed(() => {
@@ -379,7 +380,6 @@ export default defineComponent({
 
     // Handle drag start event
     function handleDragStart(index, lang, event) {
-
       setStateProperties(lang, index, "isDragging");
       setStateProperties(lang, index, "dragStartIndex");
     }
@@ -489,7 +489,7 @@ export default defineComponent({
         state.bonevalue = val;
       }
       if (state.readonly) return false;
-
+      console.log("updateValue");
       console.log(val);
 
       context.emit("change", {
@@ -512,6 +512,7 @@ export default defineComponent({
         if (Array.isArray(val)) {
           if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
             //only add i if relationaldata
+
             for (const [i, v] of val.entries()) {
               ret.push(rewriteData(v, key + "." + i));
             }
@@ -521,6 +522,11 @@ export default defineComponent({
             }
           }
         } else if (val === Object(val)) {
+
+/*           if (Object.entries(val).some((c) => c.includes('lat'))) {
+            ret.push(({ [key]: val }))
+            return ret
+          } */
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
@@ -528,12 +534,7 @@ export default defineComponent({
                   Object.keys(state.bonestructure).includes("using") &&
                   state.bonestructure["using"]
                 ) {
-                  ret.push(
-                    rewriteData(
-                      v,
-                      key.replace(/\.dest/, "")+"."+k
-                    )
-                  );
+                  ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k));
                 } else {
                   ret.push(
                     rewriteData(
@@ -543,24 +544,27 @@ export default defineComponent({
                   );
                 }
               } else if (key.endsWith("rel")) {
-                if (Object.keys(state.bonestructure).includes('using') && state.bonestructure['using']) {
+                if (
+                  Object.keys(state.bonestructure).includes("using") &&
+                  state.bonestructure["using"]
+                ) {
+                  ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k));
+                } else {
                   ret.push(
                     rewriteData(
                       v,
-                      key.replace(/\.rel/, "") + "." + k
-                    )
-                  );
-                }else{
-                  ret.push(
-                    rewriteData(
-                      v,
-                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") + "." + k
+                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") +
+                        "." +
+                        k
                     )
                   );
                 }
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
+                console.log("rewriteData");
+                console.log(val);
+                console.log(k)
             } else {
               ret.push(rewriteData(v, k));
             }
@@ -575,7 +579,10 @@ export default defineComponent({
         }
         return ret;
       }
+      console.log("toFormValue");
+      console.log(state.bonevalue);
       let value = rewriteData(state.bonevalue, props.name);
+      console.log(value);
       value = value.flat(10);
       return value;
     }
@@ -628,7 +635,11 @@ export default defineComponent({
         value: toFormValue(),
         lang: lang,
       });
-      context.emit("change-internal", {name:props.name, value:toFormValue(),lang:lang})
+      context.emit("change-internal", {
+        name: props.name,
+        value: toFormValue(),
+        lang: lang,
+      });
     }
 
     provide("removeMultipleEntries", removeMultipleEntries);
@@ -803,9 +814,8 @@ sl-tab-panel::part(base) {
     margin-bottom: var(--sl-spacing-x-small);
   }
 
-
-  &:first-child{
-    :deep(.value-line){
+  &:first-child {
+    :deep(.value-line) {
       &.dragging-line-top {
         margin-top: 0;
       }
