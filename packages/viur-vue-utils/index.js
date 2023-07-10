@@ -1,4 +1,4 @@
-import {Request, HTTPError} from './utils/request'
+import {Request, HTTPError, useState} from './utils/request'
 import {ListRequest, destroyStore} from './utils/handlers'
 import bone from './bones/edit/bone.vue'
 import {getBoneWidget, useBoneStore, addBoneWidget, addBoneActionbar, getBoneActionbar} from './bones/edit/index'
@@ -9,6 +9,7 @@ import en_translations from './translations/en';
 export {
   Request,
   HTTPError,
+  useState,
   ListRequest,
   destroyStore,
   bone,

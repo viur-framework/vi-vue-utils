@@ -1,3 +1,6 @@
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
     super(message || statusText);
@@ -10,7 +13,19 @@ class HTTPError extends Error {
   }
 }
 
+const useState = defineStore("requestState", () => {
+  const state = reactive({ sKeys: new Set() });
+  return {
+    state,
+  };
+});
+
 export default class Request {
+  static resetState() {
+    useState().reset();
+    useState().$dispose();
+  }
+
   static buildUrl(url) {
     if (url && (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')))) {
       url = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) + url
@@ -51,7 +66,15 @@ export default class Request {
 
     return reqPromise
   }
-
+  static async getBatchSkeys(amount = 10, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
+    await Request.get(`/${renderer}/skey`, {
+      dataObj: { amount: amount },
+    }).then(async (resp) => {
+      let data = await resp.json();
+      // useState().state.sKeys = data;
+      data.forEach((sKey) => useState().state.sKeys.add(sKey));
+    });
+  }
   static async securePost(url, {
     dataObj = null,
     callback = null,
@@ -341,5 +364,6 @@ class cachedFetch {
 
 export {
   Request,
-  HTTPError
+  HTTPError,
+  useState
 }
