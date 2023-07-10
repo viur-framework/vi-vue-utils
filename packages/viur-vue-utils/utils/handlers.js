@@ -13,13 +13,7 @@ import { reactive, computed, toRaw } from "vue";
  */
 export function ListRequest(
   id,
-  {
-    module = "",
-    params = {},
-    group = null,
-    url = "",
-    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
-  } = {}
+  { module = "", params = {}, group = null, url = "", renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json" } = {}
 ) {
   const useList = defineStore(id, () => {
     let abortController = new AbortController();
@@ -84,17 +78,13 @@ export function ListRequest(
           if (data.structure !== null) {
             //empty skellist has no structure
             if (Object.keys(data.structure).length === 0) {
-              const structure = await Request.getStructure(state.module).then(
-                (structureResponse) =>
-                  structureResponse.json().then((_structure) => _structure)
+              const structure = await Request.getStructure(state.module).then((structureResponse) =>
+                structureResponse.json().then((_structure) => _structure)
               );
 
               let skeltype = "viewSkel";
               if (Object.keys(state.params).includes("skelType")) {
-                skeltype =
-                  state.params["skelType"] === "node"
-                    ? "viewNodeSkel"
-                    : "viewLeafSkel";
+                skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel";
               }
 
               if (Array.isArray(structure[skeltype])) {
@@ -102,9 +92,7 @@ export function ListRequest(
               } else {
                 // build array object
                 state.structure_object = structure[skeltype];
-                for (const [name, conf] of Object.entries(
-                  structure[skeltype]
-                )) {
+                for (const [name, conf] of Object.entries(structure[skeltype])) {
                   state.structure.push([name, conf]);
                 }
               }
@@ -116,9 +104,7 @@ export function ListRequest(
                 } else {
                   // build array object
                   state.structure_object = data["structure"];
-                  for (const [name, conf] of Object.entries(
-                    data["structure"]
-                  )) {
+                  for (const [name, conf] of Object.entries(data["structure"])) {
                     state.structure.push([name, conf]);
                   }
                 }

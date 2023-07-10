@@ -27,32 +27,15 @@ export default class Request {
   }
 
   static buildUrl(url) {
-    if (
-      url &&
-      !(
-        url.startsWith("http://") ||
-        url.startsWith("https://") ||
-        url.startsWith("//")
-      )
-    ) {
-      url =
-        (import.meta.env.VITE_API_URL
-          ? import.meta.env.VITE_API_URL
-          : window.location.origin) + url;
+    if (url && !(url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//"))) {
+      url = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) + url;
     }
     return url;
   }
 
   static post(
     url,
-    {
-      dataObj = null,
-      callback = null,
-      failedCallback = null,
-      abortController = null,
-      headers = null,
-      mode = null,
-    } = {}
+    { dataObj = null, callback = null, failedCallback = null, abortController = null, headers = null, mode = null } = {}
   ) {
     function buildFormdata() {
       if (dataObj instanceof FormData) {
@@ -72,14 +55,7 @@ export default class Request {
       return form;
     }
 
-    let reqPromise = cachedFetch.post(
-      Request.buildUrl(url),
-      buildFormdata(),
-      null,
-      headers,
-      abortController,
-      mode
-    );
+    let reqPromise = cachedFetch.post(Request.buildUrl(url), buildFormdata(), null, headers, abortController, mode);
 
     reqPromise
       .then(function (response) {
@@ -131,10 +107,7 @@ export default class Request {
     return return_value;
   }
 
-  static async getMultiSkeys(
-    amount = 10,
-    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
-  ) {
+  static async getMultiSkeys(amount = 10, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     await Request.get(`/${renderer}/skey`, {
       dataObj: { amount: amount },
     }).then(async (resp) => {
@@ -159,14 +132,7 @@ export default class Request {
       cacheTime = 1000 * 60 * 60 * 24 * 1,
     } = {}
   ) {
-    let reqPromise = cachedFetch.get(
-      Request.buildUrl(url),
-      dataObj,
-      clearCache,
-      headers,
-      abortController,
-      mode
-    );
+    let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, headers, abortController, mode);
     reqPromise
       .then(function (response) {
         if (callback) {
@@ -207,13 +173,7 @@ export default class Request {
 
   static getStructure(
     module,
-    {
-      dataObj = null,
-      callback = null,
-      failedCallback = null,
-      group = null,
-      abortController = null,
-    } = {}
+    { dataObj = null, callback = null, failedCallback = null, group = null, abortController = null } = {}
   ) {
     let url = `/vi/getStructure/${module}/`;
     if (group) {
@@ -345,13 +305,7 @@ export default class Request {
 class cachedFetch {
   withCredentials = true;
 
-  static buildOptions(
-    method,
-    body = null,
-    headers = null,
-    abortController = null,
-    mode = null
-  ) {
+  static buildOptions(method, body = null, headers = null, abortController = null, mode = null) {
     let options = { method: method };
 
     options["credentials"] = "include";
@@ -377,14 +331,7 @@ class cachedFetch {
     return options;
   }
 
-  static get(
-    url,
-    params = null,
-    clearCache = null,
-    headers = null,
-    abortController = null,
-    mode = null
-  ) {
+  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
     function buildGetUrl(url, params) {
       let requestUrl = new URL(url);
       if (params && Object.keys(params).length > 0) {
@@ -405,10 +352,7 @@ class cachedFetch {
       return requestUrl.toString();
     }
 
-    return fetch(
-      buildGetUrl(url, params),
-      cachedFetch.buildOptions("GET", null, headers, abortController, mode)
-    )
+    return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
       .then(async (response) => {
         if (response.ok) {
           return response;
@@ -416,60 +360,30 @@ class cachedFetch {
           const errorMessage = `${response.status} ${response.statusText}: ${
             response.headers ? response.headers.get("x-error-descr") : ""
           }`;
-          return Promise.reject(
-            new HTTPError(
-              response.status,
-              response.statusText,
-              errorMessage,
-              response
-            )
-          );
+          return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response));
         }
       })
       .catch((error) => {
         if (error instanceof TypeError) {
-          const errorMessage = `503 ${error.message}: ${
-            error.headers ? error.headers.get("x-error-descr") : ""
-          }`;
-          return Promise.reject(
-            new HTTPError(503, error.message, errorMessage, error)
-          );
+          const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get("x-error-descr") : ""}`;
+          return Promise.reject(new HTTPError(503, error.message, errorMessage, error));
         }
         if (error instanceof DOMException && error.name == "AbortError") {
           const errorMessage = `${error.code} ${error.name}: ${
             error.headers ? error.headers.get("x-error-descr") : ""
           }`;
-          return Promise.reject(
-            new HTTPError(error.code, error.name, errorMessage, { url: url })
-          );
+          return Promise.reject(new HTTPError(error.code, error.name, errorMessage, { url: url }));
         }
 
         const errorMessage = `${error.statusCode} ${error.statusText}: ${
           error.headers ? error.headers.get("x-error-descr") : ""
         }`;
-        return Promise.reject(
-          new HTTPError(
-            error.statusCode,
-            error.statusText,
-            errorMessage,
-            error.response
-          )
-        );
+        return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response));
       });
   }
 
-  static post(
-    url,
-    params = null,
-    clearCache = null,
-    headers = null,
-    abortController = null,
-    mode = null
-  ) {
-    return fetch(
-      url,
-      cachedFetch.buildOptions("POST", params, headers, abortController, mode)
-    );
+  static post(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
+    return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode));
   }
 }
 
