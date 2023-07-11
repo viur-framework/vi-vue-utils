@@ -1,6 +1,6 @@
-import {Request, HTTPError} from './request.js';
-import {defineStore} from 'pinia'
-import {reactive, computed, toRaw} from "vue";
+import { Request, HTTPError } from "./request.js"
+import { defineStore } from "pinia"
+import { reactive, computed, toRaw } from "vue"
 
 /**
  *
@@ -11,14 +11,10 @@ import {reactive, computed, toRaw} from "vue";
  * @param url a url to fetch from, overrides module url building
  * @param renderer
  */
-export function ListRequest(id, {
-  module = "",
-  params = {},
-  group = null,
-  url = "",
-  renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json"
-} = {}) {
-
+export function ListRequest(
+  id,
+  { module = "", params = {}, group = null, url = "", renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json" } = {}
+) {
   const useList = defineStore(id, () => {
     let abortController = new AbortController()
 
@@ -33,7 +29,6 @@ export function ListRequest(id, {
       group: group,
       module: module,
       state: 0, // 0:not fetched, 1:fetched, 2:all fetched, -1:error
-
     })
 
     /**
@@ -43,7 +38,7 @@ export function ListRequest(id, {
     const structure = computed(() => {
       let struct = {}
       // we got structure object from core
-      if (Object.keys(state.structure_object).length>0){
+      if (Object.keys(state.structure_object).length > 0) {
         return state.structure_object
       }
 
@@ -60,7 +55,7 @@ export function ListRequest(id, {
      * Fetch
      * @returns {number|Promise<Response>}
      */
-    function fetch(do_reset = true,next = false) {
+    function fetch(do_reset = true, next = false) {
       if (do_reset) reset()
       if (state.state === 2) return 0
 
@@ -76,69 +71,73 @@ export function ListRequest(id, {
         dataObj: state.params,
         abortController: abortController,
         group: state.group,
-        renderer:renderer
-      }).then(async (resp) => {
-        let data = await resp.json()
-        if (data.structure!== null){ //empty skellist has no structure
-          if (Object.keys(data.structure).length === 0) {
-            const structure = await Request.getStructure(state.module)
-              .then(structureResponse => structureResponse.json().then(_structure => _structure));
+        renderer: renderer,
+      })
+        .then(async (resp) => {
+          let data = await resp.json()
+          if (data.structure !== null) {
+            //empty skellist has no structure
+            if (Object.keys(data.structure).length === 0) {
+              const structure = await Request.getStructure(state.module).then((structureResponse) =>
+                structureResponse.json().then((_structure) => _structure)
+              )
 
-            let skeltype = "viewSkel"
-            if (Object.keys(state.params).includes("skelType")){
-              skeltype = state.params["skelType"]==="node"?"viewNodeSkel":"viewLeafSkel"
-            }
-
-            if (Array.isArray(structure[skeltype])){
-              state.structure = structure[skeltype];
-            }else{
-              // build array object
-              state.structure_object = structure[skeltype];
-              for (const [name, conf] of Object.entries(structure[skeltype])) {
-                state.structure.push([name,conf])
+              let skeltype = "viewSkel"
+              if (Object.keys(state.params).includes("skelType")) {
+                skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
               }
-            }
-          }else{
-            if (!next) { // when we have the next request we not change the structure
-              if (Array.isArray(data["structure"])) {
-                state.structure = data["structure"];
+
+              if (Array.isArray(structure[skeltype])) {
+                state.structure = structure[skeltype]
               } else {
                 // build array object
-                state.structure_object = data["structure"];
-                for (const [name, conf] of Object.entries(data["structure"])) {
+                state.structure_object = structure[skeltype]
+                for (const [name, conf] of Object.entries(structure[skeltype])) {
                   state.structure.push([name, conf])
+                }
+              }
+            } else {
+              if (!next) {
+                // when we have the next request we not change the structure
+                if (Array.isArray(data["structure"])) {
+                  state.structure = data["structure"]
+                } else {
+                  // build array object
+                  state.structure_object = data["structure"]
+                  for (const [name, conf] of Object.entries(data["structure"])) {
+                    state.structure.push([name, conf])
+                  }
                 }
               }
             }
           }
-        }
 
-        state.request_state = parseInt(resp.status)
-        state.cursor = data["cursor"]
-        state.orders = data["orders"] || []
+          state.request_state = parseInt(resp.status)
+          state.cursor = data["cursor"]
+          state.orders = data["orders"] || []
 
-        if (state.skellist.length === 0) {
-          state.skellist = data["skellist"]
-        } else {
-          state.skellist = state.skellist.concat(data["skellist"]);
-        }
+          if (state.skellist.length === 0) {
+            state.skellist = data["skellist"]
+          } else {
+            state.skellist = state.skellist.concat(data["skellist"])
+          }
 
-        if (data["skellist"].length === 0 || !state.cursor) {
-          state.state = 2
-        } else {
-          state.state = 1
-        }
+          if (data["skellist"].length === 0 || !state.cursor) {
+            state.state = 2
+          } else {
+            state.state = 1
+          }
+        })
+        .catch((error) => {
+          if (error.response) {
+            state.request_state = parseInt(error.response.status)
+          } else {
+            state.request_state = 501
+          }
 
-      }).catch((error) => {
-        if (error.response) {
-          state.request_state = parseInt(error.response.status)
-        } else {
-          state.request_state = 501
-        }
-
-        state.state = -1
-        throw error
-      })
+          state.state = -1
+          throw error
+        })
     }
 
     /**
@@ -154,7 +153,6 @@ export function ListRequest(id, {
       return nextRequest.then((resp) => {
         fetchAll(false)
       })
-
     }
 
     /**
@@ -167,10 +165,10 @@ export function ListRequest(id, {
       }
 
       if (state.cursor !== "") {
-        state.params = {...state.params, "cursor": state.cursor}
+        state.params = { ...state.params, cursor: state.cursor }
       }
       let next = true
-      if (state.state === 0){
+      if (state.state === 0) {
         next = false // first request
       }
       return fetch(false, next)
@@ -202,7 +200,6 @@ export function ListRequest(id, {
       return fetch()
     }
 
-
     return {
       state,
       structure,
@@ -210,7 +207,7 @@ export function ListRequest(id, {
       fetch,
       next,
       filter,
-      reset
+      reset,
     }
   })
   return useList()
