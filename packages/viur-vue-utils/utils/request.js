@@ -13,7 +13,7 @@ class HTTPError extends Error {
   }
 }
 
-const useState = defineStore("requestState", () => {
+const useRequestStore = defineStore("requestStore", () => {
   const state = reactive({ sKeys: new Set() });
   return {
     state,
@@ -22,8 +22,8 @@ const useState = defineStore("requestState", () => {
 
 export default class Request {
   static resetState() {
-    useState().reset();
-    useState().$dispose();
+    useRequestStore().$reset();
+    useRequestStore().$dispose();
   }
 
   static buildUrl(url) {
@@ -71,8 +71,7 @@ export default class Request {
       dataObj: { amount: amount },
     }).then(async (resp) => {
       let data = await resp.json();
-      // useState().state.sKeys = data;
-      data.forEach((sKey) => useState().state.sKeys.add(sKey));
+      useRequestStore().state.sKeys = new Set(data);
     });
   }
   static async securePost(url, {
@@ -82,24 +81,30 @@ export default class Request {
     abortController = null,
     renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
     headers=null,
-    mode=null
+    mode=null,
+    amount = 1
   } = {}) {
     let return_value = null
-    await Request.get(`/${renderer}/skey`).then(
-      async (resp) => {
-        let data = await resp.json()
-        if (dataObj instanceof FormData) {
-          dataObj.append("skey", data)
-        } else {
-          if (!dataObj) {
-            dataObj = {}
-          }
-          dataObj["skey"] = data
-        }
 
-        return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController, headers, mode})
+    if (useRequestStore().state.sKeys.length) {
+      await Request.getBatchSkeys(amount)
+    }
+    const sKey = [ ...useRequestStore().state.sKeys ][ 0 ]
+
+    if (dataObj instanceof FormData) {
+      dataObj.append("skey", sKey)
+      useRequestStore().state.sKeys.delete(sKey)
+    } else {
+      if (!dataObj) {
+        dataObj = {}
       }
-    )
+      dataObj[ "skey" ] = sKey
+      useRequestStore().state.sKeys.delete(sKey)
+
+    }
+
+
+    return_value = Request.post(url, { dataObj: dataObj, callback: callback, abortController: abortController, headers, mode })
     return return_value
   }
 
@@ -259,7 +264,8 @@ export default class Request {
         dataObj: dataObj,
         callback: callback,
         failedCallback: failedCallback,
-        abortController: abortController
+        abortController: abortController,
+        amount: 1,
       })
   }
 
@@ -365,5 +371,5 @@ class cachedFetch {
 export {
   Request,
   HTTPError,
-  useState
+  useRequestStore
 }
