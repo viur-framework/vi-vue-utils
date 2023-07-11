@@ -86,7 +86,7 @@ export default class Request {
   } = {}) {
     let returnValue = null
 
-    if (!useRequestStore().state.sKeys.length) {
+    if (useRequestStore().state.sKeys.size === 0) {
       await Request.getBatchSkeys(amount)
     }
     const sKey = [ ...useRequestStore().state.sKeys ][ 0 ]
@@ -117,7 +117,7 @@ export default class Request {
                abortController = null,
                headers=null,
                mode=null,
-               //                  milli  sec  min  Std  Tage
+               //          milli  sec  min  Std  Tage
                cacheTime = 1000 * 60 * 60 * 24 * 1
              } = {}
   ) {
