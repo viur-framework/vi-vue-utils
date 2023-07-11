@@ -66,7 +66,7 @@ export default class Request {
 
     return reqPromise
   }
-  static async getBatchSkeys(amount = 10, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
+  static async getBatchSkeys(amount = 30, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     await Request.get(`/${renderer}/skey`, {
       dataObj: { amount: amount },
     }).then(async (resp) => {
@@ -82,11 +82,11 @@ export default class Request {
     renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
     headers=null,
     mode=null,
-    amount = 1
+    amount = 30
   } = {}) {
-    let return_value = null
+    let returnValue = null
 
-    if (useRequestStore().state.sKeys.length) {
+    if (!useRequestStore().state.sKeys.length) {
       await Request.getBatchSkeys(amount)
     }
     const sKey = [ ...useRequestStore().state.sKeys ][ 0 ]
@@ -100,12 +100,10 @@ export default class Request {
       }
       dataObj[ "skey" ] = sKey
       useRequestStore().state.sKeys.delete(sKey)
-
     }
+    returnValue = Request.post(url, { dataObj: dataObj, callback: callback, abortController: abortController, headers, mode })
 
-
-    return_value = Request.post(url, { dataObj: dataObj, callback: callback, abortController: abortController, headers, mode })
-    return return_value
+    return returnValue
   }
 
 
