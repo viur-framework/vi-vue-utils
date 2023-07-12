@@ -1,3 +1,6 @@
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
     super(message || statusText);
@@ -10,7 +13,19 @@ class HTTPError extends Error {
   }
 }
 
+const useRequestStore = defineStore("requestStore", () => {
+  const state = reactive({ sKeys: new Set() });
+  return {
+    state,
+  };
+});
+
 export default class Request {
+  static resetState() {
+    useRequestStore().$reset();
+    useRequestStore().$dispose();
+  }
+
   static buildUrl(url) {
     if (url && (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')))) {
       url = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) + url
@@ -51,7 +66,14 @@ export default class Request {
 
     return reqPromise
   }
-
+  static async getBatchSkeys(amount = 30, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
+    await Request.get(`/${renderer}/skey`, {
+      dataObj: { amount: amount },
+    }).then(async (resp) => {
+      let data = await resp.json();
+      useRequestStore().state.sKeys = new Set(data);
+    });
+  }
   static async securePost(url, {
     dataObj = null,
     callback = null,
@@ -59,25 +81,29 @@ export default class Request {
     abortController = null,
     renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
     headers=null,
-    mode=null
+    mode=null,
+    amount = 30
   } = {}) {
-    let return_value = null
-    await Request.get(`/${renderer}/skey`).then(
-      async (resp) => {
-        let data = await resp.json()
-        if (dataObj instanceof FormData) {
-          dataObj.append("skey", data)
-        } else {
-          if (!dataObj) {
-            dataObj = {}
-          }
-          dataObj["skey"] = data
-        }
+    let returnValue = null
 
-        return_value = Request.post(url, {dataObj: dataObj, callback: callback, abortController: abortController, headers, mode})
+    if (useRequestStore().state.sKeys.size === 0) {
+      await Request.getBatchSkeys(amount)
+    }
+    const sKey = [ ...useRequestStore().state.sKeys ][ 0 ]
+
+    if (dataObj instanceof FormData) {
+      dataObj.append("skey", sKey)
+      useRequestStore().state.sKeys.delete(sKey)
+    } else {
+      if (!dataObj) {
+        dataObj = {}
       }
-    )
-    return return_value
+      dataObj[ "skey" ] = sKey
+      useRequestStore().state.sKeys.delete(sKey)
+    }
+    returnValue = Request.post(url, { dataObj: dataObj, callback: callback, abortController: abortController, headers, mode })
+
+    return returnValue
   }
 
 
@@ -91,7 +117,7 @@ export default class Request {
                abortController = null,
                headers=null,
                mode=null,
-               //                  milli  sec  min  Std  Tage
+               //          milli  sec  min  Std  Tage
                cacheTime = 1000 * 60 * 60 * 24 * 1
              } = {}
   ) {
@@ -236,7 +262,8 @@ export default class Request {
         dataObj: dataObj,
         callback: callback,
         failedCallback: failedCallback,
-        abortController: abortController
+        abortController: abortController,
+        amount: 1,
       })
   }
 
@@ -341,5 +368,6 @@ class cachedFetch {
 
 export {
   Request,
-  HTTPError
+  HTTPError,
+  useRequestStore
 }
