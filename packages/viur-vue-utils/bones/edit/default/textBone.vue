@@ -15,7 +15,7 @@
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject,computed} from 'vue'
-//import ClassicEditor from '@viur/ckeditor5-build-classic'
+import ClassicEditor from '@viur/ckeditor5-build-classic'
 
 export default defineComponent({
     props:{
