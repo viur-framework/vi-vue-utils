@@ -2,7 +2,9 @@
     <sl-select :disabled="boneState.readonly"
                :value="state.value"
                @sl-change="changeEvent"
-               :multiple="boneState['bonestructure']['multiple']">
+               :multiple="boneState['bonestructure']['multiple']"
+               max-options-visible="0"
+               >
       <sl-option :value="value[0]" v-for="value in boneState['bonestructure']['values']">
           {{ value[1] }}
       </sl-option>
@@ -26,8 +28,10 @@ export default defineComponent({
       const boneState = inject("boneState")
         const state = reactive({
           value:computed(()=>{
+            let val = props.value
             if (Array.isArray(props.value)){
-              return props.value.map(i=>i.toString())
+              val = val.filter(i=>boneState['bonestructure']['values'].map(i=>i[0]).includes(i))
+              return val.map(i=>i.toString())
             }
             return props.value?props.value.toString():''
           })
@@ -38,7 +42,7 @@ export default defineComponent({
         }
 
         onMounted(()=>{
-            context.emit("change",props.name,props.value,props.lang,props.index) //init
+            context.emit("change",props.name,state.value,props.lang,props.index) //init
         })
 
         return {
