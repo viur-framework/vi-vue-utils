@@ -71,6 +71,9 @@ export default class Request {
       dataObj: { amount: amount },
     }).then(async (resp) => {
       let data = await resp.json();
+      if(!Array.isArray(data)){
+        data = [data]
+      }
       useRequestStore().state.sKeys = new Set(data);
     });
   }
