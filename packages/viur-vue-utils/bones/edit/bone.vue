@@ -489,8 +489,6 @@ export default defineComponent({
         state.bonevalue = val;
       }
       if (state.readonly) return false;
-      console.log("updateValue");
-      console.log(val);
 
       context.emit("change", {
         name: name,
@@ -562,9 +560,6 @@ export default defineComponent({
               } else if (!key.endsWith("dest")) {
                 ret.push(rewriteData(v, key + "." + k));
               }
-                console.log("rewriteData");
-                console.log(val);
-                console.log(k)
             } else {
               ret.push(rewriteData(v, k));
             }
@@ -579,10 +574,7 @@ export default defineComponent({
         }
         return ret;
       }
-      console.log("toFormValue");
-      console.log(state.bonevalue);
       let value = rewriteData(state.bonevalue, props.name);
-      console.log(value);
       value = value.flat(10);
       return value;
     }
