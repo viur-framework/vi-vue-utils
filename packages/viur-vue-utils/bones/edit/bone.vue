@@ -432,13 +432,20 @@ export default defineComponent({
         adjustDropIndex();
         state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
       } else {
+        console.log("bonevalue: ", state.bonevalue)
         dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
+        console.log("dragItem", dragItem)
+        console.log("dropIndex",state.dropIndex)
         adjustDropIndex();
+        console.log("dropIndex",state.dropIndex)
         state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
       }
 
-      resetStateProperties("dragStartIndex");
+      console.log("handleDragEnd");
+      console.log("boneValue", state.bonevalue)
 
+      resetStateProperties("dragStartIndex");
+      console.log(toFormValue())
       context.emit("change", {
         name: name,
         value: toFormValue(),
