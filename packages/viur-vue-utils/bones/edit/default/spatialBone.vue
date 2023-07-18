@@ -1,26 +1,19 @@
 <template>
-  <sl-input
-    type="number"
-    :name="name + '_lat'"
-    :min="boneState.bonestructure.boundslat[0]"
-    :max="boneState.bonestructure.boundslat[1]"
-    :disabled="boneState.readonly"
-    @sl-change="changeEvent"
-    v-model="state.spatialValue['lat']"
-    valueAsNumber
-    step="0.1"
-  ></sl-input>
-  <sl-input
-    type="number"
-    :name="name + '_lng'"
-    :min="boneState.bonestructure.boundslng[0]"
-    :max="boneState.bonestructure.boundslng[1]"
-    :disabled="boneState.readonly"
-    @sl-change="changeEvent"
-    v-model="state.spatialValue['lng']"
-    valueAsNumber
-    step="0.1"
-  ></sl-input>
+  <div v-for="(val, index) in state.spatialValue" :key="index">
+    {{ index }} {{ name }} {{ val }}
+    <sl-input
+      v-model="state.spatialValue[index]"
+      :index="index"
+      type="number"
+      :name="name"
+      :min="boneState.bonestructure.boundslat[0]"
+      :max="boneState.bonestructure.boundslat[1]"
+      :disabled="boneState.readonly"
+      @sl-change="changeEvent"
+      valueAsNumber
+      step="0.1"
+    ></sl-input>
+  </div>
 </template>
 
 <script lang="ts">
@@ -42,33 +35,40 @@ export default defineComponent({
       valueLat: null,
       valueLng: null,
       spatialValue: {
-        "lat": null,
-        "lng": null
+        lat: null,
+        lng: null,
       },
     });
     function ValueInObject(value) {
       if (value !== null) {
-        if (Array.isArray(value) && value.length === 2){
+        if (Array.isArray(value) && value.length === 2) {
           state.spatialValue = {
-            "lat": value[0],
-            "lng": value[1]
-          }
+            lat: value[0],
+            lng: value[1],
+          };
         }
       }
     }
 
     function changeEvent() {
-
-
-      context.emit("change", props.name, state.spatialValue, props.lang, props.index);
+      context.emit(
+        "change",
+        props.name,
+        state.spatialValue,
+        props.lang,
+        props.index
+      );
     }
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index); //init
-      console.log(props.value)
-      ValueInObject(props.value)
-      console.log("SpatialBone")
-      console.log(state.spatialValue)
+      if (props.value) {
+        state.spatialValue = {
+          lat: props.value[0],
+          lng: props.value[1],
+        };
+        props.value = state.spatialValue;
+      }
     });
 
     return {
