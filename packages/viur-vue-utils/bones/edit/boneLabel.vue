@@ -10,14 +10,14 @@
     <pre>
     {{ boneState }}
     </pre>
-    <VueJsonPretty :data="boneState"></VueJsonPretty>
+    <!--<VueJsonPretty :data="boneState"></VueJsonPretty>-->
   </div>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject } from "vue";
-import VueJsonPretty from "vue-json-pretty";
+//import VueJsonPretty from "vue-json-pretty";
 import "vue-json-pretty/lib/styles.css";
 
 export default defineComponent({
@@ -29,7 +29,7 @@ export default defineComponent({
     readonly: Boolean,
     params: Object,
   },
-  components: { VueJsonPretty },
+  components: {  }, // VueJsonPretty
   emits: ["change", "handleClick"],
   setup(props, context) {
     console.log(props);
