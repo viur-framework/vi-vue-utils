@@ -225,7 +225,7 @@ export default defineComponent({
     cursor: pointer;
   }
 
-  sl-icon {
+  & sl-icon {
     font-size: 1.1em;
     color: var(--sl-color-gray-400);
   }
@@ -309,7 +309,7 @@ export default defineComponent({
     padding: 0;
   }
 
-  img{
+  & img{
     width: auto;
     height: auto;
   }

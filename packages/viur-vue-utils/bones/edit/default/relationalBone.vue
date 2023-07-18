@@ -96,7 +96,7 @@ export default defineComponent({
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
 
-      :deep(&::part(base)){
+      & :deep(&::part(base)){
         border: 1px solid red;
       }
     }

@@ -106,7 +106,7 @@ sl-combobox{
 .add-btn{
   margin-left: var(--sl-spacing-x-small);
 
-  sl-icon{
+  & sl-icon{
     margin-right: var(--sl-spacing-x-small);
   }
 }

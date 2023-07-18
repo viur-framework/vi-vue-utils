@@ -85,15 +85,15 @@ export default defineComponent({
 .value {
   width: 100%;
 
-  :deep(sl-input) {
+  & :deep(sl-input) {
     &::part(base) {
       border-bottom-left-radius: var(--sl-border-radius-medium);
       border-top-left-radius: var(--sl-border-radius-medium);
     }
   }
 
-  :deep(.bone-wrapper) {
-    sl-input::part(base) {
+  & :deep(.bone-wrapper) {
+    & sl-input::part(base) {
       border-bottom-left-radius: 0;
       border-top-left-radius: 0;
     }

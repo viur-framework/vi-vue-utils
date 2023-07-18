@@ -747,7 +747,7 @@ export default defineComponent({
       border-top: 2px solid var(--sl-color-neutral-200);
     }
 
-    .multiple-bone {
+    & .multiple-bone {
       border-bottom: 1px solid var(--sl-color-neutral-200);
       padding-bottom: var(--sl-spacing-2x-small);
       margin-bottom: var(--sl-spacing-small);
@@ -769,7 +769,7 @@ sl-tab-panel::part(base) {
     overflow-x: hidden;
   }
 
-  sl-tab {
+  & sl-tab {
     &::part(base) {
       padding: var(--sl-spacing-x-small);
     }
@@ -781,7 +781,7 @@ sl-tab-panel::part(base) {
     margin-bottom: var(--sl-spacing-x-small);
   }
 
-  sl-input {
+  & sl-input {
     &::part(base) {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
@@ -790,7 +790,7 @@ sl-tab-panel::part(base) {
   }
 
   @media (max-width: 900px) {
-    sl-input {
+    & sl-input {
       &::part(base) {
         border-top-right-radius: 0;
         border-bottom-left-radius: var(--sl-border-radius-medium);
@@ -802,12 +802,12 @@ sl-tab-panel::part(base) {
 .multiple-bone {
   margin-bottom: var(--sl-spacing-x-small);
 
-  .bone-wrapper {
+  & .bone-wrapper {
     margin-bottom: var(--sl-spacing-x-small);
   }
 
   &:first-child {
-    :deep(.value-line) {
+    & :deep(.value-line) {
       &.dragging-line-top {
         margin-top: 0;
       }
@@ -818,7 +818,7 @@ sl-tab-panel::part(base) {
 .bone-inner-wrap {
   min-width: 1px;
 
-  sl-alert {
+  & sl-alert {
     margin-top: var(--sl-spacing-x-small);
     background-color: transparent;
 
@@ -839,7 +839,7 @@ sl-tab-panel::part(base) {
   margin-left: auto;
   padding-left: 0.4em;
 
-  sl-icon {
+  & sl-icon {
     background-color: var(--sl-color-info-500);
     color: #fff;
     padding: 0.4em;

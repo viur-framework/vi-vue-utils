@@ -104,7 +104,7 @@ export default defineComponent({
 .add-btn {
   margin-left: auto;
 
-  sl-icon {
+  & sl-icon {
     margin-right: var(--sl-spacing-x-small);
   }
 }

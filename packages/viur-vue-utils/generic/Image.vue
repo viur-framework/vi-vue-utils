@@ -123,7 +123,7 @@ sl-dialog::part(panel){
 }
 
 sl-dialog{
-  img{
+  & img{
     width:auto;
   }
 }

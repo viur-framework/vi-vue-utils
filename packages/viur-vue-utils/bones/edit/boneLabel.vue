@@ -73,7 +73,7 @@ export default defineComponent({
   margin-left: auto;
   padding-left: 0.4em;
 
-  sl-icon {
+  & sl-icon {
     background-color: var(--sl-color-danger-500);
     color: #fff;
     padding: 0.4em;
