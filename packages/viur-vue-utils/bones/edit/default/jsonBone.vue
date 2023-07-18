@@ -1,13 +1,13 @@
 <template>
     <div class="box">
-      <vue-json-pretty :deep="0" :data="value" @selectedChange="changeEvent"></vue-json-pretty>
+      <!--<vue-json-pretty :deep="0" :data="value" @selectedChange="changeEvent"></vue-json-pretty>-->
     </div>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject} from 'vue'
-import VueJsonPretty from 'vue-json-pretty';
+//import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 
 export default defineComponent({
@@ -19,7 +19,7 @@ export default defineComponent({
         readonly:Boolean,
         params:Object,
     },
-    components: {VueJsonPretty},
+    components: {}, //VueJsonPretty
     emits:["change"],
     setup(props, context) {
         const boneState = inject("boneState")
