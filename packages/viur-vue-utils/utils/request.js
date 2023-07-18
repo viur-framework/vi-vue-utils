@@ -13,17 +13,24 @@ class HTTPError extends Error {
   }
 }
 
-const useRequestStore = defineStore("requestStore", () => {
-  const state = reactive({ sKeys: new Set() });
-  return {
-    state,
-  };
-});
+let useRequestStore = null
+
+function getRequestStore(){
+  if (!useRequestStore){
+    useRequestStore = defineStore("requestStore", () => {
+      const state = reactive({ sKeys: new Set() });
+      return {
+        state,
+      };
+    });
+  }
+  return useRequestStore()
+}
 
 export default class Request {
   static resetState() {
-    useRequestStore().$reset();
-    useRequestStore().$dispose();
+    getRequestStore().$reset();
+    getRequestStore().$dispose();
   }
 
   static buildUrl(url) {
@@ -74,7 +81,7 @@ export default class Request {
       if(!Array.isArray(data)){
         data = [data]
       }
-      useRequestStore().state.sKeys = new Set(data);
+      getRequestStore().state.sKeys = new Set(data);
     });
   }
   static async securePost(url, {
@@ -89,20 +96,20 @@ export default class Request {
   } = {}) {
     let returnValue = null
 
-    if (useRequestStore().state.sKeys.size === 0) {
+    if (getRequestStore().state.sKeys.size === 0) {
       await Request.getBatchSkeys(amount)
     }
-    const sKey = [ ...useRequestStore().state.sKeys ][ 0 ]
+    const sKey = [ ...getRequestStore().state.sKeys ][ 0 ]
 
     if (dataObj instanceof FormData) {
       dataObj.append("skey", sKey)
-      useRequestStore().state.sKeys.delete(sKey)
+      getRequestStore().state.sKeys.delete(sKey)
     } else {
       if (!dataObj) {
         dataObj = {}
       }
       dataObj[ "skey" ] = sKey
-      useRequestStore().state.sKeys.delete(sKey)
+      getRequestStore().state.sKeys.delete(sKey)
     }
     returnValue = Request.post(url, { dataObj: dataObj, callback: callback, abortController: abortController, headers, mode })
 
@@ -372,5 +379,5 @@ class cachedFetch {
 export {
   Request,
   HTTPError,
-  useRequestStore
+  getRequestStore
 }
