@@ -718,7 +718,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .dragging-top {
   border-top: 2px solid var(--sl-color-neutral-400);
 }

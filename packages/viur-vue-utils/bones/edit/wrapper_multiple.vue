@@ -62,7 +62,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .is-dragging {
   opacity: 0.4;
 }

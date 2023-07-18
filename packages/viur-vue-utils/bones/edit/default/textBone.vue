@@ -71,7 +71,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="less">
+<style>
 .bone-inner-wrap{
   .ck-editor{
      /* Overrides the border radius setting in the theme. */

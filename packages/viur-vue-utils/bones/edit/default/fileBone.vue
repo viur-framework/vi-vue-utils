@@ -189,7 +189,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="less">
+<style scoped >
 .box {
   display: flex;
   align-items: center;

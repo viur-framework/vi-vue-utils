@@ -88,7 +88,7 @@ export default defineComponent({
 });
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .actionbar {
   display: flex;
   flex-direction: row;

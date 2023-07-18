@@ -42,7 +42,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="less">
+<style scoped>
     .box{
       width:100%;
       border: 1px solid var(--sl-color-gray-500);

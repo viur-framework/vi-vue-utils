@@ -76,7 +76,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="less">
+<style scoped>
   sl-input{
       width:100%;
 

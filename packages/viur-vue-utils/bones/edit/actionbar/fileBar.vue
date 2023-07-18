@@ -133,7 +133,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .actionbar{
   display: flex;
   position: relative;
