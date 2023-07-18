@@ -7,7 +7,7 @@
 <script lang="ts">
 //@ts-nocheck
 import {reactive, defineComponent, onMounted, inject} from 'vue'
-import {VueJsonPretty} from 'vue-json-pretty';
+import VueJsonPretty from 'vue-json-pretty';
 import 'vue-json-pretty/lib/styles.css';
 
 export default defineComponent({
