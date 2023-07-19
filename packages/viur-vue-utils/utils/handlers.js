@@ -79,39 +79,38 @@ export function ListRequest(id, {
         renderer:renderer
       }).then(async (resp) => {
         let data = await resp.json()
-        if (data.structure!== null){ //empty skellist has no structure
-          if (Object.keys(data.structure).length === 0) {
-            const structure = await Request.getStructure(state.module)
-              .then(structureResponse => structureResponse.json().then(_structure => _structure));
+        if (data.structure===null || Object.keys(data.structure).length === 0) {
+          const structure = await Request.getStructure(state.module)
+            .then(structureResponse => structureResponse.json().then(_structure => _structure));
 
-            let skeltype = "viewSkel"
-            if (Object.keys(state.params).includes("skelType")){
-              skeltype = state.params["skelType"]==="node"?"viewNodeSkel":"viewLeafSkel"
-            }
+          let skeltype = "viewSkel"
+          if (Object.keys(state.params).includes("skelType")){
+            skeltype = state.params["skelType"]==="node"?"viewNodeSkel":"viewLeafSkel"
+          }
 
-            if (Array.isArray(structure[skeltype])){
-              state.structure = structure[skeltype];
-            }else{
-              // build array object
-              state.structure_object = structure[skeltype];
-              for (const [name, conf] of Object.entries(structure[skeltype])) {
-                state.structure.push([name,conf])
-              }
-            }
+          if (Array.isArray(structure[skeltype])){
+            state.structure = structure[skeltype];
           }else{
-            if (!next) { // when we have the next request we not change the structure
-              if (Array.isArray(data["structure"])) {
-                state.structure = data["structure"];
-              } else {
-                // build array object
-                state.structure_object = data["structure"];
-                for (const [name, conf] of Object.entries(data["structure"])) {
-                  state.structure.push([name, conf])
-                }
+            // build array object
+            state.structure_object = structure[skeltype];
+            for (const [name, conf] of Object.entries(structure[skeltype])) {
+              state.structure.push([name,conf])
+            }
+          }
+        }else{
+          if (!next) { // when we have the next request we not change the structure
+            if (Array.isArray(data["structure"])) {
+              state.structure = data["structure"];
+            } else {
+              // build array object
+              state.structure_object = data["structure"];
+              for (const [name, conf] of Object.entries(data["structure"])) {
+                state.structure.push([name, conf])
               }
             }
           }
         }
+
 
         state.request_state = parseInt(resp.status)
         state.cursor = data["cursor"]
