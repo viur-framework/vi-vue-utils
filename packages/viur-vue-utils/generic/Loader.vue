@@ -1,7 +1,10 @@
 <template>
     <transition>
-        <div class="loading" v-if="active">
-            <img src="/loading.svg" class="loader">
+        <div class="loading" v-if="active" >
+            <sl-icon src="/loading.svg" class="loader"></sl-icon>
+            <div class="logo">
+                <sl-icon :src="logo"></sl-icon>
+            </div>
         </div>
     </transition>
 </template>
@@ -14,17 +17,26 @@ export default {
     props: {
         size: {
             type: String,
-            default: "1em"
+            default: "2.5"
         },
         active: {
             type: Boolean,
             default: true
+        },
+        logo:{
+            default: "/logo-cube.svg"
+        },
+        color:{
+          default:"var(--sl-color-primary-500)"
         }
     },
     setup(props,context){
         const state =reactive({
             spinnerSize:computed(()=>{
                 return `${props.size}rem`
+            }),
+            logoSize:computed(()=>{
+                return `${props.size/1.5}rem`
             }),
             shadowSize:computed(()=>{
                 return `0px 0px ${props.size*3}rem ${props.size*3}rem var(--sl-color-neutral-200)`
@@ -38,9 +50,33 @@ export default {
 
 <style scoped>
 
+.logo{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    animation: zoom 3.3s ease-in-out 0s infinite alternate;
+    & sl-icon{
+        height: v-bind("state.logoSize");
+        width: v-bind("state.logoSize");
+        color:var(--sl-color-neutral-200);
+    }
+}
+
+@keyframes zoom {
+    from {
+        scale: 0.5;
+    }
+    to{
+        scale: 1;
+    }
+}
 .loader{
-  height: 2.5em;
-  width: 2.5em;
+  height: v-bind("state.spinnerSize");
+  width: v-bind("state.spinnerSize");
+  color: v-bind("color");
 }
 
 .loading {
