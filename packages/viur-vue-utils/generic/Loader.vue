@@ -61,17 +61,17 @@ export default {
     & sl-icon{
         height: v-bind("state.logoSize");
         width: v-bind("state.logoSize");
-        color:var(--sl-color-neutral-200);
+        color:var(--vi-background-color);
     }
 }
 
 @keyframes zoom {
-    from {
-        scale: 0.5;
-    }
-    to{
-        scale: 1;
-    }
+  from {
+      scale: 0.5;
+  }
+  to{
+      scale: 1;
+  }
 }
 .loader{
   height: v-bind("state.spinnerSize");
