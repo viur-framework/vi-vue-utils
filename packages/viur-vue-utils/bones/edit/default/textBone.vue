@@ -14,7 +14,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject,computed} from 'vue'
+import {reactive, defineComponent, onMounted, inject,computed, watch} from 'vue'
 import ClassicEditor from '@viur/ckeditor5-build-classic'
 
 export default defineComponent({
@@ -43,12 +43,9 @@ export default defineComponent({
         }
 
         onMounted(()=>{
-          console.log("____")
-          console.log(ClassicEditor)
             if(props.value!==null){
               state.value = props.value
             }
-
 
             context.emit("change",props.name,props.value,props.lang,props.index) //init
         })
@@ -58,7 +55,9 @@ export default defineComponent({
              writer.setStyle( 'min-height', '250px', editor.editing.view.document.getRoot() );
           } );
         }
-
+        watch(()=>props.value,(newVal,oldVal)=>{
+          state.value=newVal
+        })
         return {
             state,
             ClassicEditor,

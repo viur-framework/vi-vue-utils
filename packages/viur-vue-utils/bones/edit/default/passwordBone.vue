@@ -28,7 +28,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, computed, inject} from 'vue'
+import {reactive, defineComponent, onMounted, computed, inject, watch} from 'vue'
 
 export default defineComponent({
     props:{
@@ -77,6 +77,10 @@ export default defineComponent({
           }
         }
 
+
+        watch(()=>props.value,(newVal,oldVal)=>{
+          state.value1=newVal
+        })
 
         return {
             state,

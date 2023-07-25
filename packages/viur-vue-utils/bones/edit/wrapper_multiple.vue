@@ -14,7 +14,6 @@
   >
     <sl-button
       @mousedown="state.isDraggable = true"
-      @mouseout="state.isDraggable = false"
       class="drag-button"
     >
       <sl-icon name="draggable"> </sl-icon>
@@ -54,7 +53,7 @@ export default defineComponent({
   ],
   setup(props, context) {
     const state = reactive({
-      isDraggable: false,
+      isDraggable: false
     });
 
     return { state };

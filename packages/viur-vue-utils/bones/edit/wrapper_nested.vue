@@ -21,13 +21,13 @@
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject, computed,getCurrentInstance} from 'vue'
+import {reactive, defineComponent, onMounted, inject, computed,getCurrentInstance, watch} from 'vue'
 import {getBoneWidget} from "./index"
 
 export default defineComponent({
   props:{
         name:String,
-        value:Object,
+        value:null,
         index:Number,
         lang:String,
         readonly:Boolean,
@@ -37,11 +37,12 @@ export default defineComponent({
     setup(props, context) {
         const boneState = inject("boneState")
         const state = reactive({
-          value:props.value,
+          value:computed(()=>props.value),
           structure:computed(()=>{
             return structureToDict(boneState.bonestructure['using'])
           }),
-          globalRegistration:false
+          globalRegistration:false,
+
         })
 
         function changeEvent(val){

@@ -12,5 +12,8 @@ export default {
       max: "Maximum: {val}",
       precision: "Genauigkeit: {val} Stellen"
     }
-  }
+  },
+  "de":"DE",
+  "en":"EN",
+  "fr":"FR"
 };

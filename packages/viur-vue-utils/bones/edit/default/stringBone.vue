@@ -9,7 +9,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue";
+import { reactive, defineComponent, onMounted, inject, computed } from "vue";
 
 export default defineComponent({
   props: {
@@ -22,7 +22,9 @@ export default defineComponent({
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState");
-    const state = reactive({});
+    const state = reactive({
+      value:computed(()=>props.value)
+    });
 
     function changeEvent(event) {
       context.emit(

@@ -18,7 +18,7 @@ import {reactive, defineComponent, onMounted, inject, computed} from 'vue'
 export default defineComponent({
     props:{
         name:String,
-        value:Object,
+        value:null,
         index:Number,
         lang:String
     },

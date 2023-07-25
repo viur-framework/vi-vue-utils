@@ -2,23 +2,22 @@
     <Wrapper_nested
       :value="value"
       :name="name"
-      :index="index"
+      :index="state.index"
       :disabled="boneState.bonestructure['readonly']"
       @change="changeEvent"
     >
-
     </Wrapper_nested>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject} from 'vue'
+import {reactive, defineComponent, onMounted, inject, computed} from 'vue'
 import Wrapper_nested from '../wrapper_nested.vue'
 
 export default defineComponent({
     props:{
         name:String,
-        value:Object,
+        value:null,
         index:Number,
         lang:String
     },
@@ -27,7 +26,9 @@ export default defineComponent({
     setup(props, context) {
         const boneState = inject("boneState")
         const state = reactive({
-          value:{}
+          value:{},
+          index: computed(()=>props.index),
+          lang: computed(()=>props.lang),
         })
 
         function changeEvent(data){

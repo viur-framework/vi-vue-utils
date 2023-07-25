@@ -69,7 +69,6 @@
                   @delete="removeMultipleEntry(index, lang)"
                   @handleDragStart="handleDragStart(index, lang, $event)"
                   @handleDragOver="handleDragOver(index, lang, $event)"
-                  @handleDragEnd="handleDragEnd(index, lang)"
                   @handleDrop="handleDrop(index, lang, $event)"
                 >
                   <component
@@ -143,7 +142,6 @@
               "
               @handleDragStart="handleDragStart(index, (lang = null), $event)"
               @handleDragOver="handleDragOver(index, (lang = null), $event)"
-              @handleDragEnd="handleDragEnd(index, (lang = null))"
               @handleDrop="handleDrop(index, (lang = null), $event)"
             >
               <component
@@ -202,6 +200,7 @@ import {
   provide,
   getCurrentInstance,
   onMounted,
+watch,
 } from "vue";
 import wrapperMultiple from "./wrapper_multiple.vue";
 import BoneLabel from "./boneLabel.vue";
@@ -233,12 +232,12 @@ export default defineComponent({
       required: true,
     },
     skel: {
-      type: Object,
+      type: null,
       required: true,
     },
     errors: Object,
   },
-  emits: ["change", "handleClick"],
+  emits: ["change", "change-internal", "handleClick"],
   setup(props, context) {
     const state: any = reactive({
       bonestructure: computed(() => {
@@ -374,7 +373,7 @@ export default defineComponent({
           }
         }
         return errors;
-      }),
+      })
     });
     provide("boneState", state);
 
@@ -395,56 +394,53 @@ export default defineComponent({
       if (relativePosition < dragOverLine.offsetHeight / 2) {
         setStateProperties(lang, index, "draggingLineTop");
         resetStateProperties("draggingLineBottom");
+        state.dropIndex.index = index;
       } else {
         setStateProperties(lang, index, "draggingLineBottom");
         resetStateProperties("draggingLineTop");
+        state.dropIndex.index = index+1
+      }
+
+      let allVals = lang?state.bonevalue[lang]: state.bonevalue
+
+
+      if (state.dropIndex.index > allVals.length-1) {
+        state.dropIndex.index -= 1;
       }
     }
     // Handle drop event
     function handleDrop(index, lang, event) {
-      setStateProperties(lang, index, "dropIndex");
+      let dragItem = null;
 
-      const relativePosition =
-        event.clientY - event.target.getBoundingClientRect().top;
-      const dragOverLine = event.target.closest(".value-line");
-
-      if (
-        relativePosition >= dragOverLine.offsetHeight / 2 &&
-        state.dropIndex.index > 0
-      ) {
-        state.dropIndex.index = index + 1;
+      if(state.dragStartIndex.index !==state.dropIndex.index){
+        if (lang) {
+          dragItem = state.bonevalue[lang].splice(
+            state.dragStartIndex.index,
+            1
+          )[0];
+          state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
+        } else {
+          dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
+          state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
+        }
+        console.dir(state.bonevalue[0])
+        context.emit("change", {
+          name: props.name,
+          value: toFormValue(),
+          lang: lang,
+          index: index,
+        });
       }
+
 
       resetStateProperties(
         "draggingLineBottom",
         "draggingLineTop",
-        "isDragging"
+        "isDragging",
+        "dragStartIndex",
+        "dropIndex"
+
       );
-    }
-    // Handle drag end event
-    function handleDragEnd(index, lang) {
-      let dragItem = null;
-      if (lang) {
-        dragItem = state.bonevalue[lang].splice(
-          state.dragStartIndex.index,
-          1
-        )[0];
-        adjustDropIndex();
-        state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
-      } else {
-        dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
-        adjustDropIndex();
-        state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
-      }
-
-      resetStateProperties("dragStartIndex");
-
-      context.emit("change", {
-        name: name,
-        value: toFormValue(),
-        lang: lang,
-        index: index,
-      });
     }
 
     // Set state properties based on lang and index
@@ -461,13 +457,6 @@ export default defineComponent({
           index: Number,
         };
       });
-    }
-
-    // Adjust the drop index if necessary
-    function adjustDropIndex() {
-      if (state.dragStartIndex.index < state.dropIndex.index) {
-        state.dropIndex.index -= 1;
-      }
     }
 
     function updateValue(
@@ -698,6 +687,10 @@ export default defineComponent({
       //validateBoneValue()
     });
 
+    watch(()=>props.skel,(newVal,oldVal)=>{
+      state.bonevalue = props.skel?.[props.name];
+    })
+
     return {
       state,
       updateValue,
@@ -707,12 +700,10 @@ export default defineComponent({
       BoneHasMultipleHandling,
       multipleBonePressEnter,
       handleDragStart,
-      handleDragEnd,
       handleDragOver,
       handleDrop,
       setStateProperties,
       resetStateProperties,
-      adjustDropIndex,
     };
   },
 });
