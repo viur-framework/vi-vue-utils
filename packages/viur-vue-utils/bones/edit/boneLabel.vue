@@ -1,9 +1,11 @@
 <template>
   <label class="bone-name">
     <slot></slot>
-    <div class="debug" @click="state.debug = !state.debug">
-      <sl-icon name="bug"></sl-icon>
-    </div>
+    <template v-if="false">
+      <div class="debug" @click="state.debug = !state.debug">
+        <sl-icon name="bug"></sl-icon>
+      </div>
+    </template>
   </label>
   <div v-if="state.debug">
     <div class="bone">{{ name }}</div>
