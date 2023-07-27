@@ -290,6 +290,51 @@ export default class Request {
     return Request.buildUrl(bone)
   }
 
+  static uploadFile(file) {
+    const filedata = {
+      fileName: file.name,
+      mimeType: file.type || "application/octet-stream",
+      size: file.size.toString(),
+    };
+    return new Promise((resolve, reject) => {
+      Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
+        .then(async (resp) => {
+          let uploadURLdata = await resp.json();
+          fetch(uploadURLdata["values"]["uploadUrl"], {
+            body:file,
+            method: "POST",
+            mode: "no-cors",
+          })
+            .then(async (uploadresp) => {
+              const addData = {
+                key: uploadURLdata["values"]["uploadKey"],
+                node: undefined,
+                skelType: "leaf",
+              };
+              Request.securePost("/vi/file/add", { dataObj: addData })
+                .then(async (addresp) => {
+                  let addData = await addresp.json();
+                  if (addData["action"] === "addSuccess") {
+                    resolve(addData["values"]);
+                  } else {
+                    reject(addData);
+                  }
+                })
+                .catch((error) => {
+                  reject(error);
+                });
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+
 }
 
 // TODO CACHING LOGIC
