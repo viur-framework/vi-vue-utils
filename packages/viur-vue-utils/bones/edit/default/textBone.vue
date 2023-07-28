@@ -215,6 +215,10 @@ export default defineComponent({
       }
     }
   }
+  .ck-content .table{
+    margin: .9em 0;
+  }
+
 }
 
 </style>
