@@ -1,24 +1,26 @@
 <template>
   <label class="bone-name">
     <slot></slot>
-    <div class="debug" @click="state.debug = !state.debug">
-      <sl-icon name="bug"></sl-icon>
-    </div>
+    <template v-if="false">
+      <div
+        class="debug"
+        @click="state.debug = !state.debug"
+      >
+        <sl-icon name="bug"></sl-icon>
+      </div>
+    </template>
   </label>
   <div v-if="state.debug">
     <div class="bone">{{ name }}</div>
     <pre>
     {{ boneState }}
     </pre>
-    <!--<VueJsonPretty :data="boneState"></VueJsonPretty>-->
   </div>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue";
-//import VueJsonPretty from "vue-json-pretty";
-import "vue-json-pretty/lib/styles.css";
+import { reactive, defineComponent, onMounted, inject } from "vue"
 
 export default defineComponent({
   props: {
@@ -27,22 +29,21 @@ export default defineComponent({
     index: Number,
     lang: String,
     readonly: Boolean,
-    params: Object,
+    params: Object
   },
-  components: {  }, // VueJsonPretty
+  components: {},
   emits: ["change", "handleClick"],
   setup(props, context) {
-    console.log(props);
-    const boneState = inject("boneState");
+    const boneState = inject("boneState")
     const state = reactive({
-      debug: false,
-    });
+      debug: false
+    })
     return {
       state,
-      boneState,
-    };
-  },
-});
+      boneState
+    }
+  }
+})
 </script>
 
 <style scoped>
@@ -73,7 +74,7 @@ export default defineComponent({
   margin-left: auto;
   padding-left: 0.4em;
 
-  sl-icon {
+  & sl-icon {
     background-color: var(--sl-color-danger-500);
     color: #fff;
     padding: 0.4em;

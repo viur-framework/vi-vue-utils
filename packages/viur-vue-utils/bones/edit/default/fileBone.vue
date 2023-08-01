@@ -5,59 +5,87 @@
     @dragleave="state.droparea = false"
     @drop.prevent="handleDrop"
   >
-    <div class="loader" v-if="state.loading">
+    <div
+      v-if="state.loading"
+      class="loader"
+    >
       <sl-spinner slot="suffix"></sl-spinner>
     </div>
 
-    <div class="droparea" v-if="state.droparea">Dateien hier hinziehen</div>
+    <div
+      v-if="state.droparea"
+      class="droparea"
+    >
+      Dateien hier hinziehen
+    </div>
     <sl-button
       v-if="!boneState.readonly && (!value || state.loading)"
-      @click="uploadinput.click()"
       :title="$t('bone.upload')"
       outline
       class="upload-btn"
+      @click="uploadinput.click()"
     >
       <sl-icon name="upload"></sl-icon>
     </sl-button>
     <input
+      ref="uploadinput"
       hidden
       type="file"
-      ref="uploadinput"
       :multiple="boneState.multiple"
       @change="handleUpload"
     />
-    <sl-button @click="downloadFile"
-               v-if="value"
-              :title="$t('bone.download')"
-              >
-      <sl-icon name="download" slot="prefix"></sl-icon>
+    <sl-button
+      v-if="value"
+      :title="$t('bone.download')"
+      @click="downloadFile"
+    >
+      <sl-icon
+        slot="prefix"
+        name="download"
+      ></sl-icon>
     </sl-button>
     <div class="box">
       <div
-        class="preview has-preview"
         v-if="value?.['dest']?.['mimetype'].includes('image')"
+        class="preview has-preview"
         @click="state.previewopen = !state.previewopen"
       >
-        <img class="preview-img" :src="createBackgroundImage()" alt="">
-        <sl-dialog :label='decodeURIComponent(value?.["dest"]?.["name"])' class="preview-overlay" :open="state.previewopen">
-          <img :src="createBackgroundImage()" alt="">
+        <img
+          class="preview-img"
+          :src="createBackgroundImage()"
+          alt=""
+        />
+        <sl-dialog
+          :label="decodeURIComponent(value?.['dest']?.['name'])"
+          class="preview-overlay"
+          :open="state.previewopen"
+        >
+          <img
+            :src="createBackgroundImage()"
+            alt=""
+          />
         </sl-dialog>
       </div>
-      <div class="preview" v-else>
-        <sl-icon v-if="value?.['dest']?.['name']" name="file-earmark"></sl-icon>
+      <div
+        v-else
+        class="preview"
+      >
+        <sl-icon
+          v-if="value?.['dest']?.['name']"
+          name="file-earmark"
+        ></sl-icon>
       </div>
       <div v-if="value?.['dest']?.['name']">
         {{ decodeURIComponent(value?.["dest"]?.["name"]) }}
-
       </div>
     </div>
     <sl-button
       v-if="!boneState.multiple"
       variant="danger"
       outline
-      @click="$emit('change', name, '', lang, index)"
       :title="$t('bone.del')"
       class="delete-btn"
+      @click="$emit('change', name, '', lang, index)"
     >
       <sl-icon name="x"></sl-icon>
     </sl-button>
@@ -66,37 +94,37 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, ref } from "vue";
-import { Request } from "../../../index";
+import { reactive, defineComponent, onMounted, inject, ref } from "vue"
+import { Request } from "../../../index"
 
 export default defineComponent({
   props: {
     name: String,
     value: Object,
     index: Number,
-    lang: String,
+    lang: String
   },
   components: {},
   emits: ["change"],
   setup(props, context) {
-    const boneState = inject("boneState");
-    const uploadinput = ref();
+    const boneState = inject("boneState")
+    const uploadinput = ref()
     const state = reactive({
       loading: false,
       droparea: false,
-      previewopen: false,
-    });
+      previewopen: false
+    })
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index); //init
-    });
+      context.emit("change", props.name, props.value, props.lang, props.index) //init
+    })
 
     function downloadFile() {
       console.log(Request.downloadUrlFor(props.value))
-      window.open(Request.downloadUrlFor(props.value));
+      window.open(Request.downloadUrlFor(props.value))
     }
 
-    function createBackgroundImage(){
+    function createBackgroundImage() {
       return Request.downloadUrlFor(props.value, false)
     }
 
@@ -104,76 +132,64 @@ export default defineComponent({
       const filedata: Record<string, string> = {
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
-        size: file.size.toString(),
-      };
+        size: file.size.toString()
+      }
       return new Promise((resolve, reject) => {
         Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
           .then(async (resp) => {
-            let uploadURLdata = await resp.json();
+            let uploadURLdata = await resp.json()
             fetch(uploadURLdata["values"]["uploadUrl"], {
-              body:file,
+              body: file,
               method: "POST",
-              mode: "no-cors",
+              mode: "no-cors"
             })
               .then(async (uploadresp) => {
                 const addData: Record<string, string> = {
                   key: uploadURLdata["values"]["uploadKey"],
                   node: undefined,
-                  skelType: "leaf",
-                };
+                  skelType: "leaf"
+                }
                 Request.securePost("/vi/file/add", { dataObj: addData })
                   .then(async (addresp) => {
-                    let addData = await addresp.json();
+                    let addData = await addresp.json()
                     if (addData["action"] === "addSuccess") {
-                      resolve(addData["values"]);
+                      resolve(addData["values"])
                     } else {
-                      reject(addData);
+                      reject(addData)
                     }
                   })
                   .catch((error) => {
-                    reject(error);
-                  });
+                    reject(error)
+                  })
               })
               .catch((error) => {
-                reject(error);
-              });
+                reject(error)
+              })
           })
           .catch((error) => {
-            reject(error);
-          });
-      });
+            reject(error)
+          })
+      })
     }
 
     async function handleUpload(event) {
-      state.loading = true;
+      state.loading = true
       for (let file of event.target.files) {
-        let fileresult = await uploadFile(file);
-        context.emit(
-          "change",
-          props.name,
-          { dest: fileresult, rel: null },
-          props.lang,
-          props.index
-        );
+        let fileresult = await uploadFile(file)
+        context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
       }
-      state.loading = false;
+      state.loading = false
     }
 
     async function handleDrop(event) {
-      state.loading = true;
-      state.droparea = false;
+      state.loading = true
+      state.droparea = false
       for (let file of event.dataTransfer.files) {
-        let fileresult = await uploadFile(file);
-        context.emit(
-          "change",
-          props.name,
-          { dest: fileresult, rel: null },
-          props.lang,
-          props.index
-        );
-        break;
+        let fileresult = await uploadFile(file)
+        context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
+        break
       }
-      state.loading = false;
+      state.loading = false
     }
 
     return {
@@ -183,13 +199,13 @@ export default defineComponent({
       createBackgroundImage,
       handleUpload,
       uploadinput,
-      handleDrop,
-    };
-  },
-});
+      handleDrop
+    }
+  }
+})
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .box {
   display: flex;
   align-items: center;
@@ -214,23 +230,22 @@ export default defineComponent({
   border-right: 1px solid var(--sl-color-gray-500);
   margin-right: var(--sl-spacing-small);
   background-image: /* tint image */
-                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
-                  /* checkered effect */
-                  linear-gradient(to right, black 50%, white 50%),
-                  linear-gradient(to bottom, black 50%, white 50%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+    /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
+    linear-gradient(to bottom, black 50%, white 50%);
   background-blend-mode: normal, difference, normal;
-  background-size: .65em .65em;
+  background-size: 0.65em 0.65em;
 
-  &.has-preview{
+  &.has-preview {
     cursor: pointer;
   }
 
-  sl-icon {
+  & sl-icon {
     font-size: 1.1em;
     color: var(--sl-color-gray-400);
   }
 
-  .preview-img{
+  .preview-img {
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -265,7 +280,7 @@ export default defineComponent({
   }
 }
 
-.delete-btn{
+.delete-btn {
   &::part(base) {
     aspect-ratio: 1;
   }
@@ -277,7 +292,7 @@ export default defineComponent({
   }
 }
 
-.loader{
+.loader {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -286,30 +301,29 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(255, 255, 255, .7);
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
-.preview-overlay{
-  &::part(panel){
+.preview-overlay {
+  &::part(panel) {
     width: auto;
     max-width: 1200px;
   }
 
-  &::part(body){
+  &::part(body) {
     display: flex;
     justify-content: center;
     align-items: center;
     background-image: /* tint image */
-                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
-                  /* checkered effect */
-                  linear-gradient(to right, black 50%, white 50%),
-                  linear-gradient(to bottom, black 50%, white 50%);
+      linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+      /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
+      linear-gradient(to bottom, black 50%, white 50%);
     background-blend-mode: normal, difference, normal;
     background-size: 1.2em 1.2em;
     padding: 0;
   }
 
-  img{
+  & img {
     width: auto;
     height: auto;
   }

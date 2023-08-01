@@ -4,10 +4,13 @@
     :class="'bone-wrapper-' + state.bonestructure['type']"
   >
     <bone-label :name="name">
-      <span :class="{ required: state.required }">{{
-        state.bonestructure["descr"]
-      }}</span>
-      <span v-if="state.required" class="required"> *</span>
+      <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
+      <span
+        v-if="state.required"
+        class="required"
+      >
+        *</span
+      >
 
       <sl-tooltip
         v-if="state.hasTooltip"
@@ -22,54 +25,45 @@
     <div class="bone-inner-wrap">
       <!--Language chooser -->
       <sl-tab-group
-        class="lang-tab"
         v-if="state.multilanguage"
+        class="lang-tab"
         placement="bottom"
       >
-        <template v-for="lang in state.languages" :key="lang + '_tab'">
-          <sl-tab slot="nav" :panel="'lang_' + lang">
+        <template
+          v-for="lang in state.languages"
+          :key="lang + '_tab'"
+        >
+          <sl-tab
+            slot="nav"
+            :panel="'lang_' + lang"
+          >
             {{ $t(lang) }}
           </sl-tab>
 
           <sl-tab-panel :name="'lang_' + lang">
             <!--Bone rendering for multiple bones-->
-            <template
-              v-if="
-                state.multiple &&
-                !BoneHasMultipleHandling(state.bonestructure['type'])
-              "
-            >
+            <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
               <!--multilang and multiple-->
               <div
-                class="multiple-bone"
-                v-if="state.bonevalue?.[lang].length"
                 v-for="(val, index) in state.bonevalue?.[lang]"
+                v-if="state.bonevalue?.[lang].length"
                 :key="index"
+                class="multiple-bone"
               >
                 <wrapper-multiple
                   :readonly="!state.readonly"
-                  :is-dragging="
-                    state.isDragging['lang'] === lang &&
-                    state.isDragging['index'] === index
-                      ? true
-                      : false
-                  "
+                  :is-dragging="state.isDragging['lang'] === lang && state.isDragging['index'] === index ? true : false"
                   :dragging-line-bottom="
-                    state.draggingLineBottom['lang'] === lang &&
-                    state.draggingLineBottom['index'] === index
+                    state.draggingLineBottom['lang'] === lang && state.draggingLineBottom['index'] === index
                       ? true
                       : false
                   "
                   :dragging-line-top="
-                    state.draggingLineTop['lang'] === lang &&
-                    state.draggingLineTop['index'] === index
-                      ? true
-                      : false
+                    state.draggingLineTop['lang'] === lang && state.draggingLineTop['index'] === index ? true : false
                   "
                   @delete="removeMultipleEntry(index, lang)"
                   @handleDragStart="handleDragStart(index, lang, $event)"
                   @handleDragOver="handleDragOver(index, lang, $event)"
-                  @handleDragEnd="handleDragEnd(index, lang)"
                   @handleDrop="handleDrop(index, lang, $event)"
                 >
                   <component
@@ -85,9 +79,9 @@
               </div>
 
               <div
+                v-else
                 class="multiple-placeholder"
                 :class="{ readonly: state.readonly }"
-                v-else
               >
                 <sl-input
                   readonly
@@ -98,15 +92,15 @@
 
               <!--Bone Buttonbar -->
               <component
-                v-if="!state.readonly"
                 :is="state.actionbar"
+                v-if="!state.readonly"
                 :lang="lang"
               ></component>
             </template>
             <!--Bone rendering for normal bones-->
             <component
-              v-else
               :is="is"
+              v-else
               :value="state.bonevalue?.[lang]"
               :index="null"
               :lang="lang"
@@ -119,31 +113,21 @@
 
       <template v-else>
         <!--Bone rendering for multiple bones-->
-        <template
-          v-if="
-            state.multiple &&
-            !BoneHasMultipleHandling(state.bonestructure['type'])
-          "
-        >
+        <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
           <div
-            class="multiple-bone"
-            v-if="state.bonevalue?.length"
             v-for="(val, index) in state.bonevalue"
+            v-if="state.bonevalue?.length"
             :key="index"
+            class="multiple-bone"
           >
             <wrapper-multiple
               :readonly="!state.readonly"
-              @delete="removeMultipleEntry(index)"
               :is-dragging="state.isDragging.index === index ? true : false"
-              :dragging-line-bottom="
-                state.draggingLineBottom.index === index ? true : false
-              "
-              :dragging-line-top="
-                state.draggingLineTop.index === index ? true : false
-              "
+              :dragging-line-bottom="state.draggingLineBottom.index === index ? true : false"
+              :dragging-line-top="state.draggingLineTop.index === index ? true : false"
+              @delete="removeMultipleEntry(index)"
               @handleDragStart="handleDragStart(index, (lang = null), $event)"
               @handleDragOver="handleDragOver(index, (lang = null), $event)"
-              @handleDragEnd="handleDragEnd(index, (lang = null))"
               @handleDrop="handleDrop(index, (lang = null), $event)"
             >
               <component
@@ -156,7 +140,10 @@
               ></component>
             </wrapper-multiple>
           </div>
-          <div class="multiple-placeholder" v-else>
+          <div
+            v-else
+            class="multiple-placeholder"
+          >
             <sl-input
               readonly
               size="medium"
@@ -164,12 +151,15 @@
             ></sl-input>
           </div>
           <!--Bone Buttonbar -->
-          <component v-if="!state.readonly" :is="state.actionbar"></component>
+          <component
+            :is="state.actionbar"
+            v-if="!state.readonly"
+          ></component>
         </template>
         <!--Bone rendering for normal bones-->
         <component
-          v-else
           :is="is"
+          v-else
           :value="state.bonevalue"
           :name="name"
           :index="null"
@@ -178,12 +168,16 @@
       </template>
 
       <sl-alert
+        v-for="message in state.errorMessages"
         open
         summary="Errors"
         variant="info"
-        v-for="message in state.errorMessages"
       >
-        <sl-icon name="exclamation-triangle" slot="icon"> </sl-icon>
+        <sl-icon
+          slot="icon"
+          name="exclamation-triangle"
+        >
+        </sl-icon>
         <div class="error-msg">
           {{ message }}
         </div>
@@ -194,33 +188,25 @@
 
 <script lang="ts">
 //@ts-nocheck
-import {
-  reactive,
-  defineComponent,
-  computed,
-  onBeforeMount,
-  provide,
-  getCurrentInstance,
-  onMounted,
-} from "vue";
-import wrapperMultiple from "./wrapper_multiple.vue";
-import BoneLabel from "./boneLabel.vue";
-import { BoneHasMultipleHandling, getBoneActionbar } from "./index";
-import rawBone from "./default/rawBone.vue";
+import { reactive, defineComponent, computed, onBeforeMount, provide, getCurrentInstance, onMounted, watch } from "vue"
+import wrapperMultiple from "./wrapper_multiple.vue"
+import BoneLabel from "./boneLabel.vue"
+import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
+import rawBone from "./default/rawBone.vue"
 
 export default defineComponent({
   components: {
     wrapperMultiple,
-    BoneLabel,
+    BoneLabel
   },
   props: {
     is: {
       type: Object,
-      default: rawBone,
+      default: rawBone
     },
     name: {
       type: String,
-      required: true,
+      required: true
     },
     languages: Array,
     multiple: Boolean,
@@ -230,98 +216,88 @@ export default defineComponent({
     value: Object,
     structure: {
       type: Object,
-      required: true,
+      required: true
     },
     skel: {
-      type: Object,
-      required: true,
+      type: null,
+      required: true
     },
-    errors: Object,
+    errors: Object
   },
-  emits: ["change", "handleClick"],
+  emits: ["change", "change-internal", "handleClick"],
   setup(props, context) {
     const state: any = reactive({
       bonestructure: computed(() => {
-        return props.structure?.[props.name];
+        return props.structure?.[props.name]
       }),
       bonevalue: null,
       dragStartIndex: {
         lang: null,
-        index: Number,
+        index: Number
       },
       dropIndex: {
         lang: null,
-        index: Number,
+        index: Number
       },
       draggingLineBottom: {
         lang: String,
-        index: Number,
+        index: Number
       },
       draggingLineTop: {
         lang: String,
-        index: Number,
+        index: Number
       },
       isDragging: {
         lang: String,
-        index: Number,
+        index: Number
       },
-      multilanguage: computed(
-        () => state.languages?.length && state.languages.length > 0
-      ),
+      multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
       languages: computed(() => {
         if (props.languages) {
-          return props.languages;
+          return props.languages
         }
-        return state.bonestructure &&
-          Object.keys(state.bonestructure).includes("languages")
+        return state.bonestructure && Object.keys(state.bonestructure).includes("languages")
           ? state.bonestructure["languages"]
-          : [];
+          : []
       }),
       readonly: computed(() => {
         if (props.readonly) {
-          return props.readonly;
+          return props.readonly
         }
-        return state.bonestructure &&
-          Object.keys(state.bonestructure).includes("readonly")
+        return state.bonestructure && Object.keys(state.bonestructure).includes("readonly")
           ? state.bonestructure["readonly"]
-          : false;
+          : false
       }),
       required: computed(() => {
         if (props.required) {
-          return props.required;
+          return props.required
         }
-        return state.bonestructure &&
-          Object.keys(state.bonestructure).includes("required")
+        return state.bonestructure && Object.keys(state.bonestructure).includes("required")
           ? state.bonestructure["required"]
-          : false;
+          : false
       }),
       hasTooltip: computed(() => {
-        return state.bonestructure &&
-          Object.keys(state.bonestructure["params"]).includes("tooltip")
-          ? true
-          : false;
+        return state.bonestructure && Object.keys(state.bonestructure["params"]).includes("tooltip") ? true : false
       }),
 
       multiple: computed(() => {
         if (props.multiple) {
-          return props.multiple;
+          return props.multiple
         }
-        return state.bonestructure &&
-          Object.keys(state.bonestructure).includes("multiple")
+        return state.bonestructure && Object.keys(state.bonestructure).includes("multiple")
           ? state.bonestructure["multiple"]
-          : false;
+          : false
       }),
       params: computed(() => {
         if (props.params) {
-          return props.params;
+          return props.params
         }
-        return state.bonestructure &&
-          Object.keys(state.bonestructure).includes("params")
+        return state.bonestructure && Object.keys(state.bonestructure).includes("params")
           ? state.bonestructure["params"]
-          : {};
+          : {}
       }),
       actionbar: computed(() => {
-        return getBoneActionbar(state.bonestructure?.["type"]);
+        return getBoneActionbar(state.bonestructure?.["type"])
       }),
       isEmpty: computed(() => {
         // Function to check if an object is empty
@@ -329,128 +305,105 @@ export default defineComponent({
           for (const [key, value] of Object.entries(obj)) {
             if (value !== null) {
               if (Array.isArray(value) && value.length > 0) {
-                return false;
+                return false
               } else if (!Array.isArray(value)) {
-                return false;
+                return false
               }
             }
           }
-          return true;
+          return true
         }
 
         // Ignore the computation when the state is readonly
-        if (state.readonly) return false;
+        if (state.readonly) return false
 
         // Check for null or undefined values
-        if (!state.bonevalue) return true;
+        if (!state.bonevalue) return true
 
         // Check if the value is an array with elements
-        if (Array.isArray(state.bonevalue) && state.bonevalue.length > 0)
-          return false;
+        if (Array.isArray(state.bonevalue) && state.bonevalue.length > 0) return false
 
         // Check if the value is an object and not an array, then use helper function to check if it's empty
-        if (
-          state.bonevalue === Object(state.bonevalue) &&
-          !Array.isArray(state.bonevalue)
-        )
-          return isObjectEmpty(state.bonevalue);
+        if (state.bonevalue === Object(state.bonevalue) && !Array.isArray(state.bonevalue))
+          return isObjectEmpty(state.bonevalue)
 
-        return false;
+        return false
       }),
 
       errors: computed(() => {
-        console.log("computed errors");
-        return props.errors;
+        console.log("computed errors")
+        return props.errors
       }),
       errorMessages: computed(() => {
-        let errors = [];
+        let errors = []
         for (let error of props.errors) {
-          if (
-            error["fieldPath"][0] === props.name &&
-            (error["severity"] > 2 || (state.required && state.isEmpty))
-          ) {
+          if (error["fieldPath"][0] === props.name && (error["severity"] > 2 || (state.required && state.isEmpty))) {
             //severity level???
-            errors.push(error["errorMessage"]);
+            errors.push(error["errorMessage"])
           }
         }
-        return errors;
-      }),
-    });
-    provide("boneState", state);
+        return errors
+      })
+    })
+    provide("boneState", state)
 
     // Handle drag start event
     function handleDragStart(index, lang, event) {
-      setStateProperties(lang, index, "isDragging");
-      setStateProperties(lang, index, "dragStartIndex");
+      setStateProperties(lang, index, "isDragging")
+      setStateProperties(lang, index, "dragStartIndex")
     }
 
     // Handle drag over event
     function handleDragOver(index, lang, event) {
-      event.preventDefault();
+      event.preventDefault()
 
-      const relativePosition =
-        event.clientY - event.target.getBoundingClientRect().top;
-      const dragOverLine = event.target.closest(".value-line");
+      const relativePosition = event.clientY - event.target.getBoundingClientRect().top
+      const dragOverLine = event.target.closest(".value-line")
 
       if (relativePosition < dragOverLine.offsetHeight / 2) {
-        setStateProperties(lang, index, "draggingLineTop");
-        resetStateProperties("draggingLineBottom");
+        setStateProperties(lang, index, "draggingLineTop")
+        resetStateProperties("draggingLineBottom")
+        state.dropIndex.index = index
       } else {
-        setStateProperties(lang, index, "draggingLineBottom");
-        resetStateProperties("draggingLineTop");
+        setStateProperties(lang, index, "draggingLineBottom")
+        resetStateProperties("draggingLineTop")
+        state.dropIndex.index = index + 1
+      }
+
+      let allVals = lang ? state.bonevalue[lang] : state.bonevalue
+
+      if (state.dropIndex.index > allVals.length - 1) {
+        state.dropIndex.index -= 1
       }
     }
     // Handle drop event
     function handleDrop(index, lang, event) {
-      setStateProperties(lang, index, "dropIndex");
+      let dragItem = null
 
-      const relativePosition =
-        event.clientY - event.target.getBoundingClientRect().top;
-      const dragOverLine = event.target.closest(".value-line");
-
-      if (
-        relativePosition >= dragOverLine.offsetHeight / 2 &&
-        state.dropIndex.index > 0
-      ) {
-        state.dropIndex.index = index + 1;
+      if (state.dragStartIndex.index !== state.dropIndex.index) {
+        if (lang) {
+          dragItem = state.bonevalue[lang].splice(state.dragStartIndex.index, 1)[0]
+          state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem)
+        } else {
+          dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
+          state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
+        }
+        console.dir(state.bonevalue[0])
+        context.emit("change", {
+          name: props.name,
+          value: toFormValue(),
+          lang: lang,
+          index: index
+        })
       }
 
-      resetStateProperties(
-        "draggingLineBottom",
-        "draggingLineTop",
-        "isDragging"
-      );
-    }
-    // Handle drag end event
-    function handleDragEnd(index, lang) {
-      let dragItem = null;
-      if (lang) {
-        dragItem = state.bonevalue[lang].splice(
-          state.dragStartIndex.index,
-          1
-        )[0];
-        adjustDropIndex();
-        state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem);
-      } else {
-        dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0];
-        adjustDropIndex();
-        state.bonevalue.splice(state.dropIndex.index, 0, dragItem);
-      }
-
-      resetStateProperties("dragStartIndex");
-
-      context.emit("change", {
-        name: name,
-        value: toFormValue(),
-        lang: lang,
-        index: index,
-      });
+      resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
     }
 
     // Set state properties based on lang and index
     function setStateProperties(lang, index, property) {
-      state[property].lang = lang ? lang : null;
-      state[property].index = index;
+      state[property].lang = lang ? lang : null
+      state[property].index = index
     }
 
     // Reset state properties to null values
@@ -458,245 +411,218 @@ export default defineComponent({
       properties.forEach((property) => {
         state[property] = {
           lang: null,
-          index: Number,
-        };
-      });
+          index: Number
+        }
+      })
     }
 
-    // Adjust the drop index if necessary
-    function adjustDropIndex() {
-      if (state.dragStartIndex.index < state.dropIndex.index) {
-        state.dropIndex.index -= 1;
-      }
-    }
-
-    function updateValue(
-      name: string,
-      val: any,
-      lang: string | null = null,
-      index: number = 0
-    ) {
-      if (val === undefined) return false;
+    function updateValue(name: string, val: any, lang: string | null = null, index: number = 0) {
+      if (val === undefined) return false
       if (lang) {
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
-          state.bonevalue[lang][index] = val;
+          state.bonevalue[lang][index] = val
         } else {
-          state.bonevalue[lang] = val;
+          state.bonevalue[lang] = val
         }
       } else if (index !== null) {
-        state.bonevalue[index] = val;
+        state.bonevalue[index] = val
       } else {
-        state.bonevalue = val;
+        state.bonevalue = val
       }
-      if (state.readonly) return false;
+      if (state.readonly) return false
 
       context.emit("change", {
         name: name,
         value: toFormValue(),
         lang: lang,
-        index: index,
-      });
+        index: index
+      })
       context.emit("change-internal", {
         name: name,
         value: val,
         lang: lang,
-        index: index,
-      });
+        index: index
+      })
     }
 
     function toFormValue() {
       function rewriteData(val: any, key: string | null = null): Array<Object> {
-        let ret = [];
+        let ret = []
         if (Array.isArray(val)) {
           if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
             //only add i if relationaldata
 
             for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key + "." + i));
+              ret.push(rewriteData(v, key + "." + i))
             }
           } else {
             for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key));
+              ret.push(rewriteData(v, key))
             }
           }
         } else if (val === Object(val)) {
-
-/*           if (Object.entries(val).some((c) => c.includes('lat'))) {
+          /*           if (Object.entries(val).some((c) => c.includes('lat'))) {
             ret.push(({ [key]: val }))
             return ret
           } */
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
-                if (
-                  Object.keys(state.bonestructure).includes("using") &&
-                  state.bonestructure["using"]
-                ) {
-                  ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k));
+                if (Object.keys(state.bonestructure).includes("using") && state.bonestructure["using"]) {
+                  ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k))
                 } else {
-                  ret.push(
-                    rewriteData(
-                      v,
-                      key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")
-                    )
-                  );
+                  ret.push(rewriteData(v, key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")))
                 }
               } else if (key.endsWith("rel")) {
-                if (
-                  Object.keys(state.bonestructure).includes("using") &&
-                  state.bonestructure["using"]
-                ) {
-                  ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k));
+                if (Object.keys(state.bonestructure).includes("using") && state.bonestructure["using"]) {
+                  ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k))
                 } else {
-                  ret.push(
-                    rewriteData(
-                      v,
-                      key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") +
-                        "." +
-                        k
-                    )
-                  );
+                  ret.push(rewriteData(v, key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") + "." + k))
                 }
               } else if (!key.endsWith("dest")) {
-                ret.push(rewriteData(v, key + "." + k));
+                ret.push(rewriteData(v, key + "." + k))
               }
             } else {
-              ret.push(rewriteData(v, k));
+              ret.push(rewriteData(v, k))
             }
           }
         } else {
           if (val === null) {
-            val = "";
+            val = ""
           }
           if (key !== null) {
-            ret.push({ [key]: val });
+            ret.push({ [key]: val })
           }
         }
-        return ret;
+        return ret
       }
-      let value = rewriteData(state.bonevalue, props.name);
-      value = value.flat(10);
-      return value;
+      let value = rewriteData(state.bonevalue, props.name)
+      value = value.flat(10)
+      return value
     }
 
     function addMultipleEntry(lang = null, data = "") {
       if (lang) {
         if (Object.keys(state.bonevalue).includes(lang)) {
-          state.bonevalue[lang].push(data);
+          state.bonevalue[lang].push(data)
         } else {
-          state.bonevalue[lang] = [data];
+          state.bonevalue[lang] = [data]
         }
       } else {
         if (state.bonevalue) {
-          state.bonevalue.push(data);
+          state.bonevalue.push(data)
         } else {
-          state.bonevalue = [data];
+          state.bonevalue = [data]
         }
       }
     }
-    provide("addMultipleEntry", addMultipleEntry);
+    provide("addMultipleEntry", addMultipleEntry)
 
     function removeMultipleEntry(index: number, lang = null) {
       if (lang) {
-        state.bonevalue?.[lang].splice(index, 1);
+        state.bonevalue?.[lang].splice(index, 1)
       } else {
-        state.bonevalue.splice(index, 1);
+        state.bonevalue.splice(index, 1)
       }
       context.emit("change", {
         name: props.name,
         value: toFormValue(),
         lang: lang,
-        index: index,
-      });
+        index: index
+      })
       context.emit("change-internal", {
         name: props.name,
         value: val,
         lang: lang,
-        index: index,
-      });
+        index: index
+      })
     }
 
     function removeMultipleEntries(lang = null) {
       if (lang) {
-        state.bonevalue?.[lang].splice(0);
+        state.bonevalue?.[lang].splice(0)
       } else {
-        state.bonevalue.splice(0);
+        state.bonevalue.splice(0)
       }
       context.emit("change", {
         name: props.name,
         value: toFormValue(),
-        lang: lang,
-      });
+        lang: lang
+      })
       context.emit("change-internal", {
         name: props.name,
         value: toFormValue(),
-        lang: lang,
-      });
+        lang: lang
+      })
     }
 
-    provide("removeMultipleEntries", removeMultipleEntries);
+    provide("removeMultipleEntries", removeMultipleEntries)
 
     function multipleBonePressEnter(lang = null, data = "") {
-      addMultipleEntry(lang, data);
+      addMultipleEntry(lang, data)
     }
 
-    function formatString(
-      formatstr: string,
-      boneValue: object | Array<object>
-    ) {
+    function formatString(formatstr: string, boneValue: object | Array<object>) {
       function getpathListFromFormatstring(formatstr) {
-        let output = [];
-        let formatList = [];
-        let regstr = /\$\((.*?)\)/g;
+        let output = []
+        let formatList = []
+        let regstr = /\$\((.*?)\)/g
 
         while (formatList) {
-          formatList = regstr.exec(formatstr);
+          formatList = regstr.exec(formatstr)
           if (!formatList) {
-            formatList = false;
-            continue;
+            formatList = false
+            continue
           }
 
-          output.push(formatList[1]);
+          output.push(formatList[1])
         }
 
-        return output;
+        return output
       }
 
-      let pathlist = getpathListFromFormatstring(formatstr);
+      let pathlist = getpathListFromFormatstring(formatstr)
 
-      let finalStrList = [];
+      let finalStrList = []
       if (!Array.isArray(boneValue)) {
-        boneValue = [boneValue];
+        boneValue = [boneValue]
       }
       for (let avalue of boneValue) {
-        let finalstr = formatstr;
+        let finalstr = formatstr
         for (let pathstr of pathlist) {
-          let path = pathstr.split(".");
-          let aval = avalue;
+          let path = pathstr.split(".")
+          let aval = avalue
           for (let entry of path) {
             if (aval && aval !== "-" && entry in aval && aval[entry]) {
-              aval = aval[entry];
+              aval = aval[entry]
             } else {
-              aval = "-";
+              aval = "-"
             }
           }
-          finalstr = finalstr.replace("$(" + pathstr + ")", aval);
+          finalstr = finalstr.replace("$(" + pathstr + ")", aval)
         }
-        finalStrList.push(finalstr);
+        finalStrList.push(finalstr)
       }
 
-      return finalStrList.join(", ");
+      return finalStrList.join(", ")
     }
-    provide("formatString", formatString);
+    provide("formatString", formatString)
 
     onBeforeMount(() => {
       if (props.value) {
-        state.bonevalue = props.value;
+        state.bonevalue = props.value
       } else {
-        state.bonevalue = props.skel?.[props.name];
+        state.bonevalue = props.skel?.[props.name]
       }
       //validateBoneValue()
-    });
+    })
+
+    watch(
+      () => props.skel,
+      (newVal, oldVal) => {
+        state.bonevalue = props.skel?.[props.name]
+      }
+    )
 
     return {
       state,
@@ -707,18 +633,16 @@ export default defineComponent({
       BoneHasMultipleHandling,
       multipleBonePressEnter,
       handleDragStart,
-      handleDragEnd,
       handleDragOver,
       handleDrop,
       setStateProperties,
-      resetStateProperties,
-      adjustDropIndex,
-    };
-  },
-});
+      resetStateProperties
+    }
+  }
+})
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .dragging-top {
   border-top: 2px solid var(--sl-color-neutral-400);
 }
@@ -747,7 +671,7 @@ export default defineComponent({
       border-top: 2px solid var(--sl-color-neutral-200);
     }
 
-    .multiple-bone {
+    & .multiple-bone {
       border-bottom: 1px solid var(--sl-color-neutral-200);
       padding-bottom: var(--sl-spacing-2x-small);
       margin-bottom: var(--sl-spacing-small);
@@ -769,7 +693,7 @@ sl-tab-panel::part(base) {
     overflow-x: hidden;
   }
 
-  sl-tab {
+  & sl-tab {
     &::part(base) {
       padding: var(--sl-spacing-x-small);
     }
@@ -781,7 +705,7 @@ sl-tab-panel::part(base) {
     margin-bottom: var(--sl-spacing-x-small);
   }
 
-  sl-input {
+  & sl-input {
     &::part(base) {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
@@ -790,7 +714,7 @@ sl-tab-panel::part(base) {
   }
 
   @media (max-width: 900px) {
-    sl-input {
+    & sl-input {
       &::part(base) {
         border-top-right-radius: 0;
         border-bottom-left-radius: var(--sl-border-radius-medium);
@@ -802,12 +726,12 @@ sl-tab-panel::part(base) {
 .multiple-bone {
   margin-bottom: var(--sl-spacing-x-small);
 
-  .bone-wrapper {
+  & .bone-wrapper {
     margin-bottom: var(--sl-spacing-x-small);
   }
 
   &:first-child {
-    :deep(.value-line) {
+    & :deep(.value-line) {
       &.dragging-line-top {
         margin-top: 0;
       }
@@ -818,7 +742,7 @@ sl-tab-panel::part(base) {
 .bone-inner-wrap {
   min-width: 1px;
 
-  sl-alert {
+  & sl-alert {
     margin-top: var(--sl-spacing-x-small);
     background-color: transparent;
 
@@ -839,7 +763,7 @@ sl-tab-panel::part(base) {
   margin-left: auto;
   padding-left: 0.4em;
 
-  sl-icon {
+  & sl-icon {
     background-color: var(--sl-color-info-500);
     color: #fff;
     padding: 0.4em;

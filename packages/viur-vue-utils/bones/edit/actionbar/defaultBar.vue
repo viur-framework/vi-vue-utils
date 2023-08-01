@@ -1,23 +1,23 @@
 <template>
   <div class="actionbar">
     <sl-button
-      variant="danger"
       v-if="boneState.multiple && !readonly"
-      @click="handleRemove(lang)"
+      variant="danger"
       :title="$t('bone.del')"
       outline
       class="delete-btn"
+      @click="handleRemove(lang)"
     >
       <sl-icon name="x"></sl-icon>
     </sl-button>
 
     <sl-button
-      variant="success"
       v-if="boneState.multiple && !readonly"
-      @click="handleAdd(lang)"
+      variant="success"
       :title="$t('bone.add')"
       outline
       class="add-btn"
+      @click="handleAdd(lang)"
     >
       <sl-icon name="plus"></sl-icon>
       {{ $t("bone.add") }}
@@ -28,7 +28,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue";
+import { reactive, defineComponent, onMounted, inject } from "vue"
 
 export default defineComponent({
   props: {
@@ -37,44 +37,44 @@ export default defineComponent({
     index: Number,
     lang: String,
     readonly: Boolean,
-    params: Object,
+    params: Object
   },
   components: {},
   emits: ["change"],
   setup(props, context) {
-    const boneState = inject("boneState");
+    const boneState = inject("boneState")
     const state = reactive({
       counter: 0,
-      debounce: null,
-    });
-    const addMultipleEntry = inject("addMultipleEntry");
-    const removeMultipleEntries = inject("removeMultipleEntries");
+      debounce: null
+    })
+    const addMultipleEntry = inject("addMultipleEntry")
+    const removeMultipleEntries = inject("removeMultipleEntries")
 
     function handleAdd() {
-      state.counter += 1;
-      let delay = 200;
+      state.counter += 1
+      let delay = 200
       if (state.counter > 1) {
-        delay = 500;
+        delay = 500
       }
       if (state.debounce) {
-        clearTimeout(state.debounce);
+        clearTimeout(state.debounce)
       }
       state.debounce = setTimeout(() => {
         for (let i = state.counter; i--; ) {
-          addMultipleEntry(props.lang);
+          addMultipleEntry(props.lang)
         }
-        state.counter = 0;
-      }, delay);
+        state.counter = 0
+      }, delay)
     }
 
     function handleRemove() {
-      let delay = 200;
+      let delay = 200
       if (state.debounce) {
-        clearTimeout(state.debounce);
+        clearTimeout(state.debounce)
       }
       state.debounce = setTimeout(() => {
-        removeMultipleEntries(props.lang);
-      }, delay);
+        removeMultipleEntries(props.lang)
+      }, delay)
     }
 
     return {
@@ -82,13 +82,13 @@ export default defineComponent({
       boneState,
       handleAdd,
       handleRemove,
-      removeMultipleEntries,
-    };
-  },
-});
+      removeMultipleEntries
+    }
+  }
+})
 </script>
 
-<style scoped lang="less">
+<style scoped>
 .actionbar {
   display: flex;
   flex-direction: row;
@@ -104,7 +104,7 @@ export default defineComponent({
 .add-btn {
   margin-left: auto;
 
-  sl-icon {
+  & sl-icon {
     margin-right: var(--sl-spacing-x-small);
   }
 }

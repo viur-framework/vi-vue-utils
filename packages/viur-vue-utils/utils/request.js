@@ -1,46 +1,49 @@
-import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { defineStore } from "pinia"
+import { reactive } from "vue"
 
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
-    super(message || statusText);
+    super(message || statusText)
     if (arguments.length >= 4 && response) {
-      Object.assign(this, response);
+      Object.assign(this, response)
     }
-    this.statusText = statusText;
-    this.statusCode = code;
-    this.response = response;
+    this.statusText = statusText
+    this.statusCode = code
+    this.response = response
   }
 }
 
 let useRequestStore = null
 
-function getRequestStore(){
-  if (!useRequestStore){
+function getRequestStore() {
+  if (!useRequestStore) {
     useRequestStore = defineStore("requestStore", () => {
-      const state = reactive({ sKeys: new Set() });
+      const state = reactive({ sKeys: new Set() })
       return {
-        state,
-      };
-    });
+        state
+      }
+    })
   }
   return useRequestStore()
 }
 
 export default class Request {
   static resetState() {
-    getRequestStore().$reset();
-    getRequestStore().$dispose();
+    getRequestStore().$reset()
+    getRequestStore().$dispose()
   }
 
   static buildUrl(url) {
-    if (url && (!(url.startsWith('http://') || url.startsWith('https://') || url.startsWith('//')))) {
+    if (url && !(url.startsWith("http://") || url.startsWith("https://") || url.startsWith("//"))) {
       url = (import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) + url
     }
     return url
   }
 
-  static post(url, {dataObj = null, callback = null, failedCallback = null, abortController = null, headers=null, mode=null} = {}) {
+  static post(
+    url,
+    { dataObj = null, callback = null, failedCallback = null, abortController = null, headers = null, mode = null } = {}
+  ) {
     function buildFormdata() {
       if (dataObj instanceof FormData) {
         return dataObj // we don't need to transform anything
@@ -50,10 +53,10 @@ export default class Request {
       for (const key in dataObj) {
         if (Array.isArray(dataObj[key])) {
           for (let item of dataObj[key]) {
-            form.append(key, item);
+            form.append(key, item)
           }
         } else {
-          form.append(key, dataObj[key]);
+          form.append(key, dataObj[key])
         }
       }
       return form
@@ -61,45 +64,50 @@ export default class Request {
 
     let reqPromise = cachedFetch.post(Request.buildUrl(url), buildFormdata(), null, headers, abortController, mode)
 
-    reqPromise.then(function (response) {
-      if (callback) {
-        callback(response.data);
-      }
-    }).catch(function (error) {
-      if (failedCallback) {
-        failedCallback(error);
-      }
-    })
+    reqPromise
+      .then(function (response) {
+        if (callback) {
+          callback(response.data)
+        }
+      })
+      .catch(function (error) {
+        if (failedCallback) {
+          failedCallback(error)
+        }
+      })
 
     return reqPromise
   }
   static async getBatchSkeys(amount = 30, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     await Request.get(`/${renderer}/skey`, {
-      dataObj: { amount: amount },
+      dataObj: { amount: amount }
     }).then(async (resp) => {
-      let data = await resp.json();
-      if(!Array.isArray(data)){
+      let data = await resp.json()
+      if (!Array.isArray(data)) {
         data = [data]
       }
-      getRequestStore().state.sKeys = new Set(data);
-    });
+      getRequestStore().state.sKeys = new Set(data)
+    })
   }
-  static async securePost(url, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    abortController = null,
-    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
-    headers=null,
-    mode=null,
-    amount = 30
-  } = {}) {
+  static async securePost(
+    url,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      abortController = null,
+      renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
+      headers = null,
+      mode = null,
+      amount = 30
+    } = {}
+  ) {
     let returnValue = null
 
     if (getRequestStore().state.sKeys.size === 0) {
       await Request.getBatchSkeys(amount)
     }
-    const sKey = [ ...getRequestStore().state.sKeys ][ 0 ]
+    const sKey = [...getRequestStore().state.sKeys][0]
 
     if (dataObj instanceof FormData) {
       dataObj.append("skey", sKey)
@@ -108,173 +116,189 @@ export default class Request {
       if (!dataObj) {
         dataObj = {}
       }
-      dataObj[ "skey" ] = sKey
+      dataObj["skey"] = sKey
       getRequestStore().state.sKeys.delete(sKey)
     }
-    returnValue = Request.post(url, { dataObj: dataObj, callback: callback, abortController: abortController, headers, mode })
+    returnValue = Request.post(url, {
+      dataObj: dataObj,
+      callback: callback,
+      abortController: abortController,
+      headers,
+      mode
+    })
 
     return returnValue
   }
 
-
-  static get(url,
-             {
-               dataObj = null,
-               callback = null,
-               failedCallback = null,
-               cached = false,
-               clearCache = false,
-               abortController = null,
-               headers=null,
-               mode=null,
-               //          milli  sec  min  Std  Tage
-               cacheTime = 1000 * 60 * 60 * 24 * 1
-             } = {}
+  static get(
+    url,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      cached = false,
+      clearCache = false,
+      abortController = null,
+      headers = null,
+      mode = null,
+      //          milli  sec  min  Std  Tage
+      cacheTime = 1000 * 60 * 60 * 24 * 1
+    } = {}
   ) {
     let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, headers, abortController, mode)
-    reqPromise.then(function (response) {
-      if (callback) {
-        callback(response.data);
-      }
-    }).catch(function (error) {
-      if (failedCallback) {
-        failedCallback(error);
-      }
-    })
+    reqPromise
+      .then(function (response) {
+        if (callback) {
+          callback(response.data)
+        }
+      })
+      .catch(function (error) {
+        if (failedCallback) {
+          failedCallback(error)
+        }
+      })
     return reqPromise
-
   }
 
-  static list(module, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    group = null,
-    abortController = null,
-    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
-  } = {}) {
+  static list(
+    module,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      group = null,
+      abortController = null,
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+    } = {}
+  ) {
     let url = `/${renderer}/${module}/list`
     if (group) {
       url += `/${group}`
     }
 
-    return Request.get(url,
-      {
-        dataObj: dataObj,
-        callback: callback,
-        failedCallback: failedCallback,
-        abortController: abortController
-      })
+    return Request.get(url, {
+      dataObj: dataObj,
+      callback: callback,
+      failedCallback: failedCallback,
+      abortController: abortController
+    })
   }
 
-  static getStructure(module, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    group = null,
-    abortController = null,
-  } = {}) {
+  static getStructure(
+    module,
+    { dataObj = null, callback = null, failedCallback = null, group = null, abortController = null } = {}
+  ) {
     let url = `/vi/getStructure/${module}/`
     if (group) {
       url += `/${group}`
     }
 
-    return Request.get(url,
-      {
-        dataObj: dataObj,
-        callback: callback,
-        failedCallback: failedCallback,
-        abortController: abortController
-      })
+    return Request.get(url, {
+      dataObj: dataObj,
+      callback: callback,
+      failedCallback: failedCallback,
+      abortController: abortController
+    })
   }
 
-  static view(module, key, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    group = null,
-    abortController = null,
-    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
-  } = {}) {
+  static view(
+    module,
+    key,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      group = null,
+      abortController = null,
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+    } = {}
+  ) {
     let url = `/${renderer}/${module}/view/${key}`
     if (group) {
       url = `/${renderer}/${module}/view/${group}/${key}`
     }
 
-    return Request.get(url,
-      {
-        dataObj: dataObj,
-        callback: callback,
-        failedCallback: failedCallback,
-        abortController: abortController
-      })
+    return Request.get(url, {
+      dataObj: dataObj,
+      callback: callback,
+      failedCallback: failedCallback,
+      abortController: abortController
+    })
   }
 
-  static add(module, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    group = null,
-    abortController = null,
-    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
-  } = {}) {
+  static add(
+    module,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      group = null,
+      abortController = null,
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+    } = {}
+  ) {
     let url = `/${renderer}/${module}/add`
     if (group) {
       url = `/${renderer}/${module}/add/${group}`
     }
 
-    return Request.securePost(url,
-      {
-        dataObj: dataObj,
-        callback: callback,
-        failedCallback: failedCallback,
-        abortController: abortController
-      })
+    return Request.securePost(url, {
+      dataObj: dataObj,
+      callback: callback,
+      failedCallback: failedCallback,
+      abortController: abortController
+    })
   }
 
-  static edit(module, key, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    group = null,
-    abortController = null,
-    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
-  } = {}) {
+  static edit(
+    module,
+    key,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      group = null,
+      abortController = null,
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+    } = {}
+  ) {
     let url = `/${renderer}/${module}/edit/${key}`
     if (group) {
       url = `/${renderer}/${module}/edit/${group}/${key}`
     }
 
-    return Request.securePost(url,
-      {
-        dataObj: dataObj,
-        callback: callback,
-        failedCallback: failedCallback,
-        abortController: abortController
-      })
+    return Request.securePost(url, {
+      dataObj: dataObj,
+      callback: callback,
+      failedCallback: failedCallback,
+      abortController: abortController
+    })
   }
 
-  static delete(module, key, {
-    dataObj = null,
-    callback = null,
-    failedCallback = null,
-    group = null,
-    abortController = null,
-    renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
-  } = {}) {
+  static delete(
+    module,
+    key,
+    {
+      dataObj = null,
+      callback = null,
+      failedCallback = null,
+      group = null,
+      abortController = null,
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+    } = {}
+  ) {
     let url = `/${renderer}/${module}/delete/${key}`
     if (group) {
       url = `/${renderer}/${module}/delete/${group}/${key}`
     }
 
-    return Request.securePost(url,
-      {
-        dataObj: dataObj,
-        callback: callback,
-        failedCallback: failedCallback,
-        abortController: abortController,
-        amount: 1,
-      })
+    return Request.securePost(url, {
+      dataObj: dataObj,
+      callback: callback,
+      failedCallback: failedCallback,
+      abortController: abortController,
+      amount: 1
+    })
   }
 
   static downloadUrlFor(bone, thumbnail = false) {
@@ -290,21 +314,64 @@ export default class Request {
     return Request.buildUrl(bone)
   }
 
+  static uploadFile(file) {
+    const filedata = {
+      fileName: file.name,
+      mimeType: file.type || "application/octet-stream",
+      size: file.size.toString()
+    }
+    return new Promise((resolve, reject) => {
+      Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
+        .then(async (resp) => {
+          let uploadURLdata = await resp.json()
+          fetch(uploadURLdata["values"]["uploadUrl"], {
+            body: file,
+            method: "POST",
+            mode: "no-cors"
+          })
+            .then(async (uploadresp) => {
+              const addData = {
+                key: uploadURLdata["values"]["uploadKey"],
+                node: undefined,
+                skelType: "leaf"
+              }
+              Request.securePost("/vi/file/add", { dataObj: addData })
+                .then(async (addresp) => {
+                  let addData = await addresp.json()
+                  if (addData["action"] === "addSuccess") {
+                    resolve(addData["values"])
+                  } else {
+                    reject(addData)
+                  }
+                })
+                .catch((error) => {
+                  reject(error)
+                })
+            })
+            .catch((error) => {
+              reject(error)
+            })
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    })
+  }
 }
 
 // TODO CACHING LOGIC
 class cachedFetch {
   withCredentials = true
 
-  static buildOptions(method, body = null, headers = null, abortController = null, mode=null) {
-    let options = {method: method}
+  static buildOptions(method, body = null, headers = null, abortController = null, mode = null) {
+    let options = { method: method }
 
-    options["credentials"] = 'include'
+    options["credentials"] = "include"
     options["headers"] = {
-      Accept: "application/json, text/plain, */*",
+      Accept: "application/json, text/plain, */*"
     }
     if (headers) {
-      options["headers"] = {...options["headers"], ...headers}
+      options["headers"] = { ...options["headers"], ...headers }
     }
 
     if (body) {
@@ -315,14 +382,14 @@ class cachedFetch {
       options["signal"] = abortController.signal
     }
 
-    if (mode){
+    if (mode) {
       options["mode"] = mode
     }
 
     return options
   }
 
-  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode=null) {
+  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
     function buildGetUrl(url, params) {
       let requestUrl = new URL(url)
       if (params && Object.keys(params).length > 0) {
@@ -330,54 +397,50 @@ class cachedFetch {
         for (const [key, value] of Object.entries(params)) {
           if (Array.isArray(value)) {
             for (const v of value) {
-              urlparams.append(key, v);
+              urlparams.append(key, v)
             }
           } else {
-            urlparams.append(key, value);
+            urlparams.append(key, value)
           }
         }
 
-        requestUrl.search = urlparams.toString();
+        requestUrl.search = urlparams.toString()
       }
 
       return requestUrl.toString()
     }
 
-    return fetch(
-      buildGetUrl(url, params),
-      cachedFetch.buildOptions("GET", null, headers, abortController, mode))
-      .then(async response => {
+    return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
+      .then(async (response) => {
         if (response.ok) {
           return response
         } else {
-          const errorMessage = `${response.status} ${response.statusText}: ${response.headers ? response.headers.get('x-error-descr') : ''}`
+          const errorMessage = `${response.status} ${response.statusText}: ${
+            response.headers ? response.headers.get("x-error-descr") : ""
+          }`
           return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response))
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         if (error instanceof TypeError) {
-          const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get('x-error-descr') : ''}`
+          const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
           return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
         }
         if (error instanceof DOMException && error.name == "AbortError") {
-            const errorMessage = `${error.code} ${error.name}: ${error.headers ? error.headers.get('x-error-descr') : ''}`
-            return Promise.reject(new HTTPError(error.code, error.name, errorMessage, {"url":url}))
+          const errorMessage = `${error.code} ${error.name}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
+          return Promise.reject(new HTTPError(error.code, error.name, errorMessage, { url: url }))
         }
 
-        const errorMessage = `${error.statusCode} ${error.statusText}: ${error.headers ? error.headers.get('x-error-descr') : ''}`
+        const errorMessage = `${error.statusCode} ${error.statusText}: ${
+          error.headers ? error.headers.get("x-error-descr") : ""
+        }`
         return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))
       })
   }
 
-  static post(url, params = null, clearCache = null, headers = null, abortController = null, mode=null) {
-    return fetch(
-      url,
-      cachedFetch.buildOptions("POST", params, headers, abortController, mode)
-    )
+  static post(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
+    return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
   }
 }
 
-export {
-  Request,
-  HTTPError,
-  getRequestStore
-}
+export { Request, HTTPError, getRequestStore }
