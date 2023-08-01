@@ -198,6 +198,7 @@ import rawBone from "./default/rawBone.vue"
 export default defineComponent({
   components: {
     wrapperMultiple,
+    wrapperNested,
     BoneLabel
   },
   props: {
