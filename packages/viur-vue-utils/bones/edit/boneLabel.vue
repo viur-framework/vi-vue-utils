@@ -2,7 +2,10 @@
   <label class="bone-name">
     <slot></slot>
     <template v-if="false">
-      <div class="debug" @click="state.debug = !state.debug">
+      <div
+        class="debug"
+        @click="state.debug = !state.debug"
+      >
         <sl-icon name="bug"></sl-icon>
       </div>
     </template>
@@ -17,7 +20,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue";
+import { reactive, defineComponent, onMounted, inject } from "vue"
 
 export default defineComponent({
   props: {
@@ -26,21 +29,21 @@ export default defineComponent({
     index: Number,
     lang: String,
     readonly: Boolean,
-    params: Object,
+    params: Object
   },
-  components: { },
+  components: {},
   emits: ["change", "handleClick"],
   setup(props, context) {
-    const boneState = inject("boneState");
+    const boneState = inject("boneState")
     const state = reactive({
-      debug: false,
-    });
+      debug: false
+    })
     return {
       state,
-      boneState,
-    };
-  },
-});
+      boneState
+    }
+  }
+})
 </script>
 
 <style scoped>

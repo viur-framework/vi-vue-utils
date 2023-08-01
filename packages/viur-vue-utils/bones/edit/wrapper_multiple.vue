@@ -2,19 +2,19 @@
   <div
     class="value-line"
     :draggable="state.isDraggable"
+    :class="{
+      'is-dragging': isDragging,
+      'dragging-line-bottom': draggingLineBottom,
+      'dragging-line-top': draggingLineTop
+    }"
     @dragover="$emit('handleDragOver', $event)"
     @drop="$emit('handleDrop', $event)"
     @dragstart="$emit('handleDragStart', $event)"
     @dragend="$emit('handleDragEnd')"
-    :class="{
-      'is-dragging': isDragging,
-      'dragging-line-bottom': draggingLineBottom,
-      'dragging-line-top': draggingLineTop,
-    }"
   >
     <sl-button
-      @mousedown="state.isDraggable = true"
       class="drag-button"
+      @mousedown="state.isDraggable = true"
     >
       <sl-icon name="draggable"> </sl-icon>
     </sl-button>
@@ -24,9 +24,9 @@
     <sl-button
       variant="danger"
       outline
-      @click="$emit('delete')"
       :title="$t('bone.del')"
       class="delete-btn"
+      @click="$emit('delete')"
     >
       <sl-icon name="x"></sl-icon>
     </sl-button>
@@ -34,31 +34,24 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from "vue";
+import { reactive, defineComponent } from "vue"
 
 export default defineComponent({
   props: {
     isDragging: Boolean,
     draggingLineBottom: Boolean,
-    draggingLineTop: Boolean,
+    draggingLineTop: Boolean
   },
   components: {},
-  emits: [
-    "change",
-    "delete",
-    "handleDragStart",
-    "handleDragEnd",
-    "handleDragOver",
-    "handleDrop",
-  ],
+  emits: ["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"],
   setup(props, context) {
     const state = reactive({
       isDraggable: false
-    });
+    })
 
-    return { state };
-  },
-});
+    return { state }
+  }
+})
 </script>
 
 <style scoped>

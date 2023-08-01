@@ -1,10 +1,9 @@
 export default {
-
   bone: {
     add: "Add",
     del: "Remove",
     upload: "Upload",
-    list: "List",
+    list: "List"
   },
-  lang: "Language",
-};
+  lang: "Language"
+}

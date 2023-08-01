@@ -3,17 +3,17 @@ export default {
     add: "Hinzufügen",
     del: "Entfernen",
     upload: "Hochladen",
-    list: "Auflisten",
+    list: "Auflisten"
   },
   lang: "Sprache",
-  bones:{
-    numeric:{
+  bones: {
+    numeric: {
       min: "Minimum: {val}",
       max: "Maximum: {val}",
       precision: "Genauigkeit: {val} Stellen"
     }
   },
-  "de":"DE",
-  "en":"EN",
-  "fr":"FR"
-};
+  de: "DE",
+  en: "EN",
+  fr: "FR"
+}

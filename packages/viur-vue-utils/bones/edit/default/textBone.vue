@@ -1,79 +1,89 @@
 <template>
-    <template v-if="state.editor">
-      <ckeditor v-if="boneState.bonestructure['validHtml']"
-        :editor="state.editor"
-        :config="state.editorConfig"
-        :disabled="boneState?.readonly"
-        v-model="state.value"
-        @ready="onReady"
-        @input="changeEvent">
-      </ckeditor>
-      <sl-textarea v-else @input="changeEventTextarea" :disabled="boneState?.readonly" :value="value"></sl-textarea>
-    </template>
+  <template v-if="state.editor">
+    <ckeditor
+      v-if="boneState.bonestructure['validHtml']"
+      v-model="state.value"
+      :editor="state.editor"
+      :config="state.editorConfig"
+      :disabled="boneState?.readonly"
+      @ready="onReady"
+      @input="changeEvent"
+    >
+    </ckeditor>
+    <sl-textarea
+      v-else
+      :disabled="boneState?.readonly"
+      :value="value"
+      @input="changeEventTextarea"
+    ></sl-textarea>
+  </template>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject,computed, watch} from 'vue'
-import ClassicEditor from '@viur/ckeditor5-build-classic'
+import { reactive, defineComponent, onMounted, inject, computed, watch } from "vue"
+import ClassicEditor from "@viur/ckeditor5-build-classic"
 
 export default defineComponent({
-    props:{
-        name:String,
-        value:Object,
-        index:Number,
-        lang:String
-    },
-    components: {},
-    emits:["change"],
-    setup(props, context) {
-        const boneState = inject("boneState")
-        const state = reactive({
-          value:'',
-          editorConfig:{},
-          editor:computed(()=>ClassicEditor)
-        })
+  props: {
+    name: String,
+    value: Object,
+    index: Number,
+    lang: String
+  },
+  components: {},
+  emits: ["change"],
+  setup(props, context) {
+    const boneState = inject("boneState")
+    const state = reactive({
+      value: "",
+      editorConfig: {},
+      editor: computed(() => ClassicEditor)
+    })
 
-        function changeEvent(event){
-            context.emit("change",props.name,state.value,props.lang,props.index)
-        }
-        function changeEventTextarea(event){
-            state.value = event.target.value
-            context.emit("change",props.name,state.value,props.lang,props.index)
-        }
-
-        onMounted(()=>{
-            if(props.value!==null){
-              state.value = props.value
-            }
-
-            context.emit("change",props.name,props.value,props.lang,props.index) //init
-        })
-
-        function onReady(editor){
-          editor.editing.view.change( writer => {
-             writer.setStyle( 'min-height', '250px', editor.editing.view.document.getRoot() );
-          } );
-        }
-        watch(()=>props.value,(newVal,oldVal)=>{
-          state.value=newVal
-        })
-        return {
-            state,
-            ClassicEditor,
-            boneState,
-            changeEvent,
-            onReady,
-            changeEventTextarea
-        }
+    function changeEvent(event) {
+      context.emit("change", props.name, state.value, props.lang, props.index)
     }
+    function changeEventTextarea(event) {
+      state.value = event.target.value
+      context.emit("change", props.name, state.value, props.lang, props.index)
+    }
+
+    onMounted(() => {
+      if (props.value !== null) {
+        state.value = props.value
+      }
+
+      context.emit("change", props.name, props.value, props.lang, props.index) //init
+    })
+
+    function onReady(editor) {
+      editor.editing.view.change((writer) => {
+        writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
+      })
+    }
+    watch(
+      () => props.value,
+      (newVal, oldVal) => {
+        state.value = newVal
+      }
+    )
+    return {
+      state,
+      ClassicEditor,
+      boneState,
+      changeEvent,
+      onReady,
+      changeEventTextarea
+    }
+  }
 })
 </script>
 
 <style>
-.bone-inner-wrap{
-  .ck-editor{
-     /* Overrides the border radius setting in the theme. */
+.bone-inner-wrap {
+  .ck-editor {
+    /* Overrides the border radius setting in the theme. */
     --ck-border-radius: 0px;
 
     /* Overrides the default font size in the theme. */
@@ -155,58 +165,58 @@ export default defineComponent({
     --ck-color-image-caption-background: var(--ck-custom-background);
     --ck-color-image-caption-text: var(--ck-custom-foreground);
 
-
     /* -- Overrides the default colors used by the ckeditor5-link package. ---------------------- */
     --ck-color-link-default: var(--sl-color-primary-500);
 
     width: 100% !important;
 
-    .ck-content{
+    .ck-content {
       background: transparent !important;
       border: 1px solid var(--vi-border-color) !important;
-      width:100%;
+      width: 100%;
       /*height: 250px;*/
       border-bottom-left-radius: var(--sl-border-radius-medium) !important;
       border-bottom-right-radius: var(--sl-border-radius-medium) !important;
 
-      &.ck-focused{
+      &.ck-focused {
         border: 1px solid var(--sl-color-neutral-600) !important;
 
-        .ck-source-editing-area{
-          & textarea, & td{
+        .ck-source-editing-area {
+          & textarea,
+          & td {
             border: 1px solid var(--sl-color-neutral-600) !important;
           }
         }
       }
     }
 
-    .ck-toolbar{
+    .ck-toolbar {
       height: var(--sl-input-height-medium);
       border-color: var(--vi-border-color);
       background-color: var(--vi-background-color);
     }
 
-    .ck-button{
+    .ck-button {
       border-color: none;
       background-color: var(--vi-background-color);
       cursor: pointer;
 
-      &:hover{
+      &:hover {
         background-color: var(--sl-color-neutral-200) !important;
       }
 
-      &.ck-on{
+      &.ck-on {
         background-color: var(--vi-background-color) !important;
         border: 1px solid var(--sl-color-primary-500) !important;
         color: var(--sl-color-primary-500) !important;
       }
     }
 
-    .ck-source-editing-area{
-      width:100%;
+    .ck-source-editing-area {
+      width: 100%;
       /*height: 250px;*/
 
-      & textarea{
+      & textarea {
         background-color: transparent;
         color: var(--ck-custom-foreground);
         border: 1px solid var(--vi-border-color) !important;
@@ -215,10 +225,8 @@ export default defineComponent({
       }
     }
   }
-  .ck-content .table{
-    margin: .9em 0;
+  .ck-content .table {
+    margin: 0.9em 0;
   }
-
 }
-
 </style>
