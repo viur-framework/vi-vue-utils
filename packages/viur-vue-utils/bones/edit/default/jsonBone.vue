@@ -13,7 +13,7 @@
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject } from "vue"
 //import { VueJsonPretty } from "vue-json-pretty"
-import "vue-json-pretty/lib/styles.css"
+//import "vue-json-pretty/lib/styles.css"
 
 export default defineComponent({
   props: {
@@ -24,7 +24,7 @@ export default defineComponent({
     readonly: Boolean,
     params: Object
   },
-  components: { VueJsonPretty },
+  components: {},
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
