@@ -5,7 +5,7 @@
       class="loading"
     >
       <sl-icon
-        src="/loading.svg"
+        src="loading.svg"
         class="loader"
       ></sl-icon>
       <div class="logo">
@@ -30,7 +30,7 @@ export default {
       default: true
     },
     logo: {
-      default: "/logo-cube.svg",
+      default: "logo-cube.svg",
       type: String
     },
     color: {
