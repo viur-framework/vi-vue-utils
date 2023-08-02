@@ -1,17 +1,18 @@
 <template>
   <div class="box">
-    <vue-json-pretty
+    <!--<vue-json-pretty
       :deep="0"
       :data="value"
       @selectedChange="changeEvent"
-    ></vue-json-pretty>
+    ></vue-json-pretty>-->
+    {{ value }}
   </div>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject } from "vue"
-import { VueJsonPretty } from "vue-json-pretty"
+//import { VueJsonPretty } from "vue-json-pretty"
 import "vue-json-pretty/lib/styles.css"
 
 export default defineComponent({
