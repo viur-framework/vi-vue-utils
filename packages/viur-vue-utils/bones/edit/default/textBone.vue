@@ -229,4 +229,19 @@ export default defineComponent({
     margin: 0.9em 0;
   }
 }
+
+sl-textarea{
+  &::part(base){
+    box-shadow: none !important;
+    background-color: transparent;
+  }
+
+  &::part(textarea){
+    background-color: transparent;
+    border: 1px solid var(--vi-border-color);
+    border-radius: var(--sl-border-radius-medium);
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
 </style>
