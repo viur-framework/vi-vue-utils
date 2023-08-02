@@ -25,7 +25,7 @@
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
-import Wrapper_nested from "../wrapper_nested.vue"
+//import Wrapper_nested from "../wrapper_nested.vue"
 
 export default defineComponent({
   props: {
@@ -34,7 +34,7 @@ export default defineComponent({
     index: Number,
     lang: String
   },
-  components: { Wrapper_nested },
+  components: {},
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")

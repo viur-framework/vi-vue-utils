@@ -56,7 +56,7 @@ export default defineComponent({
 
     onMounted(() => {
       let app = getCurrentInstance().appContext
-      if (app.components.bone) {
+      if (app.components.Bone) {
         state.globalRegistration = true
       } else {
         state.globalRegistration = false

@@ -190,7 +190,6 @@
 //@ts-nocheck
 import { reactive, defineComponent, computed, onBeforeMount, provide, getCurrentInstance, onMounted, watch } from "vue"
 import wrapperMultiple from "./wrapper_multiple.vue"
-import wrapperNested from "./wrapper_nested.vue" //needed!
 import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
@@ -198,7 +197,6 @@ import rawBone from "./default/rawBone.vue"
 export default defineComponent({
   components: {
     wrapperMultiple,
-    wrapperNested,
     BoneLabel
   },
   props: {
