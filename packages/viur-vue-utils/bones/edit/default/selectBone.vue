@@ -2,6 +2,7 @@
   <sl-select
     :disabled="boneState.readonly"
     :value="state.value"
+    hoist
     :multiple="boneState['bonestructure']['multiple']"
     max-options-visible="0"
     @sl-change="changeEvent"
