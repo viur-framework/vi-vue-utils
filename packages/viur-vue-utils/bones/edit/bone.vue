@@ -1,7 +1,7 @@
 <template>
   <div
     class="bone-wrapper"
-    :class="'bone-wrapper-' + state.bonestructure['type']"
+    :class="'bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones' : (state.bonestructure['using']) }"
   >
     <bone-label :name="name">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
@@ -657,18 +657,21 @@ export default defineComponent({
   grid-gap: var(--sl-spacing-small);
   margin-bottom: 20px;
 
-  &.bone-wrapper-record {
+  &.bone-wrapper-record, &.has-subbones {
     display: flex;
     flex-direction: column;
+    grid-gap: 0;
 
     & > :deep(.bone-name) {
       border-bottom-left-radius: 0;
       border-top-right-radius: var(--sl-border-radius-medium);
+      min-width: 235px;
     }
 
     & > .bone-inner-wrap {
       padding-top: var(--sl-spacing-small);
       border-top: 2px solid var(--sl-color-neutral-200);
+      margin-bottom: 5px;
     }
 
     & .multiple-bone {

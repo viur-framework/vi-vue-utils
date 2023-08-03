@@ -13,6 +13,7 @@ export default {
       precision: "Genauigkeit: {val} Stellen"
     }
   },
+  preview: "Vorschau",
   de: "DE",
   en: "EN",
   fr: "FR"

@@ -1,49 +1,60 @@
 <template>
-  <picture v-if="srcset">
-    <source
-      type="image/webp"
-      :srcset="srcset"
-    />
+  <div
+    class="image-wrap"
+    :class="{'has-popup': 'popup'}"
+  >
+    <picture v-if="srcset">
+      <source
+        type="image/webp"
+        :srcset="srcset"
+      />
+
+      <img
+        class="image"
+        draggable="false"
+        :title="alt ? alt : null"
+        :alt="alt ? alt : null"
+        :src="state.image"
+        @error="onError"
+      />
+    </picture>
 
     <img
-      class="image"
+      v-else
       draggable="false"
       :title="alt ? alt : null"
       :alt="alt ? alt : null"
       :src="state.image"
+      class="image"
+      @load="updateLoading(false)"
+      @click="state.opened = !state.opened"
       @error="onError"
     />
-  </picture>
-
-  <img
-    v-else
-    draggable="false"
-    :title="alt ? alt : null"
-    :alt="alt ? alt : null"
-    :src="state.image"
-    class="image"
-    @load="updateLoading(false)"
-    @click="state.opened = !state.opened"
-    @error="onError"
-  />
+  </div>
 
   <sl-dialog
     v-if="popup"
+    @sl-hide="state.opened = false"
     :open="state.opened"
+    :label="$t('preview')"
   >
-    <img
-      style="display: block"
-      draggable="false"
-      :title="alt ? alt : null"
-      :alt="alt ? alt : null"
-      :src="state.image"
-      @load="updateLoading(false)"
-    />
+    <div class="image-wrap">
+      <img
+        style="display: block"
+        draggable="false"
+        :title="alt ? alt : null"
+        :alt="alt ? alt : null"
+        :src="state.image"
+        @load="updateLoading(false)"
+      />
+    </div>
     <sl-button
       :download="alt + '.jpg'"
       :href="src"
       variant="primary"
       target="_blank"
+      size="small"
+      slot="footer"
       >Download</sl-button
     >
   </sl-dialog>
@@ -120,6 +131,26 @@ img.is-loading {
   filter: blur(4px);
 }
 
+.image-wrap{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-image: /* tint image */
+                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+                  /* checkered effect */
+                  linear-gradient(to right, black 50%, white 50%),
+                  linear-gradient(to bottom, black 50%, white 50%);
+  background-blend-mode: normal, difference, normal;
+  background-size: .65em .65em;
+}
+
+.has-popup{
+  cursor: pointer;
+}
+
 .image {
   width: 100%;
   height: 100%;
@@ -132,8 +163,18 @@ img.is-loading {
   object-fit: cover;
 }
 
-sl-dialog::part(panel) {
-  width: 100%;
+sl-dialog{
+  &::part(panel) {
+    width: auto;
+    min-width: 350px;
+    max-width: 90vw;
+  }
+  &::part(body) {
+    padding: 0;
+  }
+  &::part(footer) {
+    padding: var(--sl-spacing-small);
+  }
 }
 
 sl-dialog {

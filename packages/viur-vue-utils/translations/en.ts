@@ -5,5 +5,6 @@ export default {
     upload: "Upload",
     list: "List"
   },
+  preview: "Preview",
   lang: "Language"
 }
