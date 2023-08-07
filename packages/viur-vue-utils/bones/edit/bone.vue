@@ -444,12 +444,15 @@ export default defineComponent({
         index: index
       })
     }
-
     function toFormValue() {
       function rewriteData(val: any, key: string | null = null): Array<Object> {
         let ret = []
         if (Array.isArray(val)) {
-          if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
+          if(state.bonestructure['type']=="spatial" && val.length===2 && !Array.isArray(val[0])){
+            ret.push({ [key+".lat"]: val[0] })
+            ret.push({ [key+".lng"]: val[1] })
+
+          }else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
             //only add i if relationaldata
 
             for (const [i, v] of val.entries()) {
@@ -461,10 +464,7 @@ export default defineComponent({
             }
           }
         } else if (val === Object(val)) {
-          /*           if (Object.entries(val).some((c) => c.includes('lat'))) {
-            ret.push(({ [key]: val }))
-            return ret
-          } */
+
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {

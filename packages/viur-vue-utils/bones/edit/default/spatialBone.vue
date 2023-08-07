@@ -1,22 +1,29 @@
 <template>
-  <div
-    v-for="(val, index) in state.spatialValue"
-    :key="index"
-  >
-    {{ index }} {{ name }} {{ val }}
     <sl-input
-      v-model="state.spatialValue[index]"
-      :index="index"
+      v-model="state.valueLat"
+      index="lat"
       type="number"
       :name="name"
       :min="boneState.bonestructure.boundslat[0]"
       :max="boneState.bonestructure.boundslat[1]"
       :disabled="boneState.readonly"
       value-as-number
-      step="0.1"
+      step="0.000001"
       @sl-change="changeEvent"
     ></sl-input>
-  </div>
+
+    <sl-input
+      v-model="state.valueLng"
+      index="lng"
+      type="number"
+      :name="name"
+      :min="boneState.bonestructure.boundslat[0]"
+      :max="boneState.bonestructure.boundslat[1]"
+      :disabled="boneState.readonly"
+      value-as-number
+      step="0.000001"
+      @sl-change="changeEvent"
+    ></sl-input>
 </template>
 
 <script lang="ts">
@@ -36,36 +43,19 @@ export default defineComponent({
     const boneState = inject("boneState")
     const state = reactive({
       valueLat: null,
-      valueLng: null,
-      spatialValue: {
-        lat: null,
-        lng: null
-      }
+      valueLng: null
     })
-    function ValueInObject(value) {
-      if (value !== null) {
-        if (Array.isArray(value) && value.length === 2) {
-          state.spatialValue = {
-            lat: value[0],
-            lng: value[1]
-          }
-        }
-      }
-    }
 
     function changeEvent() {
-      context.emit("change", props.name, state.spatialValue, props.lang, props.index)
+      context.emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
     }
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-      if (props.value) {
-        state.spatialValue = {
-          lat: props.value[0],
-          lng: props.value[1]
-        }
-        props.value = state.spatialValue
-      }
+      try{
+        state.valueLat = props.value[0]
+        state.valueLng = props.value[1]
+      }catch(e){}
+      context.emit("change", props.name,  [state.valueLat, state.valueLng], props.lang, props.index) //init
     })
 
     return {
