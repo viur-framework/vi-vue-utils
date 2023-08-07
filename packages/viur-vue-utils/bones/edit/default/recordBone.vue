@@ -11,8 +11,8 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
-//import Wrapper_nested from "../wrapper_nested.vue"
+import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance } from "vue"
+import Wrapper_nested from "../wrapper_nested.vue"
 
 export default defineComponent({
   props: {
@@ -21,7 +21,7 @@ export default defineComponent({
     index: Number,
     lang: String
   },
-  components: {},
+  components: {Wrapper_nested},
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
