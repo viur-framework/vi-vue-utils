@@ -17,13 +17,13 @@ ViUR Vue Utils is a library to work with the Viur Framework
 
 ## Installation
 ```bash
-$ npm i @viur/viur-vue-utils
+$ npm i @viur/vue-utils
 ```
 
 ## Usage
 
 ```js
-import {Request, ListRequest, destroyStore} from '@viur/viur-vue-utils'
+import {Request, ListRequest, destroyStore} from '@viur/vue-utils'
 
 const simpleRequest = ref() //reactive variable
 Request.get("https://jsonplaceholder.typicode.com/todos/1").then(async (resp: Response)=>{
