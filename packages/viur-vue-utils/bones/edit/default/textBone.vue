@@ -230,13 +230,13 @@ export default defineComponent({
   }
 }
 
-sl-textarea{
-  &::part(base){
+sl-textarea {
+  &::part(base) {
     box-shadow: none !important;
     background-color: transparent;
   }
 
-  &::part(textarea){
+  &::part(textarea) {
     background-color: transparent;
     border: 1px solid var(--vi-border-color);
     border-radius: var(--sl-border-radius-medium);

@@ -1,7 +1,9 @@
 <template>
   <div
     class="bone-wrapper"
-    :class="'bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones' : (state.bonestructure['using']) }"
+    :class="
+      ('bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones': state.bonestructure['using'] })
+    "
   >
     <bone-label :name="name">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
@@ -448,11 +450,10 @@ export default defineComponent({
       function rewriteData(val: any, key: string | null = null): Array<Object> {
         let ret = []
         if (Array.isArray(val)) {
-          if(state.bonestructure['type']=="spatial" && val.length===2 && !Array.isArray(val[0])){
-            ret.push({ [key+".lat"]: val[0] })
-            ret.push({ [key+".lng"]: val[1] })
-
-          }else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
+          if (state.bonestructure["type"] == "spatial" && val.length === 2 && !Array.isArray(val[0])) {
+            ret.push({ [key + ".lat"]: val[0] })
+            ret.push({ [key + ".lng"]: val[1] })
+          } else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
             //only add i if relationaldata
 
             for (const [i, v] of val.entries()) {
@@ -464,7 +465,6 @@ export default defineComponent({
             }
           }
         } else if (val === Object(val)) {
-
           for (const [k, v] of Object.entries(val)) {
             if (key) {
               if (key.endsWith("dest") && k === "key") {
@@ -657,7 +657,8 @@ export default defineComponent({
   grid-gap: var(--sl-spacing-small);
   margin-bottom: 20px;
 
-  &.bone-wrapper-record, &.has-subbones {
+  &.bone-wrapper-record,
+  &.has-subbones {
     display: flex;
     flex-direction: column;
     grid-gap: 0;
