@@ -1,9 +1,9 @@
 <template>
-  <sl-input
-    :disabled="boneState.readonly"
+  <sl-textarea
+    :disabled="boneState?.readonly"
     :value="value"
-    @sl-change="changeEvent"
-  ></sl-input>
+    @input="changeEvent"
+  ></sl-textarea>
 </template>
 
 <script lang="ts">
