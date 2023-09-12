@@ -81,8 +81,8 @@ const boneLogic = (skel, structure) => {
     } else if (boneStructure["type"] === "select" || boneStructure["type"].startsWith("select.")) {
       // extract description from tuple
       if (boneStructure["values"].length > 0) {
-        var [valuename, valuedescr] = boneStructure["values"][0]
-        return valuedescr
+        let returnValue = boneStructure["values"]?.filter(x=>x[0]===value)?.[0]?.[1]
+        return returnValue?returnValue:"-"
       }
       return "-"
     } else if (boneStructure["type"] === "date" || boneStructure["type"].startsWith("date.")) {
