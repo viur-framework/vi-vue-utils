@@ -418,7 +418,7 @@ export default defineComponent({
       })
     }
 
-    function updateValue(name: string, val: any, lang: string | null = null, index: number = 0) {
+    function updateValue(name: string, val: any, lang: string | null = null, index: number | null = null) {
       if (val === undefined) return false
       if (lang) {
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
@@ -455,9 +455,12 @@ export default defineComponent({
             ret.push({ [key + ".lng"]: val[1] })
           } else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
             //only add i if relationaldata
-
             for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key + "." + i))
+              if (v["rel"] !== null) {
+                ret.push(rewriteData(v, key + "." + i)) // append idx if we have rel data
+              } else {
+                ret.push(rewriteData(v, key))
+              }
             }
           } else {
             for (const [i, v] of val.entries()) {
@@ -467,19 +470,23 @@ export default defineComponent({
         } else if (val === Object(val)) {
           for (const [k, v] of Object.entries(val)) {
             if (key) {
-              if (key.endsWith("dest") && k === "key") {
-                if (Object.keys(state.bonestructure).includes("using") && state.bonestructure["using"]) {
+              if (key.endsWith(".dest") || key.endsWith(".rel")) {
+                if (key.endsWith(".dest") && k === "key") {
+                  // if single bonename, multiple bonename, using single bonename.key, using multiple bonename.0.key
+                  // if dest we only send the key
+                  // we send key 2 times. this is ugly we need a better solution... or a better handling on server side
+
+                  if (/\.[0-9]*\.dest$/.test(key)) {
+                    ret.push(rewriteData(v, key.replace(/\.[0-9]*\.dest/, "")))
+                  } else {
+                    ret.push(rewriteData(v, key.replace(/\.dest/, "")))
+                  }
+
                   ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k))
-                } else {
-                  ret.push(rewriteData(v, key.replace(/\.[0-9]*\.dest/, "").replace(/\.dest/, "")))
-                }
-              } else if (key.endsWith("rel")) {
-                if (Object.keys(state.bonestructure).includes("using") && state.bonestructure["using"]) {
+                } else if (key.endsWith(".rel")) {
                   ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k))
-                } else {
-                  ret.push(rewriteData(v, key.replace(/\.[0-9]*\.rel/, "").replace(/\.rel/, "") + "." + k))
                 }
-              } else if (!key.endsWith("dest")) {
+              } else {
                 ret.push(rewriteData(v, key + "." + k))
               }
             } else {
@@ -496,6 +503,7 @@ export default defineComponent({
         }
         return ret
       }
+
       let value = rewriteData(state.bonevalue, props.name)
       value = value.flat(10)
       return value
