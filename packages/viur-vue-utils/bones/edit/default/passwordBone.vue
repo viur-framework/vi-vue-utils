@@ -65,7 +65,9 @@ export default defineComponent({
         state.equal = false
       }
       testPassword(state.value1)
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      if (state.passwordInfo.length === 0) {
+        context.emit("change", props.name, event.target.value, props.lang, props.index)
+      }
     }
 
     onMounted(() => {
