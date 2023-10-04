@@ -37,7 +37,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      context.emit("change", props.name, state.value, props.lang, props.index) //init
+      context.emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
     return {
