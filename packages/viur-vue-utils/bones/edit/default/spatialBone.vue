@@ -10,6 +10,7 @@
     value-as-number
     step="0.000001"
     @sl-change="changeEvent"
+    placeholder="Lat"
   ></sl-input>
 
   <sl-input
@@ -23,6 +24,7 @@
     value-as-number
     step="0.000001"
     @sl-change="changeEvent"
+    placeholder="Long"
   ></sl-input>
 </template>
 
@@ -71,9 +73,26 @@ export default defineComponent({
 sl-input {
   width: 100%;
 
+  &:first-child{
+   margin-bottom: 10px;
+
+  &::part(base) {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+     border-top-right-radius: var(--sl-border-radius-medium);
+   }
+
+  @media(max-width: 900px){
+    &::part(base) {
+      border-top-right-radius: 0;
+    }
+  }
+
+ }
+
   &::part(base) {
     border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 </style>

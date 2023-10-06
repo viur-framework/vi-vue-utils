@@ -798,4 +798,19 @@ sl-tooltip {
   color: var(--sl-color-primary-500);
   font-weight: 700;
 }
+
+:deep(sl-combobox){
+  &::part(input__base){
+    border: 1px solid var(--vi-border-color);
+    box-shadow: none !important;
+   }
+
+   &::part(input__prefix){
+    display: none !important;
+  }
+
+   &::part(input__suffix){
+    display: none !important;
+  }
+}
 </style>
