@@ -332,10 +332,7 @@ export default defineComponent({
         return false
       }),
 
-      errors: computed(() => {
-        console.log("computed errors")
-        return props.errors
-      }),
+      errors: [],
       errorMessages: computed(() => {
         let errors = []
         for (let error of props.errors) {
@@ -629,6 +626,13 @@ export default defineComponent({
       () => props.skel,
       (newVal, oldVal) => {
         state.bonevalue = props.skel?.[props.name]
+      }
+    )
+
+    watch(
+      () => props.errors?.[props.name],
+      (newVal, oldVal) => {
+        state.errors = props.errors
       }
     )
 
