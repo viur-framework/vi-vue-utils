@@ -62,7 +62,7 @@ export default defineComponent({
       } else if (boneState.bonestructure["type"] === "relational.tree.node.file") {
         params = "skelType=node&"
       }
-      return Request.get(`/json/${boneState.bonestructure["module"]}/list?${params}limit=99`).then(async (resp) => {
+      return Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`).then(async (resp) => {
         //?viurTags$lk=${search.toLowerCase()}
         const data = await resp.json()
         state.skels = data["skellist"].reduce((acc, curr) => ((acc[curr["key"]] = curr), acc), {})

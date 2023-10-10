@@ -1,9 +1,10 @@
 <template>
   <div class="record">
+    <div class="single-entry">
     <sl-input
-      v-if="boneState.bonestructure['multiple']"
-      :disabled="boneState.readonly"
-      :value="formatString(state.format, value)"
+        v-if="state.selection"
+        :disabled="true"
+        :value="value ? formatString(state.format, state.selection) : ''"
     ></sl-input>
     <sl-combobox
       v-else
@@ -12,10 +13,31 @@
       hoist
       @sl-item-select="changeEvent"
     ></sl-combobox>
+
+      <sl-button
+        v-if="!boneState.multiple && !boneState.isEmpty"
+        variant="danger"
+        outline
+        :title="$t('bone.del')"
+        class="delete-btn square-btn"
+        @click="
+          () => {
+            $emit('change', name, '', lang, index)
+            state.selection = null
+          }
+        "
+      >
+        <sl-icon name="x"></sl-icon>
+      </sl-button>
+
+    </div>
     <Wrapper_nested
-      :value="value"
+      v-if="boneState?.bonestructure['using']"
+      :value="value?.['rel']"
       :name="name"
       :index="index"
+      :disabled="boneState.bonestructure['readonly']"
+      @change="changeEventNested"
     >
     </Wrapper_nested>
   </div>
@@ -25,7 +47,7 @@
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
-//import Wrapper_nested from "../wrapper_nested.vue"
+import Wrapper_nested from "../wrapper_nested.vue";
 
 export default defineComponent({
   props: {
@@ -34,7 +56,7 @@ export default defineComponent({
     index: Number,
     lang: String
   },
-  components: {},
+  components: {Wrapper_nested},
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
@@ -42,7 +64,9 @@ export default defineComponent({
     const state = reactive({
       format: computed(() => {
         return boneState?.bonestructure["format"]
-      })
+      }),
+      skellistdata: null,
+      selection: null
     })
 
     function getList(search: String) {
@@ -53,9 +77,15 @@ export default defineComponent({
         params = "skelType=node&"
       }
 
-      return Request.get(`/json/${boneState.bonestructure["module"]}/list?${params}limit=99`).then(async (resp) => {
+      return Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`).then(async (resp) => {
         //?viurTags$lk=${search.toLowerCase()
         const data = await resp.json()
+
+        state.skellistdata = {}
+        for (let e of data["skellist"]) {
+          state.skellistdata[e["key"]] = e
+        }
+
         return data["skellist"]?.map((d: any) => {
           return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
         })
@@ -63,10 +93,48 @@ export default defineComponent({
     }
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.detail.item.value, props.lang, props.index)
+      state.selection = { dest: state.skellistdata[event.detail.item.value] }
+      context.emit("change", props.name, state.selection, props.lang, props.index)
+    }
+
+    function changeEventNested(val) {
+      if (!state.selection) state.selection = {}
+
+      if (!state.selection["rel"]?.[val.name]) {
+        if (!state.selection["rel"]) {
+          state.selection["rel"] = { [val.name]: null }
+        } else {
+          state.selection["rel"][val.name] = null
+        }
+      }
+
+      let currentBone = state.selection["rel"][val.name]
+      if (val.lang) {
+        if (currentBone === null) currentBone = {}
+        if (Object.keys(currentBone).includes(val.lang) && val.index !== null) {
+          currentBone[val.lang][val.index] = val.value
+        } else {
+          currentBone[val.lang] = val.value
+        }
+      } else if (val.index !== null) {
+        if (currentBone === null) currentBone = []
+        currentBone[val.index] = val.value
+      } else {
+        currentBone = val.value
+      }
+
+      if (Object.keys(state.selection).includes("rel") && state.selection["rel"]) {
+        state.selection["rel"][val.name] = currentBone
+      } else {
+        state.selection["rel"] = { [val.name]: currentBone }
+      }
+
+      if (!Object.keys(state.selection).includes("dest")) return
+      context.emit("change", props.name, state.selection, props.lang, props.index)
     }
 
     onMounted(() => {
+      state.selection = props.value
       context.emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
@@ -75,6 +143,7 @@ export default defineComponent({
       boneState,
       formatString,
       changeEvent,
+      changeEventNested,
       getList
     }
   }
@@ -82,6 +151,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+.single-entry {
+  display: flex;
+  gap: 10px;
+
+  :deep(sl-combobox){
+    &::part(input__base){
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+     }
+  }
+}
+
 sl-input {
   width: 100%;
 

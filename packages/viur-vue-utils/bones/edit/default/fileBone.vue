@@ -135,7 +135,7 @@ export default defineComponent({
         size: file.size.toString()
       }
       return new Promise((resolve, reject) => {
-        Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
+        Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
           .then(async (resp) => {
             let uploadURLdata = await resp.json()
             fetch(uploadURLdata["values"]["uploadUrl"], {
@@ -149,7 +149,7 @@ export default defineComponent({
                   node: undefined,
                   skelType: "leaf"
                 }
-                Request.securePost("/vi/file/add", { dataObj: addData })
+                Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
                   .then(async (addresp) => {
                     let addData = await addresp.json()
                     if (addData["action"] === "addSuccess") {
