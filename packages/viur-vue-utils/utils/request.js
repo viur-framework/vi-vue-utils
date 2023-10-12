@@ -19,8 +19,12 @@ function getRequestStore() {
   if (!useRequestStore) {
     useRequestStore = defineStore("requestStore", () => {
       const state = reactive({ sKeys: new Set() })
+      function $reset() {
+        state.sKeys = new Set()
+      }
       return {
-        state
+        state,
+        $reset
       }
     })
   }
