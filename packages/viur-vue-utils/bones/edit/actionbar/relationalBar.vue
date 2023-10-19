@@ -14,7 +14,12 @@
     <sl-combobox
       :source="getList"
       hoist
-      @sl-item-select="addMultipleEntry(lang, { dest: state.skels?.[$event.detail.item.value], rel: null })"
+      @sl-item-select="
+        addMultipleEntry(lang, {
+          dest: state.skels?.[$event.detail.item.value],
+          rel: state.hasUsing ? undefined : null
+        })
+      "
     ></sl-combobox>
 
     <sl-button
@@ -52,7 +57,8 @@ export default defineComponent({
     const formatString = inject("formatString")
     const removeMultipleEntries = null
     const state = reactive({
-      skels: {}
+      skels: {},
+      hasUsing: computed(() => boneState?.bonestructure["using"])
     })
 
     function getList(search: String) {

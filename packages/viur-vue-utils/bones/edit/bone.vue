@@ -491,7 +491,7 @@ export default defineComponent({
             }
           }
         } else {
-          if (val === null) {
+          if (val === null || val === undefined) {
             val = ""
           }
           if (key !== null) {
