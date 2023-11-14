@@ -13,6 +13,7 @@
     @dragend="$emit('handleDragEnd')"
   >
     <sl-button
+      :disabled="boneState.readonly"
       class="drag-button"
       @mousedown="state.isDraggable = true"
     >
@@ -23,6 +24,7 @@
     </div>
     <sl-button
       variant="danger"
+      :disabled="boneState.readonly"
       outline
       :title="$t('bone.del')"
       class="delete-btn"
@@ -34,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { reactive, defineComponent } from "vue"
+import { reactive, defineComponent, inject } from "vue"
 
 export default defineComponent({
   props: {
@@ -45,11 +47,15 @@ export default defineComponent({
   components: {},
   emits: ["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"],
   setup(props, context) {
+    const boneState = inject("boneState")
     const state = reactive({
       isDraggable: false
     })
 
-    return { state }
+    return {
+      state,
+      boneState
+    }
   }
 })
 </script>
