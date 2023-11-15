@@ -77,6 +77,12 @@ export default defineComponent({
       }, delay)
     }
 
+    onMounted(() => {
+      if (props.value === null || props.value.length === 0) {
+        context.emit("change", props.name, [], props.lang) //init
+      }
+    })
+
     return {
       state,
       boneState,

@@ -156,6 +156,12 @@ export default defineComponent({
       state.loading = false
     }
 
+    onMounted(() => {
+      if (props.value === null || props.value.length === 0) {
+        context.emit("change", props.name, [], props.lang) //init
+      }
+    })
+
     return {
       state,
       boneState,

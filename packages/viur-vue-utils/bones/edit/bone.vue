@@ -96,7 +96,10 @@
               <component
                 :is="state.actionbar"
                 v-if="!state.readonly"
+                :value="state.bonevalue?.[lang]"
+                :name="name"
                 :lang="lang"
+                @change="updateValue"
               ></component>
             </template>
             <!--Bone rendering for normal bones-->
@@ -156,6 +159,9 @@
           <component
             :is="state.actionbar"
             v-if="!state.readonly"
+            :value="state.bonevalue"
+            :name="name"
+            @change="updateValue"
           ></component>
         </template>
         <!--Bone rendering for normal bones-->
@@ -323,7 +329,7 @@ export default defineComponent({
         if (!state.bonevalue) return true
 
         // Check if the value is an array with elements
-        if (Array.isArray(state.bonevalue) && state.bonevalue.length > 0) return false
+        if (Array.isArray(state.bonevalue) && state.bonevalue.length === 0) return true
 
         // Check if the value is an object and not an array, then use helper function to check if it's empty
         if (state.bonevalue === Object(state.bonevalue) && !Array.isArray(state.bonevalue))
@@ -537,7 +543,7 @@ export default defineComponent({
       })
       context.emit("change-internal", {
         name: props.name,
-        value: val,
+        value: toFormValue(),
         lang: lang,
         index: index
       })
@@ -803,17 +809,17 @@ sl-tooltip {
   font-weight: 700;
 }
 
-:deep(sl-combobox){
-  &::part(input__base){
+:deep(sl-combobox) {
+  &::part(input__base) {
     border: 1px solid var(--vi-border-color);
     box-shadow: none !important;
-   }
+  }
 
-   &::part(input__prefix){
+  &::part(input__prefix) {
     display: none !important;
   }
 
-   &::part(input__suffix){
+  &::part(input__suffix) {
     display: none !important;
   }
 }
