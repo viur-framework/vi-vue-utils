@@ -342,7 +342,10 @@ export default defineComponent({
       errorMessages: computed(() => {
         let errors = []
         for (let error of props.errors) {
-          if (error["fieldPath"][0] === props.name && (error["severity"] > 2 || (state.required && state.isEmpty))) {
+          if (
+            error["fieldPath"][0] === props.name &&
+            (error["severity"] > 2 || (state.required && error["severity"] === 2))
+          ) {
             //severity level???
             errors.push(error["errorMessage"])
           }
