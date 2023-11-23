@@ -318,11 +318,12 @@ export default class Request {
     return Request.buildUrl(bone)
   }
 
-  static uploadFile(file) {
+  static uploadFile(file, target = undefined) {
     const filedata = {
       fileName: file.name,
       mimeType: file.type || "application/octet-stream",
-      size: file.size.toString()
+      size: file.size.toString(),
+      node: target
     }
     return new Promise((resolve, reject) => {
       Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
@@ -336,7 +337,6 @@ export default class Request {
             .then(async (uploadresp) => {
               const addData = {
                 key: uploadURLdata["values"]["uploadKey"],
-                node: undefined,
                 skelType: "leaf"
               }
               Request.securePost("/vi/file/add", { dataObj: addData })
