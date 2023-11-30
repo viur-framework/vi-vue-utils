@@ -5,6 +5,7 @@
     hoist
     :multiple="boneState['bonestructure']['multiple']"
     max-options-visible="0"
+    clearable
     @sl-change="changeEvent"
   >
     <sl-option
