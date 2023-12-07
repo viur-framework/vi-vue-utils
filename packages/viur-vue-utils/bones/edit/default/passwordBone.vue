@@ -78,7 +78,6 @@ export default defineComponent({
         state.requiredPasswordInfo.length === 0 &&
         state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
       ) {
-        console.log("GGGGG")
         context.emit("change", props.name, event.target.value, props.lang, props.index)
       }
     }
