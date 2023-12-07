@@ -33,6 +33,12 @@
   </sl-input>
   <ul class="errors">
     <li v-for="error in state.passwordInfo">{{ error }}</li>
+    <li
+      v-for="error in state.requiredPasswordInfo"
+      class="requiredInfo"
+    >
+      {{ error }}
+    </li>
   </ul>
 </template>
 
@@ -55,7 +61,8 @@ export default defineComponent({
       value1: "",
       value2: null,
       equal: false,
-      passwordInfo: []
+      passwordInfo: [],
+      requiredPasswordInfo: []
     })
 
     function changeEvent(event) {
@@ -64,8 +71,14 @@ export default defineComponent({
       } else {
         state.equal = false
       }
+
       testPassword(state.value1)
-      if (state.passwordInfo.length === 0) {
+      boneState.bonestructure["test_threshold"] = 2
+      if (
+        state.requiredPasswordInfo.length === 0 &&
+        state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
+      ) {
+        console.log("GGGGG")
         context.emit("change", props.name, event.target.value, props.lang, props.index)
       }
     }
@@ -76,16 +89,21 @@ export default defineComponent({
 
     function testPassword(password: string): string[] {
       state.passwordInfo = []
-      for (const test: [string, string] of boneState.bonestructure["tests"]) {
+      state.requiredPasswordInfo = []
+      for (const test: [string, string, boolean] of boneState.bonestructure["tests"]) {
         if (!new RegExp(test[0]).test(password)) {
-          state.passwordInfo.push(test[1])
+          if (test[2]) {
+            state.requiredPasswordInfo.push(test[1])
+          } else {
+            state.passwordInfo.push(test[1])
+          }
         }
       }
       if (!state.equal) {
-        state.passwordInfo.push("Die eingegebenen Passwörter stimmen nicht überein.")
+        state.requiredPasswordInfo.push("Die eingegebenen Passwörter stimmen nicht überein.")
       }
       if (!state.value1) {
-        state.passwordInfo.push("Das eingegebene Passwort ist leer.")
+        state.requiredPasswordInfo.push("Das eingegebene Passwort ist leer.")
       }
     }
 
@@ -143,5 +161,9 @@ sl-input {
   margin-top: var(--sl-spacing-x-small);
   font-size: 0.7em;
   font-weight: bold;
+}
+
+.requiredInfo {
+  color: var(--sl-color-danger-800);
 }
 </style>
