@@ -172,6 +172,7 @@
           :name="name"
           :index="null"
           @change="updateValue"
+          @keypress.enter="updateValue"
         ></component>
       </template>
 
@@ -196,7 +197,17 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, computed, onBeforeMount, provide, getCurrentInstance, onMounted, watch } from "vue"
+import {
+  reactive,
+  defineComponent,
+  computed,
+  onBeforeMount,
+  provide,
+  getCurrentInstance,
+  onMounted,
+  watch,
+  ref
+} from "vue"
 import wrapperMultiple from "./wrapper_multiple.vue"
 import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
@@ -354,6 +365,7 @@ export default defineComponent({
       })
     })
     provide("boneState", state)
+
 
     // Handle drag start event
     function handleDragStart(index, lang, event) {

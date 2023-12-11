@@ -7,6 +7,7 @@
     :max="state.maxAmount"
     :step="state.precision"
     @sl-change="changeEvent"
+    ref="numericBone"
   >
   </sl-input>
   <ul class="info">
@@ -18,7 +19,8 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, computed, inject } from "vue"
+import { reactive, defineComponent, onMounted, computed, inject, ref, watchEffect } from "vue"
+import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
   props: {
@@ -46,9 +48,21 @@ export default defineComponent({
       })
     })
 
+    const numericBone = ref(null)
+
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
+
+    watchEffect(() => {
+      if (numericBone.value && numericBone.value !== null && numericBone !== null) {
+        const { start } = useTimeoutFn(() => {
+          numericBone.value.focus()
+        }, 600)
+
+        start()
+      }
+    })
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index) //init
@@ -57,7 +71,8 @@ export default defineComponent({
     return {
       state,
       boneState,
-      changeEvent
+      changeEvent,
+      numericBone
     }
   }
 })

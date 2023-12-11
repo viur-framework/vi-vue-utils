@@ -9,6 +9,7 @@
     @sl-change="changeEvent"
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
+    ref="passwordBone"
   >
     <sl-icon
       slot="suffix"
@@ -44,7 +45,8 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, computed, inject, watch } from "vue"
+import { reactive, defineComponent, onMounted, computed, inject, watch, ref, watchEffect } from "vue"
+import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
   props: {
@@ -64,6 +66,8 @@ export default defineComponent({
       passwordInfo: [],
       requiredPasswordInfo: []
     })
+
+    const passwordBone = ref(null)
 
     function changeEvent(event) {
       if (state.value1 === state.value2) {
@@ -106,6 +110,16 @@ export default defineComponent({
       }
     }
 
+    watchEffect(() => {
+      if (passwordBone.value && passwordBone.value !== null && passwordBone !== null) {
+        const { start } = useTimeoutFn(() => {
+          passwordBone.value.focus()
+        }, 600)
+
+        start()
+      }
+    })
+
     watch(
       () => props.value,
       (newVal, oldVal) => {
@@ -116,7 +130,8 @@ export default defineComponent({
     return {
       state,
       boneState,
-      changeEvent
+      changeEvent,
+      passwordBone
     }
   }
 })
