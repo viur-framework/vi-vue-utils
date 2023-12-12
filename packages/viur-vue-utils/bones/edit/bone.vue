@@ -171,6 +171,7 @@
           :value="state.bonevalue"
           :name="name"
           :index="null"
+          :autofocus="autofocus"
           @change="updateValue"
           @keypress.enter="updateValue"
         ></component>
@@ -241,7 +242,8 @@ export default defineComponent({
       type: null,
       required: true
     },
-    errors: Object
+    errors: Object,
+    autofocus: { type: Boolean, required: false, default: false }
   },
   emits: ["change", "change-internal", "handleClick"],
   setup(props, context) {
@@ -365,7 +367,6 @@ export default defineComponent({
       })
     })
     provide("boneState", state)
-
 
     // Handle drag start event
     function handleDragStart(index, lang, event) {
