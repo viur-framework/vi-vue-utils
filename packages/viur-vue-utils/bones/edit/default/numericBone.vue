@@ -27,7 +27,8 @@ export default defineComponent({
     name: String,
     value: Object,
     index: Number,
-    lang: String
+    lang: String,
+    autofocus: Boolean
   },
   components: {},
   emits: ["change"],
@@ -55,12 +56,14 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      if (numericBone.value && numericBone.value !== null && numericBone !== null) {
-        const { start } = useTimeoutFn(() => {
-          numericBone.value.focus()
-        }, 600)
+      if (props.autofocus) {
+        if (numericBone.value && numericBone.value !== null && numericBone !== null) {
+          const { start } = useTimeoutFn(() => {
+            numericBone.value.focus()
+          }, 600)
 
-        start()
+          start()
+        }
       }
     })
 

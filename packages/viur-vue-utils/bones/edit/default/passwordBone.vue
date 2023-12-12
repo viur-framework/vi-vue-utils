@@ -53,7 +53,8 @@ export default defineComponent({
     name: String,
     value: Object,
     index: Number,
-    lang: String
+    lang: String,
+    autofocus: Boolean
   },
   components: {},
   emits: ["change"],
@@ -111,12 +112,14 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      if (passwordBone.value && passwordBone.value !== null && passwordBone !== null) {
-        const { start } = useTimeoutFn(() => {
-          passwordBone.value.focus()
-        }, 600)
+      if (props.autofocus) {
+        if (passwordBone.value && passwordBone.value !== null && passwordBone !== null) {
+          const { start } = useTimeoutFn(() => {
+            passwordBone.value.focus()
+          }, 600)
 
-        start()
+          start()
+        }
       }
     })
 
