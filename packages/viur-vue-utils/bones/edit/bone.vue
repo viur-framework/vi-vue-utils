@@ -453,7 +453,8 @@ export default defineComponent({
         }
       } else if (index !== null) {
         state.bonevalue[index] = val
-      } else if (!pwMatch) {
+      } else if (pwMatch === false) {
+        // do something; skip changing value on initial type
       } else {
         state.bonevalue = val
       }
