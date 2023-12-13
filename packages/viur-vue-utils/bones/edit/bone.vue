@@ -437,7 +437,13 @@ export default defineComponent({
       })
     }
 
-    function updateValue(name: string, val: any, lang: string | null = null, index: number | null = null) {
+    function updateValue(
+      name: string,
+      val: any,
+      lang: string | null = null,
+      index: number | null = null,
+      pwMatch?: boolean
+    ) {
       if (val === undefined) return false
       if (lang) {
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
@@ -447,24 +453,35 @@ export default defineComponent({
         }
       } else if (index !== null) {
         state.bonevalue[index] = val
+      } else if (!pwMatch) {
       } else {
         state.bonevalue = val
       }
       if (state.readonly) return false
 
-      context.emit("change", {
+      let changeObj = {
         name: name,
         value: toFormValue(),
         lang: lang,
         index: index
-      })
-      context.emit("change-internal", {
+      }
+
+      let changeInternalObj = {
         name: name,
         value: val,
         lang: lang,
         index: index
-      })
+      }
+
+      if (pwMatch !== undefined && pwMatch !== null) {
+        changeObj.pwMatch = pwMatch
+        changeInternalObj.pwMatch = pwMatch
+      }
+
+      context.emit("change", changeObj)
+      context.emit("change-internal", changeInternalObj)
     }
+
     function toFormValue() {
       function rewriteData(val: any, key: string | null = null): Array<Object> {
         let ret = []

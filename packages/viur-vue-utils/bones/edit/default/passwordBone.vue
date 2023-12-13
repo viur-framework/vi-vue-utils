@@ -1,5 +1,6 @@
 <template>
   <sl-input
+    ref="passwordBone"
     v-model="state.value1"
     :disabled="boneState.readonly"
     :class="{ 'has-check': !boneState.readonly }"
@@ -9,11 +10,10 @@
     @sl-change="changeEvent"
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
-    ref="passwordBone"
   >
     <sl-icon
       slot="suffix"
-      :name="state.equal ? 'check' : 'x'"
+      :name="state.equal && state.value1.length ? 'check' : 'x'"
     ></sl-icon>
   </sl-input>
   <sl-input
@@ -29,13 +29,20 @@
   >
     <sl-icon
       slot="suffix"
-      :name="state.equal ? 'check' : 'x'"
+      :name="state.equal && state.value1.length ? 'check' : 'x'"
     ></sl-icon>
   </sl-input>
+
   <ul class="errors">
-    <li v-for="error in state.passwordInfo">{{ error }}</li>
     <li
-      v-for="error in state.requiredPasswordInfo"
+      v-for="(error, index) in state.passwordInfo"
+      :key="index"
+    >
+      {{ error }}
+    </li>
+    <li
+      v-for="(error, index) in state.requiredPasswordInfo"
+      :key="index"
       class="requiredInfo"
     >
       {{ error }}
@@ -78,14 +85,16 @@ export default defineComponent({
       }
 
       testPassword(state.value1)
-      boneState.bonestructure["test_threshold"] = 2
+
+      // boneState.bonestructure["test_threshold"] = 2  *needs to be removed by the look cuz overridees server settings
+
       if (
         state.requiredPasswordInfo.length === 0 &&
         state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
       ) {
-        context.emit("change", props.name, state.value1, props.lang, props.index)
+        context.emit("change", props.name, state.value1, props.lang, props.index, true)
       } else {
-        context.emit("change", props.name, "", props.lang, props.index)
+        context.emit("change", props.name, state.value1, props.lang, props.index, false)
       }
     }
 
@@ -172,7 +181,20 @@ sl-input {
     border-bottom-left-radius: var(--sl-border-radius-medium);
   }
 }
-
+.pw-legend {
+  display: flex;
+  justify-content: space-between;
+  align-content: flex-start;
+  align-items: flex-start;
+  gap: 0rem;
+  font-size: 0.75rem;
+  padding: 0.25em;
+}
+span {
+  margin: 0;
+  padding: 0;
+  font-style: italic;
+}
 .errors {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -183,6 +205,6 @@ sl-input {
 }
 
 .requiredInfo {
-  color: var(--sl-color-danger-800);
+  color: var(--sl-color-danger-500);
 }
 </style>
