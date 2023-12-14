@@ -28,7 +28,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     name: String,
-    value: Object,
+    value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String
   },
