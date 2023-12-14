@@ -25,7 +25,6 @@ import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
   inheritAttrs: false,
-
   emits: { change: null },
   props: {
     name: String,

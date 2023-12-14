@@ -4,6 +4,7 @@
     :value="value"
     :required="boneState.bonestructure.required"
     @sl-change="changeEvent"
+    @keyup="changeEvent"
   ></sl-input>
 </template>
 
@@ -15,7 +16,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     name: String,
-    value: Object,
+    value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String
   },
