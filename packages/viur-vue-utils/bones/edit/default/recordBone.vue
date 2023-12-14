@@ -15,6 +15,7 @@ import { reactive, defineComponent, onMounted, inject, computed, getCurrentInsta
 import Wrapper_nested from "../wrapper_nested.vue"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: null,

@@ -12,6 +12,7 @@
 import { reactive, defineComponent, onMounted, inject } from "vue"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: Object,

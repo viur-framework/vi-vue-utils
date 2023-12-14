@@ -98,6 +98,7 @@ import { reactive, defineComponent, onMounted, inject, ref } from "vue"
 import { Request } from "../../../index"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: Object,
