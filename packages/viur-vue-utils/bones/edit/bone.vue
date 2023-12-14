@@ -215,6 +215,8 @@ import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
 
 export default defineComponent({
+  inheritAttrs: false,
+  emits: ["change", "change-internal", "handleClick"],
   components: {
     wrapperMultiple,
     BoneLabel
@@ -233,7 +235,7 @@ export default defineComponent({
     readonly: Boolean,
     required: Boolean,
     params: Object,
-    value: Object,
+    value: [Object, String, Number, Boolean, Array],
     structure: {
       type: Object,
       required: true
@@ -245,7 +247,7 @@ export default defineComponent({
     errors: Object,
     autofocus: { type: Boolean, required: false, default: false }
   },
-  emits: ["change", "change-internal", "handleClick"],
+
   setup(props, context) {
     const state: any = reactive({
       bonestructure: computed(() => {
