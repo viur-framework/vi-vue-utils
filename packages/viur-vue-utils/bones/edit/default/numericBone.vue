@@ -1,5 +1,6 @@
 <template>
   <sl-input
+    ref="numericBone"
     type="number"
     :disabled="boneState.readonly"
     :value="value"
@@ -7,7 +8,7 @@
     :max="state.maxAmount"
     :step="state.precision"
     @sl-change="changeEvent"
-    ref="numericBone"
+    @keyup="changeEvent"
   >
   </sl-input>
   <ul class="info">
@@ -23,15 +24,18 @@ import { reactive, defineComponent, onMounted, computed, inject, ref, watchEffec
 import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
+  inheritAttrs: false,
+
+  emits: { change: null },
   props: {
     name: String,
-    value: Object,
+    value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
   },
   components: {},
-  emits: ["change"],
+
   setup(props, context) {
     const boneState = inject("boneState")
     const state = reactive({
