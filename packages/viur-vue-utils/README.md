@@ -2,7 +2,7 @@
     <img src="https://github.com/viur-framework/viur-artwork/raw/main/icons/icon-vue-utils.svg" height="196" alt="A hexagonal logo of the viur-cli" title="viur-cli">
     <h1>ViUR Vue Utils</h1>
     <a href="https://www.npmjs.com/package/@viur/vue-utils">
-        <img alt="Badge showing current NPM version" title="PyPI" src="https://img.shields.io/npm/v/@viur/vue-utils">
+        <img alt="Badge showing current NPM version" title="vue-utils" src="https://img.shields.io/npm/v/@viur/vue-utils">
     </a>
     <a href="LICENSE">
         <img src="https://img.shields.io/github/license/viur-framework/viur-vue-utils" alt="Badge displaying the license" title="License badge">
