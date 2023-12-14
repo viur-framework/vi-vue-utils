@@ -25,6 +25,7 @@ import { reactive, defineComponent, onMounted, inject, computed, watch } from "v
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: Object,

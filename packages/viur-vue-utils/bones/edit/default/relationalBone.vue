@@ -1,18 +1,18 @@
 <template>
   <div class="record">
     <div class="single-entry">
-    <sl-input
+      <sl-input
         v-if="state.selection"
         :disabled="true"
         :value="value ? formatString(state.format, state.selection) : ''"
-    ></sl-input>
-    <sl-combobox
-      v-else
-      :disabled="boneState.readonly"
-      :source="getList"
-      hoist
-      @sl-item-select="changeEvent"
-    ></sl-combobox>
+      ></sl-input>
+      <sl-combobox
+        v-else
+        :disabled="boneState.readonly"
+        :source="getList"
+        hoist
+        @sl-item-select="changeEvent"
+      ></sl-combobox>
 
       <sl-button
         v-if="!boneState.multiple && !boneState.isEmpty"
@@ -29,7 +29,6 @@
       >
         <sl-icon name="x"></sl-icon>
       </sl-button>
-
     </div>
     <Wrapper_nested
       v-if="boneState?.bonestructure['using']"
@@ -47,16 +46,17 @@
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
-import Wrapper_nested from "../wrapper_nested.vue";
+import Wrapper_nested from "../wrapper_nested.vue"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: Object,
     index: Number,
     lang: String
   },
-  components: {Wrapper_nested},
+  components: { Wrapper_nested },
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
@@ -77,7 +77,9 @@ export default defineComponent({
         params = "skelType=node&"
       }
 
-      return Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`).then(async (resp) => {
+      return Request.get(
+        `/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`
+      ).then(async (resp) => {
         //?viurTags$lk=${search.toLowerCase()
         const data = await resp.json()
 
@@ -151,16 +153,15 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
 .single-entry {
   display: flex;
   gap: 10px;
 
-  :deep(sl-combobox){
-    &::part(input__base){
+  :deep(sl-combobox) {
+    &::part(input__base) {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
-     }
+    }
   }
 }
 

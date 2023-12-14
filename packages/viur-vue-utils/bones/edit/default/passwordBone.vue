@@ -56,6 +56,7 @@ import { reactive, defineComponent, onMounted, computed, inject, watch, ref, wat
 import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: Object,

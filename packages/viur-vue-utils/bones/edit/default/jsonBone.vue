@@ -16,6 +16,7 @@ import { reactive, defineComponent, onMounted, inject } from "vue"
 //import "vue-json-pretty/lib/styles.css"
 
 export default defineComponent({
+  inheritAttrs: false,
   props: {
     name: String,
     value: Object,
