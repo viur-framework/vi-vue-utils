@@ -36,7 +36,7 @@ export default defineComponent({
       value: computed(() => {
         let val = props.value
         if (Array.isArray(props.value)) {
-          val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0]).includes(i))
+          val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
           return val.map((i) => i.toString())
         }
         return props.value ? props.value.toString() : ""
