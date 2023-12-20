@@ -60,7 +60,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, ref, resolveComponent } from "vue"
+import { reactive, defineComponent, onMounted, inject, ref, resolveComponent, computed } from "vue"
 import { Request } from "../../../index"
 
 export default defineComponent({
