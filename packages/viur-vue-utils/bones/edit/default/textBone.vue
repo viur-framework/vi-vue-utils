@@ -1,6 +1,6 @@
 <template>
   <template v-if="state.editor">
-    <ckeditor
+    <CKEditor
       v-if="boneState.bonestructure['validHtml']"
       v-model="state.value"
       :editor="state.editor"
@@ -9,7 +9,7 @@
       @ready="onReady"
       @input="changeEvent"
     >
-    </ckeditor>
+    </CKEditor>
     <sl-textarea
       v-else
       :disabled="boneState?.readonly"
@@ -22,6 +22,7 @@
 <script lang="ts">
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject, computed, watch } from "vue"
+import CKEditor from "@ckeditor/ckeditor5-vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
 export default defineComponent({
@@ -32,7 +33,7 @@ export default defineComponent({
     index: Number,
     lang: String
   },
-  components: {},
+  components: { CKEditor },
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
