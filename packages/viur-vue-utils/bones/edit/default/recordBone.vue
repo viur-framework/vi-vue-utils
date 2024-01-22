@@ -33,7 +33,30 @@ export default defineComponent({
     })
 
     function changeEvent(data) {
-      state.value[data.name] = data.value
+      if (!state.value?.[data.name]) {
+        if (!state.value) {
+          state.value = { [data.name]: null }
+        } else {
+          state.value[data.name] = null
+        }
+      }
+
+      let currentBone = state.value[data.name]
+      if (data.lang) {
+        if (currentBone === null) currentBone = {}
+        if (Object.keys(currentBone).includes(data.lang) && data.index !== null) {
+          currentBone[data.lang][data.index] = data.value
+        } else {
+          currentBone[data.lang] = data.value
+        }
+      } else if (data.index !== null) {
+        if (currentBone === null) currentBone = []
+        currentBone[data.index] = data.value
+      } else {
+        currentBone = data.value
+      }
+      state.value[data.name] = currentBone
+
       context.emit("change", props.name, state.value, props.lang, props.index, true)
     }
 
