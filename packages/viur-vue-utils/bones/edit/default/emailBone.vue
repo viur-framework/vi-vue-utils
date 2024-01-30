@@ -1,5 +1,6 @@
 <template>
   <sl-input
+    ref="emailBone"
     :disabled="boneState.readonly"
     type="email"
     :value="value"
@@ -9,7 +10,8 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue"
+import { reactive, defineComponent, onMounted, inject, ref, watchEffect } from "vue"
+import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -17,7 +19,8 @@ export default defineComponent({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
-    lang: String
+    lang: String,
+    autofocus: Boolean
   },
   components: {},
   emits: ["change"],
@@ -25,9 +28,23 @@ export default defineComponent({
     const boneState = inject("boneState")
     const state = reactive({})
 
+    const emailBone = ref(null)
+
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
+
+    watchEffect(() => {
+      if (props.autofocus) {
+        if (emailBone.value && emailBone.value !== null && emailBone !== null) {
+          const { start } = useTimeoutFn(() => {
+            emailBone.value.focus()
+          }, 600)
+
+          start()
+        }
+      }
+    })
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index) //init
@@ -36,7 +53,8 @@ export default defineComponent({
     return {
       state,
       boneState,
-      changeEvent
+      changeEvent,
+      emailBone
     }
   }
 })

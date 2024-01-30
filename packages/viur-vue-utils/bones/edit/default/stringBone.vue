@@ -1,5 +1,6 @@
 <template>
   <sl-input
+    ref="stringBone"
     :disabled="boneState.readonly"
     :value="value"
     :required="boneState.bonestructure.required"
@@ -10,7 +11,8 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
+import { useTimeoutFn } from "@vueuse/core"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -18,7 +20,8 @@ export default defineComponent({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
-    lang: String
+    lang: String,
+    autofocus: Boolean
   },
   components: {},
   emits: ["change"],
@@ -28,9 +31,23 @@ export default defineComponent({
       value: computed(() => props.value)
     })
 
+    const stringBone = ref(null)
+
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
+
+    watchEffect(() => {
+      if (props.autofocus) {
+        if (stringBone.value && stringBone.value !== null && stringBone !== null) {
+          const { start } = useTimeoutFn(() => {
+            stringBone.value.focus()
+          }, 600)
+
+          start()
+        }
+      }
+    })
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index) //init
@@ -39,7 +56,8 @@ export default defineComponent({
     return {
       state,
       boneState,
-      changeEvent
+      changeEvent,
+      stringBone
     }
   }
 })
