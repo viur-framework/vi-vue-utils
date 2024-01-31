@@ -24,6 +24,12 @@
         </div>
       </sl-tooltip>
     </bone-label>
+    <div
+      v-if="showLabelInfo && state.hasTooltip"
+      class="info-box"
+    >
+      <p>{{ state.bonestructure.params["tooltip"] }}</p>
+    </div>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
       <sl-tab-group
@@ -245,6 +251,7 @@ export default defineComponent({
       required: true
     },
     errors: Object,
+    showLabelInfo: { type: Boolean, required: false, default: false },
     autofocus: { type: Boolean, required: false, default: false }
   },
 
@@ -811,6 +818,17 @@ sl-tab-panel::part(base) {
     &::part(icon) {
       padding-left: var(--sl-spacing-small);
     }
+  }
+}
+
+.info-box {
+  & p {
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 0.5em;
+  }
+  & p::before {
+    content: "*";
   }
 }
 
