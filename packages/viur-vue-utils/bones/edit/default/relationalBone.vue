@@ -27,7 +27,10 @@
           }
         "
       >
-        <sl-icon name="x"></sl-icon>
+        <sl-icon
+          slot="prefix"
+          name="x"
+        ></sl-icon>
       </sl-button>
     </div>
     <Wrapper_nested

@@ -17,7 +17,11 @@
       class="drag-button"
       @mousedown="state.isDraggable = true"
     >
-      <sl-icon name="draggable"> </sl-icon>
+      <sl-icon
+        slot="prefix"
+        name="draggable"
+      >
+      </sl-icon>
     </sl-button>
     <div class="value">
       <slot></slot>
@@ -30,7 +34,10 @@
       class="delete-btn"
       @click="$emit('delete')"
     >
-      <sl-icon name="x"></sl-icon>
+      <sl-icon
+        slot="prefix"
+        name="x"
+      ></sl-icon>
     </sl-button>
   </div>
 </template>
