@@ -29,7 +29,7 @@
       >
         <sl-icon
           slot="prefix"
-          name="x"
+          name="x-lg"
         ></sl-icon>
       </sl-button>
     </div>

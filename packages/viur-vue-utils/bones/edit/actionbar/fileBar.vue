@@ -15,7 +15,7 @@
     >
       <sl-icon
         slot="prefix"
-        name="x"
+        name="x-lg"
       ></sl-icon>
     </sl-button>
 
@@ -42,7 +42,7 @@
     >
       <sl-icon
         slot="prefix"
-        name="plus"
+        name="plus-lg"
       ></sl-icon>
     </sl-button>
 

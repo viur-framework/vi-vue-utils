@@ -87,7 +87,7 @@
       class="delete-btn"
       @click="$emit('change', name, '', lang, index)"
     >
-      <sl-icon name="x"></sl-icon>
+      <sl-icon name="x-lg"></sl-icon>
     </sl-button>
   </div>
 </template>

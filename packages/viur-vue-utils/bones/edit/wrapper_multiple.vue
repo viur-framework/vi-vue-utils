@@ -19,7 +19,7 @@
     >
       <sl-icon
         slot="prefix"
-        name="draggable"
+        name="grip-vertical"
       >
       </sl-icon>
     </sl-button>
@@ -36,7 +36,7 @@
     >
       <sl-icon
         slot="prefix"
-        name="x"
+        name="x-lg"
       ></sl-icon>
     </sl-button>
   </div>

@@ -8,7 +8,10 @@
       class="delete-btn"
       @click="handleRemove(lang)"
     >
-      <sl-icon name="x"></sl-icon>
+      <sl-icon
+        slot="prefix"
+        name="x-lg"
+      ></sl-icon>
     </sl-button>
 
     <sl-button
@@ -19,7 +22,10 @@
       class="add-btn"
       @click="handleAdd(lang)"
     >
-      <sl-icon name="plus"></sl-icon>
+      <sl-icon
+        slot="prefix"
+        name="plus-lg"
+      ></sl-icon>
       {{ $t("bone.add") }}
       <template v-if="state.counter > 1">({{ state.counter }})</template>
     </sl-button>
