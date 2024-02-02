@@ -107,17 +107,7 @@ export default defineComponent({
   flex-wrap: nowrap;
 }
 
-.delete-btn {
-  &::part(base) {
-    aspect-ratio: 1;
-  }
-}
-
 .add-btn {
   margin-left: auto;
-
-  & sl-icon {
-    margin-right: var(--sl-spacing-x-small);
-  }
 }
 </style>
