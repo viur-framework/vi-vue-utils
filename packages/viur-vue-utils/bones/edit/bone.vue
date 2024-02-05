@@ -15,7 +15,7 @@
       >
 
       <sl-tooltip
-        v-if="state.hasTooltip"
+        v-if="state.hasTooltip && !showLabelInfo"
         :content="state.bonestructure.params['tooltip']"
         placement="top-center"
       >
@@ -24,12 +24,20 @@
         </div>
       </sl-tooltip>
     </bone-label>
-    <div
+
+    <sl-alert
       v-if="showLabelInfo && state.hasTooltip"
-      class="info-box"
+      variant="info"
+      open
+      class="label-info"
     >
-      <p>{{ state.bonestructure.params["tooltip"] }}</p>
-    </div>
+      <sl-icon
+        slot="icon"
+        library="bootstrap"
+        name="info-circle-fill"
+      ></sl-icon>
+      {{ state.bonestructure.params["tooltip"] }}
+    </sl-alert>
     <div class="bone-inner-wrap">
       <!--Language chooser -->
       <sl-tab-group
@@ -821,14 +829,28 @@ sl-tab-panel::part(base) {
   }
 }
 
-.info-box {
-  & p {
-    font-size: 0.9rem;
-    font-style: italic;
-    margin-bottom: 0.5em;
+.label-info {
+  &::part(base) {
+    align-items: center;
+    margin-left: 0.5em;
+    background-color: var(--sl-color-info-50);
+    border: none;
   }
-  & p::before {
-    content: "*";
+
+  &::part(message) {
+    padding: var(--sl-spacing-small);
+  }
+
+  &::part(icon) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--sl-color-neutral-0);
+    width: 1em;
+    height: 1em;
+    margin-left: -0.5em;
+    padding-left: 0;
   }
 }
 
