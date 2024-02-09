@@ -76,7 +76,7 @@ const boneLogic = (skel, structure) => {
       }
     }
 
-    if (!value || !boneStructure) {
+    if (value === "" || value === null || value === undefined || !boneStructure) {
       return "-"
     } else if (boneStructure["type"] === "select" || boneStructure["type"].startsWith("select.")) {
       // extract description from tuple
