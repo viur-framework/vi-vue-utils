@@ -20,13 +20,13 @@ import defaultBar from "./actionbar/defaultBar.vue"
 import relationalBar from "./actionbar/relationalBar.vue"
 import fileBar from "./actionbar/fileBar.vue"
 
-import { reactive } from "vue"
+import { reactive,shallowRef } from "vue"
 import { defineStore } from "pinia"
 
 export const useBoneStore = defineStore("boneStore", () => {
   const state = reactive({
-    additionalBones: {},
-    defaultBones: {
+    additionalBones: shallowRef({}),
+    defaultBones: shallowRef({
       rawBone,
       keyBone,
       stringBone,
@@ -43,11 +43,11 @@ export const useBoneStore = defineStore("boneStore", () => {
       fileBone,
       textBone,
       spatialBone
-    },
-    actionbars: {
+    }),
+    actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
       "relational.": relationalBar
-    }
+    })
   })
 
   function addBoneWidget(boneType, widget) {
