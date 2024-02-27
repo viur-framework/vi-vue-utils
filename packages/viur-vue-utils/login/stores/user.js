@@ -354,7 +354,7 @@ export const useUserStore = defineStore("user", () => {
                     }
                 } catch (e) {
                     console.log("sendNewPassword catch", e);
-
+                    // ! FIXME currently no case where recovery process runs into errors
                     // if (e?.status !== 403) {
                     //     Request.get("/vi/user/view/self")
                     //         .then(async (resp) => {
