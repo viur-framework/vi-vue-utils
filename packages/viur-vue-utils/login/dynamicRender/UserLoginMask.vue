@@ -1,13 +1,13 @@
 <template>
   <form
-    @submit.prevent="userLogin"
     autocomplete="on"
+    @submit.prevent="userLogin"
   >
     <sl-input
+      ref="nameInput"
       v-model="state.name"
       :placeholder="$t('login.email')"
       name="username"
-      ref="nameInput"
       required
       unwrap
     />
@@ -60,19 +60,16 @@
 </template>
 
 <script>
-import { reactive, watch, defineComponent, computed, ref, watchEffect, inject } from "vue"
+import { reactive, defineComponent, computed, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
-// import { useUserStore } from "@/stores/user"
-import { useRouter } from "vue-router"
+import { useUserStore } from "../stores/user"
 
 export default defineComponent({
   components: {},
   props: { username: { type: String, required: true } },
   emits: ["onUserLogin"],
   setup(props, ctx) {
-    inject("userStore", userStore)
-    // const userStore = useUserStore()
-    const router = useRouter()
+    const userStore = useUserStore()
     const nameInput = ref(null)
 
     const state = reactive({
@@ -89,7 +86,7 @@ export default defineComponent({
     }
 
     watchEffect(() => {
-      if (nameInput.value && nameInput.value !== null && nameInput !== null) {
+      if (nameInput.value && nameInput.value !== null) {
         const { start } = useTimeoutFn(() => {
           if (props?.username.length) state.name = props?.username ? props.username : ""
           if (nameInput.value.value.length === 0 || nameInput.value.value.length < 1) nameInput.value.focus()
