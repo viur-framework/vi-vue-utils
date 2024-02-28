@@ -374,7 +374,7 @@ export default defineComponent({
         for (let error of props.errors) {
           if (
             error["fieldPath"][0] === props.name &&
-            (error["severity"] > 2 || (state.required && error["severity"] === 2))
+            (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
           ) {
             //severity level???
             errors.push(error["errorMessage"])
