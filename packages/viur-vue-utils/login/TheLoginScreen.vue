@@ -217,12 +217,10 @@
 </template>
 
 <script>
-import { createApp } from "vue"
 import { reactive, computed, onBeforeMount, defineComponent, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useUserStore } from "./stores/user.js"
 import Loader from "../generic/Loader.vue"
-import Utils from "@viur/vue-components/utils"
 import { getBoneWidget } from "../bones/edit/index"
 import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
 
@@ -374,7 +372,6 @@ export default defineComponent({
       googleLogin,
       logout,
       userStore,
-      Utils,
       userLogin,
       state,
       userSecondFactor,
