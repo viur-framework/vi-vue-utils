@@ -63,6 +63,7 @@ export const useUserStore = defineStore("user", () => {
                     window.google.accounts.id.initialize({
                         client_id: state["google.api.clientid"],
                         scope: googleConfig.scopes,
+                        use_fedcm_for_prompt: false, //TODO disabled till ported, FedCM will be enforced Q4 24 from google!
                         ux_mode: "popup",
                         prompt_parent_id: "google_oauth",
                         callback: (response) => {
