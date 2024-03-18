@@ -12,6 +12,17 @@ export default class Utils {
     }
   }
 
+  static unescape(value) {
+    return String(value)
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&#40;/g, "(")
+      .replace(/&#41;/g, ")")
+      .replace(/&#61;/g, "=")
+  }
+
   static formatString(formatstr: string, boneValue: object | Array<object>) {
     function getpathListFromFormatstring(formatstr) {
       let output = []

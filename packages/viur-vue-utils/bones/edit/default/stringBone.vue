@@ -2,7 +2,7 @@
   <sl-input
     ref="stringBone"
     :disabled="boneState.readonly"
-    :value="value"
+    :value="Utils.unescape(value)"
     :required="boneState.bonestructure.required"
     @sl-change="changeEvent"
     @keyup="changeEvent"
@@ -13,6 +13,7 @@
 //@ts-nocheck
 import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
+import Utils from "../../utils"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -55,6 +56,7 @@ export default defineComponent({
 
     return {
       state,
+      Utils,
       boneState,
       changeEvent,
       stringBone
