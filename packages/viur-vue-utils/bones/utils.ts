@@ -60,6 +60,7 @@ export default class Utils {
             aval = "-"
           }
         }
+        aval = this.unescape(aval)
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)
       }
       finalStrList.push(finalstr)

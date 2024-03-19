@@ -16,5 +16,6 @@ export default {
   preview: "Vorschau",
   de: "DE",
   en: "EN",
-  fr: "FR"
+  fr: "FR",
+  nl: "NL"
 }

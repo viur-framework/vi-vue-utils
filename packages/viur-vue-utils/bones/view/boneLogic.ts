@@ -101,6 +101,7 @@ const boneLogic = (skel, structure) => {
     } else if (boneStructure["type"] === "bool") {
       return value ? "Ja" : "Nein"
     } else {
+      value = Utils.unescape(value)
       return value.toString()
     }
   }
