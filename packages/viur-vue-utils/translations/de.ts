@@ -3,6 +3,10 @@ export default {
     add: "Hinzufügen",
     del: "Entfernen",
     upload: "Hochladen",
+    download: "Herunterladen",
+    chooseFile: "Datei auswählen",
+    dragFile: "Dateien hier hinziehen",
+    editFile: "Datei bearbeiten",
     list: "Auflisten"
   },
   lang: "Sprache",
