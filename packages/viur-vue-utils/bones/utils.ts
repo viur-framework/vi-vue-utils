@@ -30,7 +30,7 @@ export default class Utils {
   static formatString(formatstr: string, boneValue: object | Array<object>) {
     function getpathListFromFormatstring(formatstr) {
       let output = []
-      let formatList = []
+      let formatList: Array<string> | boolean = []
       let regstr = /\$\((.*?)\)/g
 
       while (formatList) {
@@ -52,6 +52,7 @@ export default class Utils {
     if (!Array.isArray(boneValue)) {
       boneValue = [boneValue]
     }
+    // @ts-ignore
     for (let avalue of boneValue) {
       let finalstr = formatstr
       for (let pathstr of pathlist) {
