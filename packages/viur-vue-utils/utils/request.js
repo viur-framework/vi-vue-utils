@@ -192,6 +192,7 @@ export default class Request {
     module,
     { dataObj = null, callback = null, failedCallback = null, group = null, abortController = null } = {}
   ) {
+    module = module.replace(/\//g, ".")
     let url = `/vi/getStructure/${module}/`
     if (group) {
       url += `/${group}`
