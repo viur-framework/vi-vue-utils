@@ -158,7 +158,7 @@ export default defineComponent({
 <style scoped>
 .single-entry {
   display: flex;
-  gap: 10px;
+  gap: var(--sl-spacing-x-small);
 
   :deep(sl-combobox) {
     &::part(input__base) {

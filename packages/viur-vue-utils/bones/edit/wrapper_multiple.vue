@@ -85,7 +85,7 @@ export default defineComponent({
 
 .value-line {
   display: flex;
-  gap: 10px;
+  gap: var(--sl-spacing-x-small);
 }
 
 .value {
