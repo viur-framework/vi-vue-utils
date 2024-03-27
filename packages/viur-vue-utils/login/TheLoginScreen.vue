@@ -8,7 +8,7 @@
       v-if="state.waitFor === 'init' || (isRedirect && userStore.state['user.loggedin'] === 'yes')"
       class="loader"
       :logo="logo"
-      :size="'20'"
+      :size="'7'"
     />
 
     <div
@@ -68,6 +68,7 @@
         >
           {{ userStore.state.renderErrorMsg }}
         </sl-alert>
+
         <sl-button
           :loading="userStore.state['user.loggedin'] === 'loading' && userStore.state.currentLoginMask === 'google'"
           class="more-login-btn"
@@ -428,9 +429,15 @@ export default defineComponent({
 }
 
 .logo {
-  height: 140px;
-  padding: 20px;
-  margin-bottom: 30px;
+  height: 160px;
+  padding: var(--sl-spacing-medium);
+  margin-bottom: var(--sl-spacing-medium);
+
+  @media (max-width: 530px) {
+    height: 140px;
+    margin-bottom: var(--sl-spacing-small);
+    padding: var(--sl-spacing-small);
+  }
 }
 
 sl-button {
@@ -465,6 +472,13 @@ sl-button.more-login-btn:has(+ #google_oauth > *) {
   width: 30vw;
   padding: var(--sl-spacing-large);
   border-radius: var(--sl-border-radius-medium);
+
+  @media (max-width: 530px) {
+    padding: var(--sl-spacing-medium);
+    min-width: auto;
+    width: calc(100% - var(--sl-spacing-2x-large));
+    max-width: none;
+  }
 }
 
 .input {
@@ -562,5 +576,9 @@ sl-input::part(input)::-webkit-inner-spin-button {
 sl-input::part(input)[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
+}
+
+sl-alert{
+  margin-bottom: var(--sl-spacing-medium);
 }
 </style>

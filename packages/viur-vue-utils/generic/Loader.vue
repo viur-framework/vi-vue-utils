@@ -4,10 +4,9 @@
       v-if="active"
       class="loading"
     >
-      <sl-icon
-        src="loading.svg"
+      <sl-spinner
         class="loader"
-      ></sl-icon>
+      ></sl-spinner>
       <div class="logo">
         <sl-icon :src="logo"></sl-icon>
       </div>
@@ -18,12 +17,13 @@
 <script>
 import { reactive, computed } from "vue"
 
+
 // Surroundig div musst have position:relative
 export default {
   props: {
     size: {
       type: String,
-      default: "2.5"
+      default: "2"
     },
     active: {
       type: Boolean,
@@ -40,14 +40,20 @@ export default {
   },
   setup(props, context) {
     const state = reactive({
+      trackWidth: computed(() => {
+        return `${props.size / 30}rem`
+      }),
+      outerSize: computed(() => {
+        return `calc(${props.size}rem + ${state.trackWidth})`
+      }),
       spinnerSize: computed(() => {
         return `${props.size}rem`
       }),
       logoSize: computed(() => {
-        return `${props.size / 1.5}rem`
+        return `calc(${props.size}rem - ${state.trackWidth} * 10)`
       }),
-      shadowSize: computed(() => {
-        return `0px 0px ${props.size * 3}rem ${props.size * 3}rem var(--sl-color-neutral-200)`
+      shadow: computed(() => {
+        return `0px 0px ${props.size / 6}rem 0 color-mix(in hsl, var(--sl-color-neutral-1000), 80% transparent)`
       })
     })
 
@@ -62,28 +68,36 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  animation: zoom 3.3s ease-in-out 0s infinite alternate;
+  height: v-bind("state.outerSize");
+  width: v-bind("state.outerSize");
+  overflow: hidden;
+  border-radius: 50%;
+  background-color: var(--sl-color-neutral-0);
+  box-shadow: v-bind("state.shadow");
+
   & sl-icon {
     height: v-bind("state.logoSize");
     width: v-bind("state.logoSize");
+    aspect-ratio: 1;
     color: var(--vi-background-color);
+    animation: zoom 3.3s ease-in-out 0s infinite alternate;
   }
 }
 
 @keyframes zoom {
   from {
-    scale: 0.5;
+    scale: 0.75;
   }
   to {
     scale: 1;
   }
 }
 .loader {
-  height: v-bind("state.spinnerSize");
-  width: v-bind("state.spinnerSize");
-  color: v-bind("color");
+  font-size: v-bind("state.spinnerSize");
+  --indicator-color: v-bind("color");
+  --track-color: var(--sl-color-neutral-0);
+  --track-width: v-bind("state.trackWidth");
+  z-index: 1;
 }
 
 .loading {
