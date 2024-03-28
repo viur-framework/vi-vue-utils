@@ -13,6 +13,7 @@ export default class Utils {
   }
 
   static unescape(value) {
+    if (!value) value = ""
     return String(value)
       .replace(/&lt;/g, "<")
       .replace(/&gt;/g, ">")
