@@ -51,13 +51,17 @@ export default defineComponent({
 
 <style scoped>
 sl-switch {
+  --spacing-inline: var(--sl-input-spacing-medium);
   border: 1px solid var(--sl-color-neutral-300);
-  padding: 0.4em 0.1em 0.4em 0.4em;
+  padding-inline: var(--spacing-inline) calc(var(--spacing-inline) / 2);
   border-top-right-radius: var(--sl-input-border-radius-medium);
   border-bottom-right-radius: var(--sl-input-border-radius-medium);
   --height: calc(var(--sl-input-height-medium) - 1em);
   --width: calc(1.7 * (var(--sl-input-height-medium) - 0.8em));
   --thumb-size: calc(var(--sl-input-height-medium) - 1em);
+  height: var(--sl-input-height-medium);
+  align-items: center;
+  display: inline-flex;
 
   @media (max-width: 900px) {
     border-top-right-radius: 0;
