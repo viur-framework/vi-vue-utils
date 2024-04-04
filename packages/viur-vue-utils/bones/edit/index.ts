@@ -47,7 +47,8 @@ export const useBoneStore = defineStore("boneStore", () => {
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
       "relational.": relationalBar
-    })
+    }),
+    multibones: shallowRef(["select", "select."])
   })
 
   function addBoneWidget(boneType, widget) {
@@ -174,8 +175,23 @@ export function addBoneWidget(boneType, widget) {
 }
 
 export function BoneHasMultipleHandling(boneType) {
-  if (boneType === "select" || boneType.startsWith("select.")) {
+  const boneStore = useBoneStore()
+  if (boneStore.state.multibones.includes(boneType)){
     return true
+  } else {
+    let typeParts = boneType.split(".") //prefix match
+    let matchingPrefixes = Object.entries(boneStore.state.multibones).filter((prefix) =>
+      prefix[0].startsWith(typeParts[0] + ".")
+    )
+    if (matchingPrefixes.length > 0) {
+      matchingPrefixes.sort((a, b) => b.length - a.length)
+      for (let prefix of matchingPrefixes) {
+        if (boneType.startsWith(prefix[0])) {
+          return true
+        }
+      }
+    }
   }
+
   return false
 }
