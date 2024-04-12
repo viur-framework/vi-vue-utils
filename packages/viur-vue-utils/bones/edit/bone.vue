@@ -463,6 +463,9 @@ export default defineComponent({
     ) {
       if (val === undefined) return false
       if (lang) {
+        if (!state.bonevalue){
+          state.bonevalue = {}
+        }
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
           state.bonevalue[lang][index] = val
         } else {

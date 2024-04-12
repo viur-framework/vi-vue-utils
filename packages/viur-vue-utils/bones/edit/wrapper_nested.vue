@@ -61,6 +61,7 @@ export default defineComponent({
       } else {
         state.globalRegistration = false
       }
+      context.emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
     function updateValue(e) {
