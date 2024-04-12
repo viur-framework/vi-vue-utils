@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -46,7 +46,7 @@
     "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-visualizer": "^5.9.2",
     "typescript": "^5.1.6",
-    "vite": "^5.0.12",
+    "vite": "^5.2.8",
     "vue-tsc": "^1.8.5"
   }
 }
