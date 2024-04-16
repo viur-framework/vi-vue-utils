@@ -646,29 +646,44 @@ export default defineComponent({
         return output
       }
 
+      function readValue(pathstr, avalue) {
+        let path = pathstr.split(".")
+        let restPath = pathstr.split(".")
+        let aval = avalue
+        for (let entry of path) {
+          restPath.shift()
+          if (aval && aval !== "-" && Object.keys(aval).includes(entry) && aval[entry]) {
+            if (Array.isArray(aval[entry])) {
+              let resVal = []
+              for (let val of aval[entry]) {
+                resVal.push(readValue(restPath.join("."), val))
+              }
+              aval = resVal.join(", ")
+            } else {
+              aval = aval[entry]
+            }
+          } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
+            aval = "-"
+          }
+        }
+        return aval
+      }
+
       let pathlist = getpathListFromFormatstring(formatstr)
 
       let finalStrList = []
+
       if (!Array.isArray(boneValue)) {
         boneValue = [boneValue]
       }
       for (let avalue of boneValue) {
         let finalstr = formatstr
         for (let pathstr of pathlist) {
-          let path = pathstr.split(".")
-          let aval = avalue
-          for (let entry of path) {
-            if (aval && aval !== "-" && entry in aval && aval[entry]) {
-              aval = aval[entry]
-            } else {
-              aval = "-"
-            }
-          }
+          let aval = readValue(pathstr, avalue)
           finalstr = finalstr.replace("$(" + pathstr + ")", aval)
         }
         finalStrList.push(finalstr)
       }
-
       return finalStrList.join(", ")
     }
     provide("formatString", formatString)
