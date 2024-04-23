@@ -410,6 +410,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 1;
   background: linear-gradient(to top left, var(--sl-color-primary-700), var(--sl-color-primary-500));
 }
 
@@ -419,7 +420,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: -1;
+  z-index: 0;
 
   & img {
     object-fit: cover;
