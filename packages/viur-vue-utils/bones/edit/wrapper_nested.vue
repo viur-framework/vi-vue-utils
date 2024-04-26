@@ -10,6 +10,36 @@
     v-else
     class="form"
   >
+
+    <template
+        v-for="(group, key) in state.formGroups"
+        :key="key"
+      >
+        <sl-details
+          v-show="group['groupVisible']"
+          :summary="group['name']"
+          :open="group['groupOpen']"
+        >
+          <template
+            v-for="bone in group['bones']"
+            :key="bone['name']"
+          >
+            <bone
+              :is="getBoneWidget(state.structure[bone['boneName']]['type'])"
+              v-show="state.structure[bone['boneName']]['visible']"
+              :name="bone['boneName']"
+              :structure="state.structure"
+              :skel="state.value"
+              :errors="boneState.errors"
+              :readonly="boneState.bonestructure['readonly'] ? true : undefined"
+              @change-internal="changeEvent"
+            >
+            </bone>
+          </template>
+        </sl-details>
+      </template>
+
+    <!--
     <template v-for="(data, name) in state.structure">
       <bone
         :is="getBoneWidget(data['type'])"
@@ -21,7 +51,9 @@
         @change-internal="changeEvent"
       >
       </bone>
-    </template>
+
+
+    </template>-->
   </div>
 </template>
 
@@ -47,7 +79,48 @@ export default defineComponent({
       structure: computed(() => {
         return structureToDict(boneState.bonestructure["using"])
       }),
-      globalRegistration: false
+      globalRegistration: false,
+      formGroups: computed(() => {
+        let groups = { default: { name: "Allgemein", bones: [], groupVisible: false, groupOpen: true } }
+        for (const [boneName, bone] of Object.entries(state.structure)) {
+          let category = "default"
+          let boneStructure = state.structure[boneName]
+          let boneValue = state.value[boneName]
+          if (bone?.params?.category) {
+            category = bone.params.category.toLowerCase()
+          }
+
+          if (Object.keys(groups).includes(category)) {
+            groups[category]["bones"].push({
+              boneName: boneName,
+              boneStructure: boneStructure,
+              boneValue: boneValue
+            })
+          } else {
+            groups[category] = {
+              name: bone.params.category,
+              bones: [
+                {
+                  boneName: boneName,
+                  boneStructure: boneStructure,
+                  boneValue: boneValue
+                }
+              ]
+            }
+          }
+          if (boneStructure["visible"] === true) {
+            groups[category]["groupVisible"] = true
+          }
+        }
+        let sortedGroups = {}
+        Object.keys(groups)
+          .sort()
+          .forEach(function (key) {
+            sortedGroups[key] = groups[key]
+          })
+
+        return sortedGroups
+      }),
     })
 
     function changeEvent(val) {
