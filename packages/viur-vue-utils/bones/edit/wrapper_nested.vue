@@ -85,7 +85,7 @@ export default defineComponent({
         for (const [boneName, bone] of Object.entries(state.structure)) {
           let category = "default"
           let boneStructure = state.structure[boneName]
-          let boneValue = state.value[boneName]
+          let boneValue = state.value?.[boneName]
           if (bone?.params?.category) {
             category = bone.params.category.toLowerCase()
           }
