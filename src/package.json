@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "1.4.5",
+  "version": "2.0.0-dev1",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,8 +11,6 @@
   },
   "author": "Andreas H. Kelch",
   "contributors": [
-    "Tilman Oestereich",
-    "Arne Gudermann",
     "Kadir Balku",
     "Claudia Dietrich"
   ],

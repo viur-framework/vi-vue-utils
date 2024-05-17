@@ -1,28 +1,6 @@
 {
-  "name": "viur-vue-utils",
   "private": true,
   "scripts": {
-    "dev": "npm run dev --prefix=packages/playground",
-    "init": "npm install && npm install --prefix=packages/viur-vue-utils && npm install --prefix=packages/playground",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/XeoN-GHMB/viur-vue-utils.git"
-  },
-  "author": "Andreas H. Kelch",
-  "contributors": [
-    "Stefan Kögl",
-    "Sven Eberth",
-    "Achim Schumacher",
-    "Tilman Oestereich"
-  ],
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/XeoN-GHMB/viur-vue-utils/issues"
-  },
-  "homepage": "https://github.com/XeoN-GHMB/viur-vue-utils#readme",
-  "devDependencies": {
-    "typescript": "^4.9.3"
+
   }
 }
