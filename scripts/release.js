@@ -12,15 +12,18 @@ import { fileURLToPath } from 'node:url'
 
 
 let versionUpdated = false
-const currentVersion = createRequire(import.meta.url)('../package.json').version
+
+const currentVersion = createRequire(import.meta.url)('../src/package.json').version
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const preId = semver.prerelease(currentVersion)?.[0]
+
+const args = minimist(process.argv.slice(2),{})
+const isDryRun = args.dry
+
 const step = (msg) => console.log(pico.cyan(msg))
-const run = async (bin, args, pts = {}) => execa(bin, args, { stdio: 'inherit', ...opts })
+const run = async (bin, args, opts = {}) => execa(bin, args, { stdio: 'inherit', ...opts })
 const dryRun = async (bin, args, opts = {}) => console.log(pico.blue(`[dryrun] ${bin} ${args.join(' ')}`), opts)
 const runIfNotDry = isDryRun ? dryRun : run
-
-
 
 const versionIncrements = [
   'patch',
@@ -40,7 +43,7 @@ async function main() {
   } else {
     console.log(`${pico.green(`✓`)} commit is up-to-date with remote.\n`)
   }
-
+  step('\nselecting Version...')
   let targetVersion = null
   if (!targetVersion) {
     // no explicit version, offer suggestions
@@ -91,6 +94,7 @@ async function main() {
     step('\nCommitting changes...')
     await runIfNotDry('git', ['add', '-A'])
     await runIfNotDry('git', ['commit', '-m', `release: v${targetVersion}`])
+    await runIfNotDry('git', ['tag', `v${targetVersion}`])
   } else {
     console.log('No changes to commit.')
   }
@@ -103,9 +107,6 @@ async function isInSyncWithRemote() {
       `https://api.github.com/repos/viur-framework/vi-vue-utils/commits/${branch}?per_page=1`,
     )
     const data = await res.json()
-    console.log(data)
-    console.log(branch)
-    console.log(await getSha())
     if (data.sha === (await getSha())) {
       return true
     } else {
@@ -136,10 +137,13 @@ async function getBranch() {
 }
 
 function updateVersions(version) {
-  const pkgPath = path.resolve(path.resolve(__dirname, '..'), 'package.json')
+  const pkgPath = path.resolve(path.resolve(__dirname, '..', "src"), 'package.json')
   const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'))
   pkg.version = version
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+  step('\nUpdating package-lock.json...')
+  // Run npm install to update package-lock.json
+  runIfNotDry('npm', ['install'])
 }
 
 
