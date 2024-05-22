@@ -3,7 +3,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "node scripts/release.js"
+    "release": "node scripts/release.js",
+    "release-dry": "node scripts/release.js --dry"
+  },
+  "engines": {
+    "node": ">=20.5"
   },
   "devDependencies": {
     "enquirer": "^2.4.1",

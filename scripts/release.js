@@ -35,6 +35,12 @@ const versionIncrements = [
   'prerelease'
 ]
 
+if (isDryRun){
+  step(`Changes will not be commited - using dryrun`)
+}
+
+
+
 const inc = (i) => semver.inc(currentVersion, i, preId)
 
 async function main() {
@@ -95,6 +101,10 @@ async function main() {
     await runIfNotDry('git', ['add', '-A'])
     await runIfNotDry('git', ['commit', '-m', `release: v${targetVersion}`])
     await runIfNotDry('git', ['tag', `v${targetVersion}`])
+    if (!isDryRun){
+      step('\nRelease commited and tagged. use `git push` to trigger releasing github action')
+    }
+
   } else {
     console.log('No changes to commit.')
   }
@@ -143,7 +153,8 @@ function updateVersions(version) {
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
   step('\nUpdating package-lock.json...')
   // Run npm install to update package-lock.json
-  runIfNotDry('npm', ['install'])
+  run('npm', ['install'])
+  run('npm', ['install', '--prefix','src'])
 }
 
 
