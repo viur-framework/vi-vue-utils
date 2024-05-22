@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "2.0.0-beta.10",
+  "version": "2.0.0-beta.0",
   "description": "Some ViUR related vue3 utils",
   "repository": {
     "type": "git",
