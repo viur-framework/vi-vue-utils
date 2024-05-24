@@ -90,6 +90,22 @@ async function main() {
     return
   }
 
+
+
+  // generate changelog
+  step('\nGenerating changelog...')
+  await run(`npm`, ['run', 'changelog'])
+
+  const { yes: changelogOk } = await prompt({
+    type: 'confirm',
+    name: 'yes',
+    message: `Changelog generated. Does it look good?`,
+  })
+
+  if (!changelogOk) {
+    return
+  }
+
   updateVersions(
     targetVersion,
   )
@@ -153,8 +169,8 @@ function updateVersions(version) {
   fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
   step('\nUpdating package-lock.json...')
   // Run npm install to update package-lock.json
-  run('npm', ['install'])
-  run('npm', ['install', '--prefix','src'])
+  run('npm', ['install',"--silent"])
+  run('npm', ['install',"--silent", '--prefix','src'])
 }
 
 
