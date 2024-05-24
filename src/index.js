@@ -1,6 +1,6 @@
-import { Request, HTTPError, getRequestStore } from "./utils/request"
-import { ListRequest, destroyStore } from "./utils/handlers"
-import boneLogic from "./bones/view/boneLogic"
+import { Request, HTTPError, getRequestStore } from "./request"
+import { ListRequest, destroyStore } from "./requestlist"
+import boneLogic from "./display/display"
 import de_translations from "./translations/de"
 import en_translations from "./translations/en"
 
