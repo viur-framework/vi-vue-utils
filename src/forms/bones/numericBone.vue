@@ -60,7 +60,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (props.autofocus) {
-        if (numericBone.value && numericBone.value !== null && numericBone !== null) {
+        if (numericBone.value && numericBone.value !== null) {
           const { start } = useTimeoutFn(() => {
             numericBone.value.focus()
           }, 600)

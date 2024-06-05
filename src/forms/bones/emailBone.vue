@@ -35,7 +35,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (props.autofocus) {
-        if (emailBone.value && emailBone.value !== null && emailBone !== null) {
+        if (emailBone.value && emailBone.value !== null) {
           const { start } = useTimeoutFn(() => {
             emailBone.value.focus()
           }, 600)

@@ -102,10 +102,10 @@ export default defineComponent({
       context.emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    function testPassword(password: string): string[] {
+    function testPassword(password){
       state.passwordInfo = []
       state.requiredPasswordInfo = []
-      for (const test: [string, string, boolean] of boneState.bonestructure["tests"]) {
+      for (const test of boneState.bonestructure["tests"]) {
         if (!new RegExp(test[0]).test(password)) {
           if (test[2]) {
             state.requiredPasswordInfo.push(test[1])
@@ -124,7 +124,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (props.autofocus) {
-        if (passwordBone.value && passwordBone.value !== null && passwordBone !== null) {
+        if (passwordBone.value && passwordBone.value !== null) {
           const { start } = useTimeoutFn(() => {
             passwordBone.value.focus()
           }, 600)

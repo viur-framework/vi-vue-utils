@@ -263,7 +263,7 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const state: any = reactive({
+    const state = reactive({
       bonestructure: computed(() => {
         return props.structure?.[props.name]
       }),
@@ -454,11 +454,11 @@ export default defineComponent({
     }
 
     function updateValue(
-      name: string,
-      val: any,
-      lang: string | null = null,
-      index: number | null = null,
-      pwMatch?: boolean
+      name,
+      val,
+      lang = null,
+      index = null,
+      pwMatch
     ) {
       if (val === undefined) return false
       if (lang) {

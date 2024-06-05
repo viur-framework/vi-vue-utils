@@ -94,7 +94,7 @@ export default defineComponent({
     })
 
     function uploadFile(file) {
-      const filedata: Record<string, string> = {
+      const filedata = {
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
         size: file.size.toString()
@@ -109,7 +109,7 @@ export default defineComponent({
               mode: "no-cors"
             })
               .then(async (uploadresp) => {
-                const addData: Record<string, string> = {
+                const addData = {
                   key: uploadURLdata["values"]["uploadKey"],
                   node: undefined,
                   skelType: "leaf"

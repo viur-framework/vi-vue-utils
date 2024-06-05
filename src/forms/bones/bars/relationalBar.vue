@@ -67,7 +67,7 @@ export default defineComponent({
       hasUsing: computed(() => boneState?.bonestructure["using"])
     })
 
-    function getList(search: String) {
+    function getList(search) {
       let params = ""
       if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
         params = "skelType=leaf&"
@@ -81,7 +81,7 @@ export default defineComponent({
         const data = await resp.json()
         state.skels = data["skellist"].reduce((acc, curr) => ((acc[curr["key"]] = curr), acc), {})
 
-        return data["skellist"]?.map((d: any) => {
+        return data["skellist"]?.map((d) => {
           return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
         })
       })

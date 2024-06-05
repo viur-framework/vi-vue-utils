@@ -39,7 +39,7 @@ export default defineComponent({
 
     watchEffect(() => {
       if (props.autofocus) {
-        if (stringBone.value && stringBone.value !== null && stringBone !== null) {
+        if (stringBone.value && stringBone.value !== null) {
           const { start } = useTimeoutFn(() => {
             stringBone.value.focus()
           }, 600)
