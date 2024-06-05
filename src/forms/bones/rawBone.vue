@@ -1,5 +1,6 @@
 <template>
-  <sl-textarea v-if="boneState.bonestructure.type==='raw.json'"
+  <sl-textarea
+    v-if="boneState.bonestructure.type === 'raw.json'"
     :disabled="boneState?.readonly"
     :value="JSON.stringify(value)"
     @input="changeEvent"
@@ -27,8 +28,7 @@ export default defineComponent({
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
-    const state = reactive({
-    })
+    const state = reactive({})
 
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)

@@ -9,8 +9,8 @@
     :disabled="boneState.readonly"
     value-as-number
     step="0.000001"
-    @sl-change="changeEvent"
     placeholder="Lat"
+    @sl-change="changeEvent"
   ></sl-input>
 
   <sl-input
@@ -23,8 +23,8 @@
     :disabled="boneState.readonly"
     value-as-number
     step="0.000001"
-    @sl-change="changeEvent"
     placeholder="Long"
+    @sl-change="changeEvent"
   ></sl-input>
 </template>
 

@@ -4,9 +4,7 @@
       v-if="active"
       class="loading"
     >
-      <sl-spinner
-        class="loader"
-      ></sl-spinner>
+      <sl-spinner class="loader"></sl-spinner>
       <div class="logo">
         <sl-icon :src="logo"></sl-icon>
       </div>
@@ -16,7 +14,6 @@
 
 <script>
 import { reactive, computed } from "vue"
-
 
 // Surroundig div musst have position:relative
 export default {

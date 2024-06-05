@@ -27,7 +27,9 @@
         name="plus-lg"
       ></sl-icon>
       {{ $t("bone.add") }}
-      <template v-if="state.counter > 1">({{ state.counter }})</template>
+      <template v-if="state.counter > 1">
+        ({{ state.counter }})
+      </template>
     </sl-button>
   </div>
 </template>

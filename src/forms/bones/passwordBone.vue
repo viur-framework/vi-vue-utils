@@ -102,7 +102,7 @@ export default defineComponent({
       context.emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    function testPassword(password){
+    function testPassword(password) {
       state.passwordInfo = []
       state.requiredPasswordInfo = []
       for (const test of boneState.bonestructure["tests"]) {

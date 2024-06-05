@@ -11,7 +11,9 @@
     </template>
   </label>
   <div v-if="state.debug">
-    <div class="bone">{{ name }}</div>
+    <div class="bone">
+      {{ name }}
+    </div>
     <pre>
     {{ boneState }}
     </pre>

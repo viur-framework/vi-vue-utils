@@ -1,7 +1,7 @@
 <template>
   <div
     class="image-wrap"
-    :class="{'has-popup': 'popup'}"
+    :class="{ 'has-popup': 'popup' }"
   >
     <picture v-if="srcset">
       <source
@@ -34,9 +34,9 @@
 
   <sl-dialog
     v-if="popup"
-    @sl-hide="state.opened = false"
     :open="state.opened"
     :label="$t('preview')"
+    @sl-hide="state.opened = false"
   >
     <div class="image-wrap">
       <img
@@ -49,14 +49,15 @@
       />
     </div>
     <sl-button
+      slot="footer"
       :download="alt + '.jpg'"
       :href="src"
       variant="primary"
       target="_blank"
       size="small"
-      slot="footer"
-      >Download</sl-button
     >
+      Download
+    </sl-button>
   </sl-dialog>
 </template>
 
@@ -131,7 +132,7 @@ img.is-loading {
   filter: blur(4px);
 }
 
-.image-wrap{
+.image-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -139,15 +140,14 @@ img.is-loading {
   height: 100%;
   background-position: center;
   background-image: /* tint image */
-                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
-                  /* checkered effect */
-                  linear-gradient(to right, black 50%, white 50%),
-                  linear-gradient(to bottom, black 50%, white 50%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+    /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
+    linear-gradient(to bottom, black 50%, white 50%);
   background-blend-mode: normal, difference, normal;
-  background-size: .65em .65em;
+  background-size: 0.65em 0.65em;
 }
 
-.has-popup{
+.has-popup {
   cursor: pointer;
 }
 
@@ -163,7 +163,7 @@ img.is-loading {
   object-fit: cover;
 }
 
-sl-dialog{
+sl-dialog {
   &::part(panel) {
     width: auto;
     min-width: 350px;

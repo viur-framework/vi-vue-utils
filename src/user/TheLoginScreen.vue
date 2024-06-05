@@ -40,9 +40,9 @@
       <div
         v-show="
           userStore.state.currentLoginMask !== 'secondFactor' &&
-          userStore.state.currentLoginMask !== 'pwRecovery' &&
-          userStore.state.currentLoginMask !== 'google' &&
-          !isAppAuth
+            userStore.state.currentLoginMask !== 'pwRecovery' &&
+            userStore.state.currentLoginMask !== 'google' &&
+            !isAppAuth
         "
         class="or"
       >
@@ -54,7 +54,7 @@
           (userStore.state.currentLoginMask === '' ||
             userStore.state.currentLoginMask === 'google' ||
             userStore.state.currentLoginMask === 'user') &&
-          !isAppAuth
+            !isAppAuth
         "
       >
         <div id="google_oauth"></div>
@@ -188,7 +188,7 @@
             <sl-button
               v-if="
                 boneName !== 'password' &&
-                userStore.state['user.login.secound_factor']['structure'][boneName]['visible']
+                  userStore.state['user.login.secound_factor']['structure'][boneName]['visible']
               "
               class="more-login-btn"
               variant="primary"
@@ -200,7 +200,7 @@
             <sl-button
               v-else-if="
                 boneName === 'password' &&
-                userStore.state['user.login.secound_factor']['structure'][boneName]['visible']
+                  userStore.state['user.login.secound_factor']['structure'][boneName]['visible']
               "
               class="more-login-btn"
               :variant="state.secondFactorFormdata[boneName]?.length > 0 ? 'primary' : 'disabled'"
@@ -578,7 +578,7 @@ sl-input::part(input)[type="number"] {
   appearance: textfield;
 }
 
-sl-alert{
+sl-alert {
   margin-bottom: var(--sl-spacing-medium);
 }
 </style>

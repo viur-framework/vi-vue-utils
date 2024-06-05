@@ -10,34 +10,33 @@
     v-else
     class="form"
   >
-
     <template
-        v-for="(group, key) in state.formGroups"
-        :key="key"
+      v-for="(group, key) in state.formGroups"
+      :key="key"
+    >
+      <sl-details
+        v-show="group['groupVisible']"
+        :summary="group['name']"
+        :open="group['groupOpen']"
       >
-        <sl-details
-          v-show="group['groupVisible']"
-          :summary="group['name']"
-          :open="group['groupOpen']"
+        <template
+          v-for="bone in group['bones']"
+          :key="bone['name']"
         >
-          <template
-            v-for="bone in group['bones']"
-            :key="bone['name']"
+          <bone
+            :is="getBoneWidget(state.structure[bone['boneName']]['type'])"
+            v-show="state.structure[bone['boneName']]['visible']"
+            :name="bone['boneName']"
+            :structure="state.structure"
+            :skel="state.value"
+            :errors="boneState.errors"
+            :readonly="boneState.bonestructure['readonly'] ? true : undefined"
+            @change-internal="changeEvent"
           >
-            <bone
-              :is="getBoneWidget(state.structure[bone['boneName']]['type'])"
-              v-show="state.structure[bone['boneName']]['visible']"
-              :name="bone['boneName']"
-              :structure="state.structure"
-              :skel="state.value"
-              :errors="boneState.errors"
-              :readonly="boneState.bonestructure['readonly'] ? true : undefined"
-              @change-internal="changeEvent"
-            >
-            </bone>
-          </template>
-        </sl-details>
-      </template>
+          </bone>
+        </template>
+      </sl-details>
+    </template>
 
     <!--
     <template v-for="(data, name) in state.structure">
@@ -119,7 +118,7 @@ export default defineComponent({
           })
 
         return sortedGroups
-      }),
+      })
     })
 
     function changeEvent(val) {

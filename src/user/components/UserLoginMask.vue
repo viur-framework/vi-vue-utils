@@ -24,8 +24,7 @@
       <span
         class="forgot-pw"
         @click="userStore.recoverPassword()"
-        >Passwort vergessen?</span
-      >
+      >Passwort vergessen?</span>
     </div>
 
     <sl-alert
@@ -54,7 +53,8 @@
     <sl-button
       v-else
       @click="logout"
-      >{{ $t("login.logout") }}
+    >
+      {{ $t("login.logout") }}
     </sl-button>
   </form>
 </template>

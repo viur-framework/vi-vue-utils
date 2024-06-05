@@ -230,18 +230,17 @@ export default defineComponent({
   }
 }
 
+.ck-body-wrapper {
+  .ck-link-form {
+    width: 500px !important;
+    max-width: 37vw !important;
+    min-width: 180px !important;
 
-.ck-body-wrapper{
-  .ck-link-form{
-      width: 500px !important;
-      max-width: 37vw !important;
-      min-width: 180px !important;
-
-    .ck-labeled-field-view{
+    .ck-labeled-field-view {
       width: 100%;
     }
 
-    .ck-input{
+    .ck-input {
       width: 100%;
     }
   }
