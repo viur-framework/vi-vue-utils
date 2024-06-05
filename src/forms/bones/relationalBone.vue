@@ -90,7 +90,7 @@ export default defineComponent({
           state.skellistdata[e["key"]] = e
         }
 
-        return data["skellist"]?.map((d: any) => {
+        return data["skellist"]?.map((d) => {
           return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
         })
       })

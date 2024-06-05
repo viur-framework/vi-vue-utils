@@ -503,7 +503,7 @@ export default defineComponent({
     }
 
     function toFormValue() {
-      function rewriteData(val: any, key: string | null = null): Array<Object> {
+      function rewriteData(val, key = null) {
         let ret = []
         if (Array.isArray(val)) {
           if (state.bonestructure["type"] == "spatial" && val.length === 2 && !Array.isArray(val[0])) {
@@ -582,7 +582,7 @@ export default defineComponent({
     }
     provide("addMultipleEntry", addMultipleEntry)
 
-    function removeMultipleEntry(index: number, lang = null) {
+    function removeMultipleEntry(index, lang = null) {
       if (lang) {
         state.bonevalue?.[lang].splice(index, 1)
       } else {
