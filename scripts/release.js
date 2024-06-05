@@ -44,6 +44,15 @@ if (isDryRun){
 const inc = (i) => semver.inc(currentVersion, i, preId)
 
 async function main() {
+  // linting
+  step('\nlinting code...')
+  try{
+    await run(`npm`, ['run', 'lint'])
+  }catch(e){
+    console.log(`${pico.red(`X`)} Fix codestyle errors before release.\n`)
+    return
+  }
+
   if (!(await isInSyncWithRemote())) {
     return
   } else {
