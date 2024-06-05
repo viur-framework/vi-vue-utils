@@ -49,7 +49,7 @@ async function main() {
   try{
     await run(`npm`, ['run', 'lint'])
   }catch(e){
-    console.log(`${pico.red(`X`)} Fix codestyle errors before release.\n`)
+    console.log(`${pico.red(`✖`)} Fix codestyle errors before release.\n`)
     return
   }
 
