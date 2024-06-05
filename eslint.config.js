@@ -10,6 +10,7 @@ export default [
       "no-unused-vars": 0,
       "vue/order-in-components": 0,
       "vue/no-deprecated-slot-attribute":0,
+      "vue/multi-word-component-names":1
     }
   }
 ]

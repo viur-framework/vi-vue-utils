@@ -11,8 +11,7 @@
         v-if="state.required"
         class="required"
       >
-        *</span
-      >
+        *</span>
 
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
@@ -78,9 +77,9 @@
                     state.draggingLineTop['lang'] === lang && state.draggingLineTop['index'] === index ? true : false
                   "
                   @delete="removeMultipleEntry(index, lang)"
-                  @handleDragStart="handleDragStart(index, lang, $event)"
-                  @handleDragOver="handleDragOver(index, lang, $event)"
-                  @handleDrop="handleDrop(index, lang, $event)"
+                  @handle-drag-start="handleDragStart(index, lang, $event)"
+                  @handle-drag-over="handleDragOver(index, lang, $event)"
+                  @handle-drop="handleDrop(index, lang, $event)"
                 >
                   <component
                     :is="is"
@@ -145,9 +144,9 @@
               :dragging-line-bottom="state.draggingLineBottom.index === index ? true : false"
               :dragging-line-top="state.draggingLineTop.index === index ? true : false"
               @delete="removeMultipleEntry(index)"
-              @handleDragStart="handleDragStart(index, (lang = null), $event)"
-              @handleDragOver="handleDragOver(index, (lang = null), $event)"
-              @handleDrop="handleDrop(index, (lang = null), $event)"
+              @handle-drag-start="handleDragStart(index, (lang = null), $event)"
+              @handle-drag-over="handleDragOver(index, (lang = null), $event)"
+              @handle-drop="handleDrop(index, (lang = null), $event)"
             >
               <component
                 :is="is"
@@ -453,16 +452,10 @@ export default defineComponent({
       })
     }
 
-    function updateValue(
-      name,
-      val,
-      lang = null,
-      index = null,
-      pwMatch
-    ) {
+    function updateValue(name, val, lang = null, index = null, pwMatch) {
       if (val === undefined) return false
       if (lang) {
-        if (!state.bonevalue){
+        if (!state.bonevalue) {
           state.bonevalue = {}
         }
         if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
@@ -626,7 +619,7 @@ export default defineComponent({
       addMultipleEntry(lang, data)
     }
 
-    function formatString(formatstr: string, boneValue: object | Array<object>) {
+    function formatString(formatstr, boneValue) {
       function getpathListFromFormatstring(formatstr) {
         let output = []
         let formatList = []
@@ -661,7 +654,7 @@ export default defineComponent({
             } else {
               aval = aval[entry]
             }
-          } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
+          } else if (!aval || (typeof aval[entry] === "object" && !aval[entry])) {
             aval = "-"
           }
         }
