@@ -103,8 +103,11 @@ export default defineComponent({
         Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
           .then(async (resp) => {
             let uploadURLdata = await resp.json()
-            console.log(uploadURLdata)
-            Request.post(uploadURLdata["values"]["uploadUrl"], { dataObj: file, mode: "no-cors" })
+            fetch(uploadURLdata["values"]["uploadUrl"], {
+              body: file,
+              method: "POST",
+              mode: "no-cors"
+            })
               .then(async (uploadresp) => {
                 const addData: Record<string, string> = {
                   key: uploadURLdata["values"]["uploadKey"],
@@ -138,6 +141,7 @@ export default defineComponent({
       state.loading = true
       for (let file of event.target.files) {
         let fileresult = await uploadFile(file)
+        uploadinput.value.value = null
         let relDefault = null
         if (state.hasUsing) {
           relDefault = undefined
@@ -152,6 +156,7 @@ export default defineComponent({
       state.droparea = false
       for (let file of event.dataTransfer.files) {
         let fileresult = await uploadFile(file)
+        uploadinput.value.value = null
         let relDefault = null
         if (state.hasUsing) {
           relDefault = undefined

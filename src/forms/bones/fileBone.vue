@@ -176,6 +176,7 @@ export default defineComponent({
       state.loading = true
       for (let file of event.target.files) {
         let fileresult = await uploadFile(file)
+        uploadinput.value.value = null
         context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
       }
       state.loading = false
@@ -186,6 +187,7 @@ export default defineComponent({
       state.droparea = false
       for (let file of event.dataTransfer.files) {
         let fileresult = await uploadFile(file)
+        uploadinput.value.value = null
         context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
         break
       }
