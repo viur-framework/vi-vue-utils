@@ -6,6 +6,7 @@
     :highlight="highlighter"
     :readonly="boneState.bonestructure.readonly"
     line-numbers
+    theme="tomorrow"
     @input="changeEvent"
   >
   </prism-editor>
@@ -27,7 +28,7 @@ import "vue-prism-editor/dist/prismeditor.min.css" // import the styles somewher
 import { highlight, languages } from "prismjs/components/prism-core"
 import "prismjs/components/prism-clike"
 import "prismjs/components/prism-javascript"
-import "prismjs/themes/prism-tomorrow.css" // import syntax highlighting styles
+import "prismjs/themes/prism-coy.css" // import syntax highlighting styles
 
 import * as prettier from "prettier"
 import pluginEstree from "prettier/plugins/estree"
@@ -86,7 +87,7 @@ export default defineComponent({
 /* required class */
 .my-editor {
   /* we dont use `language-` classes anymore so thats why we need to add background and text color manually */
-  background: #2d2d2d;
+  background: #fffefe;
   color: #ccc;
 
   /* you must provide font-family font-size line-height. Example: */
@@ -103,9 +104,9 @@ export default defineComponent({
 }
 
 /* optional class for removing the outline */
-.prism-editor__textarea:focus {
+/* .prism-editor__textarea:focus {
   outline: none;
-}
+} */
 
 sl-input {
   width: 100%;
