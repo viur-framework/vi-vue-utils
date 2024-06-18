@@ -38,7 +38,7 @@ export function ListRequest(
     const structure = computed(() => {
       let struct = {}
       // we got structure object from core
-      if (Object.keys(state.structure_object).length > 0) {
+      if (state.structure_object && Object.keys(state.structure_object).length > 0) {
         return state.structure_object
       }
 
@@ -75,8 +75,8 @@ export function ListRequest(
       })
         .then(async (resp) => {
           let data = await resp.json()
-          if (data.structure === null || Object.keys(data.structure).length === 0) {
-            const structure = await Request.getStructure(state.module).then((structureResponse) =>
+          if (data["skellist"].length !== 0 && (data.structure === null || Object.keys(data.structure).length === 0)) {
+            const structure = await Request.getStructure(state.module,{group: state.group}).then((structureResponse) =>
               structureResponse.json().then((_structure) => _structure)
             )
 
