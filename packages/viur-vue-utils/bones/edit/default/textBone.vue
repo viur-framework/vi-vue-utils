@@ -1,7 +1,7 @@
 <template>
   <template v-if="state.editor">
     <ckeditor
-      v-if="boneState.bonestructure['validHtml']"
+      v-if="boneState.bonestructure?.['valid_html'] || boneState.bonestructure?.['validHtml']"
       v-model="state.value"
       :editor="state.editor"
       :config="state.editorConfig"
