@@ -181,17 +181,16 @@ export function BoneHasMultipleHandling(boneType) {
   } else {
     let typeParts = boneType.split(".") //prefix match
     let matchingPrefixes = Object.entries(boneStore.state.multibones).filter((prefix) =>
-      prefix[0].startsWith(typeParts[0] + ".")
+      prefix[1].startsWith(typeParts[0] + ".")
     )
     if (matchingPrefixes.length > 0) {
       matchingPrefixes.sort((a, b) => b.length - a.length)
       for (let prefix of matchingPrefixes) {
-        if (boneType.startsWith(prefix[0])) {
+        if (boneType.startsWith(prefix[1])) {
           return true
         }
       }
     }
   }
-
   return false
 }

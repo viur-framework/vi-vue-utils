@@ -190,10 +190,16 @@ export default class Request {
 
   static getStructure(
     module,
-    { dataObj = null, callback = null, failedCallback = null, group = null, abortController = null } = {}
+    { dataObj = null,
+      callback = null,
+      failedCallback = null,
+      group = null,
+      abortController = null,
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+    } = {}
   ) {
     module = module.replace(/\//g, ".")
-    let url = `/vi/getStructure/${module}/`
+    let url = `/${renderer}/getStructure/${module}`
     if (group) {
       url += `/${group}`
     }
