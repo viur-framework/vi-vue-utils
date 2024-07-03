@@ -9,7 +9,8 @@
     @sl-change="changeEvent"
   >
     <sl-option
-      v-for="value in boneState['bonestructure']['values']"
+      v-for="value in convertObjToList()"
+      :key="value[0]"
       :value="value[0]"
     >
       {{ value[1] }}
@@ -37,15 +38,36 @@ export default defineComponent({
       value: computed(() => {
         let val = props.value
         if (Array.isArray(props.value)) {
-          val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
+          if (boneState["bonestructure"]["values"] instanceof Array) {
+            val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
+          } else
+            val = val.filter((i) =>
+              Object.keys(boneState["bonestructure"]["values"])
+                .map((i) => i.toString())
+                .includes(i)
+            )
+
           return val.map((i) => i.toString())
         }
         return props.value ? props.value.toString() : ""
       })
     })
 
+    function convertObjToList() {
+      if (Array.isArray(boneState["bonestructure"]["values"])) {
+        return boneState["bonestructure"]["values"]
+      } else {
+        let objToList = []
+        for (const [key, value] of Object.entries(boneState["bonestructure"]["values"])) {
+          objToList.push([key, value])
+        }
+        return objToList
+      }
+    }
+
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)
+      W
     }
 
     onMounted(() => {
@@ -55,7 +77,8 @@ export default defineComponent({
     return {
       state,
       boneState,
-      changeEvent
+      changeEvent,
+      convertObjToList
     }
   }
 })
