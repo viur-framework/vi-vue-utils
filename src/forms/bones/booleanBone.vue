@@ -6,45 +6,37 @@
   ></sl-switch>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+<script setup>
+import { reactive, defineProps, defineEmits, useAttrs, onMounted, inject, computed } from "vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: computed(() => {
-        return ![false, null, undefined, ""].includes(props.value)
-      })
-    })
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String
+})
 
-    function changeEvent(event) {
-      context.emit("change", props.name, event.target.checked, props.lang, props.index)
-    }
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    onMounted(() => {
-      let val = props.value
-      if (!val) {
-        val = false
-      }
-      context.emit("change", props.name, val, props.lang, props.index) //init
-    })
+const boneState = inject("boneState")
 
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
+const state = reactive({
+  value: computed(() => {
+    return ![false, null, undefined, ""].includes(props.value)
+  })
+})
+
+function changeEvent(event) {
+  emit("change", props.name, event.target.checked, props.lang, props.index)
+}
+
+onMounted(() => {
+  let val = props.value
+  if (!val) {
+    val = false
   }
+  emit("change", props.name, val, props.lang, props.index) //init
 })
 </script>
 
