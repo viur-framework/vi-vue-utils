@@ -21,7 +21,7 @@ export default defineComponent({
     index: Number,
     lang: String
   },
-  components: { Wrapper_nested },
+  components: {  },
   emits: ["change"],
   setup(props, context) {
     const boneState = inject("boneState")
@@ -66,7 +66,7 @@ export default defineComponent({
     return {
       state,
       boneState,
-      changeEvent
+      changeEvent,
     }
   }
 })
