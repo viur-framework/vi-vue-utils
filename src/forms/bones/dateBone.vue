@@ -7,58 +7,50 @@
   ></sl-input>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, computed, inject } from "vue"
+<script setup>
+import { reactive, defineProps, defineEmits, useAttrs, onMounted, computed, inject } from "vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: computed(() => {
-        // remove timezone data if timed
-        let boneValue = props.value
-        if (boneState.bonestructure["time"]) {
-          boneValue = props.value?.split("+")[0]
-        } else if (props.value) {
-          //convert to readable value
-          boneValue = new Date(props.value).toISOString().substr(0, 10)
-        }
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String
+})
 
-        return boneValue
-      }),
-      typeString: computed(() => {
-        // Calculate the correct datetype String
-        let typeString = "datetime-local"
-        if (!boneState.bonestructure["time"]) {
-          typeString = "date"
-        }
-        return typeString
-      })
-    })
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+const boneState = inject("boneState")
+
+const state = reactive({
+  value: computed(() => {
+    // remove timezone data if timed
+    let boneValue = props.value
+    if (boneState.bonestructure["time"]) {
+      boneValue = props.value?.split("+")[0]
+    } else if (props.value) {
+      //convert to readable value
+      boneValue = new Date(props.value).toISOString().substr(0, 10)
     }
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
-
-    return {
-      state,
-      boneState,
-      changeEvent
+    return boneValue
+  }),
+  typeString: computed(() => {
+    // Calculate the correct datetype String
+    let typeString = "datetime-local"
+    if (!boneState.bonestructure["time"]) {
+      typeString = "date"
     }
-  }
+    return typeString
+  })
+})
+
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
 })
 </script>
 

@@ -8,54 +8,45 @@
   ></sl-input>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, ref, watchEffect } from "vue"
+<script setup>
+import { reactive, defineProps, defineEmits, useAttrs, onMounted, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  autofocus: Boolean
+})
 
-    const emailBone = ref(null)
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
-    }
+const boneState = inject("boneState")
 
-    watchEffect(() => {
-      if (props.autofocus) {
-        if (emailBone.value && emailBone.value !== null) {
-          const { start } = useTimeoutFn(() => {
-            emailBone.value.focus()
-          }, 600)
+const state = reactive({})
 
-          start()
-        }
-      }
-    })
+const emailBone = ref(null)
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
-    return {
-      state,
-      boneState,
-      changeEvent,
-      emailBone
+watchEffect(() => {
+  if (props.autofocus) {
+    if (emailBone.value && emailBone.value !== null) {
+      const { start } = useTimeoutFn(() => {
+        emailBone.value.focus()
+      }, 600)
+
+      start()
     }
   }
+})
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
 })
 </script>
 

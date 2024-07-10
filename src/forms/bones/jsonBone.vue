@@ -9,41 +9,33 @@
   </div>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject } from "vue"
+<script setup>
+import { reactive, defineProps, defineEmits, useAttrs, onMounted, inject } from "vue"
 //import { VueJsonPretty } from "vue-json-pretty"
 //import "vue-json-pretty/lib/styles.css"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    readonly: Boolean,
-    params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  readonly: Boolean,
+  params: Object
+})
 
-    function changeEvent(newVal, oldVal) {
-      context.emit("change", props.name, newVal, props.lang, props.index)
-    }
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+const boneState = inject("boneState")
 
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
-  }
+const state = reactive({})
+
+function changeEvent(newVal, oldVal) {
+  emit("change", props.name, newVal, props.lang, props.index)
+}
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
 })
 </script>
 
