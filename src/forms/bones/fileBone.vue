@@ -94,7 +94,7 @@
 
 <script>
 import { reactive, defineComponent, onMounted, inject, ref } from "vue"
-import { Request } from "../../../request"
+import { Request } from "../../request"
 
 export default defineComponent({
   inheritAttrs: false,

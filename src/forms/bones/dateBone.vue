@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import { reactive, defineProps, defineEmits, useAttrs, onMounted, computed, inject } from "vue"
+import { reactive,  useAttrs, onMounted, computed, inject } from "vue"
 
 const props = defineProps({
   name: String,

@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import { reactive, defineProps, defineEmits, useAttrs, onMounted, inject, ref, watchEffect } from "vue"
+import { reactive,  useAttrs, onMounted, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
 const props = defineProps({
