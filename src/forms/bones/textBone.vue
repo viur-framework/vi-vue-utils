@@ -20,64 +20,54 @@
 </template>
 
 <script>
-import { reactive, defineComponent, onMounted, inject, computed, watch } from "vue"
+import { reactive, useAttrs, onMounted, inject, computed, watch } from "vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: "",
-      editorConfig: {},
-      editor: computed(() => ClassicEditor)
-    })
-
-    function changeEvent(event) {
-      context.emit("change", props.name, state.value, props.lang, props.index)
-    }
-    function changeEventTextarea(event) {
-      state.value = event.target.value
-      context.emit("change", props.name, state.value, props.lang, props.index)
-    }
-
-    onMounted(() => {
-      if (props.value !== null) {
-        state.value = props.value
-      }
-
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
-
-    function onReady(editor) {
-      editor.editing.view.change((writer) => {
-        writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
-      })
-    }
-    watch(
-      () => props.value,
-      (newVal, oldVal) => {
-        state.value = newVal
-      }
-    )
-    return {
-      state,
-      ClassicEditor,
-      boneState,
-      changeEvent,
-      onReady,
-      changeEventTextarea
-    }
-  }
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String
 })
+
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
+
+const boneState = inject("boneState")
+
+const state = reactive({
+  value: "",
+  editorConfig: {},
+  editor: computed(() => ClassicEditor)
+})
+
+function changeEvent(event) {
+  emit("change", props.name, state.value, props.lang, props.index)
+}
+function changeEventTextarea(event) {
+  state.value = event.target.value
+  emit("change", props.name, state.value, props.lang, props.index)
+}
+
+onMounted(() => {
+  if (props.value !== null) {
+    state.value = props.value
+  }
+
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
+
+function onReady(editor) {
+  editor.editing.view.change((writer) => {
+    writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
+  })
+}
+watch(
+  () => props.value,
+  (newVal, oldVal) => {
+    state.value = newVal
+  }
+)
 </script>
 
 <style>

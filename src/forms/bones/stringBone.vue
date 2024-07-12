@@ -9,24 +9,25 @@
   ></sl-input>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
+<script setup>
+import { reactive, useAttrs, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
+const props = defineProps({
+  name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
+})
+
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
+
+const boneState = inject("boneState")
+
+
     const state = reactive({
       value: computed(() => props.value)
     })
@@ -34,7 +35,7 @@ export default defineComponent({
     const stringBone = ref(null)
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
     watchEffect(() => {
@@ -50,18 +51,10 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      Utils,
-      boneState,
-      changeEvent,
-      stringBone
-    }
-  }
-})
+
 </script>
 
 <style scoped>

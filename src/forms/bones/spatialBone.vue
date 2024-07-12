@@ -28,44 +28,35 @@
   ></sl-input>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject } from "vue"
+<script setup>
+import { reactive, useAttrs, defineComponent, onMounted, inject } from "vue"
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String
+})
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      valueLat: null,
-      valueLng: null
-    })
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    function changeEvent() {
-      context.emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
-    }
+const boneState = inject("boneState")
 
-    onMounted(() => {
-      try {
-        state.valueLat = props.value[0]
-        state.valueLng = props.value[1]
-      } catch (e) {}
-      context.emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
-    })
+const state = reactive({
+  valueLat: null,
+  valueLng: null
+})
 
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
-  }
+function changeEvent() {
+  emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
+}
+
+onMounted(() => {
+  try {
+    state.valueLat = props.value[0]
+    state.valueLng = props.value[1]
+  } catch (e) {}
+  emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
 })
 </script>
 

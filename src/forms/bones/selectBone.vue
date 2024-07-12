@@ -17,46 +17,38 @@
   </sl-select>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+<script setup>
+import { reactive, useAttrs, onMounted, inject, computed } from "vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: null,
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: computed(() => {
-        let val = props.value
-        if (Array.isArray(props.value)) {
-          val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
-          return val.map((i) => i.toString())
-        }
-        return props.value ? props.value.toString() : ""
-      })
-    })
+const props = defineProps({
+  name: String,
+  value: null,
+  index: Number,
+  lang: String
+})
 
-    function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
+
+const boneState = inject("boneState")
+
+const state = reactive({
+  value: computed(() => {
+    let val = props.value
+    if (Array.isArray(props.value)) {
+      val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
+      return val.map((i) => i.toString())
     }
+    return props.value ? props.value.toString() : ""
+  })
+})
 
-    onMounted(() => {
-      context.emit("change", props.name, state.value, props.lang, props.index) //init
-    })
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
-  }
+onMounted(() => {
+  emit("change", props.name, state.value, props.lang, props.index) //init
 })
 </script>
 
