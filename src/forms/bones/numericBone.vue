@@ -25,15 +25,15 @@
 </template>
 
 <script setup>
-import { reactive,  useAttrs, onMounted, computed, inject, ref, watchEffect } from "vue"
+import { reactive, useAttrs, onMounted, computed, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
 const props = defineProps({
   name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    autofocus: Boolean
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  autofocus: Boolean
 })
 
 const emit = defineEmits(["change"])
@@ -41,46 +41,42 @@ const attrs = useAttrs() // This hook collects all attributes that are not props
 
 const boneState = inject("boneState")
 
-
-    const state = reactive({
-      minAmount: computed(() => {
-        return boneState.bonestructure["minAmount"]
-      }),
-      maxAmount: computed(() => {
-        return boneState.bonestructure["maxAmount"]
-      }),
-      precision: computed(() => {
-        if (boneState.bonestructure["precision"] > 1) {
-          return parseFloat(`0.${"0".repeat(boneState.bonestructure["precision"] - 1)}1`)
-        }
-        return undefined
-      })
-    })
-
-    const numericBone = ref(null)
-
-    function changeEvent(event) {
-      emit("change", props.name, event.target.value, props.lang, props.index)
+const state = reactive({
+  minAmount: computed(() => {
+    return boneState.bonestructure["minAmount"]
+  }),
+  maxAmount: computed(() => {
+    return boneState.bonestructure["maxAmount"]
+  }),
+  precision: computed(() => {
+    if (boneState.bonestructure["precision"] > 1) {
+      return parseFloat(`0.${"0".repeat(boneState.bonestructure["precision"] - 1)}1`)
     }
+    return undefined
+  })
+})
 
-    watchEffect(() => {
-      if (props.autofocus) {
-        if (numericBone.value && numericBone.value !== null) {
-          const { start } = useTimeoutFn(() => {
-            numericBone.value.focus()
-          }, 600)
+const numericBone = ref(null)
 
-          start()
-        }
-      }
-    })
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
-    onMounted(() => {
-     emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+watchEffect(() => {
+  if (props.autofocus) {
+    if (numericBone.value && numericBone.value !== null) {
+      const { start } = useTimeoutFn(() => {
+        numericBone.value.focus()
+      }, 600)
 
+      start()
+    }
+  }
+})
 
-
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
 </script>
 
 <style scoped>

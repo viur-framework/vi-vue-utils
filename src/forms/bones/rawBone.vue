@@ -13,37 +13,29 @@
   ></sl-textarea>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject } from "vue"
+<script setup>
+import { reactive, useAttrs, onMounted, inject } from "vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String
+})
 
-    function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
-    }
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+const boneState = inject("boneState")
 
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
-  }
+const state = reactive({})
+
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
 })
 </script>
 

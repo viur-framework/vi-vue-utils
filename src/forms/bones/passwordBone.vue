@@ -50,105 +50,96 @@
   </ul>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, computed, inject, watch, ref, watchEffect } from "vue"
+<script setup>
+import { reactive, useAttrs, onMounted, computed, inject, watch, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      value1: "",
-      value2: null,
-      equal: false,
-      passwordInfo: [],
-      requiredPasswordInfo: []
-    })
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  autofocus: Boolean
+})
 
-    const passwordBone = ref(null)
+const emit = defineEmits(["change"])
+const attrs = useAttrs() // This hook collects all attributes that are not props
 
-    function changeEvent(event) {
-      if (state.value1 === state.value2) {
-        state.equal = true
+const boneState = inject("boneState")
+
+const state = reactive({
+  value1: "",
+  value2: null,
+  equal: false,
+  passwordInfo: [],
+  requiredPasswordInfo: []
+})
+
+const passwordBone = ref(null)
+
+function changeEvent(event) {
+  if (state.value1 === state.value2) {
+    state.equal = true
+  } else {
+    state.equal = false
+  }
+
+  testPassword(state.value1)
+
+  // boneState.bonestructure["test_threshold"] = 2  *needs to be removed by the look cuz overridees server settings
+
+  if (
+    state.requiredPasswordInfo.length === 0 &&
+    state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
+  ) {
+    emit("change", props.name, state.value1, props.lang, props.index, true)
+  } else {
+    emit("change", props.name, state.value1, props.lang, props.index, false)
+  }
+}
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
+
+function testPassword(password) {
+  state.passwordInfo = []
+  state.requiredPasswordInfo = []
+  for (const test of boneState.bonestructure["tests"]) {
+    if (!new RegExp(test[0]).test(password)) {
+      if (test[2]) {
+        state.requiredPasswordInfo.push(test[1])
       } else {
-        state.equal = false
-      }
-
-      testPassword(state.value1)
-
-      // boneState.bonestructure["test_threshold"] = 2  *needs to be removed by the look cuz overridees server settings
-
-      if (
-        state.requiredPasswordInfo.length === 0 &&
-        state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
-      ) {
-        context.emit("change", props.name, state.value1, props.lang, props.index, true)
-      } else {
-        context.emit("change", props.name, state.value1, props.lang, props.index, false)
+        state.passwordInfo.push(test[1])
       }
     }
+  }
+  if (!state.equal) {
+    state.requiredPasswordInfo.push("Die eingegebenen Passwörter stimmen nicht überein.")
+  }
+  if (!state.value1) {
+    state.requiredPasswordInfo.push("Das eingegebene Passwort ist leer.")
+  }
+}
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+watchEffect(() => {
+  if (props.autofocus) {
+    if (passwordBone.value && passwordBone.value !== null) {
+      const { start } = useTimeoutFn(() => {
+        passwordBone.value.focus()
+      }, 600)
 
-    function testPassword(password) {
-      state.passwordInfo = []
-      state.requiredPasswordInfo = []
-      for (const test of boneState.bonestructure["tests"]) {
-        if (!new RegExp(test[0]).test(password)) {
-          if (test[2]) {
-            state.requiredPasswordInfo.push(test[1])
-          } else {
-            state.passwordInfo.push(test[1])
-          }
-        }
-      }
-      if (!state.equal) {
-        state.requiredPasswordInfo.push("Die eingegebenen Passwörter stimmen nicht überein.")
-      }
-      if (!state.value1) {
-        state.requiredPasswordInfo.push("Das eingegebene Passwort ist leer.")
-      }
-    }
-
-    watchEffect(() => {
-      if (props.autofocus) {
-        if (passwordBone.value && passwordBone.value !== null) {
-          const { start } = useTimeoutFn(() => {
-            passwordBone.value.focus()
-          }, 600)
-
-          start()
-        }
-      }
-    })
-
-    watch(
-      () => props.value,
-      (newVal, oldVal) => {
-        state.value1 = newVal
-      }
-    )
-
-    return {
-      state,
-      boneState,
-      changeEvent,
-      passwordBone
+      start()
     }
   }
 })
+
+watch(
+  () => props.value,
+  (newVal, oldVal) => {
+    state.value1 = newVal
+  }
+)
 </script>
 
 <style scoped>

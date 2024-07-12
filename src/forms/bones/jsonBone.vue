@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { reactive,  useAttrs, onMounted, inject } from "vue"
+import { reactive, useAttrs, onMounted, inject } from "vue"
 //import { VueJsonPretty } from "vue-json-pretty"
 //import "vue-json-pretty/lib/styles.css"
 
