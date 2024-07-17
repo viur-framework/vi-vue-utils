@@ -20,31 +20,28 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive, defineComponent, onMounted, inject } from "vue"
 
-export default defineComponent({
-  props: {
-    name: String,
+const props = defineProps({
+  name: String,
     value: Object,
     index: Number,
     lang: String,
     readonly: Boolean,
     params: Object
-  },
-  components: {},
-  emits: ["change", "handleClick"],
-  setup(props, context) {
-    const boneState = inject("boneState")
+})
+
+const emit = defineEmits(["change", "handleClick"])
+
+const boneState = inject("boneState")
+
+
     const state = reactive({
       debug: false
     })
-    return {
-      state,
-      boneState
-    }
-  }
-})
+
+
 </script>
 
 <style scoped>

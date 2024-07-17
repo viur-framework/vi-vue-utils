@@ -24,7 +24,8 @@
       <span
         class="forgot-pw"
         @click="userStore.recoverPassword()"
-      >Passwort vergessen?</span>
+        >Passwort vergessen?</span
+      >
     </div>
 
     <sl-alert
@@ -59,49 +60,39 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import { reactive, defineComponent, computed, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import { useUserStore } from "../user"
 
-export default defineComponent({
-  components: {},
-  props: { username: { type: String, required: true } },
-  emits: ["onUserLogin"],
-  setup(props, ctx) {
-    const userStore = useUserStore()
-    const nameInput = ref(null)
+const props = defineProps({ username: { type: String, required: true } })
 
-    const state = reactive({
-      name: "",
-      password: "",
-      userDataFilled: computed(() => state.name && state.password)
-    })
+const emit = defineEmits(["onUserLogin"])
 
-    function userLogin() {
-      if (!state.name.length || !state.password.length) {
-        return
-      }
-      ctx.emit("onUserLogin", { name: state.name, password: state.password })
-    }
+const userStore = useUserStore()
+const nameInput = ref(null)
 
-    watchEffect(() => {
-      if (nameInput.value && nameInput.value !== null) {
-        const { start } = useTimeoutFn(() => {
-          if (props?.username.length) state.name = props?.username ? props.username : ""
-          if (nameInput.value.value.length === 0 || nameInput.value.value.length < 1) nameInput.value.focus()
-        }, 500)
+const state = reactive({
+  name: "",
+  password: "",
+  userDataFilled: computed(() => state.name && state.password)
+})
 
-        start()
-      }
-    })
+function userLogin() {
+  if (!state.name.length || !state.password.length) {
+    return
+  }
+  emit("onUserLogin", { name: state.name, password: state.password })
+}
 
-    return {
-      userStore,
-      state,
-      userLogin,
-      nameInput
-    }
+watchEffect(() => {
+  if (nameInput.value && nameInput.value !== null) {
+    const { start } = useTimeoutFn(() => {
+      if (props?.username.length) state.name = props?.username ? props.username : ""
+      if (nameInput.value.value.length === 0 || nameInput.value.value.length < 1) nameInput.value.focus()
+    }, 500)
+
+    start()
   }
 })
 </script>

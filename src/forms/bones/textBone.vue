@@ -19,8 +19,8 @@
   </template>
 </template>
 
-<script>
-import { reactive, useAttrs, onMounted, inject, computed, watch } from "vue"
+<script setup>
+import { reactive, onMounted, inject, computed, watch } from "vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
 const props = defineProps({
@@ -31,7 +31,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["change"])
-const attrs = useAttrs() // This hook collects all attributes that are not props
 
 const boneState = inject("boneState")
 

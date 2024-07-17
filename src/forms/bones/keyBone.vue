@@ -6,37 +6,28 @@
   ></sl-input>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted } from "vue"
+<script setup>
+import { reactive, onMounted } from "vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    readonly: Boolean,
-    params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const state = reactive({})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  readonly: Boolean,
+  params: Object
+})
 
-    function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
-    }
+const emit = defineEmits(["change"])
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+const state = reactive({})
 
-    return {
-      state,
-      changeEvent
-    }
-  }
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
 })
 </script>
 

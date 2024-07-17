@@ -61,60 +61,52 @@
   </sl-dialog>
 </template>
 
-<script>
+<script setup>
 /**
  * Image wrapper mit fallback
  * **/
 
 import { reactive, inject, computed } from "vue"
-
-export default {
-  components: {},
-  props: {
-    src: {
-      type: String,
-      default: ""
-    },
-    alt: {
-      type: String,
-      default: null
-    },
-    srcset: {
-      default: null
-    },
-    fallback: {
-      type: String,
-      default: "logo.svg"
-    },
-    popup: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  src: {
+    type: String,
+    default: ""
   },
+  alt: {
+    type: String,
+    default: null
+  },
+  srcset: {
+    default: null
+  },
+  fallback: {
+    type: String,
+    default: "logo.svg"
+  },
+  popup: {
+    type: Boolean,
+    default: false
+  }
+})
 
-  setup(props, context) {
-    const state = reactive({
-      loading: true,
-      background: computed(() => {
-        /*if(Object.keys(global.state).includes("fallback_image")){
+const state = reactive({
+  loading: true,
+  background: computed(() => {
+    /*if(Object.keys(global.state).includes("fallback_image")){
                     return `url(${global.state.fallback_image})`
                 }*/
-        return ""
-      }),
-      opened: false,
-      image: computed(() => (props.src ? props.src : props.fallback))
-    })
+    return ""
+  }),
+  opened: false,
+  image: computed(() => (props.src ? props.src : props.fallback))
+})
 
-    function updateLoading(loading) {
-      state.loading = loading
-    }
+function updateLoading(loading) {
+  state.loading = loading
+}
 
-    function onError(e) {
-      state.image = props.fallback
-    }
-
-    return { updateLoading, state, onError }
-  }
+function onError(e) {
+  state.image = props.fallback
 }
 </script>
 
@@ -139,8 +131,7 @@ img.is-loading {
   width: 100%;
   height: 100%;
   background-position: center;
-  background-image: /* tint image */
-    linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+  background-image: /* tint image */ linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
     /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
     linear-gradient(to bottom, black 50%, white 50%);
   background-blend-mode: normal, difference, normal;

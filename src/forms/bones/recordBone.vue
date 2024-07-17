@@ -9,22 +9,21 @@
   </Wrapper_nested>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance } from "vue"
+<script setup>
+import { reactive, onMounted, inject, computed, getCurrentInstance } from "vue"
 import Wrapper_nested from "../wrapper_nested.vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
+const props = defineProps({
+  name: String,
     value: null,
     index: Number,
     lang: String
-  },
-  components: {  },
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
+})
+
+const emit = defineEmits(["change"])
+
+const boneState = inject("boneState")
+
     const state = reactive({
       value: {},
       index: computed(() => props.index),
@@ -56,20 +55,14 @@ export default defineComponent({
       }
       state.value[data.name] = currentBone
 
-      context.emit("change", props.name, state.value, props.lang, props.index, true)
+      emit("change", props.name, state.value, props.lang, props.index, true)
     }
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      boneState,
-      changeEvent,
-    }
-  }
-})
+
 </script>
 
 <style scoped>

@@ -27,76 +27,64 @@
         name="plus-lg"
       ></sl-icon>
       {{ $t("bone.add") }}
-      <template v-if="state.counter > 1">
-        ({{ state.counter }})
-      </template>
+      <template v-if="state.counter > 1"> ({{ state.counter }}) </template>
     </sl-button>
   </div>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject } from "vue"
+<script setup>
+import { reactive, onMounted, inject } from "vue"
 
-export default defineComponent({
-  props: {
-    name: String,
-    value: Object,
-    index: Number,
-    lang: String,
-    readonly: Boolean,
-    params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      counter: 0,
-      debounce: null
-    })
-    const addMultipleEntry = inject("addMultipleEntry")
-    const removeMultipleEntries = inject("removeMultipleEntries")
+const props = defineProps({
+  name: String,
+  value: Object,
+  index: Number,
+  lang: String,
+  readonly: Boolean,
+  params: Object
+})
 
-    function handleAdd() {
-      state.counter += 1
-      let delay = 200
-      if (state.counter > 1) {
-        delay = 500
-      }
-      if (state.debounce) {
-        clearTimeout(state.debounce)
-      }
-      state.debounce = setTimeout(() => {
-        for (let i = state.counter; i--; ) {
-          addMultipleEntry(props.lang)
-        }
-        state.counter = 0
-      }, delay)
+const emit = defineEmits(["change"])
+
+const boneState = inject("boneState")
+
+const state = reactive({
+  counter: 0,
+  debounce: null
+})
+const addMultipleEntry = inject("addMultipleEntry")
+const removeMultipleEntries = inject("removeMultipleEntries")
+
+function handleAdd() {
+  state.counter += 1
+  let delay = 200
+  if (state.counter > 1) {
+    delay = 500
+  }
+  if (state.debounce) {
+    clearTimeout(state.debounce)
+  }
+  state.debounce = setTimeout(() => {
+    for (let i = state.counter; i--; ) {
+      addMultipleEntry(props.lang)
     }
+    state.counter = 0
+  }, delay)
+}
 
-    function handleRemove() {
-      let delay = 200
-      if (state.debounce) {
-        clearTimeout(state.debounce)
-      }
-      state.debounce = setTimeout(() => {
-        removeMultipleEntries(props.lang)
-      }, delay)
-    }
+function handleRemove() {
+  let delay = 200
+  if (state.debounce) {
+    clearTimeout(state.debounce)
+  }
+  state.debounce = setTimeout(() => {
+    removeMultipleEntries(props.lang)
+  }, delay)
+}
 
-    onMounted(() => {
-      if (!props.value || props.value.length === 0) {
-        context.emit("change", props.name, [], props.lang) //init
-      }
-    })
-
-    return {
-      state,
-      boneState,
-      handleAdd,
-      handleRemove,
-      removeMultipleEntries
-    }
+onMounted(() => {
+  if (!props.value || props.value.length === 0) {
+    emit("change", props.name, [], props.lang) //init
   }
 })
 </script>

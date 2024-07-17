@@ -42,64 +42,54 @@
   </div>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+<script setup>
+import { reactive, onMounted, inject, computed } from "vue"
 import { Request } from "../../../request"
 
-export default defineComponent({
-  props: {
-    name: String,
-    value: Object,
-    index: Number,
-    lang: String,
-    readonly: Boolean,
-    params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const addMultipleEntry = inject("addMultipleEntry")
-    const formatString = inject("formatString")
-    const removeMultipleEntries = null
-    const state = reactive({
-      skels: {},
-      hasUsing: computed(() => boneState?.bonestructure["using"])
+const props = defineProps({
+  name: String,
+  value: Object,
+  index: Number,
+  lang: String,
+  readonly: Boolean,
+  params: Object
+})
+
+const emit = defineEmits(["change"])
+
+const boneState = inject("boneState")
+
+const addMultipleEntry = inject("addMultipleEntry")
+const formatString = inject("formatString")
+const removeMultipleEntries = null
+const state = reactive({
+  skels: {},
+  hasUsing: computed(() => boneState?.bonestructure["using"])
+})
+
+function getList(search) {
+  let params = ""
+  if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
+    params = "skelType=leaf&"
+  } else if (boneState.bonestructure["type"] === "relational.tree.node.file") {
+    params = "skelType=node&"
+  }
+  return Request.get(
+    `/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`
+  ).then(async (resp) => {
+    //?viurTags$lk=${search.toLowerCase()}
+    const data = await resp.json()
+    state.skels = data["skellist"].reduce((acc, curr) => ((acc[curr["key"]] = curr), acc), {})
+
+    return data["skellist"]?.map((d) => {
+      return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
     })
+  })
+}
 
-    function getList(search) {
-      let params = ""
-      if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
-        params = "skelType=leaf&"
-      } else if (boneState.bonestructure["type"] === "relational.tree.node.file") {
-        params = "skelType=node&"
-      }
-      return Request.get(
-        `/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`
-      ).then(async (resp) => {
-        //?viurTags$lk=${search.toLowerCase()}
-        const data = await resp.json()
-        state.skels = data["skellist"].reduce((acc, curr) => ((acc[curr["key"]] = curr), acc), {})
-
-        return data["skellist"]?.map((d) => {
-          return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
-        })
-      })
-    }
-
-    onMounted(() => {
-      if (!props.value || props.value.length === 0) {
-        context.emit("change", props.name, [], props.lang) //init
-      }
-    })
-
-    return {
-      state,
-      boneState,
-      addMultipleEntry,
-      removeMultipleEntries,
-      getList
-    }
+onMounted(() => {
+  if (!props.value || props.value.length === 0) {
+    emit("change", props.name, [], props.lang) //init
   }
 })
 </script>

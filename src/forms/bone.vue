@@ -11,7 +11,8 @@
         v-if="state.required"
         class="required"
       >
-        *</span>
+        *</span
+      >
 
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
@@ -209,7 +210,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import {
   reactive,
   defineComponent,
@@ -226,499 +227,476 @@ import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./bones/rawBone.vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  emits: ["change", "change-internal", "handleClick"],
-  components: {
-    wrapperMultiple,
-    BoneLabel
+const props = defineProps({
+  is: {
+    type: Object,
+    default: rawBone
   },
-  props: {
-    is: {
-      type: Object,
-      default: rawBone
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    languages: Array,
-    multiple: Boolean,
-    readonly: Boolean,
-    required: Boolean,
-    params: Object,
-    value: [Object, String, Number, Boolean, Array],
-    structure: {
-      type: Object,
-      required: true
-    },
-    skel: {
-      type: null,
-      required: true
-    },
-    errors: Object,
-    showLabelInfo: { type: Boolean, required: false, default: false },
-    autofocus: { type: Boolean, required: false, default: false }
+  name: {
+    type: String,
+    required: true
   },
+  languages: Array,
+  multiple: Boolean,
+  readonly: Boolean,
+  required: Boolean,
+  params: Object,
+  value: [Object, String, Number, Boolean, Array],
+  structure: {
+    type: Object,
+    required: true
+  },
+  skel: {
+    type: null,
+    required: true
+  },
+  errors: Object,
+  showLabelInfo: { type: Boolean, required: false, default: false },
+  autofocus: { type: Boolean, required: false, default: false }
+})
 
-  setup(props, context) {
-    const state = reactive({
-      bonestructure: computed(() => {
-        return props.structure?.[props.name]
-      }),
-      bonevalue: null,
-      dragStartIndex: {
-        lang: null,
-        index: Number
-      },
-      dropIndex: {
-        lang: null,
-        index: Number
-      },
-      draggingLineBottom: {
-        lang: String,
-        index: Number
-      },
-      draggingLineTop: {
-        lang: String,
-        index: Number
-      },
-      isDragging: {
-        lang: String,
-        index: Number
-      },
-      multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
-      languages: computed(() => {
-        if (props.languages) {
-          return props.languages
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("languages")
-          ? state.bonestructure["languages"]
-          : []
-      }),
-      readonly: computed(() => {
-        if (props.readonly) {
-          return props.readonly
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("readonly")
-          ? state.bonestructure["readonly"]
-          : false
-      }),
-      required: computed(() => {
-        if (props.required) {
-          return props.required
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("required")
-          ? state.bonestructure["required"]
-          : false
-      }),
-      hasTooltip: computed(() => {
-        return state.bonestructure && Object.keys(state.bonestructure["params"]).includes("tooltip") ? true : false
-      }),
+const emit = defineEmits(["change", "change-internal", "handleClick"])
 
-      multiple: computed(() => {
-        if (props.multiple) {
-          return props.multiple
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("multiple")
-          ? state.bonestructure["multiple"]
-          : false
-      }),
-      params: computed(() => {
-        if (props.params) {
-          return props.params
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("params")
-          ? state.bonestructure["params"]
-          : {}
-      }),
-      actionbar: computed(() => {
-        return getBoneActionbar(state.bonestructure?.["type"])
-      }),
-      isEmpty: computed(() => {
-        // Function to check if an object is empty
-        function isObjectEmpty(obj) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (value !== null) {
-              if (Array.isArray(value) && value.length > 0) {
-                return false
-              } else if (!Array.isArray(value)) {
-                return false
-              }
-            }
-          }
-          return true
-        }
+const state = reactive({
+  bonestructure: computed(() => {
+    return props.structure?.[props.name]
+  }),
+  bonevalue: null,
+  dragStartIndex: {
+    lang: null,
+    index: Number
+  },
+  dropIndex: {
+    lang: null,
+    index: Number
+  },
+  draggingLineBottom: {
+    lang: String,
+    index: Number
+  },
+  draggingLineTop: {
+    lang: String,
+    index: Number
+  },
+  isDragging: {
+    lang: String,
+    index: Number
+  },
+  multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
+  languages: computed(() => {
+    if (props.languages) {
+      return props.languages
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("languages")
+      ? state.bonestructure["languages"]
+      : []
+  }),
+  readonly: computed(() => {
+    if (props.readonly) {
+      return props.readonly
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("readonly")
+      ? state.bonestructure["readonly"]
+      : false
+  }),
+  required: computed(() => {
+    if (props.required) {
+      return props.required
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("required")
+      ? state.bonestructure["required"]
+      : false
+  }),
+  hasTooltip: computed(() => {
+    return state.bonestructure && Object.keys(state.bonestructure["params"]).includes("tooltip") ? true : false
+  }),
 
-        // Ignore the computation when the state is readonly
-        if (state.readonly) return false
-
-        // Check for null or undefined values
-        if (!state.bonevalue) return true
-
-        // Check if the value is an array with elements
-        if (Array.isArray(state.bonevalue) && state.bonevalue.length === 0) return true
-
-        // Check if the value is an object and not an array, then use helper function to check if it's empty
-        if (state.bonevalue === Object(state.bonevalue) && !Array.isArray(state.bonevalue))
-          return isObjectEmpty(state.bonevalue)
-
-        return false
-      }),
-
-      errors: [],
-      errorMessages: computed(() => {
-        let errors = []
-        for (let error of props.errors) {
-          if (
-            error["fieldPath"][0] === props.name &&
-            (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
-          ) {
-            //severity level???
-            errors.push(error["errorMessage"])
+  multiple: computed(() => {
+    if (props.multiple) {
+      return props.multiple
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("multiple")
+      ? state.bonestructure["multiple"]
+      : false
+  }),
+  params: computed(() => {
+    if (props.params) {
+      return props.params
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("params")
+      ? state.bonestructure["params"]
+      : {}
+  }),
+  actionbar: computed(() => {
+    return getBoneActionbar(state.bonestructure?.["type"])
+  }),
+  isEmpty: computed(() => {
+    // Function to check if an object is empty
+    function isObjectEmpty(obj) {
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== null) {
+          if (Array.isArray(value) && value.length > 0) {
+            return false
+          } else if (!Array.isArray(value)) {
+            return false
           }
         }
-        return errors
-      })
+      }
+      return true
+    }
+
+    // Ignore the computation when the state is readonly
+    if (state.readonly) return false
+
+    // Check for null or undefined values
+    if (!state.bonevalue) return true
+
+    // Check if the value is an array with elements
+    if (Array.isArray(state.bonevalue) && state.bonevalue.length === 0) return true
+
+    // Check if the value is an object and not an array, then use helper function to check if it's empty
+    if (state.bonevalue === Object(state.bonevalue) && !Array.isArray(state.bonevalue))
+      return isObjectEmpty(state.bonevalue)
+
+    return false
+  }),
+
+  errors: [],
+  errorMessages: computed(() => {
+    let errors = []
+    for (let error of props.errors) {
+      if (
+        error["fieldPath"][0] === props.name &&
+        (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
+      ) {
+        //severity level???
+        errors.push(error["errorMessage"])
+      }
+    }
+    return errors
+  })
+})
+provide("boneState", state)
+
+// Handle drag start event
+function handleDragStart(index, lang, event) {
+  setStateProperties(lang, index, "isDragging")
+  setStateProperties(lang, index, "dragStartIndex")
+}
+
+// Handle drag over event
+function handleDragOver(index, lang, event) {
+  event.preventDefault()
+
+  const relativePosition = event.clientY - event.target.getBoundingClientRect().top
+  const dragOverLine = event.target.closest(".value-line")
+
+  if (relativePosition < dragOverLine.offsetHeight / 2) {
+    setStateProperties(lang, index, "draggingLineTop")
+    resetStateProperties("draggingLineBottom")
+    state.dropIndex.index = index
+  } else {
+    setStateProperties(lang, index, "draggingLineBottom")
+    resetStateProperties("draggingLineTop")
+    state.dropIndex.index = index + 1
+  }
+
+  let allVals = lang ? state.bonevalue[lang] : state.bonevalue
+
+  if (state.dropIndex.index > allVals.length - 1) {
+    state.dropIndex.index -= 1
+  }
+}
+// Handle drop event
+function handleDrop(index, lang, event) {
+  let dragItem = null
+
+  if (state.dragStartIndex.index !== state.dropIndex.index) {
+    if (lang) {
+      dragItem = state.bonevalue[lang].splice(state.dragStartIndex.index, 1)[0]
+      state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem)
+    } else {
+      dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
+      state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
+    }
+    console.dir(state.bonevalue[0])
+    emit("change", {
+      name: props.name,
+      value: toFormValue(),
+      lang: lang,
+      index: index
     })
-    provide("boneState", state)
+  }
 
-    // Handle drag start event
-    function handleDragStart(index, lang, event) {
-      setStateProperties(lang, index, "isDragging")
-      setStateProperties(lang, index, "dragStartIndex")
+  resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
+}
+
+// Set state properties based on lang and index
+function setStateProperties(lang, index, property) {
+  state[property].lang = lang ? lang : null
+  state[property].index = index
+}
+
+// Reset state properties to null values
+function resetStateProperties(...properties) {
+  properties.forEach((property) => {
+    state[property] = {
+      lang: null,
+      index: Number
     }
+  })
+}
 
-    // Handle drag over event
-    function handleDragOver(index, lang, event) {
-      event.preventDefault()
+function updateValue(name, val, lang = null, index = null, pwMatch) {
+  if (val === undefined) return false
+  if (lang) {
+    if (!state.bonevalue) {
+      state.bonevalue = {}
+    }
+    if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
+      state.bonevalue[lang][index] = val
+    } else {
+      state.bonevalue[lang] = val
+    }
+  } else if (index !== null) {
+    state.bonevalue[index] = val
+  } else if (pwMatch === false) {
+    // do something; skip changing value on initial type
+  } else {
+    state.bonevalue = val
+  }
+  if (state.readonly) return false
 
-      const relativePosition = event.clientY - event.target.getBoundingClientRect().top
-      const dragOverLine = event.target.closest(".value-line")
+  let changeObj = {
+    name: name,
+    value: toFormValue(),
+    lang: lang,
+    index: index
+  }
 
-      if (relativePosition < dragOverLine.offsetHeight / 2) {
-        setStateProperties(lang, index, "draggingLineTop")
-        resetStateProperties("draggingLineBottom")
-        state.dropIndex.index = index
+  let changeInternalObj = {
+    name: name,
+    value: val,
+    lang: lang,
+    index: index
+  }
+
+  if (pwMatch !== undefined && pwMatch !== null) {
+    changeObj.pwMatch = pwMatch
+    changeInternalObj.pwMatch = pwMatch
+  }
+
+  emit("change", changeObj)
+  emit("change-internal", changeInternalObj)
+}
+
+function toFormValue() {
+  function rewriteData(val, key = null) {
+    let ret = []
+    if (Array.isArray(val)) {
+      if (state.bonestructure["type"] == "spatial" && val.length === 2 && !Array.isArray(val[0])) {
+        ret.push({ [key + ".lat"]: val[0] })
+        ret.push({ [key + ".lng"]: val[1] })
+      } else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
+        //only add i if relationaldata
+        for (const [i, v] of val.entries()) {
+          if (v["rel"] !== null) {
+            ret.push(rewriteData(v, key + "." + i)) // append idx if we have rel data
+          } else {
+            ret.push(rewriteData(v, key))
+          }
+        }
       } else {
-        setStateProperties(lang, index, "draggingLineBottom")
-        resetStateProperties("draggingLineTop")
-        state.dropIndex.index = index + 1
-      }
-
-      let allVals = lang ? state.bonevalue[lang] : state.bonevalue
-
-      if (state.dropIndex.index > allVals.length - 1) {
-        state.dropIndex.index -= 1
-      }
-    }
-    // Handle drop event
-    function handleDrop(index, lang, event) {
-      let dragItem = null
-
-      if (state.dragStartIndex.index !== state.dropIndex.index) {
-        if (lang) {
-          dragItem = state.bonevalue[lang].splice(state.dragStartIndex.index, 1)[0]
-          state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem)
-        } else {
-          dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
-          state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
+        for (const [i, v] of val.entries()) {
+          ret.push(rewriteData(v, key))
         }
-        console.dir(state.bonevalue[0])
-        context.emit("change", {
-          name: props.name,
-          value: toFormValue(),
-          lang: lang,
-          index: index
-        })
       }
+    } else if (val === Object(val)) {
+      for (const [k, v] of Object.entries(val)) {
+        if (key) {
+          if (key.endsWith(".dest") || key.endsWith(".rel")) {
+            if (key.endsWith(".dest") && k === "key") {
+              // if single bonename, multiple bonename, using single bonename.key, using multiple bonename.0.key
+              // if dest we only send the key
+              // we send key 2 times. this is ugly we need a better solution... or a better handling on server side
 
-      resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
-    }
-
-    // Set state properties based on lang and index
-    function setStateProperties(lang, index, property) {
-      state[property].lang = lang ? lang : null
-      state[property].index = index
-    }
-
-    // Reset state properties to null values
-    function resetStateProperties(...properties) {
-      properties.forEach((property) => {
-        state[property] = {
-          lang: null,
-          index: Number
-        }
-      })
-    }
-
-    function updateValue(name, val, lang = null, index = null, pwMatch) {
-      if (val === undefined) return false
-      if (lang) {
-        if (!state.bonevalue) {
-          state.bonevalue = {}
-        }
-        if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
-          state.bonevalue[lang][index] = val
-        } else {
-          state.bonevalue[lang] = val
-        }
-      } else if (index !== null) {
-        state.bonevalue[index] = val
-      } else if (pwMatch === false) {
-        // do something; skip changing value on initial type
-      } else {
-        state.bonevalue = val
-      }
-      if (state.readonly) return false
-
-      let changeObj = {
-        name: name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      }
-
-      let changeInternalObj = {
-        name: name,
-        value: val,
-        lang: lang,
-        index: index
-      }
-
-      if (pwMatch !== undefined && pwMatch !== null) {
-        changeObj.pwMatch = pwMatch
-        changeInternalObj.pwMatch = pwMatch
-      }
-
-      context.emit("change", changeObj)
-      context.emit("change-internal", changeInternalObj)
-    }
-
-    function toFormValue() {
-      function rewriteData(val, key = null) {
-        let ret = []
-        if (Array.isArray(val)) {
-          if (state.bonestructure["type"] == "spatial" && val.length === 2 && !Array.isArray(val[0])) {
-            ret.push({ [key + ".lat"]: val[0] })
-            ret.push({ [key + ".lng"]: val[1] })
-          } else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
-            //only add i if relationaldata
-            for (const [i, v] of val.entries()) {
-              if (v["rel"] !== null) {
-                ret.push(rewriteData(v, key + "." + i)) // append idx if we have rel data
+              if (/\.[0-9]*\.dest$/.test(key)) {
+                ret.push(rewriteData(v, key.replace(/\.[0-9]*\.dest/, "")))
               } else {
-                ret.push(rewriteData(v, key))
+                ret.push(rewriteData(v, key.replace(/\.dest/, "")))
               }
+
+              ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k))
+            } else if (key.endsWith(".rel")) {
+              ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k))
             }
           } else {
-            for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key))
-            }
-          }
-        } else if (val === Object(val)) {
-          for (const [k, v] of Object.entries(val)) {
-            if (key) {
-              if (key.endsWith(".dest") || key.endsWith(".rel")) {
-                if (key.endsWith(".dest") && k === "key") {
-                  // if single bonename, multiple bonename, using single bonename.key, using multiple bonename.0.key
-                  // if dest we only send the key
-                  // we send key 2 times. this is ugly we need a better solution... or a better handling on server side
-
-                  if (/\.[0-9]*\.dest$/.test(key)) {
-                    ret.push(rewriteData(v, key.replace(/\.[0-9]*\.dest/, "")))
-                  } else {
-                    ret.push(rewriteData(v, key.replace(/\.dest/, "")))
-                  }
-
-                  ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k))
-                } else if (key.endsWith(".rel")) {
-                  ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k))
-                }
-              } else {
-                ret.push(rewriteData(v, key + "." + k))
-              }
-            } else {
-              ret.push(rewriteData(v, k))
-            }
+            ret.push(rewriteData(v, key + "." + k))
           }
         } else {
-          if (val === null || val === undefined) {
-            val = ""
-          }
-          if (key !== null) {
-            ret.push({ [key]: val })
-          }
-        }
-        return ret
-      }
-
-      let value = rewriteData(state.bonevalue, props.name)
-      value = value.flat(10)
-      return value
-    }
-
-    function addMultipleEntry(lang = null, data = "") {
-      if (lang) {
-        if (Object.keys(state.bonevalue).includes(lang)) {
-          state.bonevalue[lang].push(data)
-        } else {
-          state.bonevalue[lang] = [data]
-        }
-      } else {
-        if (state.bonevalue) {
-          state.bonevalue.push(data)
-        } else {
-          state.bonevalue = [data]
+          ret.push(rewriteData(v, k))
         }
       }
+    } else {
+      if (val === null || val === undefined) {
+        val = ""
+      }
+      if (key !== null) {
+        ret.push({ [key]: val })
+      }
     }
-    provide("addMultipleEntry", addMultipleEntry)
+    return ret
+  }
 
-    function removeMultipleEntry(index, lang = null) {
-      if (lang) {
-        state.bonevalue?.[lang].splice(index, 1)
-      } else {
-        state.bonevalue.splice(index, 1)
-      }
-      context.emit("change", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      })
-      context.emit("change-internal", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      })
+  let value = rewriteData(state.bonevalue, props.name)
+  value = value.flat(10)
+  return value
+}
+
+function addMultipleEntry(lang = null, data = "") {
+  if (lang) {
+    if (Object.keys(state.bonevalue).includes(lang)) {
+      state.bonevalue[lang].push(data)
+    } else {
+      state.bonevalue[lang] = [data]
     }
-
-    function removeMultipleEntries(lang = null) {
-      if (lang) {
-        state.bonevalue?.[lang].splice(0)
-      } else {
-        state.bonevalue.splice(0)
-      }
-      context.emit("change", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang
-      })
-      context.emit("change-internal", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang
-      })
-    }
-
-    provide("removeMultipleEntries", removeMultipleEntries)
-
-    function multipleBonePressEnter(lang = null, data = "") {
-      addMultipleEntry(lang, data)
-    }
-
-    function formatString(formatstr, boneValue) {
-      function getpathListFromFormatstring(formatstr) {
-        let output = []
-        let formatList = []
-        let regstr = /\$\((.*?)\)/g
-
-        while (formatList) {
-          formatList = regstr.exec(formatstr)
-          if (!formatList) {
-            formatList = false
-            continue
-          }
-
-          output.push(formatList[1])
-        }
-
-        return output
-      }
-
-      function readValue(pathstr, avalue) {
-        let path = pathstr.split(".")
-        let restPath = pathstr.split(".")
-        let aval = avalue
-        for (let entry of path) {
-          restPath.shift()
-          if (aval && aval !== "-" && Object.keys(aval).includes(entry) && aval[entry]) {
-            if (Array.isArray(aval[entry])) {
-              let resVal = []
-              for (let val of aval[entry]) {
-                resVal.push(readValue(restPath.join("."), val))
-              }
-              aval = resVal.join(", ")
-            } else {
-              aval = aval[entry]
-            }
-          } else if (!aval || (typeof aval[entry] === "object" && !aval[entry])) {
-            aval = "-"
-          }
-        }
-        return aval
-      }
-
-      let pathlist = getpathListFromFormatstring(formatstr)
-
-      let finalStrList = []
-
-      if (!Array.isArray(boneValue)) {
-        boneValue = [boneValue]
-      }
-      for (let avalue of boneValue) {
-        let finalstr = formatstr
-        for (let pathstr of pathlist) {
-          let aval = readValue(pathstr, avalue)
-          finalstr = finalstr.replace("$(" + pathstr + ")", aval)
-        }
-        finalStrList.push(finalstr)
-      }
-      return finalStrList.join(", ")
-    }
-    provide("formatString", formatString)
-
-    onBeforeMount(() => {
-      if (props.value) {
-        state.bonevalue = props.value
-      } else {
-        state.bonevalue = props.skel?.[props.name]
-      }
-      //validateBoneValue()
-    })
-
-    watch(
-      () => props.skel,
-      (newVal, oldVal) => {
-        state.bonevalue = props.skel?.[props.name]
-      }
-    )
-
-    watch(
-      () => props.errors?.[props.name],
-      (newVal, oldVal) => {
-        state.errors = props.errors
-      }
-    )
-
-    return {
-      state,
-      updateValue,
-      addMultipleEntry,
-      removeMultipleEntry,
-      removeMultipleEntries,
-      BoneHasMultipleHandling,
-      multipleBonePressEnter,
-      handleDragStart,
-      handleDragOver,
-      handleDrop,
-      setStateProperties,
-      resetStateProperties
+  } else {
+    if (state.bonevalue) {
+      state.bonevalue.push(data)
+    } else {
+      state.bonevalue = [data]
     }
   }
+}
+provide("addMultipleEntry", addMultipleEntry)
+
+function removeMultipleEntry(index, lang = null) {
+  if (lang) {
+    state.bonevalue?.[lang].splice(index, 1)
+  } else {
+    state.bonevalue.splice(index, 1)
+  }
+  emit("change", {
+    name: props.name,
+    value: toFormValue(),
+    lang: lang,
+    index: index
+  })
+  emit("change-internal", {
+    name: props.name,
+    value: toFormValue(),
+    lang: lang,
+    index: index
+  })
+}
+
+function removeMultipleEntries(lang = null) {
+  if (lang) {
+    state.bonevalue?.[lang].splice(0)
+  } else {
+    state.bonevalue.splice(0)
+  }
+  emit("change", {
+    name: props.name,
+    value: toFormValue(),
+    lang: lang
+  })
+  emit("change-internal", {
+    name: props.name,
+    value: toFormValue(),
+    lang: lang
+  })
+}
+
+provide("removeMultipleEntries", removeMultipleEntries)
+
+function multipleBonePressEnter(lang = null, data = "") {
+  addMultipleEntry(lang, data)
+}
+
+function formatString(formatstr, boneValue) {
+  function getpathListFromFormatstring(formatstr) {
+    let output = []
+    let formatList = []
+    let regstr = /\$\((.*?)\)/g
+
+    while (formatList) {
+      formatList = regstr.exec(formatstr)
+      if (!formatList) {
+        formatList = false
+        continue
+      }
+
+      output.push(formatList[1])
+    }
+
+    return output
+  }
+
+  function readValue(pathstr, avalue) {
+    let path = pathstr.split(".")
+    let restPath = pathstr.split(".")
+    let aval = avalue
+    for (let entry of path) {
+      restPath.shift()
+      if (aval && aval !== "-" && Object.keys(aval).includes(entry) && aval[entry]) {
+        if (Array.isArray(aval[entry])) {
+          let resVal = []
+          for (let val of aval[entry]) {
+            resVal.push(readValue(restPath.join("."), val))
+          }
+          aval = resVal.join(", ")
+        } else {
+          aval = aval[entry]
+        }
+      } else if (!aval || (typeof aval[entry] === "object" && !aval[entry])) {
+        aval = "-"
+      }
+    }
+    return aval
+  }
+
+  let pathlist = getpathListFromFormatstring(formatstr)
+
+  let finalStrList = []
+
+  if (!Array.isArray(boneValue)) {
+    boneValue = [boneValue]
+  }
+  for (let avalue of boneValue) {
+    let finalstr = formatstr
+    for (let pathstr of pathlist) {
+      let aval = readValue(pathstr, avalue)
+      finalstr = finalstr.replace("$(" + pathstr + ")", aval)
+    }
+    finalStrList.push(finalstr)
+  }
+  return finalStrList.join(", ")
+}
+provide("formatString", formatString)
+
+onBeforeMount(() => {
+  if (props.value) {
+    state.bonevalue = props.value
+  } else {
+    state.bonevalue = props.skel?.[props.name]
+  }
+  //validateBoneValue()
 })
+
+watch(
+  () => props.skel,
+  (newVal, oldVal) => {
+    state.bonevalue = props.skel?.[props.name]
+  }
+)
+
+watch(
+  () => props.errors?.[props.name],
+  (newVal, oldVal) => {
+    state.errors = props.errors
+  }
+)
 </script>
 
 <style scoped>

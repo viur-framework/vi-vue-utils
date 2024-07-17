@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import { reactive, useAttrs, onMounted, inject } from "vue"
+import { reactive, onMounted, inject } from "vue"
 
 const props = defineProps({
   name: String,
@@ -17,7 +17,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["change"])
-const attrs = useAttrs() // This hook collects all attributes that are not props
 
 const boneState = inject("boneState")
 const state = reactive({})

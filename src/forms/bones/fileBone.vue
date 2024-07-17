@@ -92,75 +92,70 @@
   </div>
 </template>
 
-<script>
-import { reactive, defineComponent, onMounted, inject, ref } from "vue"
+<script setup>
+import { reactive, onMounted, inject, ref } from "vue"
 import { Request } from "../../request"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const uploadinput = ref()
-    const state = reactive({
-      loading: false,
-      droparea: false,
-      previewopen: false
-    })
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String
+})
 
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+const emit = defineEmits(["change"])
 
-    function downloadFile() {
-      console.log(Request.downloadUrlFor(props.value))
-      window.open(Request.downloadUrlFor(props.value))
-    }
+const boneState = inject("boneState")
 
-    function createBackgroundImage() {
-      return Request.downloadUrlFor(props.value, false)
-    }
+const uploadinput = ref()
+const state = reactive({
+  loading: false,
+  droparea: false,
+  previewopen: false
+})
 
-    function uploadFile(file) {
-      const filedata = {
-        fileName: file.name,
-        mimeType: file.type || "application/octet-stream",
-        size: file.size.toString()
-      }
-      return new Promise((resolve, reject) => {
-        Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
-          .then(async (resp) => {
-            let uploadURLdata = await resp.json()
-            fetch(uploadURLdata["values"]["uploadUrl"], {
-              body: file,
-              method: "POST",
-              mode: "no-cors"
-            })
-              .then(async (uploadresp) => {
-                const addData = {
-                  key: uploadURLdata["values"]["uploadKey"],
-                  node: undefined,
-                  skelType: "leaf"
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
+
+function downloadFile() {
+  console.log(Request.downloadUrlFor(props.value))
+  window.open(Request.downloadUrlFor(props.value))
+}
+
+function createBackgroundImage() {
+  return Request.downloadUrlFor(props.value, false)
+}
+
+function uploadFile(file) {
+  const filedata = {
+    fileName: file.name,
+    mimeType: file.type || "application/octet-stream",
+    size: file.size.toString()
+  }
+  return new Promise((resolve, reject) => {
+    Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
+      .then(async (resp) => {
+        let uploadURLdata = await resp.json()
+        fetch(uploadURLdata["values"]["uploadUrl"], {
+          body: file,
+          method: "POST",
+          mode: "no-cors"
+        })
+          .then(async (uploadresp) => {
+            const addData = {
+              key: uploadURLdata["values"]["uploadKey"],
+              node: undefined,
+              skelType: "leaf"
+            }
+            Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
+              .then(async (addresp) => {
+                let addData = await addresp.json()
+                if (addData["action"] === "addSuccess") {
+                  resolve(addData["values"])
+                } else {
+                  reject(addData)
                 }
-                Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
-                  .then(async (addresp) => {
-                    let addData = await addresp.json()
-                    if (addData["action"] === "addSuccess") {
-                      resolve(addData["values"])
-                    } else {
-                      reject(addData)
-                    }
-                  })
-                  .catch((error) => {
-                    reject(error)
-                  })
               })
               .catch((error) => {
                 reject(error)
@@ -170,41 +165,33 @@ export default defineComponent({
             reject(error)
           })
       })
-    }
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
-    async function handleUpload(event) {
-      state.loading = true
-      for (let file of event.target.files) {
-        let fileresult = await uploadFile(file)
-        uploadinput.value.value = null
-        context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
-      }
-      state.loading = false
-    }
-
-    async function handleDrop(event) {
-      state.loading = true
-      state.droparea = false
-      for (let file of event.dataTransfer.files) {
-        let fileresult = await uploadFile(file)
-        uploadinput.value.value = null
-        context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
-        break
-      }
-      state.loading = false
-    }
-
-    return {
-      state,
-      boneState,
-      downloadFile,
-      createBackgroundImage,
-      handleUpload,
-      uploadinput,
-      handleDrop
-    }
+async function handleUpload(event) {
+  state.loading = true
+  for (let file of event.target.files) {
+    let fileresult = await uploadFile(file)
+    uploadinput.value.value = null
+    emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
   }
-})
+  state.loading = false
+}
+
+async function handleDrop(event) {
+  state.loading = true
+  state.droparea = false
+  for (let file of event.dataTransfer.files) {
+    let fileresult = await uploadFile(file)
+    uploadinput.value.value = null
+    emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
+    break
+  }
+  state.loading = false
+}
 </script>
 
 <style scoped>
@@ -231,8 +218,7 @@ export default defineComponent({
   aspect-ratio: 1;
   border-right: 1px solid var(--sl-color-gray-500);
   margin-right: var(--sl-spacing-small);
-  background-image: /* tint image */
-    linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+  background-image: /* tint image */ linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
     /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
     linear-gradient(to bottom, black 50%, white 50%);
   background-blend-mode: normal, difference, normal;
@@ -316,8 +302,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: /* tint image */
-      linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+    background-image: /* tint image */ linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
       /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
       linear-gradient(to bottom, black 50%, white 50%);
     background-blend-mode: normal, difference, normal;

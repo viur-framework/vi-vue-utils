@@ -42,28 +42,21 @@
   </div>
 </template>
 
-<script>
-import { reactive, defineComponent, inject } from "vue"
+<script setup>
+import { reactive, inject } from "vue"
 
-export default defineComponent({
-  props: {
-    isDragging: Boolean,
-    draggingLineBottom: Boolean,
-    draggingLineTop: Boolean
-  },
-  components: {},
-  emits: ["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      isDraggable: false
-    })
+const props = defineProps({
+  isDragging: Boolean,
+  draggingLineBottom: Boolean,
+  draggingLineTop: Boolean
+})
 
-    return {
-      state,
-      boneState
-    }
-  }
+const emit = defineEmits(["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"])
+
+const boneState = inject("boneState")
+
+const state = reactive({
+  isDraggable: false
 })
 </script>
 

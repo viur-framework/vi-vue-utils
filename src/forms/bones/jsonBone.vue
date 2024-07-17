@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { reactive, useAttrs, onMounted, inject } from "vue"
+import { reactive, onMounted, inject } from "vue"
 //import { VueJsonPretty } from "vue-json-pretty"
 //import "vue-json-pretty/lib/styles.css"
 
@@ -24,7 +24,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["change"])
-const attrs = useAttrs() // This hook collects all attributes that are not props
 
 const boneState = inject("boneState")
 

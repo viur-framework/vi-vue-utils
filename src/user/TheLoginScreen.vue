@@ -217,7 +217,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive, computed, onBeforeMount, defineComponent, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useUserStore } from "./user"
@@ -225,19 +225,18 @@ import Loader from "../generic/Loader.vue"
 import { getBoneWidget } from "../forms/index"
 import UserLoginMask from "./components/UserLoginMask.vue"
 
-export default defineComponent({
-  components: { Loader, UserLoginMask },
-  props: {
-    username: { type: String, default: "" },
+
+const props = defineProps({
+  username: { type: String, default: "" },
     isAppAuth: Boolean,
     isRedirect: { type: Boolean, default: false },
     backgroundImage: { type: String, default: "" },
     logo: { type: String, default: "" },
     title: { type: String, default: "Login" },
     logoSVG: { type: String, default: "" }
-  },
+})
 
-  setup(props) {
+
     const userStore = useUserStore()
     const router = useRouter()
 
@@ -277,7 +276,6 @@ export default defineComponent({
     function userLogin(name, password) {
       state.waitForLogout = false
       state.waitFor = "" //FIXME
-      console.log("FFF")
       console.log(userStore)
       userStore.userLogin(name.trim(), password.trim())
     }
@@ -368,23 +366,6 @@ export default defineComponent({
       state.name = props.username ? props.username : ""
     })
 
-    return {
-      publicAsset,
-      googleLogin,
-      logout,
-      userStore,
-      userLogin,
-      state,
-      userSecondFactor,
-      userSecondFactorStart,
-      getBoneWidget,
-      updateValue,
-      secondFactorSend,
-      updateRecoveryValue,
-      sendNewPassword
-    }
-  }
-})
 </script>
 
 <style scoped>

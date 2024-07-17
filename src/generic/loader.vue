@@ -12,51 +12,47 @@
   </transition>
 </template>
 
-<script>
+<script setup>
 import { reactive, computed } from "vue"
 
 // Surroundig div musst have position:relative
-export default {
-  props: {
-    size: {
-      type: String,
-      default: "2"
-    },
-    active: {
-      type: Boolean,
-      default: true
-    },
-    logo: {
-      default: "logo-cube.svg",
-      type: String
-    },
-    color: {
-      default: "var(--sl-color-primary-500)",
-      type: String
-    }
-  },
-  setup(props, context) {
-    const state = reactive({
-      trackWidth: computed(() => {
-        return `${props.size / 30}rem`
-      }),
-      outerSize: computed(() => {
-        return `calc(${props.size}rem + ${state.trackWidth})`
-      }),
-      spinnerSize: computed(() => {
-        return `${props.size}rem`
-      }),
-      logoSize: computed(() => {
-        return `calc(${props.size}rem - ${state.trackWidth} * 10)`
-      }),
-      shadow: computed(() => {
-        return `0px 0px ${props.size / 6}rem 0 color-mix(in hsl, var(--sl-color-neutral-1000), 80% transparent)`
-      })
-    })
 
-    return { state }
+const props = defineProps({
+  size: {
+    type: String,
+    default: "2"
+  },
+  active: {
+    type: Boolean,
+    default: true
+  },
+  logo: {
+    default: "logo-cube.svg",
+    type: String
+  },
+  color: {
+    default: "var(--sl-color-primary-500)",
+    type: String
   }
-}
+})
+
+const state = reactive({
+  trackWidth: computed(() => {
+    return `${props.size / 30}rem`
+  }),
+  outerSize: computed(() => {
+    return `calc(${props.size}rem + ${state.trackWidth})`
+  }),
+  spinnerSize: computed(() => {
+    return `${props.size}rem`
+  }),
+  logoSize: computed(() => {
+    return `calc(${props.size}rem - ${state.trackWidth} * 10)`
+  }),
+  shadow: computed(() => {
+    return `0px 0px ${props.size / 6}rem 0 color-mix(in hsl, var(--sl-color-neutral-1000), 80% transparent)`
+  })
+})
 </script>
 
 <style scoped>

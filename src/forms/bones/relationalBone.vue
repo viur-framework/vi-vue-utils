@@ -46,7 +46,7 @@
 </template>
 
 <script setup>
-import { reactive, useAttrs, onMounted, inject, computed } from "vue"
+import { reactive, onMounted, inject, computed } from "vue"
 import { Request } from "../../request"
 import Wrapper_nested from "../wrapper_nested.vue"
 
@@ -58,7 +58,6 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["change"])
-const attrs = useAttrs() // This hook collects all attributes that are not props
 
 const boneState = inject("boneState")
 

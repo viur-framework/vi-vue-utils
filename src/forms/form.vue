@@ -1,8 +1,8 @@
 <template></template>
 
 <script setup>
-import bone from "../bones/edit/bone.vue"
-import Loader from "../generic/Loader.vue"
+import bone from "./bone.vue"
+import Loader from "./../generic/loader.vue"
 import { reactive, defineProps, defineEmits } from "vue"
 
 defineEmits(["change"])

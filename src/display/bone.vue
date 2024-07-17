@@ -2,21 +2,16 @@
   {{ getBoneValue(boneName, structure[boneName]["type"] === "date" ? "date" : null) }}
 </template>
 
-<script>
+<script setup>
 import boneLogic from "./display"
-import { defineComponent } from "vue"
 
-export default defineComponent({
-  props: {
-    boneName: String,
-    skel: Object,
-    structure: Object
-  },
-  setup(props, context) {
-    const { getBoneValue, bones_state } = boneLogic(props.skel, props.structure)
-    return { getBoneValue }
-  }
+const props = defineProps({
+  boneName: String,
+  skel: Object,
+  structure: Object
 })
+
+const { getBoneValue, bones_state } = boneLogic(props.skel, props.structure)
 </script>
 
 <style scoped></style>

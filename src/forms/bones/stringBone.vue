@@ -10,51 +10,47 @@
 </template>
 
 <script setup>
-import { reactive, useAttrs, onMounted, inject, computed, watchEffect, ref } from "vue"
+import { reactive, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
 
 const props = defineProps({
   name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    autofocus: Boolean
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  autofocus: Boolean
 })
 
 const emit = defineEmits(["change"])
-const attrs = useAttrs() // This hook collects all attributes that are not props
 
 const boneState = inject("boneState")
 
+const state = reactive({
+  value: computed(() => props.value)
+})
 
-    const state = reactive({
-      value: computed(() => props.value)
-    })
+const stringBone = ref(null)
 
-    const stringBone = ref(null)
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
-    function changeEvent(event) {
-      emit("change", props.name, event.target.value, props.lang, props.index)
+watchEffect(() => {
+  if (props.autofocus) {
+    if (stringBone.value && stringBone.value !== null) {
+      const { start } = useTimeoutFn(() => {
+        stringBone.value.focus()
+      }, 600)
+
+      start()
     }
+  }
+})
 
-    watchEffect(() => {
-      if (props.autofocus) {
-        if (stringBone.value && stringBone.value !== null) {
-          const { start } = useTimeoutFn(() => {
-            stringBone.value.focus()
-          }, 600)
-
-          start()
-        }
-      }
-    })
-
-    onMounted(() => {
-      emit("change", props.name, props.value, props.lang, props.index) //init
-    })
-
-
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
 </script>
 
 <style scoped>
