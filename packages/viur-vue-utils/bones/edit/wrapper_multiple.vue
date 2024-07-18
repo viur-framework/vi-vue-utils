@@ -90,13 +90,14 @@ export default defineComponent({
   &:hover{
     & > .delete-btn {
       width: calc(var(--sl-input-height-medium) + var(--sl-spacing-x-small));
+      margin-left: 0;
     }
  }
 }
 
 .value {
-  width: 100%;
-
+  flex: 1 1 100%;
+  width: 1px;
 
   & :deep(sl-input) {
     &::part(base) {
@@ -115,8 +116,9 @@ export default defineComponent({
 
 .delete-btn {
   width: 0;
-  transition: all ease .1s;
+  transition: all ease .3s;
   overflow: hidden;
+  margin-left: calc(-1 * var(--sl-spacing-x-small));
 
   &::part(base) {
     aspect-ratio: 1;
