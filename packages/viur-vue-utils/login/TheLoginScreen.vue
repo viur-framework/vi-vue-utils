@@ -432,6 +432,7 @@ export default defineComponent({
   height: 160px;
   padding: var(--sl-spacing-medium);
   margin-bottom: var(--sl-spacing-medium);
+  align-self: center;
 
   @media (max-width: 530px) {
     height: 140px;
