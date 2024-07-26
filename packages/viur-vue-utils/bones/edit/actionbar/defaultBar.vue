@@ -3,15 +3,12 @@
     <sl-button
       v-if="boneState.multiple && !readonly"
       variant="danger"
-      :title="$t('bone.del')"
+      :title="$t('bone.delAll')"
       outline
       class="delete-btn"
       @click="handleRemove(lang)"
     >
-      <sl-icon
-        slot="prefix"
-        name="x-lg"
-      ></sl-icon>
+      {{ $t('bone.delAll') }}
     </sl-button>
 
     <sl-button
@@ -109,5 +106,29 @@ export default defineComponent({
 
 .add-btn {
   margin-left: auto;
+}
+
+.delete-btn{
+
+  &:hover{
+    &::part(base){
+      border: none;
+      background-color: transparent;
+      color: var(--sl-color-danger-500)
+    }
+
+     &::part(label){
+      text-decoration: underline;
+    }
+   }
+
+
+  &::part(base){
+    border: none;
+   }
+
+   &::part(label){
+    padding: 0;
+    }
 }
 </style>

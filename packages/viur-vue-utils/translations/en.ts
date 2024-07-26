@@ -2,6 +2,7 @@ export default {
   bone: {
     add: "Add",
     del: "Remove",
+    delAll: "Remove all",
     upload: "Upload",
     download: "Download",
     chooseFile: "Choose file",
