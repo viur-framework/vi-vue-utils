@@ -62,11 +62,26 @@ export default defineComponent({
       editor.editing.view.change((writer) => {
         writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
       })
+
+      const codePlugin = editor.plugins.get("SourceEditing")
+      codePlugin.on("change:isSourceEditingMode", (_eventInfo: unknown, _name: string, value: boolean) => {
+        if (value) {
+          const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
+          sourceEditingTextarea.addEventListener('focusout', (event) => {
+            codePlugin.isSourceEditingMode=false
+          });
+        }
+      });
     }
+
     watch(
       () => props.value,
       (newVal, oldVal) => {
-        state.value = newVal
+        if (!newVal){
+          state.value = ""
+        }else{
+          state.value = newVal
+        }
       }
     )
     return {
