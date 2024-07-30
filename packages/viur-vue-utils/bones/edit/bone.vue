@@ -520,8 +520,12 @@ export default defineComponent({
               }
             }
           } else {
-            for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key))
+            if (val.length===0){
+              ret.push(rewriteData("", key))
+            }else{
+              for (const [i, v] of val.entries()) {
+                ret.push(rewriteData(v, key))
+              }
             }
           }
         } else if (val === Object(val)) {

@@ -25,11 +25,6 @@
     </vi-form-category>
 
   </template>
-
-
-  {{ state.categories }}
-  {{ state.skel }}
-test
 </template>
 
 <script setup>
@@ -92,26 +87,17 @@ const state = reactive({
   skel: {}, // working data
   structure: {}, // working data, use dict!
   errors: [], // working data
-
+  loading:false, //loading state
   categories:[], //categories to render
-  loading:false
 })
 
-
-
 const {fetchData, sendData, updateSkel} = useFormUtils(props,state)
-
-
-
-
-
-
-
 
 onBeforeMount(()=>{
   fetchData()
 })
 
+defineExpose({sendData,fetchData,updateSkel})
 </script>
 
 <style scoped>

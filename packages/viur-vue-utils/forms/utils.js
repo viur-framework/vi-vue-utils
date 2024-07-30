@@ -40,57 +40,49 @@ export function useFormUtils(props,state){
   function toFormData(){
     let formdata = []
 
+    function handleEntry(result, currentFieldName, bone, val){
+      if (val === Object(val) && bone["using"]) {
+        for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
+          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"][_fieldname]))
+        }
+        result.push({[`${currentFieldName}.key`]: val["dest"]["key"]})
+      } else if (bone['type'].startsWith("spatial") && val){
+        result.push({[currentFieldName+".lat"]: val[0]})
+        result.push({[currentFieldName+".lng"]: val[1]})
+      } else if (val === Object(val)){
+        result.push({[currentFieldName]:val["dest"]["key"]})
+      } else{
+        result.push({[currentFieldName]: val})
+      }
+      return result
+    }
 
     function boneToForm(fieldname,bone,value){
       let result = []
       //only record and relational bones get indexed fields
       let indexBone = bone["type"].startsWith("record")
-
-
-
-      let values = {"none":value}
-      if (bone['languages']){
-        values = value
-      }
       let languages = bone["languages"] || ["none"]
+      let languageValue = value
       for(const lang of languages){
         let currentFieldName = fieldname
         if(lang!=="none"){
-          currentFieldName += `.${lang}`
-          if (value) value = value[lang]
+          currentFieldName += `.${lang}` //append lang
+          if (languageValue) value = languageValue[lang]
         }
-        console.log(bone)
-        console.log(value)
 
         if (bone["multiple"]){
           if (!value) value=[]
           for(const [idx,val] of value.entries()){
-            if (indexBone || val?.["rel"]){
-              currentFieldName += `.${idx}`
+            if (indexBone || val?.["rel"]){ //indexbones and relations with relSkel use idx
+              currentFieldName += `.${idx}` //append idx
             }
-
-            if (val === Object(val) && bone["using"]){
-              for (const [_fieldname, _bone] of Object.entries(bone["using"])){
-                result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone,val["rel"][_fieldname]))
-              }
-              result.push({[`${currentFieldName}.key`]:val["dest"]["key"]})
-            } else if (val === Object(val)){
-              result.push({[currentFieldName]:val["dest"]["key"]})
-            } else{
-              result.push({[currentFieldName]: val})
-            }
+            result = handleEntry(result, currentFieldName, bone, val)
+          }
+          if (value.length===0){
+            result.push({[currentFieldName]: null}) //send empty multiple fields
           }
         }else{
-          if (value === Object(value) && bone["using"]){
-            for (const [_fieldname, _bone] of Object.entries(bone["using"])){
-              result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, value["rel"][_fieldname]))
-            }
-            result.push({[`${currentFieldName}.key`]:value["dest"]["key"]})
-          } else if (value === Object(value)){
-            result.push({[currentFieldName]:value["dest"]["key"]})
-          }else{
-            result.push({[currentFieldName]: value})
-          }
+          result = handleEntry(result, currentFieldName, bone, value)
         }
       }
       return result
@@ -99,13 +91,45 @@ export function useFormUtils(props,state){
     for (const [fieldname, bone] of Object.entries(state.structure)){
       formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
     }
+
     formdata = formdata.flat(10)
     return formdata
   }
 
 
-  function sendData(){
+  function sendData(alternativUrl= null,additionalData= null,removeKeyFromDataset= true){
+    state.loading = true
+    let request = Request.post
+    if (props.secure) request = Request.securePost
 
+    let url = buildRequestUrl()
+    if (alternativUrl) url = alternativUrl //replace saving url
+
+    const formData = new FormData()
+    for (const bone of toFormData()) {
+      for (const [k, v] of Object.entries(bone)) {
+        let val = v || ""
+        formData.append(k, val)
+      }
+    }
+
+    let data = {}
+    for (const key of formData.keys()) {
+      if (key==="key" && removeKeyFromDataset) continue
+      data[[key]] = formData.getAll(key)
+    }
+    if (additionalData){
+      data = {...data, ...additionalData} //inject data like contexts
+    }
+
+    return request(url, {dataObj: data}).then(async (resp)=>{
+      let data = await resp.json()
+      state.skel = data["values"]
+      state.structure = normalizeStructure(data["structure"])
+      state.errors = data["errors"]
+      state.loading = false
+      return data, resp
+    })
   }
 
   function fetchData(){
@@ -193,13 +217,11 @@ export function useFormUtils(props,state){
   }
 
   function updateSkel(data){
-    console.log("GGG")
-    console.log(toFormData())
-    const {name, lang, val, index} = data
+    const {name, lang, value, index} = data
 
     let skelvalue = state.skel[name]
 
-    if (val === undefined) return false
+    if (value === undefined) return false
     if (state.readonly) return false
 
     if (lang) {
@@ -207,18 +229,16 @@ export function useFormUtils(props,state){
         skelvalue = {}
       }
       if (Object.keys(skelvalue).includes(lang) && index !== null) {
-        skelvalue[lang][index] = val
+        skelvalue[lang][index] = value
       } else {
-        skelvalue[lang] = val
+        skelvalue[lang] = value
       }
     } else if (index !== null) {
-      skelvalue[index] = val
+      skelvalue[index] = value
     } else {
-      skelvalue = val
+      skelvalue = value
     }
     logics() //postprocess all bones if needed
-
-
   }
 
   function logics() {
