@@ -47,17 +47,19 @@ export function useFormUtils(props,state){
           result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val?.[_fieldname]))
         }
       } else if (val === Object(val) && bone["using"]) { //recusive call for nested data
-        for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
-          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
+        if (val["dest"]?.["key"]){
+          for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
+            result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
+          }
+          result.push({[`${currentFieldName}.key`]: val["dest"]["key"]})
+        }else{
+          result.push({[`${currentFieldName}`]: null})
         }
-        console.log(val)
-        result.push({[`${currentFieldName}.key`]: val["dest"]["key"]})
       } else if (bone['type'].startsWith("spatial") && val){ //spatialbones
         result.push({[currentFieldName+".lat"]: val[0]})
         result.push({[currentFieldName+".lng"]: val[1]})
       } else if (val === Object(val)){ //normal relations
-        console.log(val)
-        result.push({[currentFieldName]:val["dest"]["key"]})
+        result.push({[currentFieldName]:val["dest"]?.["key"]|| null})
       } else{ //everything else
         result.push({[currentFieldName]: val})
       }

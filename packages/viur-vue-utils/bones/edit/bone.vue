@@ -429,13 +429,12 @@ export default defineComponent({
           dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
           state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
         }
-        console.dir(state.bonevalue[0])
-        context.emit("change", {
-          name: props.name,
-          value: toFormValue(),
-          lang: lang,
-          index: index
-        })
+      }
+
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
       }
 
       resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
