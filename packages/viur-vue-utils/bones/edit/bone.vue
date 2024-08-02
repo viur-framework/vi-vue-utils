@@ -11,9 +11,7 @@
         v-if="state.required"
         class="required"
       >
-        *</span
-      >
-
+        *</span>
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
         :content="state.bonestructure.params['tooltip']"
@@ -88,6 +86,7 @@
                     :index="index"
                     :lang="lang"
                     :name="name"
+                    :bone="state.bonestructure"
                     @change="updateValue"
                     @keydown.enter="multipleBonePressEnter(lang)"
                   ></component>
@@ -124,6 +123,7 @@
               :index="null"
               :lang="lang"
               :name="name"
+              :bone="state.bonestructure"
               @change="updateValue"
             ></component>
           </sl-tab-panel>
@@ -154,6 +154,7 @@
                 :value="val"
                 :index="index"
                 :name="name"
+                :bone="state.bonestructure"
                 @change="updateValue"
                 @keydown.enter="multipleBonePressEnter()"
               ></component>
@@ -179,12 +180,14 @@
           ></component>
         </template>
         <!--Bone rendering for normal bones-->
+
         <component
           :is="is"
           v-else
           :value="state.bonevalue"
           :name="name"
           :index="null"
+          :bone="state.bonestructure"
           :autofocus="autofocus"
           @change="updateValue"
           @keypress.enter="updateValue"
@@ -482,7 +485,7 @@ export default defineComponent({
 
       let changeObj = {
         name: name,
-        value: toFormValue(),
+        value: "",
         lang: lang,
         index: index
       }
@@ -499,7 +502,7 @@ export default defineComponent({
         changeInternalObj.pwMatch = pwMatch
       }
 
-      context.emit("change", changeObj)
+      //context.emit("change", changeObj)
       context.emit("change-internal", changeInternalObj)
     }
 

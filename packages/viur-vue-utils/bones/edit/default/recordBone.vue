@@ -2,75 +2,39 @@
   <Wrapper_nested
     :value="value"
     :name="name"
-    :index="state.index"
-    :disabled="boneState.bonestructure['readonly']"
+    :index="index"
+    :lang="lang"
+    :bone="bone"
+    :disabled="bone['readonly']"
     @change="changeEvent"
   >
   </Wrapper_nested>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance } from "vue"
 import Wrapper_nested from "../wrapper_nested.vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+
+const emit = defineEmits(["change"])
+const props = defineProps({
     name: String,
     value: null,
     index: Number,
-    lang: String
-  },
-  components: { Wrapper_nested },
-  emits: ["change"],
-  setup(props, context) {
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: {},
-      index: computed(() => props.index),
-      lang: computed(() => props.lang)
-    })
+    lang: String,
+    bone:Object
+  })
 
-    function changeEvent(data) {
-      if (!state.value?.[data.name]) {
-        if (!state.value) {
-          state.value = { [data.name]: null }
-        } else {
-          state.value[data.name] = null
-        }
-      }
+const state = reactive({})
 
-      let currentBone = state.value[data.name]
-      if (data.lang) {
-        if (currentBone === null) currentBone = {}
-        if (Object.keys(currentBone).includes(data.lang) && data.index !== null) {
-          currentBone[data.lang][data.index] = data.value
-        } else {
-          currentBone[data.lang] = data.value
-        }
-      } else if (data.index !== null) {
-        if (currentBone === null) currentBone = []
-        currentBone[data.index] = data.value
-      } else {
-        currentBone = data.value
-      }
-      state.value[data.name] = currentBone
+function changeEvent(data) {
+  emit("change", data["name"], data["value"], data["lang"], data["index"])
+}
 
-      context.emit("change", props.name, state.value, props.lang, props.index, true)
-    }
-
-    onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
-    })
-
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
-  }
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
 })
+
 </script>
 
 <style scoped>

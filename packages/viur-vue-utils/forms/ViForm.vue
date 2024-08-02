@@ -18,13 +18,13 @@
               :structure="state.structure"
               :skel="state.skel"
               :errors="state.errors"
-              @change-internal="updateSkel"
+              @change-internal="formUpdate"
             >
             </bone>
       </template>
     </vi-form-category>
-
   </template>
+
 </template>
 
 <script setup>
@@ -36,12 +36,11 @@ import { getBoneWidget } from "../bones/edit/index"
 import { reactive, watch, onBeforeMount } from "vue"
 import ViFormCategory from "./ViFormCategory.vue"
 
-defineEmits(["change"])
+const emit = defineEmits(["change"])
 const props = defineProps({
   //modulename
   module: {
-    type: String,
-    required: true
+    type: String
   },
   //like add, edit, clone ...
   action: null,
@@ -56,6 +55,18 @@ const props = defineProps({
     type: Boolean,
     default: true
   },
+  //the above fields are needed for normal form.
+
+  //if skel and structure defined this will be used instead of fetchData
+  skel:{
+    type:Object,
+    default:null
+  },
+  structure:{
+    type: [Object, Array],
+    default:null
+  },
+
   // show only these bones
   bones: {
     type: Array,
@@ -94,10 +105,24 @@ const state = reactive({
 const {fetchData, sendData, updateSkel} = useFormUtils(props,state)
 
 onBeforeMount(()=>{
-  fetchData()
+  if (props.structure){
+    state.skel = props.skel || {}
+    state.structure = props.structure
+  }else if(props.module && props.action){
+    fetchData()
+  }else{
+    console.log(props)
+    console.error("Error while building Form: you need atleast module and action or structure parameters")
+  }
 })
 
-defineExpose({sendData,fetchData,updateSkel})
+function formUpdate(data){
+  //console.log(data)
+  updateSkel(data)
+  emit("change", data)
+}
+
+defineExpose({sendData,fetchData,updateSkel,state})
 </script>
 
 <style scoped>

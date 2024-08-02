@@ -39,19 +39,26 @@ export function useFormUtils(props,state){
 
   function toFormData(){
     let formdata = []
+    console.log(state.skel)
 
     function handleEntry(result, currentFieldName, bone, val){
-      if (val === Object(val) && bone["using"]) {
+      if (bone["type"].startsWith("record")){
         for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
-          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"][_fieldname]))
+          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val?.[_fieldname]))
         }
+      } else if (val === Object(val) && bone["using"]) { //recusive call for nested data
+        for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
+          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
+        }
+        console.log(val)
         result.push({[`${currentFieldName}.key`]: val["dest"]["key"]})
-      } else if (bone['type'].startsWith("spatial") && val){
+      } else if (bone['type'].startsWith("spatial") && val){ //spatialbones
         result.push({[currentFieldName+".lat"]: val[0]})
         result.push({[currentFieldName+".lng"]: val[1]})
-      } else if (val === Object(val)){
+      } else if (val === Object(val)){ //normal relations
+        console.log(val)
         result.push({[currentFieldName]:val["dest"]["key"]})
-      } else{
+      } else{ //everything else
         result.push({[currentFieldName]: val})
       }
       return result
@@ -73,10 +80,12 @@ export function useFormUtils(props,state){
         if (bone["multiple"]){
           if (!value) value=[]
           for(const [idx,val] of value.entries()){
+            let currentFieldnameMultiple = currentFieldName
             if (indexBone || val?.["rel"]){ //indexbones and relations with relSkel use idx
-              currentFieldName += `.${idx}` //append idx
+              currentFieldnameMultiple = `${currentFieldName}.${idx}`//append idx
             }
-            result = handleEntry(result, currentFieldName, bone, val)
+            console.log(val)
+            result = handleEntry(result, currentFieldnameMultiple, bone, val)
           }
           if (value.length===0){
             result.push({[currentFieldName]: null}) //send empty multiple fields
@@ -85,6 +94,7 @@ export function useFormUtils(props,state){
           result = handleEntry(result, currentFieldName, bone, value)
         }
       }
+      //console.log("Z")
       return result
     }
 
@@ -93,6 +103,9 @@ export function useFormUtils(props,state){
     }
 
     formdata = formdata.flat(10)
+
+
+    console.log(formdata)
     return formdata
   }
 
@@ -123,12 +136,12 @@ export function useFormUtils(props,state){
     }
 
     return request(url, {dataObj: data}).then(async (resp)=>{
-      let data = await resp.json()
+      let data = await resp.clone().json()
       state.skel = data["values"]
-      state.structure = normalizeStructure(data["structure"])
+      //state.structure = normalizeStructure(data["structure"])
       state.errors = data["errors"]
       state.loading = false
-      return data, resp
+      return resp
     })
   }
 
@@ -141,14 +154,13 @@ export function useFormUtils(props,state){
     const url = buildRequestUrl()
     const data = {}
 
-    request(url, {dataObj: data}).then(async (resp)=>{
-      let data = await resp.json()
-
+    return request(url, {dataObj: data}).then(async (resp)=>{
+      let data = await resp.clone().json()
       state.skel = data["values"]
       state.structure = normalizeStructure(data["structure"])
       state.errors = data["errors"]
       state.loading = false
-      console.log(data)
+      return resp
     })
   }
 
@@ -218,9 +230,7 @@ export function useFormUtils(props,state){
 
   function updateSkel(data){
     const {name, lang, value, index} = data
-
     let skelvalue = state.skel[name]
-
     if (value === undefined) return false
     if (state.readonly) return false
 
@@ -237,7 +247,12 @@ export function useFormUtils(props,state){
       skelvalue[index] = value
     } else {
       skelvalue = value
+      state.skel[name] = skelvalue
     }
+    if (name ==="bone_recordbonemultiple"){
+      console.log(state.skel[name])
+    }
+
     logics() //postprocess all bones if needed
   }
 
