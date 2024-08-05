@@ -1,30 +1,29 @@
 <template>
-  <template v-for="(category,identifier) in state.categories">
-    <vi-form-category :name="category['name']"
-                      :identifier="identifier"
-                      :visible="category['visible']"
-                      :open="category['open']"
-                      :hide="!useCategories"
+    <template v-for="(category,identifier) in state.categories">
+      <vi-form-category :name="category['name']"
+                        :identifier="identifier"
+                        :visible="category['visible']"
+                        :open="category['open']"
+                        :hide="!useCategories"
 
-    >
-      <template
-        v-for="bone in category['bones']"
-        :key="bone['name']"
       >
-      <bone
-              :is="getBoneWidget(state.structure[bone['name']]['type'])"
-              v-show="state.structure[bone['name']]['visible']"
-              :name="bone['name']"
-              :structure="state.structure"
-              :skel="state.skel"
-              :errors="state.errors"
-              @change-internal="formUpdate"
-            >
-            </bone>
-      </template>
-    </vi-form-category>
-  </template>
-
+        <template
+          v-for="bone in category['bones']"
+          :key="bone['name']"
+        >
+        <bone
+                :is="getBoneWidget(state.structure[bone['name']]['type'])"
+                v-show="state.structure[bone['name']]['visible']"
+                :name="bone['name']"
+                :structure="state.structure"
+                :skel="state.skel"
+                :errors="state.errors"
+                @change-internal="formUpdate"
+              >
+              </bone>
+        </template>
+      </vi-form-category>
+    </template>
 </template>
 
 <script setup>
@@ -33,8 +32,9 @@ import Loader from "../generic/Loader.vue"
 import Request from "../utils/request"
 import { useFormUtils } from "./utils"
 import { getBoneWidget } from "../bones/edit/index"
-import { reactive, watch, onBeforeMount, computed } from "vue"
+import { reactive, watch, onBeforeMount, computed, unref } from "vue"
 import ViFormCategory from "./ViFormCategory.vue"
+import { useDebounceFn } from '@vueuse/core'
 
 const emit = defineEmits(["change"])
 const props = defineProps({
@@ -106,24 +106,30 @@ const state = reactive({
   categories:[], //categories to render
 })
 
-const {fetchData, sendData, updateSkel} = useFormUtils(props,state)
+const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
+
+const debounceFormUpdate = useDebounceFn((data) => {
+  updateSkel(data)
+  emit("change", data)
+}, 1000)
 
 onBeforeMount(()=>{
+  state.loading=true
   if (props.structure){
-    state.skel = props.skel || {}
-    state.structure = props.structure
+    initForm(props.skel,props.structure)
+    state.loading=false
   }else if(props.module && props.action){
-    fetchData()
+    fetchData().then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
   }else{
     console.log(props)
     console.error("Error while building Form: you need atleast module and action or structure parameters")
   }
 })
 
+
+
 function formUpdate(data){
-  //console.log(data)
-  updateSkel(data)
-  emit("change", data)
+  debounceFormUpdate(data)
 }
 
 defineExpose({sendData,fetchData,updateSkel,state})

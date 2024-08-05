@@ -8,7 +8,7 @@ export function useFormUtils(props,state){
     let url = `/${props.renderer}/${props.module}/${props.action}`
 
     // add uses Key as parent, clone as source and edit as target
-    const isTree = ["node","leaf"].includes(state.skeltype)
+    const isTree = ["node","leaf"].includes(props.skeltype)
 
 
     if (props.group){
@@ -39,16 +39,17 @@ export function useFormUtils(props,state){
 
   function toFormData(){
     let formdata = []
-    console.log(state.skel)
 
     function handleEntry(result, currentFieldName, bone, val){
       if (bone["type"].startsWith("record")){
-        for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
+        let struct = normalizeStructure(bone["using"])
+        for (const [_fieldname, _bone] of Object.entries(struct)) {
           result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val?.[_fieldname]))
         }
       } else if (val === Object(val) && bone["using"]) { //recusive call for nested data
         if (val["dest"]?.["key"]){
-          for (const [_fieldname, _bone] of Object.entries(bone["using"])) {
+          let struct = normalizeStructure(bone["using"])
+          for (const [_fieldname, _bone] of Object.entries(struct)) {
             result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
           }
           result.push({[`${currentFieldName}.key`]: val["dest"]["key"]})
@@ -86,7 +87,6 @@ export function useFormUtils(props,state){
             if (indexBone || val?.["rel"]){ //indexbones and relations with relSkel use idx
               currentFieldnameMultiple = `${currentFieldName}.${idx}`//append idx
             }
-            console.log(val)
             result = handleEntry(result, currentFieldnameMultiple, bone, val)
           }
           if (value.length===0){
@@ -96,11 +96,11 @@ export function useFormUtils(props,state){
           result = handleEntry(result, currentFieldName, bone, value)
         }
       }
-      //console.log("Z")
       return result
     }
 
     for (const [fieldname, bone] of Object.entries(state.structure)){
+
       if(props.sendReadOnly){
         formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
       }else if (!state.structure[fieldname]["readonly"]){
@@ -110,9 +110,6 @@ export function useFormUtils(props,state){
     }
 
     formdata = formdata.flat(10)
-
-
-    console.log(formdata)
     return formdata
   }
 
@@ -163,8 +160,8 @@ export function useFormUtils(props,state){
 
     return request(url, {dataObj: data}).then(async (resp)=>{
       let data = await resp.clone().json()
-      state.skel = data["values"]
-      state.structure = normalizeStructure(data["structure"])
+      initForm(data["values"],data["structure"])
+
       state.errors = data["errors"]
       state.loading = false
       return resp
@@ -223,7 +220,6 @@ export function useFormUtils(props,state){
       }
     }
 
-
     let sortedCategories = {}
     Object.keys(categories)
       .sort()
@@ -256,10 +252,6 @@ export function useFormUtils(props,state){
       skelvalue = value
       state.skel[name] = skelvalue
     }
-    if (name ==="bone_recordbonemultiple"){
-      console.log(state.skel[name])
-    }
-
     logics() //postprocess all bones if needed
   }
 
@@ -282,17 +274,19 @@ export function useFormUtils(props,state){
     }
   }
 
-  watch(()=>state.structure, (newVal, oldVal)=>{
-    if (newVal !== oldVal){
-      state.categories = updateCategories()
-    }
-  })
+  function initForm(skel, structure){
+    state.skel = skel || {}
+    state.structure = normalizeStructure(structure)
+    state.categories = updateCategories()
+  }
 
   return {
     fetchData,
     sendData,
     buildRequestUrl,
     updateCategories,
-    updateSkel
+    updateSkel,
+    normalizeStructure,
+    initForm
   }
 }

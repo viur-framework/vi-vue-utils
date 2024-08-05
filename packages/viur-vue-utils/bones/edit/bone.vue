@@ -136,7 +136,7 @@
           <div
             v-for="(val, index) in state.bonevalue"
             v-if="state.bonevalue?.length"
-            :key="val"
+            :key="JSON.stringify(val)"
             class="multiple-bone"
           >
             <wrapper-multiple
@@ -148,10 +148,8 @@
               @handleDragStart="handleDragStart(index, (lang = null), $event)"
               @handleDragOver="handleDragOver(index, (lang = null), $event)"
               @handleDrop="handleDrop(index, (lang = null), $event)"
-              :key="index"
             >
               <component
-                :key="index"
                 :is="is"
                 :value="val"
                 :index="index"
@@ -378,7 +376,7 @@ export default defineComponent({
         let errors = []
         for (let error of props.errors) {
           if (
-            error["fieldPath"][0] === props.name &&
+            error["fieldPath"].length===1 &&error["fieldPath"][0] === props.name &&
             (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
           ) {
             //severity level???
@@ -670,7 +668,7 @@ export default defineComponent({
             } else {
               aval = aval[entry]
             }
-          } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
+          } else if (!aval || !aval[entry] || (typeof aval[entry] === 'object' && !aval[entry])) {
             aval = "-"
           }
         }
@@ -684,6 +682,7 @@ export default defineComponent({
       if (!Array.isArray(boneValue)) {
         boneValue = [boneValue]
       }
+
       for (let avalue of boneValue) {
         let finalstr = formatstr
         for (let pathstr of pathlist) {
