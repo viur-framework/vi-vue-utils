@@ -33,7 +33,7 @@ import Loader from "../generic/Loader.vue"
 import Request from "../utils/request"
 import { useFormUtils } from "./utils"
 import { getBoneWidget } from "../bones/edit/index"
-import { reactive, watch, onBeforeMount } from "vue"
+import { reactive, watch, onBeforeMount, computed } from "vue"
 import ViFormCategory from "./ViFormCategory.vue"
 
 const emit = defineEmits(["change"])
@@ -89,6 +89,10 @@ const props = defineProps({
   collapsedCategories:{
     type: Array,
     default:[]
+  },
+  sendReadOnly: {
+    type:Boolean,
+    default:false
   }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []

@@ -101,7 +101,12 @@ export function useFormUtils(props,state){
     }
 
     for (const [fieldname, bone] of Object.entries(state.structure)){
-      formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
+      if(props.sendReadOnly){
+        formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
+      }else if (!state.structure[fieldname]["readonly"]){
+        formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
+      }
+
     }
 
     formdata = formdata.flat(10)

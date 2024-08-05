@@ -136,7 +136,7 @@
           <div
             v-for="(val, index) in state.bonevalue"
             v-if="state.bonevalue?.length"
-            :key="index"
+            :key="val"
             class="multiple-bone"
           >
             <wrapper-multiple
@@ -148,8 +148,10 @@
               @handleDragStart="handleDragStart(index, (lang = null), $event)"
               @handleDragOver="handleDragOver(index, (lang = null), $event)"
               @handleDrop="handleDrop(index, (lang = null), $event)"
+              :key="index"
             >
               <component
+                :key="index"
                 :is="is"
                 :value="val"
                 :index="index"
