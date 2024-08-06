@@ -67,7 +67,6 @@ export default defineComponent({
 
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)
-      W
     }
 
     onMounted(() => {

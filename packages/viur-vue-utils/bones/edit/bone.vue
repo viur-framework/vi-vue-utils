@@ -11,9 +11,7 @@
         v-if="state.required"
         class="required"
       >
-        *</span
-      >
-
+        *</span>
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
         :content="state.bonestructure.params['tooltip']"
@@ -88,6 +86,7 @@
                     :index="index"
                     :lang="lang"
                     :name="name"
+                    :bone="state.bonestructure"
                     @change="updateValue"
                     @keydown.enter="multipleBonePressEnter(lang)"
                   ></component>
@@ -124,6 +123,7 @@
               :index="null"
               :lang="lang"
               :name="name"
+              :bone="state.bonestructure"
               @change="updateValue"
             ></component>
           </sl-tab-panel>
@@ -136,7 +136,7 @@
           <div
             v-for="(val, index) in state.bonevalue"
             v-if="state.bonevalue?.length"
-            :key="index"
+            :key="JSON.stringify(val)"
             class="multiple-bone"
           >
             <wrapper-multiple
@@ -154,6 +154,7 @@
                 :value="val"
                 :index="index"
                 :name="name"
+                :bone="state.bonestructure"
                 @change="updateValue"
                 @keydown.enter="multipleBonePressEnter()"
               ></component>
@@ -179,12 +180,14 @@
           ></component>
         </template>
         <!--Bone rendering for normal bones-->
+
         <component
           :is="is"
           v-else
           :value="state.bonevalue"
           :name="name"
           :index="null"
+          :bone="state.bonestructure"
           :autofocus="autofocus"
           @change="updateValue"
           @keypress.enter="updateValue"
@@ -373,7 +376,7 @@ export default defineComponent({
         let errors = []
         for (let error of props.errors) {
           if (
-            error["fieldPath"][0] === props.name &&
+            error["fieldPath"].length===1 &&error["fieldPath"][0] === props.name &&
             (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
           ) {
             //severity level???
@@ -426,13 +429,12 @@ export default defineComponent({
           dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
           state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
         }
-        console.dir(state.bonevalue[0])
-        context.emit("change", {
-          name: props.name,
-          value: toFormValue(),
-          lang: lang,
-          index: index
-        })
+      }
+
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
       }
 
       resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
@@ -482,7 +484,7 @@ export default defineComponent({
 
       let changeObj = {
         name: name,
-        value: toFormValue(),
+        value: "",
         lang: lang,
         index: index
       }
@@ -499,7 +501,7 @@ export default defineComponent({
         changeInternalObj.pwMatch = pwMatch
       }
 
-      context.emit("change", changeObj)
+      //context.emit("change", changeObj)
       context.emit("change-internal", changeInternalObj)
     }
 
@@ -520,8 +522,12 @@ export default defineComponent({
               }
             }
           } else {
-            for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key))
+            if (val.length===0){
+              ret.push(rewriteData("", key))
+            }else{
+              for (const [i, v] of val.entries()) {
+                ret.push(rewriteData(v, key))
+              }
             }
           }
         } else if (val === Object(val)) {
@@ -662,7 +668,7 @@ export default defineComponent({
             } else {
               aval = aval[entry]
             }
-          } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
+          } else if (!aval || !aval[entry] || (typeof aval[entry] === 'object' && !aval[entry])) {
             aval = "-"
           }
         }
@@ -676,6 +682,7 @@ export default defineComponent({
       if (!Array.isArray(boneValue)) {
         boneValue = [boneValue]
       }
+
       for (let avalue of boneValue) {
         let finalstr = formatstr
         for (let pathstr of pathlist) {

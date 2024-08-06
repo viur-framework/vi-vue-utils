@@ -34,11 +34,12 @@
       </sl-button>
     </div>
     <Wrapper_nested
-      v-if="boneState?.bonestructure['using']"
-      :value="value?.['rel']"
+      v-if="bone['using']"
+      :value="value"
       :name="name"
       :index="index"
-      :disabled="boneState.bonestructure['readonly']"
+      :bone="bone"
+      :disabled="bone['readonly']"
       @change="changeEventNested"
     >
     </Wrapper_nested>
@@ -57,7 +58,8 @@ export default defineComponent({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
-    lang: String
+    lang: String,
+    bone: Object
   },
   components: { Wrapper_nested },
   emits: ["change"],
@@ -102,40 +104,9 @@ export default defineComponent({
       context.emit("change", props.name, state.selection, props.lang, props.index)
     }
 
-    function changeEventNested(val) {
-      if (!state.selection) state.selection = {}
-
-      if (!state.selection["rel"]?.[val.name]) {
-        if (!state.selection["rel"]) {
-          state.selection["rel"] = { [val.name]: null }
-        } else {
-          state.selection["rel"][val.name] = null
-        }
-      }
-
-      let currentBone = state.selection["rel"][val.name]
-      if (val.lang) {
-        if (currentBone === null) currentBone = {}
-        if (Object.keys(currentBone).includes(val.lang) && val.index !== null) {
-          currentBone[val.lang][val.index] = val.value
-        } else {
-          currentBone[val.lang] = val.value
-        }
-      } else if (val.index !== null) {
-        if (currentBone === null) currentBone = []
-        currentBone[val.index] = val.value
-      } else {
-        currentBone = val.value
-      }
-
-      if (Object.keys(state.selection).includes("rel") && state.selection["rel"]) {
-        state.selection["rel"][val.name] = currentBone
-      } else {
-        state.selection["rel"] = { [val.name]: currentBone }
-      }
-
-      if (!Object.keys(state.selection).includes("dest")) return
-      context.emit("change", props.name, state.selection, props.lang, props.index)
+    function changeEventNested(data) {
+      state.selection = {...state.selection, "rel":data["value"]}
+      context.emit("change", data["name"], state.selection , data["lang"], data["index"])
     }
 
     onMounted(() => {
