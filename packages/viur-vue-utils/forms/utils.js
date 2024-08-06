@@ -114,7 +114,7 @@ export function useFormUtils(props,state){
   }
 
 
-  function sendData(alternativUrl= null,additionalData= null,removeKeyFromDataset= true){
+  function sendData(alternativUrl= null, additionalData= null,removeKeyFromDataset= true){
     state.loading = true
     let request = Request.post
     if (props.secure) request = Request.securePost
@@ -149,14 +149,19 @@ export function useFormUtils(props,state){
     })
   }
 
-  function fetchData(){
+  function fetchData(alternativUrl= null, additionalData=null){
     //fetch data
     state.loading = true
     let request = Request.post
     if (props.secure) request = Request.securePost
 
-    const url = buildRequestUrl()
-    const data = {}
+    let url = buildRequestUrl()
+    if (alternativUrl) url = alternativUrl //replace saving url
+
+    let data = {}
+    if (additionalData){
+      data = {...data, ...additionalData} //inject data like contexts
+    }
 
     return request(url, {dataObj: data}).then(async (resp)=>{
       let data = await resp.clone().json()

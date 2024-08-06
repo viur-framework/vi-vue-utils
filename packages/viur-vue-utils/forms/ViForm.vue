@@ -76,6 +76,11 @@ const props = defineProps({
     type: Object,
     default: null
   },
+  //used for fetch data
+  params:{
+    type: Object,
+    default:{}
+  },
   // define the renderer default is json
   renderer: {
     type: String,
@@ -118,7 +123,7 @@ onBeforeMount(()=>{
     initForm(props.skel,props.structure)
     state.loading=false
   }else if(props.module && props.action){
-    fetchData().then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
+    fetchData(null,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
   }else{
     console.log(props)
     console.error("Error while building Form: you need atleast module and action or structure parameters")
