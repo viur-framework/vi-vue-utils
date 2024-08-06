@@ -27,7 +27,6 @@
 </template>
 
 <script setup>
-import bone from "../bones/edit/bone.vue"
 import Loader from "../generic/Loader.vue"
 import Request from "../utils/request"
 import { useFormUtils } from "./utils"
