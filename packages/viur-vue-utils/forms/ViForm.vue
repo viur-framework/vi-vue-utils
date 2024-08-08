@@ -133,7 +133,9 @@ onBeforeMount(()=>{
 
 
 function formUpdate(data){
-  debounceFormUpdate(data)
+  updateSkel(data)
+  emit("change", data)
+  //debounceFormUpdate(data)
 }
 
 defineExpose({sendData,fetchData,updateSkel,state})
