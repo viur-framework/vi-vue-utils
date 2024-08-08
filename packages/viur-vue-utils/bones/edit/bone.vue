@@ -61,7 +61,7 @@
               <div
                 v-for="(val, index) in state.bonevalue?.[lang]"
                 v-if="state.bonevalue?.[lang].length"
-                :key="index"
+                :key="JSON.stringify(val)+'_'+index"
                 class="multiple-bone"
               >
                 <wrapper-multiple
@@ -136,7 +136,7 @@
           <div
             v-for="(val, index) in state.bonevalue"
             v-if="state.bonevalue?.length"
-            :key="JSON.stringify(val)"
+            :key="JSON.stringify(val)+'_'+index"
             class="multiple-bone"
           >
             <wrapper-multiple
@@ -595,18 +595,12 @@ export default defineComponent({
       } else {
         state.bonevalue.splice(index, 1)
       }
-      context.emit("change", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      })
-      context.emit("change-internal", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      })
+
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
+      }
     }
 
     function removeMultipleEntries(lang = null) {
@@ -615,16 +609,11 @@ export default defineComponent({
       } else {
         state.bonevalue.splice(0)
       }
-      context.emit("change", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang
-      })
-      context.emit("change-internal", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang
-      })
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
+      }
     }
 
     provide("removeMultipleEntries", removeMultipleEntries)
