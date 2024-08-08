@@ -216,7 +216,8 @@ export function useFormUtils(props,state){
       if (
         ( props.collapsedCategories &&
           props.collapsedCategories.map((x) => x.toLowerCase()).includes(category)) ||
-          props.collapsedCategories === "system" ||
+          category === "system" ||
+          category === "internal" ||
           props.collapsedCategories?.[0] === "*"
       ) {
         categories[category]["open"] = false

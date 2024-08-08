@@ -14,6 +14,7 @@
              :skel="value"
              :structure="bone['using']"
              :renderer="state.renderer"
+             :collapsedCategories="bone?.params?.['collapsedCategories'] || []"
              @change="changeEvent"
     >
 
