@@ -647,7 +647,7 @@ export default defineComponent({
         let aval = avalue
         for (let entry of path) {
           restPath.shift()
-          if (aval && aval !== "-" && Object.keys(aval).includes(entry) && aval[entry]) {
+          if (aval && aval !== "-" && Object.keys(aval).includes(entry)) {
             if (Array.isArray(aval[entry])) {
               let resVal = []
               for (let val of aval[entry]) {
@@ -655,9 +655,9 @@ export default defineComponent({
               }
               aval = resVal.join(", ")
             } else {
-              aval = aval[entry]
+              aval = readValue(restPath.join("."), aval[entry])
             }
-          } else if (!aval || !aval[entry] || (typeof aval[entry] === 'object' && !aval[entry])) {
+          } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
             aval = "-"
           }
         }
