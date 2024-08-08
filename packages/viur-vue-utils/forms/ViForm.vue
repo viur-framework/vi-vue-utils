@@ -115,7 +115,7 @@ const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
 const debounceFormUpdate = useDebounceFn((data) => {
   updateSkel(data)
   emit("change", data)
-}, 1000)
+}, 0)
 
 onBeforeMount(()=>{
   state.loading=true
