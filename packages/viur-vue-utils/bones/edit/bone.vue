@@ -61,7 +61,7 @@
               <div
                 v-for="(val, index) in state.bonevalue?.[lang]"
                 v-if="state.bonevalue?.[lang].length"
-                :key="JSON.stringify(val)+'_'+index"
+                :key="index"
                 class="multiple-bone"
               >
                 <wrapper-multiple
@@ -136,7 +136,7 @@
           <div
             v-for="(val, index) in state.bonevalue"
             v-if="state.bonevalue?.length"
-            :key="JSON.stringify(val)+'_'+index"
+            :key="index"
             class="multiple-bone"
           >
             <wrapper-multiple
