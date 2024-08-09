@@ -112,10 +112,9 @@ const state = reactive({
 
 const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
 
-const debounceFormUpdate = useDebounceFn((data) => {
-  updateSkel(data)
+const formUpdateEvent = useDebounceFn((data)=>{
   emit("change", data)
-}, 0)
+},500)
 
 onBeforeMount(()=>{
   state.loading=true
@@ -134,8 +133,7 @@ onBeforeMount(()=>{
 
 function formUpdate(data){
   updateSkel(data)
-  emit("change", data)
-  //debounceFormUpdate(data)
+  formUpdateEvent(data)
 }
 
 defineExpose({sendData,fetchData,updateSkel,state})
