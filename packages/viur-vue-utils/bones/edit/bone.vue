@@ -754,14 +754,23 @@ export default defineComponent({
 
     & > .bone-inner-wrap {
       padding-top: var(--sl-spacing-small);
-      border-top: 2px solid var(--sl-color-neutral-200);
+      border-top: 2px solid var(--sl-color-neutral-300);
       margin-bottom: 5px;
     }
 
     & .multiple-bone {
-      border-bottom: 1px solid var(--sl-color-neutral-200);
-      padding-bottom: var(--sl-spacing-2x-small);
+      border-bottom: 1px solid var(--sl-color-neutral-300);
+      padding-bottom: var(--sl-spacing-small);
       margin-bottom: var(--sl-spacing-small);
+
+      &:deep(sl-details){
+        &:last-child{
+          &::part(base){
+            border-bottom: none;
+          }
+        }
+      }
+
     }
   }
 

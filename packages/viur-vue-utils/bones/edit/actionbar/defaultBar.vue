@@ -108,27 +108,4 @@ export default defineComponent({
   margin-left: auto;
 }
 
-.delete-btn{
-
-  &:hover{
-    &::part(base){
-      border: none;
-      background-color: transparent;
-      color: var(--sl-color-danger-500)
-    }
-
-     &::part(label){
-      text-decoration: underline;
-    }
-   }
-
-
-  &::part(base){
-    border: none;
-   }
-
-   &::part(label){
-    padding: 0;
-    }
-}
 </style>
