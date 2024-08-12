@@ -248,11 +248,17 @@ export function useFormUtils(props,state){
         skelvalue = {}
       }
       if (Object.keys(skelvalue).includes(lang) && index !== null) {
+        if (!skelvalue[lang]){
+          skelvalue[lang] = []
+        }
         skelvalue[lang][index] = value
       } else {
         skelvalue[lang] = value
       }
     } else if (index !== null) {
+      if (!skelvalue){
+        skelvalue = []
+      }
       skelvalue[index] = value
     } else {
       skelvalue = value
