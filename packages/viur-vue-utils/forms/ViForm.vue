@@ -58,7 +58,7 @@ const props = defineProps({
 
   //if skel and structure defined this will be used instead of fetchData
   skel:{
-    type:Object,
+    type:[Object,null,String],
     default:null
   },
   structure:{
@@ -108,6 +108,7 @@ const state = reactive({
   errors: [], // working data
   loading:false, //loading state
   categories:[], //categories to render
+  values:computed(()=>props.values)
 })
 
 const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
