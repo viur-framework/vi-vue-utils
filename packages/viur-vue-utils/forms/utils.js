@@ -275,8 +275,14 @@ export function useFormUtils(props,state){
       }
 
       if (bone?.["params"]?.["visibleIf"]) {
-        let ex = new Logics(bone?.["params"]?.["visibleIf"])
-        bone["visible"] = ex.run(state.skel).toBool()
+
+        try{
+          let ex = new Logics(bone?.["params"]?.["visibleIf"])
+          bone["visible"] = ex.run(state.skel).toBool()
+        }catch(error){
+          console.log(bone?.["params"]?.["visibleIf"])
+        }
+
       }
 
       if (bone?.["params"]?.["readonlyIf"]) {
@@ -288,6 +294,13 @@ export function useFormUtils(props,state){
 
   function initForm(skel, structure){
     state.skel = skel || {}
+    /*if (state.values){ fixme nested data
+      for (const [boneName, value] of Object.entries(state.values)){
+        if( Object.keys(state.skel).includes(boneName)){
+          state.skel[boneName] = value
+        }
+      }
+    }*/
     state.structure = normalizeStructure(structure)
     state.categories = updateCategories()
   }
