@@ -325,6 +325,37 @@ export default class Request {
     return Request.buildUrl(bone)
   }
 
+  static serveUrlFor(servingurl, size=null, filename=null, options="", download=false){
+    const pattern = /^https:\/\/(.*?)\.googleusercontent\.com\/(.*?)$/;
+    let newUrl = "/file/serve"
+
+    const match = servingurl.match(pattern);
+
+    if (match) {
+      const host = match[1];
+      const key = match[2];
+      newUrl += `/${host}/${key}`
+
+      if (size) {
+        newUrl += `/${size}`
+      }
+      if (filename) {
+        newUrl += `/${filename}`
+      }
+      let querylist = []
+      for (const [key, value] of Object.entries({options: options, download: download})) {
+        if (value) {
+          querylist.push(`${key}=${value}`)
+        }
+      }
+      if (querylist.length > 0) {
+        newUrl += `?${querylist.join("&")}`
+      }
+    }
+
+    return Request.buildUrl(newUrl)
+  }
+
   static uploadFile(file, target = undefined) {
     const filedata = {
       fileName: file.name,
