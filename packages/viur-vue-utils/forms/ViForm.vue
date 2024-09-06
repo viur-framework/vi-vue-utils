@@ -1,29 +1,22 @@
 <template>
-    <template v-for="(category,identifier) in state.categories">
-      <vi-form-category :name="category['name']"
-                        :identifier="identifier"
-                        :visible="category['visible']"
-                        :open="category['open']"
-                        :hide="!useCategories"
-
-      >
-        <template
-          v-for="bone in category['bones']"
-          :key="bone['name']"
-        >
-        <bone
-                :is="getBoneWidget(state.structure[bone['name']]['type'])"
-                v-show="state.structure[bone['name']]['visible']"
-                :name="bone['name']"
+    <slot :structure="state.structure"
+          :skel="state.skel"
+          :errors="state.errors"
+          :categories="state.categories"
+    >
+      <component :is="layout" v-slot="{boneName, widget, visible}">
+          <bone
+                :is="widget"
+                v-show="visible"
+                :name="boneName"
                 :structure="state.structure"
                 :skel="state.skel"
                 :errors="state.errors"
                 @change-internal="formUpdate"
               >
               </bone>
-        </template>
-      </vi-form-category>
-    </template>
+      </component>
+    </slot>
 </template>
 
 <script setup>
@@ -31,9 +24,9 @@ import Loader from "../generic/Loader.vue"
 import Request from "../utils/request"
 import { useFormUtils } from "./utils"
 import { getBoneWidget } from "../bones/edit/index"
-import { reactive, watch, onBeforeMount, computed, unref } from "vue"
-import ViFormCategory from "./ViFormCategory.vue"
+import { reactive, watch, onBeforeMount, computed, unref, provide } from "vue"
 import { useDebounceFn } from '@vueuse/core'
+import LayoutCategory from "./layouts/LayoutCategory.vue"
 
 const emit = defineEmits(["change"])
 const props = defineProps({
@@ -97,6 +90,10 @@ const props = defineProps({
   sendReadOnly: {
     type:Boolean,
     default:false
+  },
+  layout:{
+    type:Object,
+    default:LayoutCategory
   }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
@@ -108,8 +105,11 @@ const state = reactive({
   errors: [], // working data
   loading:false, //loading state
   categories:[], //categories to render
-  values:computed(()=>props.values)
+  values:computed(()=>props.values),
+  useCategories:computed(()=>props.useCategories)
 })
+provide("formState", state)
+
 
 const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
 
@@ -136,6 +136,8 @@ function formUpdate(data){
   updateSkel(data)
   formUpdateEvent(data)
 }
+provide("formUpdate",formUpdate)
+
 
 defineExpose({sendData,fetchData,updateSkel,state})
 </script>
