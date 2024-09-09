@@ -129,7 +129,7 @@
               :show-label-info="true"
               :skel="userStore.state['user.login.secound_factor']['values']"
               autocomplete="new-password"
-              @change="updateValue"
+              @change-internal="updateValue"
             >
             </bone>
             <sl-button
@@ -167,7 +167,7 @@
               :show-label-info="true"
               :skel="userStore.state['user.login.secound_factor']['values']"
               autocomplete="new-password"
-              @change="updateRecoveryValue"
+              @change-internal="updateRecoveryValue"
             >
             </bone>
             <sl-alert
@@ -277,8 +277,6 @@ export default defineComponent({
     function userLogin(name, password) {
       state.waitForLogout = false
       state.waitFor = "" //FIXME
-      console.log("FFF")
-      console.log(userStore)
       userStore.userLogin(name.trim(), password.trim())
     }
     function userSecondFactor() {
@@ -289,16 +287,16 @@ export default defineComponent({
       userStore.userSecondFactorStart(choice)
     }
     function updateValue(data) {
-      if (data.value[0][data.name].length > 0 && data?.pwMatch !== false) {
-        state.secondFactorFormdata[data.name] = data.value[0][data.name] //Fixme can this broke
+      if (data.value?.length > 0) {
+        state.secondFactorFormdata[data.name] = data.value //Fixme can this broke
       } else {
         state.secondFactorFormdata = {}
       }
     }
 
     function updateRecoveryValue(data) {
-      if (data.value[0][data.name].length > 0 && data?.pwMatch !== false) {
-        state.secondFactorFormdata[data.name] = data.value[0][data.name] //Fixme can this broke
+      if (data.value?.length > 0) {
+        state.secondFactorFormdata[data.name] = data.value //Fixme can this broke
       } else {
         delete state.secondFactorFormdata[data.name]
       }
