@@ -11,6 +11,7 @@
     class="form"
   >
     <vi-form ref="skelRef"
+             :internal="mainformState"
              :skel="value"
              :structure="bone['using']"
              :renderer="state.renderer"
@@ -41,6 +42,7 @@ const props = defineProps({
 })
 const skelRef = ref(null)
 const boneState = inject("boneState")
+const mainformState = inject("mainformState")
 const state = reactive({
   renderer: import.meta.env.VITE_DEFAULT_RENDERER || 'json',
   globalRegistration: false,

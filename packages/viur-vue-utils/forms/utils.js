@@ -1,5 +1,5 @@
 import Request from "../utils/request"
-import {watch} from "vue"
+import {watch, inject} from "vue"
 
 
 export function useFormUtils(props,state){
@@ -267,40 +267,44 @@ export function useFormUtils(props,state){
     logics() //postprocess all bones if needed
   }
 
-  function logics() {
-    for (const [boneName, bone] of Object.entries(state.structure)) {
+
+  function _logics(structure, skel){
+    for (const [boneName, bone] of Object.entries(structure)) {
       if (bone?.["params"]?.["evaluate"]) {
         let ex = new Logics(bone?.["params"]?.["evaluate"])
-        state.skel[boneName] = ex.run(state.skel) //rule produces, valid results? multilang, multiple etc?
+        state.skel[boneName] = ex.run(skel) //rule produces, valid results? multilang, multiple etc?
       }
 
       if (bone?.["params"]?.["visibleIf"]) {
-
         try{
           let ex = new Logics(bone?.["params"]?.["visibleIf"])
-          bone["visible"] = ex.run(state.skel).toBool()
+          bone["visible"] = ex.run(skel).toBool()
         }catch(error){
           console.log(bone?.["params"]?.["visibleIf"])
         }
-
       }
 
       if (bone?.["params"]?.["readonlyIf"]) {
         let ex = new Logics(bone?.["params"]?.["readonlyIf"])
-        bone["readonly"] = ex.run(state.skel).toBool()
+        bone["readonly"] = ex.run(skel).toBool()
+      }
+
+      if(bone?.['using']){
+        _logics(bone['using'],skel)
       }
     }
   }
 
+  function logics() {
+    let skel = state.skel
+    if (props.internal){
+      skel = props.internal.skel
+    }
+    _logics(state.structure, skel)
+  }
+
   function initForm(skel, structure){
     state.skel = skel || {}
-    /*if (state.values){ fixme nested data
-      for (const [boneName, value] of Object.entries(state.values)){
-        if( Object.keys(state.skel).includes(boneName)){
-          state.skel[boneName] = value
-        }
-      }
-    }*/
     state.structure = normalizeStructure(structure)
     state.categories = updateCategories()
   }

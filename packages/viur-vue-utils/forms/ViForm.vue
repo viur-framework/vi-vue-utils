@@ -91,6 +91,10 @@ const props = defineProps({
     type:Boolean,
     default:false
   },
+  internal:{
+    type:[Object,null],
+    default:null
+  },
   layout:{
     type:Object,
     default:LayoutCategory
@@ -106,9 +110,13 @@ const state = reactive({
   loading:false, //loading state
   categories:[], //categories to render
   values:computed(()=>props.values),
+  internal:computed(()=>props.internal),
   useCategories:computed(()=>props.useCategories)
 })
 provide("formState", state)
+if (!props.internal){
+  provide("mainformState", state)
+}
 
 
 const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
