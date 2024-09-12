@@ -4,7 +4,7 @@
           :errors="state.errors"
           :categories="state.categories"
     >
-      <component :is="layout" v-slot="{boneName, widget, visible}">
+      <component :is="layout" v-slot="{boneName, widget, visible, label}">
           <bone
                 :is="widget"
                 v-show="visible"
@@ -102,7 +102,7 @@ const props = defineProps({
   },
   label:{
     type:String,
-    default:"normal",
+    default:"hide",
     validator(value,props){
       return ["normal","top","hide"].includes(value)
     }
@@ -119,7 +119,8 @@ const state = reactive({
   categories:[], //categories to render
   values:computed(()=>props.values),
   internal:computed(()=>props.internal),
-  useCategories:computed(()=>props.useCategories)
+  useCategories:computed(()=>props.useCategories),
+  label:computed(()=>props.label)
 })
 provide("formState", state)
 if (!props.internal){

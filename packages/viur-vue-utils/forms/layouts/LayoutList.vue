@@ -7,17 +7,8 @@
       <slot :boneName="boneName"
             :widget="getBoneWidget(formState.structure[boneName]['type'])"
             :visible="formState.structure[boneName]['visible']"
+            :label="formState.label"
       >
-        <bone
-            :is="getBoneWidget(formState.structure[boneName]['type'])"
-            v-show="formState.structure[boneName]['visible']"
-            :name="boneName"
-            :structure="formState.structure"
-            :skel="formState.skel"
-            :errors="formState.errors"
-            @change-internal="formUpdate"
-          >
-          </bone>
       </slot>
 
     </template>
