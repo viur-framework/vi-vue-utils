@@ -2,10 +2,13 @@
   <div
     class="bone-wrapper"
     :class="
-      ('bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones': state.bonestructure['using'] })
+      ('bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones': state.bonestructure['using'],
+        'label-top': label==='top',
+        'label-hide': label==='hide',
+      })
     "
   >
-    <bone-label :name="name">
+    <bone-label :name="name" v-if="label!=='hide'">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
       <span
         v-if="state.required"
@@ -139,6 +142,7 @@
             :key="index+'_'+state.bonevalue.length"
             class="multiple-bone"
           >
+
             <wrapper-multiple
               :readonly="!state.readonly"
               :is-dragging="state.isDragging.index === index ? true : false"
@@ -262,6 +266,13 @@ export default defineComponent({
       required: true
     },
     errors: Object,
+    label:{
+      type:String,
+      default:"normal",
+      validator(value,props){
+        return ["normal","top","hide"].includes(value)
+      }
+    },
     showLabelInfo: { type: Boolean, required: false, default: false },
     autofocus: { type: Boolean, required: false, default: false }
   },
@@ -741,6 +752,7 @@ export default defineComponent({
   margin-bottom: 20px;
 
   &.bone-wrapper-record,
+  &.label-top,
   &.has-subbones {
     display: flex;
     flex-direction: column;
@@ -772,6 +784,13 @@ export default defineComponent({
       }
 
     }
+  }
+
+  &.label-hide{
+    display: flex;
+    flex-direction: column;
+    grid-gap: 0;
+
   }
 
   @media (max-width: 900px) {
