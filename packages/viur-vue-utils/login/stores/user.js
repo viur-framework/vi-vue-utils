@@ -381,6 +381,7 @@ export const useUserStore = defineStore("user", () => {
                     state["user.loggedin"] = "yes";
                     state["user"] = data.values;
                     state["user.login.type"] = "user";
+                    getRequestStore().state.amount = 30
                     if (data.values["admin_config"]) {
                         const obj = data.values["admin_config"];
                         if (obj !== null) {
@@ -501,6 +502,7 @@ export const useUserStore = defineStore("user", () => {
         Request.get("/vi/user/view/self")
             .then(async (resp) => {
                 let data = await resp.json();
+                getRequestStore().state.amount = 30
             })
             .catch((error) => {
                 resetLoginInformation();
