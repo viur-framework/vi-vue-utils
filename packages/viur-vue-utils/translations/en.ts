@@ -11,5 +11,11 @@ export default {
     list: "List"
   },
   preview: "Preview",
-  lang: "Language"
+  lang: "Language",
+  de: "DE",
+  en: "EN",
+  fr: "FR",
+  nl: "NL",
+  ch: "CH",
+  es: "ES"
 }

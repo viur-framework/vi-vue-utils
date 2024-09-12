@@ -16,11 +16,17 @@ export default {
       min: "Minimum: {val}",
       max: "Maximum: {val}",
       precision: "Genauigkeit: {val} Stellen"
+    },
+    bool:{
+      true:"Ja",
+      false:"Nein"
     }
   },
   preview: "Vorschau",
   de: "DE",
   en: "EN",
   fr: "FR",
-  nl: "NL"
+  nl: "NL",
+  ch: "CH",
+  es: "ES"
 }
