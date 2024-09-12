@@ -102,7 +102,7 @@ const props = defineProps({
   },
   label:{
     type:String,
-    default:"hide",
+    default:"normal",
     validator(value,props){
       return ["normal","top","hide"].includes(value)
     }
