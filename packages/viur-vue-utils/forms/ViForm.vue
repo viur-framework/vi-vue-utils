@@ -12,6 +12,7 @@
                 :structure="state.structure"
                 :skel="state.skel"
                 :errors="state.errors"
+                :label="label"
                 @change-internal="formUpdate"
               >
               </bone>
@@ -98,7 +99,14 @@ const props = defineProps({
   layout:{
     type:Object,
     default:LayoutCategory
-  }
+  },
+  label:{
+    type:String,
+    default:"normal",
+    validator(value,props){
+      return ["normal","top","hide"].includes(value)
+    }
+  },
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
@@ -138,7 +146,10 @@ onBeforeMount(()=>{
   }
 })
 
-
+watch(()=>props.skel,(oldVal,newVal)=>{
+  //dragging internalforms
+  initForm(props.skel,props.structure)
+})
 
 function formUpdate(data){
   updateSkel(data)
