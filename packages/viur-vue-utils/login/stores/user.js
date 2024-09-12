@@ -132,7 +132,6 @@ export const useUserStore = defineStore("user", () => {
             state.currentLoginMask = "google";
             state["user.loggedin"] = "loading";
             // @ts-ignore
-            console.log(window.google.accounts);
             window.google.accounts.id.prompt((notification) => {
                 if (
                     [
@@ -160,8 +159,7 @@ export const useUserStore = defineStore("user", () => {
                 dataObj: {
                     name: name,
                     password: password,
-                },
-                amount: 1,
+                }
             })
                 .then(async (respLogin) => {
                     try {
@@ -300,7 +298,6 @@ export const useUserStore = defineStore("user", () => {
     async function recoverPassword() {
         state["user.loggedin"] === "loading";
         await Request.securePost("/vi/user/auth_userpassword/pwrecover", {
-            amount: 1,
         })
             .then(async (resp) => {
                 let data = await resp.json();
@@ -316,8 +313,6 @@ export const useUserStore = defineStore("user", () => {
                 }
             })
             .catch((error) => {
-                console.log("ja");
-                console.dir(error);
                 resetLoginInformation();
                 state["user.loggedin"] = "error";
                 state.renderErrorMsg = error.descr
@@ -336,8 +331,6 @@ export const useUserStore = defineStore("user", () => {
             }).then(async (resp) => {
                 try {
                     let answ = await resp.json();
-                    console.log("sendNewPassword try", resp);
-                    console.log("+", answ);
 
                     if (!resp.ok) {
                         resetLoginInformation();
