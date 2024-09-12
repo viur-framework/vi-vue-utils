@@ -1,6 +1,6 @@
 import { computed, reactive } from "vue";
 import { defineStore } from "pinia";
-import { Request } from "../../utils/request";
+import { Request, getRequestStore } from "../../utils/request";
 import { useRouter } from "vue-router";
 
 const googleConfig = {
@@ -45,6 +45,8 @@ export const useUserStore = defineStore("user", () => {
         state["user.login.secound_factor_choice"] = [];
         state["user.login.secound_factor"] = {};
         state["user.login.secound_factor_errors"] = [];
+        getRequestStore().state.sKeys = new Set()
+        getRequestStore().state.amount = 1
     }
 
     function googleInit(ClientId) {
@@ -90,6 +92,7 @@ export const useUserStore = defineStore("user", () => {
                                                 state["user.login.type"] =
                                                     "google";
                                                 resolve(response);
+                                                getRequestStore().state.amount = 30
                                             })
                                             .catch((error) => {
                                                 resetLoginInformation();
@@ -170,6 +173,7 @@ export const useUserStore = defineStore("user", () => {
                                     state["user.loggedin"] = "yes";
                                     state["user"] = data.values;
                                     state["user.login.type"] = "user";
+                                    getRequestStore().state.amount = 30
                                 })
                                 .catch((error) => {
                                     resetLoginInformation();
@@ -263,6 +267,7 @@ export const useUserStore = defineStore("user", () => {
                         state["user.loggedin"] = "yes";
                         state["user"] = data.values;
                         state["user.login.type"] = "user";
+                        getRequestStore().state.amount = 30
                     })
                     .catch((error) => {
                         resetLoginInformation();
