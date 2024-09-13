@@ -6,8 +6,6 @@
     >
       <slot :boneName="boneName"
             :widget="getBoneWidget(formState.structure[boneName]['type'])"
-            :visible="formState.structure[boneName]['visible']"
-            :label="formState.label"
       >
       </slot>
 

@@ -5,14 +5,15 @@
           :categories="state.categories"
     >
       <component :is="layout" v-slot="{boneName, widget, visible, label}">
-          <bone
+
+          <bone v-if="widget!==undefined"
                 :is="widget"
-                v-show="visible"
+                v-show="visible===undefined?state.structure[boneName]['visible']:visible"
                 :name="boneName"
                 :structure="state.structure"
                 :skel="state.skel"
                 :errors="state.errors"
-                :label="label"
+                :label="label===undefined?state.label:label"
                 @change-internal="formUpdate"
               >
               </bone>

@@ -13,8 +13,6 @@
       >
         <slot :boneName="bone['name']"
               :widget="getBoneWidget(formState.structure[bone['name']]['type'])"
-              :visible="formState.structure[bone['name']]['visible']"
-              :label="formState.label"
         >
         </slot>
 

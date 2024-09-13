@@ -8,8 +8,6 @@
         <slot :boneName="boneName"
                 v-if="idx%2 ===0"
                 :widget="getBoneWidget(formState.structure[boneName]['type'])"
-                :visible="formState.structure[boneName]['visible']"
-                :label="formState.label"
           >
           </slot>
       </template>
@@ -22,8 +20,6 @@
         <slot :boneName="boneName"
                 v-if="idx%2!==0"
                 :widget="getBoneWidget(formState.structure[boneName]['type'])"
-                :visible="formState.structure[boneName]['visible']"
-                :label="formState.label"
           >
           </slot>
       </template>
