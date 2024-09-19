@@ -4,11 +4,11 @@
     :class="
       ('bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones': state.bonestructure['using'],
         'label-top': label==='top',
-        'label-hide': label==='hide',
+        'label-hide': ['hide','placeholder'].includes(label),
       })
     "
   >
-    <bone-label :name="name" v-if="label!=='hide'">
+    <bone-label :name="name" v-if="!['hide','placeholder'].includes(label)">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
       <span
         v-if="state.required"
@@ -270,7 +270,7 @@ export default defineComponent({
       type:String,
       default:"normal",
       validator(value,props){
-        return ["normal","top","hide"].includes(value)
+        return ["normal","top","hide","placeholder"].includes(value)
       }
     },
     showLabelInfo: { type: Boolean, required: false, default: false },
@@ -395,7 +395,8 @@ export default defineComponent({
           }
         }
         return errors
-      })
+      }),
+      label: computed(()=>props.label)
     })
     provide("boneState", state)
 

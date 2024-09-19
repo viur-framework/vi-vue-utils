@@ -10,7 +10,7 @@
     value-as-number
     step="0.000001"
     @sl-change="changeEvent"
-    placeholder="Lat"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr+' lat':undefined"
   ></sl-input>
 
   <sl-input
@@ -24,7 +24,7 @@
     value-as-number
     step="0.000001"
     @sl-change="changeEvent"
-    placeholder="Long"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr+' long':undefined"
   ></sl-input>
 </template>
 

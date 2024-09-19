@@ -9,6 +9,7 @@
     :step="state.precision"
     @sl-change="changeEvent"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   >
   </sl-input>
   <ul class="info">

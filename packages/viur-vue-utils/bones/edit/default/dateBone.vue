@@ -4,6 +4,7 @@
     :type="state.typeString"
     :value="state.value"
     @sl-change="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   ></sl-input>
 </template>
 

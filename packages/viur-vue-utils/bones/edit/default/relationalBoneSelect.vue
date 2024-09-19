@@ -8,6 +8,7 @@
         max-options-visible="0"
         clearable
         @sl-change="changeEvent"
+        :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
       >
         <sl-option
           v-for="(obj,key) in state.skellistdata"

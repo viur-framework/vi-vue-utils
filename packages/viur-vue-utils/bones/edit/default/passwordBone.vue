@@ -10,6 +10,7 @@
     @sl-change="changeEvent"
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   >
     <sl-icon
       slot="suffix"
@@ -26,6 +27,7 @@
     @sl-change="changeEvent"
     @sl-clear="state.value2 = ''"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   >
     <sl-icon
       slot="suffix"

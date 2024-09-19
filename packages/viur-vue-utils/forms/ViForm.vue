@@ -105,7 +105,7 @@ const props = defineProps({
     type:String,
     default:"normal",
     validator(value,props){
-      return ["normal","top","hide"].includes(value)
+      return ["normal","top","hide","placeholder"].includes(value)
     }
   },
   // add errors, from the outside (maybe relevant if form is build with slots)

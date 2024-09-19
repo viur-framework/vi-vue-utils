@@ -12,6 +12,7 @@
         :source="getList"
         hoist
         @sl-item-select="changeEvent"
+        :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
       ></sl-combobox>
 
       <sl-button

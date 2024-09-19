@@ -15,6 +15,7 @@
       :disabled="boneState?.readonly"
       :value="value"
       @input="changeEventTextarea"
+      :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     ></sl-textarea>
   </template>
 </template>

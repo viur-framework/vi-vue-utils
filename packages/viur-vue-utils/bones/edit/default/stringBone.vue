@@ -6,6 +6,7 @@
     :required="boneState.bonestructure.required"
     @sl-change="changeEvent"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   ></sl-input>
 </template>
 
