@@ -1,5 +1,7 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-string widget-bone-string-default"
+    :class="([`widget-bone-string-${name}`])"
     ref="stringBone"
     :disabled="boneState.readonly"
     :value="Utils.unescape(value)"

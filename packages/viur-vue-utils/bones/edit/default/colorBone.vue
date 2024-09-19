@@ -1,5 +1,7 @@
 <template>
   <sl-color-picker
+    class="widget-bone widget-bone-color widget-bone-color-default"
+    :class="([`widget-bone-color-${name}`])"
     :disabled="boneState.readonly"
     :value="value"
     @sl-change="changeEvent"

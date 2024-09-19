@@ -1,5 +1,7 @@
 <template>
   <sl-select
+    class="widget-bone widget-bone-select widget-bone-select-default"
+    :class="([`widget-bone-select-${name}`])"
     :disabled="boneState.readonly"
     :value="state.value"
     hoist

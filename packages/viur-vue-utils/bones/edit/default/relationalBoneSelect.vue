@@ -1,5 +1,8 @@
 <template>
-  <div class="record">
+  <div
+    class="record widget-bone widget-bone-relational widget-bone-relational-select"
+    :class="([`widget-bone-relational-${name}`])"
+  >
     <div class="single-entry">
       <sl-select
         :disabled="boneState.readonly"

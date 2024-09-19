@@ -1,5 +1,7 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-numeric widget-bone-numeric-default"
+    :class="([`widget-bone-numeric-${name}`])"
     ref="numericBone"
     type="number"
     :disabled="boneState.readonly"

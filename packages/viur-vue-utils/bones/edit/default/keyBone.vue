@@ -1,5 +1,7 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-key widget-bone-key-default"
+    :class="([`widget-bone-key-${name}`])"
     disabled
     :value="value"
     @sl-change="changeEvent"

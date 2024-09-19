@@ -1,5 +1,7 @@
 <template>
   <sl-textarea v-if="boneState.bonestructure.type==='raw.json'"
+    class="widget-bone widget-bone-raw widget-bone-raw-default"
+    :class="([`widget-bone-raw-${name}`])"
     :disabled="boneState?.readonly"
     :value="JSON.stringify(value)"
     @input="changeEvent"
@@ -7,6 +9,8 @@
   ></sl-textarea>
   <sl-textarea
     v-else
+    class="widget-bone widget-bone-raw widget-bone-raw-default"
+    :class="([`widget-bone-raw-${name}`])"
     :disabled="boneState?.readonly"
     :value="value"
     @input="changeEvent"

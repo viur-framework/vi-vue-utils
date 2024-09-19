@@ -1,5 +1,9 @@
 <template>
-  <div class="wrapper-multiple" v-if="boneState['bonestructure']['multiple']">
+  <div
+    class="wrapper-multiple widget-bone widget-bone-select widget-bone-select-choose"
+    :class="([`widget-bone-select-${name}`])"
+
+  v-if="boneState['bonestructure']['multiple']">
     <sl-checkbox v-for="value in convertObjToList()"
                 :data-value="value[0]"
                 :checked="state.value.includes(value[0])"
@@ -10,7 +14,10 @@
     </sl-checkbox>
   </div>
 
-  <sl-radio-group v-else :value="state.value" @sl-change="changeEvent">
+  <sl-radio-group v-else :value="state.value" @sl-change="changeEvent"
+    class="widget-bone widget-bone-select widget-bone-select-choose"
+    :class="([`widget-bone-select-${name}`])"
+  >
     <sl-radio v-for="value in convertObjToList()" :value="value[0]" :disabled="boneState.readonly">
       {{ value[1] }}
     </sl-radio>

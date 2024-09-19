@@ -1,5 +1,7 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
+    :class="([`widget-bone-spatial-${name}`],[`widget-bone-spatial-${name}-lat`])"
     v-model="state.valueLat"
     index="lat"
     type="number"
@@ -14,6 +16,8 @@
   ></sl-input>
 
   <sl-input
+    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
+    :class="([`widget-bone-spatial-${name}`],[`widget-bone-spatial-${name}-long`])"
     v-model="state.valueLng"
     index="lng"
     type="number"

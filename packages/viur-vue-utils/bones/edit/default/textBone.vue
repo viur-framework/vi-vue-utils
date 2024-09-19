@@ -8,10 +8,14 @@
       :disabled="boneState?.readonly"
       @ready="onReady"
       @input="changeEvent"
+      class="widget-bone widget-bone-text widget-bone-text-default"
+      :class="([`widget-bone-text-${name}`],[`widget-bone-text-${name}-html`])"
     >
     </ckeditor>
     <sl-textarea
       v-else
+      class="widget-bone widget-bone-text widget-bone-text-default"
+      :class="([`widget-bone-text-${name}`])"
       :disabled="boneState?.readonly"
       :value="value"
       @input="changeEventTextarea"

@@ -5,6 +5,8 @@
     hoist
     max-options-visible="0"
     @sl-change="changeEvent"
+    class="widget-bone widget-bone-boolean widget-bone-boolean-select"
+    :class="([`widget-bone-boolean-${name}`])"
   >
     <sl-option
       v-for="val in [true,false]"

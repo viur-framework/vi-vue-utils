@@ -1,5 +1,7 @@
 <template>
   <sl-switch
+    class="widget-bone widget-bone-boolean widget-bone-boolean-default"
+    :class="([`widget-bone-boolean-${name}`])"
     :disabled="boneState.readonly"
     :checked="state.value"
     @sl-change="changeEvent"

@@ -1,11 +1,13 @@
 <template>
   <div
-    class="bone-wrapper"
+    class="bone-wrapper wrapper-bone"
     :class="
-      ('bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones': state.bonestructure['using'],
+      { 'has-subbones': state.bonestructure['using'],
         'label-top': label==='top',
         'label-hide': ['hide','placeholder'].includes(label),
-      })
+        [`wrapper-bone-${state.bonestructure['type'].split('.')[0]}`]:true,
+        [`wrapper-bone-${name}`]:true
+      }
     "
   >
     <bone-label :name="name" v-if="!['hide','placeholder'].includes(label)">
@@ -39,7 +41,11 @@
       ></sl-icon>
       {{ state.bonestructure.params["tooltip"] }}
     </sl-alert>
-    <div class="bone-inner-wrap">
+    <div class="bone-inner-wrap wrapper-bone-widget"
+      :class="(
+        [`wrapper-bone-widget-${name}`]
+      )"
+    >
       <!--Language chooser -->
       <sl-tab-group
         v-if="state.multilanguage"

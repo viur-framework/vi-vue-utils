@@ -4,6 +4,8 @@
   </template>
 
   <sl-details
+    class="viform-category"
+    :class="([`viform-category-${encodeURI(name.toLowerCase())}`])"
     v-else
     v-show="visible"
     :summary="name"

@@ -1,5 +1,9 @@
 <template>
-  <div class="record">
+  <div
+    class="record widget-bone widget-bone-relational widget-bone-relational-default"
+    :class="([`widget-bone-relational-${name}`])"
+
+  >
     <div class="single-entry">
       <sl-input
         v-if="state.selection"
@@ -60,7 +64,7 @@ export default defineComponent({
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
-    bone: Object
+    bone: Object,
   },
   components: { Wrapper_nested },
   emits: ["change"],
