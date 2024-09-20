@@ -59,11 +59,12 @@
           <sl-tab
             slot="nav"
             :panel="'lang_' + lang"
+            :active="defaultLanguage===lang"
           >
             {{ $t(lang) }}
           </sl-tab>
 
-          <sl-tab-panel :name="'lang_' + lang">
+          <sl-tab-panel :name="'lang_' + lang" :active="defaultLanguage===lang">
             <!--Bone rendering for multiple bones-->
             <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
               <!--multilang and multiple-->
@@ -280,7 +281,8 @@ export default defineComponent({
       }
     },
     showLabelInfo: { type: Boolean, required: false, default: false },
-    autofocus: { type: Boolean, required: false, default: false }
+    autofocus: { type: Boolean, required: false, default: false },
+    defaultLanguage: {type:String,default:"de"}
   },
 
   setup(props, context) {

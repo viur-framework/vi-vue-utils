@@ -13,6 +13,7 @@
                 :structure="state.structure"
                 :skel="state.skel"
                 :errors="state.errors"
+                :default-language="defaultLanguage"
                 :label="label===undefined?state.label:label"
                 @change-internal="formUpdate"
               >
@@ -108,6 +109,10 @@ const props = defineProps({
       return ["normal","top","hide","placeholder"].includes(value)
     }
   },
+  defaultLanguage:{
+    type:String,
+    default:"de"
+  }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
