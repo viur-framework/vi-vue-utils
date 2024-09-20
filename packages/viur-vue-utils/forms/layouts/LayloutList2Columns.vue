@@ -5,11 +5,13 @@
         v-for="(boneValue,boneName,idx) in formState.skel"
         :key="boneName"
       >
+        <template v-if="formState.bones.includes(boneName)">
         <slot :boneName="boneName"
                 v-if="idx%2 ===0"
                 :widget="getBoneWidget(formState.structure[boneName]['type'])"
           >
           </slot>
+        </template>
       </template>
     </div>
     <div class="column right" >
@@ -17,11 +19,13 @@
         v-for="(boneValue,boneName,idx) in formState.skel"
         :key="boneName"
       >
-        <slot :boneName="boneName"
+        <template v-if="formState.bones.includes(boneName)">
+          <slot :boneName="boneName"
                 v-if="idx%2!==0"
                 :widget="getBoneWidget(formState.structure[boneName]['type'])"
           >
           </slot>
+        </template>
       </template>
     </div>
   </div>

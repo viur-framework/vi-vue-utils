@@ -3,7 +3,8 @@ import Logics from "logics-js"
 import {watch, inject} from "vue"
 
 
-export function useFormUtils(props,state){
+export function useFormUtils(props, state){
+
   function buildRequestUrl(){
     //build Url from props
     let url = `/${props.renderer}/${props.module}/${props.action}`
@@ -166,7 +167,7 @@ export function useFormUtils(props,state){
 
     return request(url, {dataObj: data}).then(async (resp)=>{
       let data = await resp.clone().json()
-      initForm(data["values"],data["structure"])
+      initForm(data["values"], data["structure"], state.values)
 
       state.errors = data["errors"]
       state.loading = false
@@ -304,8 +305,13 @@ export function useFormUtils(props,state){
     _logics(state.structure, skel)
   }
 
-  function initForm(skel, structure){
-    state.skel = skel || {}
+  function initForm(skel, structure, values= {}){
+    let skeldata = skel || {}
+    let formvalues = {}
+    if ( values ){
+      formvalues = values
+    }
+    state.skel = { ...skeldata, ...formvalues }
     state.structure = normalizeStructure(structure)
     state.categories = updateCategories()
   }

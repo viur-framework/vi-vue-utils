@@ -126,7 +126,8 @@ const state = reactive({
   values:computed(()=>props.values),
   internal:computed(()=>props.internal),
   useCategories:computed(()=>props.useCategories),
-  label:computed(()=>props.label)
+  label:computed(()=>props.label),
+  bones:computed(()=>props.bones)
 })
 provide("formState", state)
 if (!props.internal){
@@ -143,7 +144,7 @@ const formUpdateEvent = useDebounceFn((data)=>{
 onBeforeMount(()=>{
   state.loading=true
   if (props.structure){
-    initForm(props.skel,props.structure)
+    initForm(props.skel,props.structure, state.values)
     state.loading=false
   }else if(props.module && props.action){
     fetchData(null,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
@@ -155,7 +156,7 @@ onBeforeMount(()=>{
 
 watch(()=>props.skel,(oldVal,newVal)=>{
   //dragging internalforms
-  initForm(props.skel,props.structure)
+  initForm(props.skel,props.structure,state.value)
 })
 
 function formUpdate(data){

@@ -4,10 +4,12 @@
       v-for="(boneValue,boneName) in formState.skel"
       :key="boneName"
     >
-      <slot :boneName="boneName"
-            :widget="getBoneWidget(formState.structure[boneName]['type'])"
-      >
-      </slot>
+      <template v-if="formState.bones?.includes(boneName)">
+        <slot :boneName="boneName"
+              :widget="getBoneWidget(formState.structure[boneName]['type'])"
+        >
+        </slot>
+      </template>
 
     </template>
   </div>
