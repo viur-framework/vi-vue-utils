@@ -4,23 +4,24 @@
     v-else
     class="input-wrapper"
   >
-    <!-- <sl-select
-      v-model="state.country"
+    <sl-select
+      :value="state.default"
       @sl-change="handleSelect"
     >
       <sl-option
-        v-for="language in boneState.bonestructure.countries"
-        :key="language"
-        :value="language"
+        v-for="country in state.countryInfo"
+        :key="country.code"
+        :value="country.dialCode"
       >
-        {{ state.countries[language].flag }}
+        {{ country.emoji }}
       </sl-option>
-    </sl-select> -->
-    {{ state.countryCode }}
+    </sl-select>
     <sl-input
       ref="phoneBone"
+      type="tel"
+      :placeholder="$t('bones.phone.placeholder')"
       :disabled="boneState.readonly"
-      :value="Utils.unescape(value)"
+      :value="Utils.unescape(state.value)"
       :required="boneState.bonestructure.required"
       @sl-change="changeEvent"
       @keyup="changeEvent"
@@ -36,6 +37,7 @@ import { reactive, defineComponent, onMounted, inject, computed, watchEffect, re
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
 import { Request } from "../../../index.js"
+import jsonData from "./country_information.json"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -52,14 +54,20 @@ export default defineComponent({
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() => props.value),
-      countries: {},
+      loading: false,
       country: "",
-      loading: false
+      countryInfo: [],
+      userInput: "",
+      default: computed(() => {
+        return props.value.split(" ")[0]
+      })
     })
 
+    const countryInformation = jsonData
     const phoneBone = ref(null)
 
     function changeEvent(event) {
+      state.userInput = event.target.value
       context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
@@ -78,20 +86,29 @@ export default defineComponent({
       }
     })
 
-    // function handleSelect(e) {
-    //   let value = props.value
-    //   value = value.replace(state.countryCode, "")
-
-    //   state.country = e.target.value
-    //   context.emit("change", props.name, state.countryCode + value, props.lang, props.index) //init
-    // }
+    function handleSelect(e) {
+      let value = ""
+      if (typeof props.value === "string") {
+        value = props.value
+      } else value = state.userInput
+      value = value.split(" ")[1]
+      state.country = e.target.value
+      context.emit("change", props.name, state.country + " " + value, props.lang, props.index) //init
+    }
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index) //init
-      // let available_countries = []
       state.loading = true
-      state.countries = boneState.bonestructure.countries
+      countryInformation.forEach((country) => {
+        let temp = {}
+        temp.name = country.name
+        temp.code = country.code
+        temp.emoji = country.emoji
+        temp.dialCode = country.dialCodes ? country.dialCodes[0] : ""
+        state.countryInfo.push(temp)
+      })
       state.loading = false
+      // let available_countries = []
     })
 
     return {
@@ -100,7 +117,8 @@ export default defineComponent({
       boneState,
       changeEvent,
       phoneBone,
-      // handleSelect
+      countryInformation,
+      handleSelect
     }
   }
 })

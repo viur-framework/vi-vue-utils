@@ -10,6 +10,11 @@ export default {
     dragFile: "Drag and drop file here",
     list: "List"
   },
+  bones: {
+    phone: {
+      placeholder: "Phone/Fax"
+    }
+  },
   preview: "Preview",
   lang: "Language",
   de: "DE",

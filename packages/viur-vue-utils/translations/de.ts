@@ -17,9 +17,12 @@ export default {
       max: "Maximum: {val}",
       precision: "Genauigkeit: {val} Stellen"
     },
-    bool:{
-      true:"Ja",
-      false:"Nein"
+    bool: {
+      true: "Ja",
+      false: "Nein"
+    },
+    phone: {
+      placeholder: "Telefon/Fax"
     }
   },
   preview: "Vorschau",
