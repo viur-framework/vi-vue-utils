@@ -3,6 +3,7 @@ import rawBone from "./default/rawBone.vue"
 import keyBone from "./default/keyBone.vue"
 import stringBone from "./default/stringBone.vue"
 import emailBone from "./default/emailBone.vue"
+import phoneBone from "./default/phoneBone.vue"
 import dateBone from "./default/dateBone.vue"
 import selectBone from "./default/selectBone.vue"
 import booleanBone from "./default/booleanBone.vue"
@@ -20,7 +21,7 @@ import defaultBar from "./actionbar/defaultBar.vue"
 import relationalBar from "./actionbar/relationalBar.vue"
 import fileBar from "./actionbar/fileBar.vue"
 
-import { reactive,shallowRef } from "vue"
+import { reactive, shallowRef } from "vue"
 import { defineStore } from "pinia"
 
 export const useBoneStore = defineStore("boneStore", () => {
@@ -42,7 +43,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       jsonBone,
       fileBone,
       textBone,
-      spatialBone
+      spatialBone,
+      phoneBone
     }),
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
@@ -88,6 +90,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return keyBone
     } else if (boneType === "str.email") {
       return emailBone
+    } else if (boneType === "str.phone") {
+      return phoneBone
     } else if (boneType === "str" || boneType.startsWith("str.")) {
       return stringBone
     } else if (boneType === "select" || boneType.startsWith("select.")) {
@@ -176,7 +180,7 @@ export function addBoneWidget(boneType, widget) {
 
 export function BoneHasMultipleHandling(boneType) {
   const boneStore = useBoneStore()
-  if (boneStore.state.multibones.includes(boneType)){
+  if (boneStore.state.multibones.includes(boneType)) {
     return true
   } else {
     let typeParts = boneType.split(".") //prefix match
