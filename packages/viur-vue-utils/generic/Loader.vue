@@ -8,7 +8,7 @@
         class="loader"
       ></sl-spinner>
       <div class="logo">
-        <sl-icon :src="logo"></sl-icon>
+        <sl-icon :src="logo" class="logo-color"></sl-icon>
       </div>
     </div>
   </transition>
@@ -79,7 +79,6 @@ export default {
     height: v-bind("state.logoSize");
     width: v-bind("state.logoSize");
     aspect-ratio: 1;
-    color: var(--vi-background-color);
     animation: zoom 3.3s ease-in-out 0s infinite alternate;
   }
 }
@@ -118,4 +117,6 @@ export default {
 .v-leave-to {
   opacity: 0;
 }
+
+
 </style>

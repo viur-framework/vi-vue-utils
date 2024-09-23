@@ -18,7 +18,10 @@ let useRequestStore = null
 function getRequestStore() {
   if (!useRequestStore) {
     useRequestStore = defineStore("requestStore", () => {
-      const state = reactive({ sKeys: new Set() })
+      const state = reactive({
+        sKeys: new Set(),
+        amount:1
+      })
       function $reset() {
         state.sKeys = new Set()
       }
@@ -82,9 +85,9 @@ export default class Request {
 
     return reqPromise
   }
-  static async getBatchSkeys(amount = 30, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
+  static async getBatchSkeys(renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     await Request.get(`/${renderer}/skey`, {
-      dataObj: { amount: amount }
+      dataObj: { amount: getRequestStore().state.amount }
     }).then(async (resp) => {
       let data = await resp.json()
       if (!Array.isArray(data)) {
@@ -103,13 +106,16 @@ export default class Request {
       renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
       headers = null,
       mode = null,
-      amount = 30
+      amount = null
     } = {}
   ) {
     let returnValue = null
 
     if (getRequestStore().state.sKeys.size === 0) {
-      await Request.getBatchSkeys(amount)
+      if (amount){
+        getRequestStore().state.amount = amount
+      }
+      await Request.getBatchSkeys(renderer)
     }
     const sKey = [...getRequestStore().state.sKeys][0]
 
@@ -323,6 +329,37 @@ export default class Request {
     }
 
     return Request.buildUrl(bone)
+  }
+
+  static serveUrlFor(servingurl, size=null, filename=null, options="", download=false){
+    const pattern = /^https:\/\/(.*?)\.googleusercontent\.com\/(.*?)$/;
+    let newUrl = "/file/serve"
+
+    const match = servingurl.match(pattern);
+
+    if (match) {
+      const host = match[1];
+      const key = match[2];
+      newUrl += `/${host}/${key}`
+
+      if (size) {
+        newUrl += `/${size}`
+      }
+      if (filename) {
+        newUrl += `/${filename}`
+      }
+      let querylist = []
+      for (const [key, value] of Object.entries({options: options, download: download})) {
+        if (value) {
+          querylist.push(`${key}=${value}`)
+        }
+      }
+      if (querylist.length > 0) {
+        newUrl += `?${querylist.join("&")}`
+      }
+    }
+
+    return Request.buildUrl(newUrl)
   }
 
   static uploadFile(file, target = undefined) {

@@ -1,9 +1,12 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-date widget-bone-date-default"
+    :class="([`widget-bone-date-${name}`])"
     :disabled="boneState.readonly"
     :type="state.typeString"
     :value="state.value"
     @sl-change="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   ></sl-input>
 </template>
 

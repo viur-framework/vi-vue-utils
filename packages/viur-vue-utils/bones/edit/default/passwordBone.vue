@@ -1,15 +1,17 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-password widget-bone-password-default"
+    :class="([`widget-bone-password-${name}`]),{ 'has-check': !boneState.readonly }"
     ref="passwordBone"
     v-model="state.value1"
     :disabled="boneState.readonly"
-    :class="{ 'has-check': !boneState.readonly }"
     type="password"
     clearable
     password-toggle="true"
     @sl-change="changeEvent"
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   >
     <sl-icon
       slot="suffix"
@@ -17,15 +19,17 @@
     ></sl-icon>
   </sl-input>
   <sl-input
+    class="widget-bone widget-bone-boolean widget-bone-boolean-default widget-bone-boolean-repeat password-check"
+    :class="([`widget-bone-boolean-${name}`])"
     v-if="!boneState.readonly"
     v-model="state.value2"
-    class="password-check"
     type="password"
     clearable
     password-toggle="true"
     @sl-change="changeEvent"
     @sl-clear="state.value2 = ''"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   >
     <sl-icon
       slot="suffix"

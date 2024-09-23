@@ -1,24 +1,27 @@
 <template>
-  <sl-select
-    class="widget-bone widget-bone-select widget-bone-select-default"
+  <div
+    class="wrapper-multiple widget-bone widget-bone-select widget-bone-select-choose"
     :class="([`widget-bone-select-${name}`])"
-    :disabled="boneState.readonly"
-    :value="state.value"
-    hoist
-    :multiple="boneState['bonestructure']['multiple']"
-    max-options-visible="0"
-    clearable
-    @sl-change="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-  >
-    <sl-option
-      v-for="value in convertObjToList()"
-      :key="value[0]"
-      :value="value[0]"
+
+  v-if="boneState['bonestructure']['multiple']">
+    <sl-checkbox v-for="value in convertObjToList()"
+                :data-value="value[0]"
+                :checked="state.value.includes(value[0])"
+                :disabled="boneState.readonly"
+                @sl-change="changeEventMultiple"
     >
       {{ value[1] }}
-    </sl-option>
-  </sl-select>
+    </sl-checkbox>
+  </div>
+
+  <sl-radio-group v-else :value="state.value" @sl-change="changeEvent"
+    class="widget-bone widget-bone-select widget-bone-select-choose"
+    :class="([`widget-bone-select-${name}`])"
+  >
+    <sl-radio v-for="value in convertObjToList()" :value="value[0]" :disabled="boneState.readonly">
+      {{ value[1] }}
+    </sl-radio>
+  </sl-radio-group>
 </template>
 
 <script lang="ts">
@@ -68,6 +71,16 @@ export default defineComponent({
       }
     }
 
+    function changeEventMultiple(event){
+      let currentValue = [...state.value]
+      if (event.target.checked){
+        currentValue.push(event.target.dataset['value'])
+      }else{
+        currentValue = currentValue.filter(x=>x !== event.target.dataset['value'])
+      }
+      context.emit("change", props.name, currentValue, props.lang, props.index)
+    }
+
     function changeEvent(event) {
       context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
@@ -80,6 +93,7 @@ export default defineComponent({
       state,
       boneState,
       changeEvent,
+      changeEventMultiple,
       convertObjToList
     }
   }
@@ -87,31 +101,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
-sl-select {
-  width: 100%;
-
-  &::part(combobox) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  @media (max-width: 900px) {
-    &::part(combobox) {
-      border-top-right-radius: 0;
-      border-bottom-left-radius: var(--sl-border-radius-medium);
-    }
-  }
+.wrapper-multiple{
+  display:flex;
+  flex-direction: column;
 }
 
-sl-option {
-  &::part(base) {
-    transition: background-color ease 0.3s;
-  }
-
-  &:hover {
-    &::part(base) {
-      background-color: var(--sl-color-gray-200);
-    }
-  }
+sl-checkbox::part(control--checked) {
+  background-color: var(--sl-color-success-600);
+  border: 1px solid var(--sl-color-primary-600);
+}
+sl-checkbox::part(control--indeterminate) {
+  background-color: var(--sl-color-success-600);
+  border: 1px solid var(--sl-color-success-600);
 }
 </style>

@@ -1,11 +1,14 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-string widget-bone-string-default"
+    :class="([`widget-bone-string-${name}`])"
     ref="stringBone"
     :disabled="boneState.readonly"
     :value="Utils.unescape(value)"
     :required="boneState.bonestructure.required"
     @sl-change="changeEvent"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   ></sl-input>
 </template>
 

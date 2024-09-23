@@ -1,5 +1,7 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
+    :class="([`widget-bone-spatial-${name}`],[`widget-bone-spatial-${name}-lat`])"
     v-model="state.valueLat"
     index="lat"
     type="number"
@@ -10,10 +12,12 @@
     value-as-number
     step="0.000001"
     @sl-change="changeEvent"
-    placeholder="Lat"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr+' lat':undefined"
   ></sl-input>
 
   <sl-input
+    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
+    :class="([`widget-bone-spatial-${name}`],[`widget-bone-spatial-${name}-long`])"
     v-model="state.valueLng"
     index="lng"
     type="number"
@@ -24,7 +28,7 @@
     value-as-number
     step="0.000001"
     @sl-change="changeEvent"
-    placeholder="Long"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr+' long':undefined"
   ></sl-input>
 </template>
 

@@ -1,5 +1,6 @@
 <template>
-  <label class="bone-name">
+  <label class="bone-name label-bone"
+  >
     <slot></slot>
     <template v-if="false">
       <div

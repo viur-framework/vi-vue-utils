@@ -89,7 +89,8 @@ export default defineComponent({
 }
 
 .value {
-  width: 100%;
+  flex: 1 1 100%;
+  width: 1px;
 
   & :deep(sl-input) {
     &::part(base) {
@@ -104,9 +105,17 @@ export default defineComponent({
       border-top-left-radius: 0;
     }
   }
+
+  &:deep(sl-alert){
+    &::part(base){
+      margin-top: 0;
+    }
+  }
 }
 
 .delete-btn {
+  transition: all ease .3s;
+
   &::part(base) {
     aspect-ratio: 1;
   }

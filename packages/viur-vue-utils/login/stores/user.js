@@ -1,6 +1,6 @@
 import { computed, reactive } from "vue";
 import { defineStore } from "pinia";
-import { Request } from "../../utils/request";
+import { Request, getRequestStore } from "../../utils/request";
 import { useRouter } from "vue-router";
 
 const googleConfig = {
@@ -45,6 +45,8 @@ export const useUserStore = defineStore("user", () => {
         state["user.login.secound_factor_choice"] = [];
         state["user.login.secound_factor"] = {};
         state["user.login.secound_factor_errors"] = [];
+        getRequestStore().state.sKeys = new Set()
+        getRequestStore().state.amount = 1
     }
 
     function googleInit(ClientId) {
@@ -90,6 +92,7 @@ export const useUserStore = defineStore("user", () => {
                                                 state["user.login.type"] =
                                                     "google";
                                                 resolve(response);
+                                                getRequestStore().state.amount = 30
                                             })
                                             .catch((error) => {
                                                 resetLoginInformation();
@@ -129,7 +132,6 @@ export const useUserStore = defineStore("user", () => {
             state.currentLoginMask = "google";
             state["user.loggedin"] = "loading";
             // @ts-ignore
-            console.log(window.google.accounts);
             window.google.accounts.id.prompt((notification) => {
                 if (
                     [
@@ -157,8 +159,7 @@ export const useUserStore = defineStore("user", () => {
                 dataObj: {
                     name: name,
                     password: password,
-                },
-                amount: 1,
+                }
             })
                 .then(async (respLogin) => {
                     try {
@@ -170,6 +171,7 @@ export const useUserStore = defineStore("user", () => {
                                     state["user.loggedin"] = "yes";
                                     state["user"] = data.values;
                                     state["user.login.type"] = "user";
+                                    getRequestStore().state.amount = 30
                                 })
                                 .catch((error) => {
                                     resetLoginInformation();
@@ -263,6 +265,7 @@ export const useUserStore = defineStore("user", () => {
                         state["user.loggedin"] = "yes";
                         state["user"] = data.values;
                         state["user.login.type"] = "user";
+                        getRequestStore().state.amount = 30
                     })
                     .catch((error) => {
                         resetLoginInformation();
@@ -295,7 +298,6 @@ export const useUserStore = defineStore("user", () => {
     async function recoverPassword() {
         state["user.loggedin"] === "loading";
         await Request.securePost("/vi/user/auth_userpassword/pwrecover", {
-            amount: 1,
         })
             .then(async (resp) => {
                 let data = await resp.json();
@@ -311,8 +313,6 @@ export const useUserStore = defineStore("user", () => {
                 }
             })
             .catch((error) => {
-                console.log("ja");
-                console.dir(error);
                 resetLoginInformation();
                 state["user.loggedin"] = "error";
                 state.renderErrorMsg = error.descr
@@ -331,8 +331,6 @@ export const useUserStore = defineStore("user", () => {
             }).then(async (resp) => {
                 try {
                     let answ = await resp.json();
-                    console.log("sendNewPassword try", resp);
-                    console.log("+", answ);
 
                     if (!resp.ok) {
                         resetLoginInformation();
@@ -383,6 +381,7 @@ export const useUserStore = defineStore("user", () => {
                     state["user.loggedin"] = "yes";
                     state["user"] = data.values;
                     state["user.login.type"] = "user";
+                    getRequestStore().state.amount = 30
                     if (data.values["admin_config"]) {
                         const obj = data.values["admin_config"];
                         if (obj !== null) {
@@ -503,6 +502,7 @@ export const useUserStore = defineStore("user", () => {
         Request.get("/vi/user/view/self")
             .then(async (resp) => {
                 let data = await resp.json();
+                getRequestStore().state.amount = 30
             })
             .catch((error) => {
                 resetLoginInformation();

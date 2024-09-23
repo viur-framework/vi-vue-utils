@@ -2,6 +2,7 @@ export default {
   bone: {
     add: "Add",
     del: "Remove",
+    delAll: "Remove all",
     upload: "Upload",
     download: "Download",
     chooseFile: "Choose file",
@@ -10,5 +11,11 @@ export default {
     list: "List"
   },
   preview: "Preview",
-  lang: "Language"
+  lang: "Language",
+  de: "DE",
+  en: "EN",
+  fr: "FR",
+  nl: "NL",
+  ch: "CH",
+  es: "ES"
 }

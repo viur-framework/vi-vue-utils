@@ -1,11 +1,11 @@
 <template>
-  <sl-switch
-    class="widget-bone widget-bone-boolean widget-bone-boolean-default"
-    :class="([`widget-bone-boolean-${name}`])"
-    :disabled="boneState.readonly"
-    :checked="state.value"
-    @sl-change="changeEvent"
-  ></sl-switch>
+  <sl-radio-group :value="state.value" @sl-change="changeEvent"
+  class="widget-bone widget-bone-boolean widget-bone-boolean-choose"
+  :class="([`widget-bone-boolean-${name}`])"
+  >
+    <sl-radio :value="'true'" :disabled="boneState.readonly">{{ $t("bones.bool.true") }}</sl-radio>
+    <sl-radio :value="'false'" :disabled="boneState.readonly">{{ $t("bones.bool.false") }}</sl-radio>
+  </sl-radio-group>
 </template>
 
 <script lang="ts">
@@ -26,12 +26,13 @@ export default defineComponent({
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() => {
-        return ![false, null, undefined, ""].includes(props.value)
+        return ""+![false, null, undefined, "", "false"].includes(props.value)
       })
     })
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.checked, props.lang, props.index)
+      console.log(event.target.value)
+      context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
     onMounted(() => {

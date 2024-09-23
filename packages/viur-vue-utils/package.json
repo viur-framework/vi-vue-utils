@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "1.4.10",
+  "version": "1.7.6",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +26,7 @@
     "@viur/ckeditor5-build-classic": "^1.0.2-v38.0.1",
     "@viur/vue-components": "^1.2.4",
     "@vueuse/core": "^10.7.0",
+    "logics-js": "^0.3.9",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",
     "vue-i18n": "^9.9.1",
@@ -47,6 +48,6 @@
     "rollup-plugin-visualizer": "^5.9.2",
     "typescript": "^5.1.6",
     "vite": "^5.2.8",
-    "vue-tsc": "^1.8.5"
+    "vue-tsc": "^2.1.6"
   }
 }

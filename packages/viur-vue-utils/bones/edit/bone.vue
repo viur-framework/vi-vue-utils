@@ -1,19 +1,22 @@
 <template>
   <div
-    class="bone-wrapper"
+    class="bone-wrapper wrapper-bone"
     :class="
-      ('bone-wrapper-' + state.bonestructure['type'].split('.')[0], { 'has-subbones': state.bonestructure['using'] })
+      { 'has-subbones': state.bonestructure['using'],
+        'label-top': label==='top',
+        'label-hide': ['hide','placeholder'].includes(label),
+        [`wrapper-bone-${state.bonestructure['type'].split('.')[0]}`]:true,
+        [`wrapper-bone-${name}`]:true
+      }
     "
   >
-    <bone-label :name="name">
+    <bone-label :name="name" v-if="!['hide','placeholder'].includes(label)">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
       <span
         v-if="state.required"
         class="required"
       >
-        *</span
-      >
-
+        *</span>
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
         :content="state.bonestructure.params['tooltip']"
@@ -38,7 +41,11 @@
       ></sl-icon>
       {{ state.bonestructure.params["tooltip"] }}
     </sl-alert>
-    <div class="bone-inner-wrap">
+    <div class="bone-inner-wrap wrapper-bone-widget"
+      :class="(
+        [`wrapper-bone-widget-${name}`]
+      )"
+    >
       <!--Language chooser -->
       <sl-tab-group
         v-if="state.multilanguage"
@@ -52,18 +59,19 @@
           <sl-tab
             slot="nav"
             :panel="'lang_' + lang"
+            :active="defaultLanguage===lang"
           >
             {{ $t(lang) }}
           </sl-tab>
 
-          <sl-tab-panel :name="'lang_' + lang">
+          <sl-tab-panel :name="'lang_' + lang" :active="defaultLanguage===lang">
             <!--Bone rendering for multiple bones-->
             <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
               <!--multilang and multiple-->
               <div
                 v-for="(val, index) in state.bonevalue?.[lang]"
                 v-if="state.bonevalue?.[lang].length"
-                :key="index"
+                :key="index+'_'+state.bonevalue[lang].length"
                 class="multiple-bone"
               >
                 <wrapper-multiple
@@ -88,6 +96,7 @@
                     :index="index"
                     :lang="lang"
                     :name="name"
+                    :bone="state.bonestructure"
                     @change="updateValue"
                     @keydown.enter="multipleBonePressEnter(lang)"
                   ></component>
@@ -124,6 +133,7 @@
               :index="null"
               :lang="lang"
               :name="name"
+              :bone="state.bonestructure"
               @change="updateValue"
             ></component>
           </sl-tab-panel>
@@ -136,9 +146,10 @@
           <div
             v-for="(val, index) in state.bonevalue"
             v-if="state.bonevalue?.length"
-            :key="index"
+            :key="index+'_'+state.bonevalue.length"
             class="multiple-bone"
           >
+
             <wrapper-multiple
               :readonly="!state.readonly"
               :is-dragging="state.isDragging.index === index ? true : false"
@@ -154,6 +165,7 @@
                 :value="val"
                 :index="index"
                 :name="name"
+                :bone="state.bonestructure"
                 @change="updateValue"
                 @keydown.enter="multipleBonePressEnter()"
               ></component>
@@ -179,12 +191,14 @@
           ></component>
         </template>
         <!--Bone rendering for normal bones-->
+
         <component
           :is="is"
           v-else
           :value="state.bonevalue"
           :name="name"
           :index="null"
+          :bone="state.bonestructure"
           :autofocus="autofocus"
           @change="updateValue"
           @keypress.enter="updateValue"
@@ -259,8 +273,16 @@ export default defineComponent({
       required: true
     },
     errors: Object,
+    label:{
+      type:String,
+      default:"normal",
+      validator(value,props){
+        return ["normal","top","hide","placeholder"].includes(value)
+      }
+    },
     showLabelInfo: { type: Boolean, required: false, default: false },
-    autofocus: { type: Boolean, required: false, default: false }
+    autofocus: { type: Boolean, required: false, default: false },
+    defaultLanguage: {type:String,default:"de"}
   },
 
   setup(props, context) {
@@ -373,7 +395,7 @@ export default defineComponent({
         let errors = []
         for (let error of props.errors) {
           if (
-            error["fieldPath"][0] === props.name &&
+            error["fieldPath"].length===1 &&error["fieldPath"][0] === props.name &&
             (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
           ) {
             //severity level???
@@ -381,7 +403,8 @@ export default defineComponent({
           }
         }
         return errors
-      })
+      }),
+      label: computed(()=>props.label)
     })
     provide("boneState", state)
 
@@ -426,13 +449,12 @@ export default defineComponent({
           dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
           state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
         }
-        console.dir(state.bonevalue[0])
-        context.emit("change", {
-          name: props.name,
-          value: toFormValue(),
-          lang: lang,
-          index: index
-        })
+      }
+
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
       }
 
       resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
@@ -482,7 +504,7 @@ export default defineComponent({
 
       let changeObj = {
         name: name,
-        value: toFormValue(),
+        value: "",
         lang: lang,
         index: index
       }
@@ -499,7 +521,7 @@ export default defineComponent({
         changeInternalObj.pwMatch = pwMatch
       }
 
-      context.emit("change", changeObj)
+      //context.emit("change", changeObj)
       context.emit("change-internal", changeInternalObj)
     }
 
@@ -520,8 +542,12 @@ export default defineComponent({
               }
             }
           } else {
-            for (const [i, v] of val.entries()) {
-              ret.push(rewriteData(v, key))
+            if (val.length===0){
+              ret.push(rewriteData("", key))
+            }else{
+              for (const [i, v] of val.entries()) {
+                ret.push(rewriteData(v, key))
+              }
             }
           }
         } else if (val === Object(val)) {
@@ -589,18 +615,12 @@ export default defineComponent({
       } else {
         state.bonevalue.splice(index, 1)
       }
-      context.emit("change", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      })
-      context.emit("change-internal", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang,
-        index: index
-      })
+
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
+      }
     }
 
     function removeMultipleEntries(lang = null) {
@@ -609,16 +629,11 @@ export default defineComponent({
       } else {
         state.bonevalue.splice(0)
       }
-      context.emit("change", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang
-      })
-      context.emit("change-internal", {
-        name: props.name,
-        value: toFormValue(),
-        lang: lang
-      })
+      if (lang){
+        updateValue(props.name, state.bonevalue[lang], lang)
+      }else{
+        updateValue(props.name, state.bonevalue)
+      }
     }
 
     provide("removeMultipleEntries", removeMultipleEntries)
@@ -652,7 +667,7 @@ export default defineComponent({
         let aval = avalue
         for (let entry of path) {
           restPath.shift()
-          if (aval && aval !== "-" && Object.keys(aval).includes(entry) && aval[entry]) {
+          if (aval && aval !== "-" && Object.keys(aval).includes(entry)) {
             if (Array.isArray(aval[entry])) {
               let resVal = []
               for (let val of aval[entry]) {
@@ -660,7 +675,7 @@ export default defineComponent({
               }
               aval = resVal.join(", ")
             } else {
-              aval = aval[entry]
+              aval = readValue(restPath.join("."), aval[entry])
             }
           } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
             aval = "-"
@@ -676,6 +691,7 @@ export default defineComponent({
       if (!Array.isArray(boneValue)) {
         boneValue = [boneValue]
       }
+
       for (let avalue of boneValue) {
         let finalstr = formatstr
         for (let pathstr of pathlist) {
@@ -745,6 +761,7 @@ export default defineComponent({
   margin-bottom: 20px;
 
   &.bone-wrapper-record,
+  &.label-top,
   &.has-subbones {
     display: flex;
     flex-direction: column;
@@ -758,15 +775,31 @@ export default defineComponent({
 
     & > .bone-inner-wrap {
       padding-top: var(--sl-spacing-small);
-      border-top: 2px solid var(--sl-color-neutral-200);
+      border-top: 2px solid var(--sl-color-neutral-300);
       margin-bottom: 5px;
     }
 
     & .multiple-bone {
-      border-bottom: 1px solid var(--sl-color-neutral-200);
-      padding-bottom: var(--sl-spacing-2x-small);
+      border-bottom: 1px solid var(--sl-color-neutral-300);
+      padding-bottom: var(--sl-spacing-small);
       margin-bottom: var(--sl-spacing-small);
+
+      &:deep(sl-details){
+        &:last-child{
+          &::part(base){
+            border-bottom: none;
+          }
+        }
+      }
+
     }
+  }
+
+  &.label-hide{
+    display: flex;
+    flex-direction: column;
+    grid-gap: 0;
+
   }
 
   @media (max-width: 900px) {

@@ -1,10 +1,13 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-email widget-bone-email-default"
+    :class="([`widget-bone-email-${name}`])"
     ref="emailBone"
     :disabled="boneState.readonly"
     type="email"
     :value="value"
     @sl-change="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   ></sl-input>
 </template>
 

@@ -1,42 +1,26 @@
 <template>
   <div
-    class="record widget-bone widget-bone-relational widget-bone-relational-default"
+    class="record widget-bone widget-bone-relational widget-bone-relational-select"
     :class="([`widget-bone-relational-${name}`])"
-
   >
     <div class="single-entry">
-      <sl-input
-        v-if="state.selection"
-        :disabled="true"
-        :value="value ? formatString(state.format, state.selection) : ''"
-      ></sl-input>
-      <sl-combobox
-        v-else
+      <sl-select
         :disabled="boneState.readonly"
-        :source="getList"
+        :value="state.selection?.['dest']['key']"
         hoist
-        @sl-item-select="changeEvent"
+        max-options-visible="0"
+        clearable
+        @sl-change="changeEvent"
         :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-      ></sl-combobox>
-
-      <sl-button
-        v-if="!boneState.multiple && !boneState.isEmpty"
-        variant="danger"
-        outline
-        :title="$t('bone.del')"
-        class="delete-btn square-btn"
-        @click="
-          () => {
-            $emit('change', name, '', lang, index)
-            state.selection = null
-          }
-        "
       >
-        <sl-icon
-          slot="prefix"
-          name="x-lg"
-        ></sl-icon>
-      </sl-button>
+        <sl-option
+          v-for="(obj,key) in state.skellistdata"
+          :key="key"
+          :value="key"
+        >
+          {{ formatString(state.format, obj) }}
+        </sl-option>
+      </sl-select>
     </div>
     <Wrapper_nested
       v-if="bone['using']"
@@ -64,7 +48,7 @@ export default defineComponent({
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
-    bone: Object,
+    bone: Object
   },
   components: { Wrapper_nested },
   emits: ["change"],
@@ -105,7 +89,7 @@ export default defineComponent({
     }
 
     function changeEvent(event) {
-      state.selection = { dest: state.skellistdata[event.detail.item.value] }
+      state.selection = { dest: state.skellistdata[event.target.value] }
       context.emit("change", props.name, state.selection, props.lang, props.index)
     }
 
@@ -116,6 +100,7 @@ export default defineComponent({
 
     onMounted(() => {
       state.selection = props.value
+      getList()
       context.emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
@@ -156,15 +141,30 @@ sl-input {
     background-color: var(--sl-color-neutral-0);
   }
 }
-sl-combobox {
+sl-select {
   width: 100%;
 
-  &::part(input) {
+  &::part(combobox) {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
+  }
 
-    & :deep(&::part(base)) {
-      border: 1px solid red;
+  @media (max-width: 900px) {
+    &::part(combobox) {
+      border-top-right-radius: 0;
+      border-bottom-left-radius: var(--sl-border-radius-medium);
+    }
+  }
+}
+
+sl-option {
+  &::part(base) {
+    transition: background-color ease 0.3s;
+  }
+
+  &:hover {
+    &::part(base) {
+      background-color: var(--sl-color-gray-200);
     }
   }
 }

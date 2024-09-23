@@ -1,5 +1,7 @@
 <template>
   <sl-input
+    class="widget-bone widget-bone-numeric widget-bone-numeric-default"
+    :class="([`widget-bone-numeric-${name}`])"
     ref="numericBone"
     type="number"
     :disabled="boneState.readonly"
@@ -9,6 +11,7 @@
     :step="state.precision"
     @sl-change="changeEvent"
     @keyup="changeEvent"
+    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
   >
   </sl-input>
   <ul class="info">

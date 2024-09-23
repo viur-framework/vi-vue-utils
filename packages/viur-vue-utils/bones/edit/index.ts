@@ -17,6 +17,11 @@ import fileBone from "./default/fileBone.vue"
 import textBone from "./default/textBone.vue"
 import spatialBone from "./default/spatialBone.vue"
 
+import booleanBoneSelect from "./default/booleanBoneSelect.vue"
+import booleanBoneChoose from "./default/booleanBoneChoose.vue"
+import selectBoneChoose from "./default/selectBoneChoose.vue"
+import relationalBoneSelect from "./default/relationalBoneSelect.vue"
+
 import defaultBar from "./actionbar/defaultBar.vue"
 import relationalBar from "./actionbar/relationalBar.vue"
 import fileBar from "./actionbar/fileBar.vue"
@@ -44,7 +49,11 @@ export const useBoneStore = defineStore("boneStore", () => {
       fileBone,
       textBone,
       spatialBone,
-      phoneBone
+      phoneBone,
+      booleanBoneSelect,
+      booleanBoneChoose,
+      selectBoneChoose,
+      relationalBoneSelect
     }),
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
@@ -94,9 +103,15 @@ export const useBoneStore = defineStore("boneStore", () => {
       return phoneBone
     } else if (boneType === "str" || boneType.startsWith("str.")) {
       return stringBone
+    } else if (boneType === "select.choose") {
+      return selectBoneChoose
     } else if (boneType === "select" || boneType.startsWith("select.")) {
       return selectBone
-    } else if (boneType === "bool") {
+    } else if (boneType === "bool.choose") {
+      return booleanBoneChoose
+    } else if (boneType === "bool.select") {
+      return booleanBoneSelect
+    } else if (boneType === "bool" || boneType.startsWith("bool.")) {
       return booleanBone
     } else if (boneType === "password") {
       return passwordBone
@@ -106,6 +121,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return numericBone
     } else if (boneType === "relational.tree.leaf.file.file") {
       return fileBone
+    } else if (boneType === "relational.select" || boneType.startsWith("relational.select.")) {
+      return relationalBoneSelect
     } else if (boneType === "relational" || boneType.startsWith("relational.")) {
       return relationalBone
       /*} else if (boneType === "raw.json") {

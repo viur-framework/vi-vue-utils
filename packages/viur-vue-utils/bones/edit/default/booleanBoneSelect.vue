@@ -1,11 +1,26 @@
 <template>
-  <sl-switch
-    class="widget-bone widget-bone-boolean widget-bone-boolean-default"
-    :class="([`widget-bone-boolean-${name}`])"
+  <sl-select
     :disabled="boneState.readonly"
-    :checked="state.value"
+    :value="state.value"
+    hoist
+    max-options-visible="0"
     @sl-change="changeEvent"
-  ></sl-switch>
+    class="widget-bone widget-bone-boolean widget-bone-boolean-select"
+    :class="([`widget-bone-boolean-${name}`])"
+  >
+    <sl-option
+      v-for="val in [true,false]"
+      :key="val"
+      :value="val"
+    >
+      <template v-if="val">
+        {{ $t("bones.bool.true") }}
+      </template>
+      <template v-else>
+        {{ $t("bones.bool.false") }}
+      </template>
+    </sl-option>
+  </sl-select>
 </template>
 
 <script lang="ts">
@@ -26,12 +41,12 @@ export default defineComponent({
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() => {
-        return ![false, null, undefined, ""].includes(props.value)
+        return ""+![false, null, undefined, "","false"].includes(props.value)
       })
     })
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.checked, props.lang, props.index)
+      context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
     onMounted(() => {
