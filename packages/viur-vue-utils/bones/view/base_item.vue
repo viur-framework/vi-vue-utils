@@ -1,11 +1,11 @@
 <template>
-  {{ getBoneValue(boneName, structure[boneName]["type"] === "date" ? "date" : null) }}
+  {{ getBoneValue(boneName, state.option) }}
 </template>
 
 <script lang="ts">
 //@ts-nocheck
 import boneLogic from "./boneLogic"
-import { defineComponent } from "vue"
+import {computed, defineComponent, reactive} from "vue"
 
 export default defineComponent({
   props: {
@@ -14,8 +14,23 @@ export default defineComponent({
     structure: Object
   },
   setup(props, context) {
+    const state = reactive({
+      option: computed(()=>{
+        if (props.structure[props.boneName]["type"] === "date"){
+          if( props.structure[props.boneName]["date"] && !props.structure[props.boneName]["time"]){
+            return "date"
+          }
+
+          if( props.structure[props.boneName]["time"] && !props.structure[props.boneName]["date"]){
+            return "time"
+          }
+        }
+        return null
+      })
+    })
+
     const { getBoneValue, bones_state } = boneLogic(props.skel, props.structure)
-    return { getBoneValue }
+    return { getBoneValue,state }
   }
 })
 </script>

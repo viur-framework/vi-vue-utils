@@ -84,6 +84,11 @@ const boneLogic = (skel, structure) => {
         let returnValue = boneStructure["values"]?.filter(x=>x[0]===value)?.[0]?.[1]
         return returnValue?returnValue:"-"
       }
+      if (Object.keys(boneStructure["values"]).length>0){
+        let returnValue = Object.entries(boneStructure["values"])?.filter(x=>x[0]===value)?.[0]?.[1]
+        return returnValue?returnValue:"-"
+      }
+
       return "-"
     } else if (boneStructure["type"] === "date" || boneStructure["type"].startsWith("date.")) {
       if (options && options === "time") {

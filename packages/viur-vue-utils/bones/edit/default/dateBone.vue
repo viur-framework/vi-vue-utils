@@ -30,8 +30,10 @@ export default defineComponent({
       value: computed(() => {
         // remove timezone data if timed
         let boneValue = props.value
-        if (boneState.bonestructure["time"]) {
+        if (boneState.bonestructure["time"] && boneState.bonestructure["date"]) {
           boneValue = props.value?.split("+")[0]
+        } else if (boneState.bonestructure["time"]){
+          boneValue = props.value?.split("+")[0]?.split("T")[1]
         } else if (props.value) {
           //convert to readable value
           boneValue = new Date(props.value).toISOString().substr(0, 10)
@@ -44,6 +46,10 @@ export default defineComponent({
         let typeString = "datetime-local"
         if (!boneState.bonestructure["time"]) {
           typeString = "date"
+        }
+
+        if (!boneState.bonestructure["date"]) {
+          typeString = "time"
         }
         return typeString
       })
