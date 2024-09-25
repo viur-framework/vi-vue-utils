@@ -26,6 +26,8 @@
     "@viur/ckeditor5-build-classic": "^1.0.2-v38.0.1",
     "@viur/vue-components": "^1.2.4",
     "@vueuse/core": "^10.7.0",
+    "install": "^0.13.0",
+    "libphonenumber-js": "^1.11.9",
     "logics-js": "^0.3.9",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",

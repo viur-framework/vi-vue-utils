@@ -5,12 +5,12 @@
     class="input-wrapper"
   >
     <sl-select
-      :value="state.default"
+      :value="state.dialCode"
       @sl-change="handleSelect"
     >
       <sl-option
         v-for="country in state.countryInfo"
-        :key="country.code"
+        :key="country.currentCode"
         :value="country.dialCode"
       >
         {{ country.emoji }}
@@ -19,25 +19,26 @@
     <sl-input
       ref="phoneBone"
       type="tel"
-      :placeholder="$t('bones.phone.placeholder')"
       :disabled="boneState.readonly"
       :value="Utils.unescape(state.value)"
       :required="boneState.bonestructure.required"
       @sl-change="changeEvent"
-      @keyup="changeEvent"
     >
     </sl-input>
   </div>
-  <div style="margin-bottom: 100px"></div>
+  {{ getCountry(state.country) }}
+  <div style="height: 100px"></div>
 </template>
 
 <script lang="ts">
 //@ts-nocheck
+
 import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
-import { Request } from "../../../index.js"
 import jsonData from "./country_information.json"
+import parsePhoneNumber from "libphonenumber-js/min"
+import { AsYouType, validatePhoneNumberLength } from "libphonenumber-js/min"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -53,21 +54,36 @@ export default defineComponent({
   setup(props, context) {
     const boneState = inject("boneState")
     const state = reactive({
-      value: computed(() => props.value),
+      value: computed(() =>
+        props.value
+          ? parsePhoneNumber(state.reference, getCountry(state.dialCode)).formatInternational()
+          : state.dialCode + ""
+      ),
       loading: false,
-      country: "",
-      countryInfo: [],
-      userInput: "",
-      default: computed(() => {
-        return props.value.split(" ")[0]
-      })
+      reference: computed(() => parsePhoneNumber(props.value, getCountry(state.dialCode)).formatNational()),
+      country: computed(() => getCountry(state.dialCode)),
+      dialCode: "",
+      countryInfo: []
     })
 
-    const countryInformation = jsonData
+    const countryInformation = ref(jsonData)
     const phoneBone = ref(null)
 
     function changeEvent(event) {
-      state.userInput = event.target.value
+      if (!event.target.value) {
+        context.emit("change", props.name, "", props.lang, props.index)
+        return
+      }
+      console.log("hier", event.target.value.length)
+      if (event.target.value.length > 4) {
+        const number = parsePhoneNumber(event.target.value, state.country)
+        const valueFormatter = new AsYouType()
+
+        let value = valueFormatter.input(number ? number.number : event.target.value)
+        state.dialCode = "+" + number?.countryCallingCode
+        context.emit("change", props.name, value, props.lang, props.index)
+        return
+      }
       context.emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
@@ -87,19 +103,27 @@ export default defineComponent({
     })
 
     function handleSelect(e) {
-      let value = ""
-      if (typeof props.value === "string") {
-        value = props.value
-      } else value = state.userInput
-      value = value.split(" ")[1]
-      state.country = e.target.value
-      context.emit("change", props.name, state.country + " " + value, props.lang, props.index) //init
+      state.dialCode = e.target.value
+      // changeEvent({ target: { value: state.value } })
+    }
+
+    function getCountry(dialCode) {
+      let result = state.countryInfo.filter((country) => country.dialCode === dialCode)
+      return result.length ? result[0].code : []
+    }
+
+    function getDefaultCode() {
+      let defaultDialCode = boneState.bonestructure.default_country_code
+        ? boneState.bonestructure.default_country_code
+        : "+49"
+
+      state.dialCode = defaultDialCode
     }
 
     onMounted(() => {
       context.emit("change", props.name, props.value, props.lang, props.index) //init
       state.loading = true
-      countryInformation.forEach((country) => {
+      countryInformation.value.forEach((country) => {
         let temp = {}
         temp.name = country.name
         temp.code = country.code
@@ -108,6 +132,9 @@ export default defineComponent({
         state.countryInfo.push(temp)
       })
       state.loading = false
+
+      getDefaultCode()
+
       // let available_countries = []
     })
 
@@ -118,7 +145,8 @@ export default defineComponent({
       changeEvent,
       phoneBone,
       countryInformation,
-      handleSelect
+      handleSelect,
+      getCountry
     }
   }
 })
@@ -141,6 +169,15 @@ sl-input {
 }
 sl-select {
   max-width: 100px;
+
+  &&::part(listbox) {
+    height: auto;
+    max-height: 300px;
+    z-index: 9999;
+  }
+}
+
+sl-option {
 }
 .input-wrapper {
   display: flex;
