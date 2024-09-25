@@ -292,7 +292,7 @@ export function useFormUtils(props, state){
       }
 
       if(bone?.['using']){
-        _logics(bone['using'],skel)
+        _logics(normalizeStructure(bone['using']),skel)
       }
     }
   }
