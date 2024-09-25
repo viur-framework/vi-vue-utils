@@ -26,8 +26,6 @@
     >
     </sl-input>
   </div>
-  {{ getCountry(state.country) }}
-  <div style="height: 100px"></div>
 </template>
 
 <script lang="ts">
