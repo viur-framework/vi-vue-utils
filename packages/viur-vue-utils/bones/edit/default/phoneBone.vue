@@ -72,7 +72,6 @@ export default defineComponent({
         context.emit("change", props.name, "", props.lang, props.index)
         return
       }
-      console.log("hier", event.target.value.length)
       if (event.target.value.length > 4) {
         const number = parsePhoneNumber(event.target.value, state.country)
         const valueFormatter = new AsYouType()
@@ -81,8 +80,8 @@ export default defineComponent({
         state.dialCode = "+" + number?.countryCallingCode
         context.emit("change", props.name, value, props.lang, props.index)
         return
-      }
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      } else return
+
     }
 
     watchEffect(() => {
@@ -102,12 +101,13 @@ export default defineComponent({
 
     function handleSelect(e) {
       state.dialCode = e.target.value
-      // changeEvent({ target: { value: state.value } })
+      changeEvent({ target: { value: state.value } })
     }
 
     function getCountry(dialCode) {
       let result = state.countryInfo.filter((country) => country.dialCode === dialCode)
-      return result.length ? result[0].code : []
+      result = result[0] ? result[0].code : "DE"
+      return result
     }
 
     function getDefaultCode() {
@@ -116,6 +116,12 @@ export default defineComponent({
         : "+49"
 
       state.dialCode = defaultDialCode
+    }
+
+    function getCode(value) {
+      if (!value)
+        return boneState.bonestructure.default_country_code ? boneState.bonestructure.default_country_code : "+49"
+      return "+" + parsePhoneNumber(value).countryCallingCode
     }
 
     onMounted(() => {
@@ -130,9 +136,7 @@ export default defineComponent({
         state.countryInfo.push(temp)
       })
       state.loading = false
-
-      getDefaultCode()
-
+      state.dialCode = getCode(props.value)
       // let available_countries = []
     })
 
