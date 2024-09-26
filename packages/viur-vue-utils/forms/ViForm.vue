@@ -112,6 +112,10 @@ const props = defineProps({
   defaultLanguage:{
     type:String,
     default:"de"
+  },
+  fetchUrl:{
+    type:[String,null],
+    default:null
   }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
@@ -147,7 +151,7 @@ onBeforeMount(()=>{
     initForm(props.skel,props.structure, state.values)
     state.loading=false
   }else if(props.module && props.action){
-    fetchData(null,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
+    fetchData(props.fetchUrl,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
   }else{
     console.log(props)
     console.error("Error while building Form: you need atleast module and action or structure parameters")
