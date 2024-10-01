@@ -92,7 +92,7 @@
                 >
                   <component
                     :is="is"
-                    :value="val"
+                    :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']:val"
                     :index="index"
                     :lang="lang"
                     :name="name"
@@ -162,7 +162,7 @@
             >
               <component
                 :is="is"
-                :value="val"
+                :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']:val"
                 :index="index"
                 :name="name"
                 :bone="state.bonestructure"
