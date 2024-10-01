@@ -264,8 +264,9 @@ export function useFormUtils(props, state){
       skelvalue[index] = value
     } else {
       skelvalue = value
-      state.skel[name] = skelvalue
+
     }
+    state.skel[name] = skelvalue
     logics() //postprocess all bones if needed
   }
 
