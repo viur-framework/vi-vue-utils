@@ -318,7 +318,11 @@ export function useFormUtils(props, state){
     if (structure!==undefined){
       //props are refs to a js Object, removing reactivativ is not enought, we musst create copy of that object.
       //each form has its own structure and mutating dont change the structure for other forms, this is needed for multiple records with logics
-      state.structure = structuredClone(toRaw(normalizeStructure(structure)))
+      let struct = {}
+      for (const [k,v] of Object.entries(normalizeStructure(structure))){
+        struct[k] = toRaw(v)
+      }
+      state.structure = structuredClone(struct)
     }
 
     state.skel = { ...skeldata, ...formvalues }
