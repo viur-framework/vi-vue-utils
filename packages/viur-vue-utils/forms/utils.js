@@ -1,6 +1,6 @@
 import Request from "../utils/request"
 import Logics from "logics-js"
-import {watch, inject} from "vue"
+import {watch, inject, toRaw} from "vue"
 
 
 export function useFormUtils(props, state){
@@ -299,9 +299,11 @@ export function useFormUtils(props, state){
   }
 
   function logics() {
-    let skel = state.skel
-    if (props.internal){
-      skel = props.internal.skel
+    let skel = {...state.skel, _skel:state.skel}
+
+    if (false && props.internal){
+      let skel2 = toRaw({...skel, _skel:props.internal.skel})
+      _logics(state.structure, skel)
     }
     _logics(state.structure, skel)
   }
@@ -312,8 +314,14 @@ export function useFormUtils(props, state){
     if ( values ){
       formvalues = values
     }
+
+    if (structure!==undefined){
+      //props are refs to a js Object, removing reactivativ is not enought, we musst create copy of that object.
+      //each form has its own structure and mutating dont change the structure for other forms, this is needed for multiple records with logics
+      state.structure = structuredClone(toRaw(normalizeStructure(structure)))
+    }
+
     state.skel = { ...skeldata, ...formvalues }
-    state.structure = normalizeStructure(structure)
     state.categories = updateCategories()
   }
 
@@ -324,6 +332,7 @@ export function useFormUtils(props, state){
     updateCategories,
     updateSkel,
     normalizeStructure,
-    initForm
+    initForm,
+    logics
   }
 }

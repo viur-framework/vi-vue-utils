@@ -139,7 +139,7 @@ if (!props.internal){
 }
 
 
-const {fetchData, sendData, updateSkel, initForm} = useFormUtils(props,state)
+const {fetchData, sendData, updateSkel, initForm,logics} = useFormUtils(props,state)
 
 const formUpdateEvent = useDebounceFn((data)=>{
   emit("change", data)
@@ -160,7 +160,10 @@ onBeforeMount(()=>{
 
 watch(()=>props.skel,(oldVal,newVal)=>{
   //dragging internalforms
-  initForm(props.skel,props.structure,state.value)
+  // structure wont be updated, cause of logic changes on structures
+  initForm(props.skel,undefined,state.value)
+  //rerun logics after dragging
+  logics()
 })
 
 function formUpdate(data){
