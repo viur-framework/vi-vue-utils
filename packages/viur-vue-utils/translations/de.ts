@@ -25,6 +25,21 @@ export default {
       placeholder: "Telefon/Fax"
     }
   },
+  errors:{
+    "Field not set":"Feld nicht ausgefüllt",
+    "No value entered":"Feld nicht ausgefüllt",
+    "invalid value entered":"Wert ist ungültig",
+    "Field not submitted":"Feld wurde nicht übertragen",
+    "Too few items":"Zuwenige Elemente",
+    "Too many items":"Zuviele Elemente",
+    "Duplicate items":"Doppelte Elemente",
+    "No Captche given!":"Captcha Code fehlt!",
+    "Incomplete data":"Daten unvollständig",
+    "No value selected":"Kein Wert ausgewählt",
+    "Invalid value selected":"Auswahl ist ungültig",
+    "Wrong OTP Token":"Falscher OTP Code"
+
+  },
   preview: "Vorschau",
   de: "DE",
   en: "EN",

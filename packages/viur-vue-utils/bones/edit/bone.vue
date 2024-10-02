@@ -217,7 +217,7 @@
         >
         </sl-icon>
         <div class="error-msg">
-          {{ message }}
+          {{ $t(`errors.${message}`) }}
         </div>
       </sl-alert>
     </div>
