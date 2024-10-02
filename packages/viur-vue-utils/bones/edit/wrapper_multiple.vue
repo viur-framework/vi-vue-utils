@@ -86,6 +86,7 @@ export default defineComponent({
 .value-line {
   display: flex;
   gap: var(--sl-spacing-x-small);
+  align-items: flex-start;
 }
 
 .value {
@@ -115,10 +116,6 @@ export default defineComponent({
 
 .delete-btn {
   transition: all ease .3s;
-
-  &::part(base) {
-    aspect-ratio: 1;
-  }
 }
 
 .drag-button {
