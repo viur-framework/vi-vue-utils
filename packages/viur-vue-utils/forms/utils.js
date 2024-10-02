@@ -1,6 +1,6 @@
 import Request from "../utils/request"
 import Logics from "logics-js"
-import {watch, inject, toRaw} from "vue"
+import {watch, inject, toRaw, reactive} from "vue"
 
 
 export function useFormUtils(props, state){
@@ -283,7 +283,7 @@ export function useFormUtils(props, state){
           let ex = new Logics(bone?.["params"]?.["visibleIf"])
           bone["visible"] = ex.run(skel).toBool()
         }catch(error){
-          console.log(bone?.["params"]?.["visibleIf"])
+          //console.log(bone?.["params"]?.["visibleIf"])
         }
       }
 
@@ -301,9 +301,9 @@ export function useFormUtils(props, state){
   function logics() {
     let skel = {...state.skel, _skel:state.skel}
 
-    if (false && props.internal){
-      let skel2 = toRaw({...skel, _skel:props.internal.skel})
-      _logics(state.structure, skel)
+    if (props.internal){
+      // injet mainform with _skel
+      skel = {...skel, _skel:props.internal.skel}
     }
     _logics(state.structure, skel)
   }

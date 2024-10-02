@@ -165,6 +165,10 @@ watch(()=>props.skel,(oldVal,newVal)=>{
   //rerun logics after dragging
   logics()
 })
+watch(()=>props.structure,(oldVal,newVal)=>{
+  //rerun logics if structure on mainform changes
+  logics()
+},{ deep: true })
 
 function formUpdate(data){
   updateSkel(data)
