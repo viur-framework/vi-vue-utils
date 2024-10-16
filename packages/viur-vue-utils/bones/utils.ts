@@ -66,12 +66,20 @@ export default class Utils {
             aval = "-"
           }
         }
+
+        if (typeof aval === 'object' &&
+          !Array.isArray(aval) &&
+          aval !== null
+        ){
+          aval = Object.entries(aval).map((x)=>x[1]).join(", ")
+        }
+
         aval = this.unescape(aval)
+
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)
       }
       finalStrList.push(finalstr)
     }
-
     return finalStrList.join(", ")
   }
 }
