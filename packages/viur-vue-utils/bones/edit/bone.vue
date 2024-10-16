@@ -714,7 +714,7 @@ export default defineComponent({
     })
 
     watch(
-      () => props.skel,
+      () => props.skel?.[props.name],
       (newVal, oldVal) => {
         state.bonevalue = props.skel?.[props.name]
       }

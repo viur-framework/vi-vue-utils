@@ -275,7 +275,7 @@ export function useFormUtils(props, state){
     for (const [boneName, bone] of Object.entries(structure)) {
       if (bone?.["params"]?.["evaluate"]) {
         let ex = new Logics(bone?.["params"]?.["evaluate"])
-        state.skel[boneName] = ex.run(skel) //rule produces, valid results? multilang, multiple etc?
+        state.skel[boneName] = ex.run(skel).toString() //rule produces, valid results? multilang, multiple etc?
       }
 
       if (bone?.["params"]?.["visibleIf"]) {
