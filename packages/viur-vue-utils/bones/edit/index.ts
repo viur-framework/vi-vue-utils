@@ -93,7 +93,7 @@ export const useBoneStore = defineStore("boneStore", () => {
       }
     }
 
-    if (boneType === "date") {
+    if (boneType === "date" || boneType.startsWith("date.")) {
       return dateBone
     } else if (boneType === "key") {
       return keyBone
@@ -113,9 +113,9 @@ export const useBoneStore = defineStore("boneStore", () => {
       return booleanBoneSelect
     } else if (boneType === "bool" || boneType.startsWith("bool.")) {
       return booleanBone
-    } else if (boneType === "password") {
+    } else if (boneType === "password" || boneType.startsWith("password.")) {
       return passwordBone
-    } else if (boneType === "record") {
+    } else if (boneType === "record" || boneType.startsWith("record.")) {
       return recordBone
     } else if (boneType === "numeric" || boneType.startsWith("numeric.")) {
       return numericBone
@@ -127,11 +127,11 @@ export const useBoneStore = defineStore("boneStore", () => {
       return relationalBone
       /*} else if (boneType === "raw.json") {
       return jsonBone*/
-    } else if (boneType === "color") {
+    } else if (boneType === "color" || boneType.startsWith("color.")) {
       return colorBone
-    } else if (boneType === "text") {
+    } else if (boneType === "text" || boneType.startsWith("text.")) {
       return textBone
-    } else if (boneType === "spatial") {
+    } else if (boneType === "spatial" || boneType.startsWith("spatial.")) {
       return spatialBone
     }
 
