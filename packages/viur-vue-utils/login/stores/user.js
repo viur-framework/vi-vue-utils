@@ -187,6 +187,12 @@ export const useUserStore = defineStore("user", () => {
                             state["user.loggedin"] = "secound_factor_choice";
                             state["user.login.secound_factor_choice"] =
                                 loginResponse;
+                        } else if (loginResponse?.["action"]==="login"){
+                                state["user.loggedin"] = "error";
+                                state.renderErrorMsg =
+                                    "Benutzername oder Passwort falsch!";
+
+                                reject(respLogin);
                         } else if (
                             typeof loginResponse === "object" &&
                             loginResponse["values"] !== undefined
