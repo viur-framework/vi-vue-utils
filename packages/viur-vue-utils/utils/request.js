@@ -205,7 +205,7 @@ export default class Request {
     } = {}
   ) {
     module = module.replace(/\//g, ".")
-    let url = `/${renderer}/getStructure/${module}`
+    let url = `/vi/getStructure/${module}`
     if (group) {
       url += `/${group}`
     }
