@@ -76,7 +76,7 @@ export function ListRequest(
         .then(async (resp) => {
           let data = await resp.json()
           if (data.structure === null || Object.keys(data.structure).length === 0) {
-            const structure = await Request.getStructure(state.module,{group: state.group}).then((structureResponse) =>
+            const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer}).then((structureResponse) =>
               structureResponse.json().then((_structure) => _structure)
             )
 
