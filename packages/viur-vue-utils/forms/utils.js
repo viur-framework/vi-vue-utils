@@ -175,6 +175,19 @@ export function useFormUtils(props, state){
     })
   }
 
+  function reload(){
+    state.loading=true
+    if (props.structure){
+      initForm(props.skel,props.structure, state.values)
+      state.loading=false
+    }else if(props.module && props.action){
+      fetchData(props.fetchUrl,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
+    }else{
+      console.log(props)
+      console.error("Error while building Form: you need atleast module and action or structure parameters")
+    }
+  }
+
   function updateCategories(){
     if (!state.structure){
       state.structure = {}
@@ -326,6 +339,7 @@ export function useFormUtils(props, state){
     }
 
     state.skel = { ...skeldata, ...formvalues }
+    console.log(state.skel)
     state.categories = updateCategories()
   }
 
@@ -337,6 +351,7 @@ export function useFormUtils(props, state){
     updateSkel,
     normalizeStructure,
     initForm,
-    logics
+    logics,
+    reload
   }
 }

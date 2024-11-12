@@ -139,23 +139,14 @@ if (!props.internal){
 }
 
 
-const {fetchData, sendData, updateSkel, initForm,logics} = useFormUtils(props,state)
+const {fetchData, sendData, updateSkel, initForm, logics, reload} = useFormUtils(props,state)
 
 const formUpdateEvent = useDebounceFn((data)=>{
   emit("change", data)
 },500)
 
 onBeforeMount(()=>{
-  state.loading=true
-  if (props.structure){
-    initForm(props.skel,props.structure, state.values)
-    state.loading=false
-  }else if(props.module && props.action){
-    fetchData(props.fetchUrl,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
-  }else{
-    console.log(props)
-    console.error("Error while building Form: you need atleast module and action or structure parameters")
-  }
+  reload()
 })
 
 watch(()=>props.skel,(oldVal,newVal)=>{
