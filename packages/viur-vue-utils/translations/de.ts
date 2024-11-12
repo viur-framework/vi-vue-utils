@@ -8,7 +8,8 @@ export default {
     chooseFile: "Datei auswählen",
     dragFile: "Dateien hier hinziehen",
     editFile: "Datei bearbeiten",
-    list: "Auflisten"
+    list: "Auflisten",
+    addEmpty:"Neuer Eintrag"
   },
   lang: "Sprache",
   bones: {
