@@ -48,7 +48,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-@layer foundation.form {
   .bone-name {
     display: flex;
     flex-direction: row;
@@ -85,5 +84,4 @@ export default defineComponent({
       font-size: 0.55em;
     }
   }
-}
 </style>
