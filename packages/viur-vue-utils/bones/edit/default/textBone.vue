@@ -73,6 +73,9 @@ export default defineComponent({
         if (value) {
           const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
           sourceEditingTextarea.addEventListener('focusout', (event) => {
+            if (event.relatedTarget?.classList.contains("ck")){
+              return
+            }
             codePlugin.isSourceEditingMode=false
           });
         }
