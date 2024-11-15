@@ -41,7 +41,8 @@
       ></sl-icon>
       {{ state.bonestructure.params["tooltip"] }}
     </sl-alert>
-    <div class="bone-inner-wrap wrapper-bone-widget"
+    <sl-tooltip class="bone-tooltip" :disabled="!state.showtooltip" :content="state.bonestructure?.['descr']" style="--show-delay:1000;">
+      <div class="bone-inner-wrap wrapper-bone-widget"
       :class="(
         [`wrapper-bone-widget-${name}`]
       )"
@@ -221,6 +222,7 @@
         </div>
       </sl-alert>
     </div>
+    </sl-tooltip>
   </div>
 </template>
 
@@ -282,7 +284,8 @@ export default defineComponent({
     },
     showLabelInfo: { type: Boolean, required: false, default: false },
     autofocus: { type: Boolean, required: false, default: false },
-    defaultLanguage: {type:String,default:"de"}
+    defaultLanguage: {type:String,default:"de"},
+    showBoneTooltip: { type: Boolean, required: false, default: false }
   },
 
   setup(props, context) {
@@ -404,7 +407,16 @@ export default defineComponent({
         }
         return errors
       }),
-      label: computed(()=>props.label)
+      label: computed(()=>props.label),
+      showtooltip:computed(()=>{
+        if (props.showBoneTooltip){
+          return true
+        }
+        if (['hide','placeholder'].includes(props.label)){
+          return true
+        }
+        return false
+      })
     })
     provide("boneState", state)
 
@@ -1005,6 +1017,16 @@ export default defineComponent({
 
     &::part(input__suffix) {
       display: none !important;
+    }
+  }
+
+  sl-tooltip.bone-tooltip {
+    &::part(body) {
+      background-color: var(--sl-color-primary-500);
+    }
+
+    &::part(base__arrow) {
+      background-color: var(--sl-color-primary-500);
     }
   }
 </style>
