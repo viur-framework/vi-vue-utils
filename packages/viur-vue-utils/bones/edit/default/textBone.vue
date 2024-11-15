@@ -26,7 +26,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed, watch } from "vue"
+import { reactive, defineComponent, onMounted, inject, computed, watch, onBeforeMount } from "vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
 export default defineComponent({
@@ -55,7 +55,44 @@ export default defineComponent({
       context.emit("change", props.name, state.value, props.lang, props.index)
     }
 
+    onBeforeMount(()=>{
+      let toolbarActions = {
+        "heading":"h1",
+        "bold":"b",
+        "italic":"i",
+        "underline":"u",
+        "numberedList":"ol",
+        "bulletedList":"ul",
+        "blockQuote":"blockquote",
+        "link":"a",
+        "insertTable":"table",
+        "imageUpload":"img"
+      }
+
+      let defaultSet = ["heading","|", "bold", "italic","underline",
+        "|","alignment","numberedList", "bulletedList","blockQuote",
+        "|","indent","outdent","|","link","insertTable","imageUpload",
+        "|","undo","redo","RemoveFormat","sourceEditing"]
+
+      defaultSet = defaultSet.filter(i=>{
+        if (!Object.keys(toolbarActions).includes(i)){
+          return true
+        }
+
+        if (boneState.bonestructure?.['valid_html']?.["validTags"].includes(toolbarActions[i])){
+          return true
+        }
+        if (boneState.bonestructure?.['validHtml']?.["validTags"].includes(toolbarActions[i])){
+          return true
+        }
+        return false
+      })
+
+      state.editorConfig = {toolbar:defaultSet}
+    })
+
     onMounted(() => {
+
       if (props.value !== null) {
         state.value = props.value
       }
@@ -64,11 +101,14 @@ export default defineComponent({
     })
 
     function onReady(editor) {
+
+
       editor.editing.view.change((writer) => {
         writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
       })
 
       const codePlugin = editor.plugins.get("SourceEditing")
+
       codePlugin.on("change:isSourceEditingMode", (_eventInfo: unknown, _name: string, value: boolean) => {
         if (value) {
           const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
