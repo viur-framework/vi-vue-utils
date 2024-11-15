@@ -119,7 +119,7 @@ export default defineComponent({
       })
 
       const codePlugin = editor.plugins.get("SourceEditing")
-      console.log(codePlugin)
+
       codePlugin.on("change:isSourceEditingMode", (_eventInfo: unknown, _name: string, value: boolean) => {
         if (value) {
           const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
