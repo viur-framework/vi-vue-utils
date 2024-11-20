@@ -31,13 +31,13 @@
       :title="$t('bone.add')"
       outline
       class="add-btn"
-      @click="addMultipleEntry(lang)"
+      @click="addMultiple"
     >
       <sl-icon
         slot="prefix"
         name="plus-lg"
       ></sl-icon>
-      {{ $t("bone.list") }}
+      {{ $t("bone.addEmpty") }}
     </sl-button>
   </div>
 </template>
@@ -94,10 +94,19 @@ export default defineComponent({
       }
     })
 
+    function addMultiple(){
+      let relDefault = null
+      if (state.hasUsing) {
+        relDefault = undefined
+      }
+      addMultipleEntry(props.lang, { dest: {}, rel: relDefault })
+    }
+
     return {
       state,
       boneState,
       addMultipleEntry,
+      addMultiple,
       removeMultipleEntries,
       getList
     }

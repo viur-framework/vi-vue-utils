@@ -6,7 +6,7 @@
   >
     <div class="single-entry">
       <sl-input
-        v-if="state.selection"
+        v-if="state.selection?.['dest']?.['key']"
         :disabled="true"
         :value="value ? formatString(state.format, state.selection) : ''"
       ></sl-input>
@@ -40,9 +40,10 @@
     </div>
     <Wrapper_nested
       v-if="bone['using']"
-      :value="value"
+      :value="value?.['rel']"
       :name="name"
       :index="index"
+      :lang="lang"
       :bone="bone"
       :disabled="bone['readonly']"
       @change="changeEventNested"
@@ -76,7 +77,8 @@ export default defineComponent({
         return boneState?.bonestructure["format"]
       }),
       skellistdata: null,
-      selection: null
+      selection: null,
+      relationalData:null
     })
 
     function getList(search: String) {
@@ -106,12 +108,18 @@ export default defineComponent({
 
     function changeEvent(event) {
       state.selection = { dest: state.skellistdata[event.detail.item.value] }
+      if (props.bone["using"] && state.relationalData){
+        state.selection = {...state.selection, "rel":state.relationalData}
+      }
       context.emit("change", props.name, state.selection, props.lang, props.index)
     }
 
     function changeEventNested(data) {
-      state.selection = {...state.selection, "rel":data["value"]}
-      context.emit("change", data["name"], state.selection , data["lang"], data["index"])
+      state.relationalData = data["value"]
+      if (state.selection?.dest){ // only send a change if we have a valid target
+        state.selection = {...state.selection, "rel":data["value"]}
+        context.emit("change", data["name"], state.selection, data["lang"], data["index"])
+      }
     }
 
     onMounted(() => {

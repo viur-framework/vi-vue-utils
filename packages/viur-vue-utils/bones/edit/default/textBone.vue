@@ -26,7 +26,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed, watch } from "vue"
+import { reactive, defineComponent, onMounted, inject, computed, watch, onBeforeMount } from "vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
 export default defineComponent({
@@ -55,7 +55,55 @@ export default defineComponent({
       context.emit("change", props.name, state.value, props.lang, props.index)
     }
 
+    onBeforeMount(()=>{
+      let toolbarActions = {
+        "heading":"h1",
+        "bold":"b",
+        "italic":"i",
+        "underline":"u",
+        "numberedList":"ol",
+        "bulletedList":"ul",
+        "blockQuote":"blockquote",
+        "link":"a",
+        "insertTable":"table",
+        "imageUpload":"img"
+      }
+
+      let defaultSet = ["heading","|", "bold", "italic","underline",
+        "|","alignment","numberedList", "bulletedList","blockQuote",
+        "|","indent","outdent","|","link","insertTable","imageUpload",
+        "|","undo","redo","RemoveFormat","sourceEditing"]
+
+      defaultSet = defaultSet.filter(i=>{
+        if (!Object.keys(toolbarActions).includes(i)){
+          return true
+        }
+
+        if (boneState.bonestructure?.['valid_html']?.["validTags"].includes(toolbarActions[i])){
+          return true
+        }
+        if (boneState.bonestructure?.['validHtml']?.["validTags"].includes(toolbarActions[i])){
+          return true
+        }
+        return false
+      })
+
+      state.editorConfig = {toolbar:defaultSet, link: {
+          decorators: [
+                {
+                    mode: 'manual',
+                    label: 'Link in neuem Fester öffnen',
+                    attributes: {
+                        target: '_blank',
+                      rel:"noopener noreferrer"
+                    }
+                }
+            ]
+      }}
+    })
+
     onMounted(() => {
+
       if (props.value !== null) {
         state.value = props.value
       }
@@ -64,15 +112,21 @@ export default defineComponent({
     })
 
     function onReady(editor) {
+
+
       editor.editing.view.change((writer) => {
         writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
       })
 
       const codePlugin = editor.plugins.get("SourceEditing")
+
       codePlugin.on("change:isSourceEditingMode", (_eventInfo: unknown, _name: string, value: boolean) => {
         if (value) {
           const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
           sourceEditingTextarea.addEventListener('focusout', (event) => {
+            if (event.relatedTarget?.classList.contains("ck")){
+              return
+            }
             codePlugin.isSourceEditingMode=false
           });
         }
@@ -254,17 +308,11 @@ export default defineComponent({
 
 .ck-body-wrapper{
   .ck-link-form{
+    padding-top:5px!important;
       width: 500px !important;
       max-width: 37vw !important;
       min-width: 180px !important;
 
-    .ck-labeled-field-view{
-      width: 100%;
-    }
-
-    .ck-input{
-      width: 100%;
-    }
   }
 }
 
