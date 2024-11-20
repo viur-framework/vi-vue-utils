@@ -105,7 +105,7 @@ export function useFormUtils(props, state){
 
       if(props.sendReadOnly){
         formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
-      }else if (!state.structure[fieldname]["readonly"]){
+      }else if (!state.structure[fieldname]["readonly"] || bone.type==="key"){
         formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
       }
 
