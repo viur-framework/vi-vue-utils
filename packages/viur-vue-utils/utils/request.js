@@ -488,6 +488,35 @@ class cachedFetch {
 
   static post(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
     return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
+    .then(async (response) => {
+      if (response.ok) {
+        return response
+      } else {
+        const errorMessage = `${response.status} ${response.statusText}: ${
+          response.headers ? response.headers.get("x-error-descr") : ""
+        }`
+        return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response))
+      }
+    })
+    .catch((error) => {
+      if (error instanceof TypeError) {
+        const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
+        return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
+      }
+      if (error instanceof DOMException && error.name == "AbortError") {
+        const errorMessage = `${error.code} ${error.name}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
+        return Promise.reject(new HTTPError(error.code, error.name, errorMessage, { url: url }))
+      }
+
+      const errorMessage = `${error.statusCode} ${error.statusText}: ${
+        error.headers ? error.headers.get("x-error-descr") : ""
+      }`
+      return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))
+    })
+  }
+
+  static internalpost(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
+    return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
   }
 }
 
