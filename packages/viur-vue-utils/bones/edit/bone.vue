@@ -766,7 +766,7 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+@layer foundation.form {
   .dragging-top {
     border-top: 2px solid var(--sl-color-neutral-400);
   }
