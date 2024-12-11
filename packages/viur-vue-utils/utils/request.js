@@ -362,12 +362,15 @@ export default class Request {
     return Request.buildUrl(newUrl)
   }
 
-  static uploadFile(file, target = undefined) {
+  static uploadFile(file, target = undefined, publicupload = false) {
     const filedata = {
       fileName: file.name,
       mimeType: file.type || "application/octet-stream",
       size: file.size.toString(),
       node: target
+    }
+    if (publicupload){
+      filedata['public'] = true
     }
     return new Promise((resolve, reject) => {
       Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
