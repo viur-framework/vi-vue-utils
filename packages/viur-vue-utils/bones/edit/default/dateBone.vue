@@ -4,6 +4,7 @@
     :class="([`widget-bone-date-${name}`])"
     :disabled="boneState.readonly"
     :type="state.typeString"
+    :name="name"
     :value="state.value"
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
