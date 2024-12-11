@@ -4,15 +4,13 @@
     :class="([`widget-bone-select-${name}`])"
     :name="name"
     :disabled="boneState.readonly"
-    :value="Utils.unescape(state.value)"
-    ref="selectBone"
+    :value="state.value"
     hoist
     :multiple="boneState['bonestructure']['multiple']"
     max-options-visible="0"
     clearable
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-
   >
     <sl-option
       v-for="value in convertObjToList()"
@@ -26,9 +24,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import {reactive, defineComponent, onMounted, inject, computed, watchEffect, useTemplateRef} from "vue"
-import Utils from "../../utils"
-import {useTimeoutFn} from "@vueuse/core";
+import {reactive, defineComponent, onMounted, inject, computed} from "vue"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -60,7 +56,6 @@ export default defineComponent({
         return props.value ? props.value.toString() : ""
       })
     })
-    const selectBone = useTemplateRef('selectBone')
 
     function convertObjToList() {
       if (Array.isArray(boneState["bonestructure"]["values"])) {
@@ -85,10 +80,8 @@ export default defineComponent({
     return {
       state,
       boneState,
-      selectBone,
       changeEvent,
       convertObjToList,
-      Utils
     }
   }
 })
