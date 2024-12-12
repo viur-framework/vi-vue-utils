@@ -2,6 +2,7 @@
   <sl-select
     class="widget-bone widget-bone-select widget-bone-select-default"
     :class="([`widget-bone-select-${name}`])"
+    :name="name"
     :disabled="boneState.readonly"
     :value="state.value"
     hoist
@@ -23,7 +24,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+import {reactive, defineComponent, onMounted, inject, computed} from "vue"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -80,7 +81,7 @@ export default defineComponent({
       state,
       boneState,
       changeEvent,
-      convertObjToList
+      convertObjToList,
     }
   }
 })

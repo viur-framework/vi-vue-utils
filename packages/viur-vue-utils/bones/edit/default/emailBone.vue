@@ -2,6 +2,7 @@
   <sl-input
     class="widget-bone widget-bone-email widget-bone-email-default"
     :class="([`widget-bone-email-${name}`])"
+    :name="name"
     ref="emailBone"
     :disabled="boneState.readonly"
     type="email"
