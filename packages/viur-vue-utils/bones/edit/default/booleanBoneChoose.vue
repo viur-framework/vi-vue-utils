@@ -2,6 +2,7 @@
   <sl-radio-group :value="state.value" @sl-change="changeEvent"
   class="widget-bone widget-bone-boolean widget-bone-boolean-choose"
   :class="([`widget-bone-boolean-${name}`])"
+  :data-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <sl-radio :value="'true'" :disabled="boneState.readonly">{{ $t("bones.bool.true") }}</sl-radio>
     <sl-radio :value="'false'" :disabled="boneState.readonly">{{ $t("bones.bool.false") }}</sl-radio>

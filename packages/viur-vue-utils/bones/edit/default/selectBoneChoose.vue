@@ -9,6 +9,7 @@
                 :checked="state.value.includes(value[0])"
                 :disabled="boneState.readonly"
                 @sl-change="changeEventMultiple"
+                 :data-invalid="boneState.errorMessages.length===0?undefined:true"
     >
       {{ value[1] }}
     </sl-checkbox>
@@ -18,7 +19,7 @@
     class="widget-bone widget-bone-select widget-bone-select-choose"
     :class="([`widget-bone-select-${name}`])"
   >
-    <sl-radio v-for="value in convertObjToList()" :value="value[0]" :disabled="boneState.readonly">
+    <sl-radio v-for="value in convertObjToList()" :value="value[0]" :disabled="boneState.readonly" :data-invalid="boneState.errorMessages.length===0?undefined:true">
       {{ value[1] }}
     </sl-radio>
   </sl-radio-group>

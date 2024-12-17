@@ -13,6 +13,7 @@
     step="0.000001"
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr+' lat':undefined"
+    :data-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-input>
 
   <sl-input
@@ -29,6 +30,7 @@
     step="0.000001"
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr+' long':undefined"
+    :data-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-input>
 </template>
 

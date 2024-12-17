@@ -205,22 +205,30 @@
           @keypress.enter="updateValue"
         ></component>
       </template>
-
-      <sl-alert
-        v-for="message in state.errorMessages"
-        open
-        summary="Errors"
-        variant="info"
-      >
-        <sl-icon
-          slot="icon"
-          name="exclamation-triangle"
+      <template v-if="errorStyle==='default'">
+        <sl-alert
+          v-for="message in state.errorMessages"
+          open
+          summary="Errors"
+          variant="danger"
+          class="error-msg"
         >
-        </sl-icon>
-        <div class="error-msg">
-          {{ $t(`errors.${message}`) }}
-        </div>
-      </sl-alert>
+          <sl-icon
+            slot="icon"
+            name="exclamation-triangle"
+          >
+          </sl-icon>
+          <div class="error-msg">
+            {{ $t(`errors.${message}`) }}
+          </div>
+        </sl-alert>
+      </template>
+      <template v-else>
+      <div v-for="message in state.errorMessages" style="font-size:0.8em;color:red;">
+        {{ $t(`errors.${message}`) }}
+      </div>
+      </template>
+
     </div>
     </sl-tooltip>
   </div>
@@ -285,7 +293,14 @@ export default defineComponent({
     showLabelInfo: { type: Boolean, required: false, default: false },
     autofocus: { type: Boolean, required: false, default: false },
     defaultLanguage: {type:String,default:"de"},
-    showBoneTooltip: { type: Boolean, required: false, default: false }
+    showBoneTooltip: { type: Boolean, required: false, default: false },
+    errorStyle:{
+      type:String,
+      default:"default",
+      validator(value,props){
+        return ["default","decent"].includes(value)
+      }
+    }
   },
 
   setup(props, context) {
@@ -1030,5 +1045,10 @@ export default defineComponent({
       background-color: var(--sl-color-primary-500);
     }
   }
+}
+
+.error-msg::part(base){
+  background-color: #ffecec;
+  color:var(--sl-color-danger-700);
 }
 </style>

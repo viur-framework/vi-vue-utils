@@ -7,6 +7,7 @@
     <sl-select
       :value="state.dialCode"
       @sl-change="handleSelect"
+      :data-invalid="boneState.errorMessages.length===0?undefined:true"
     >
       <sl-option
         v-for="country in state.countryInfo"
@@ -23,6 +24,7 @@
       :value="Utils.unescape(state.value)"
       :required="boneState.bonestructure.required"
       @sl-change="changeEvent"
+      :data-invalid="boneState.errorMessages.length===0?undefined:true"
     >
     </sl-input>
   </div>

@@ -2,7 +2,6 @@
   <div
     class="record widget-bone widget-bone-relational widget-bone-relational-default"
     :class="([`widget-bone-relational-${name}`])"
-
   >
     <div class="single-entry">
       <sl-input
@@ -17,6 +16,7 @@
         hoist
         @sl-item-select="changeEvent"
         :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+        :data-invalid="boneState.errorMessages.length===0?undefined:true"
       ></sl-combobox>
 
       <sl-button
