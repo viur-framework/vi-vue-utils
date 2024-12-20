@@ -265,6 +265,36 @@ export default defineComponent({
           }
         }
       }
+
+      h1{
+        font-size: 1.6em;
+        font-weight: 700;
+      }
+
+      h2{
+        font-size: 1.5em;
+        font-weight: 700;
+      }
+
+      h3{
+        font-size: 1.4em;
+        font-weight: 700;
+      }
+
+      h4{
+        font-size: 1.3em;
+        font-weight: 700;
+      }
+
+      h5{
+        font-size: 1.2em;
+        font-weight: 700;
+      }
+
+      h6{
+        font-size: 1.1em;
+        font-weight: 700;
+      }
     }
 
     .ck-toolbar {
