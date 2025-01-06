@@ -99,7 +99,6 @@
                     :name="name"
                     :bone="state.bonestructure"
                     @change="updateValue"
-                    @keydown.enter="multipleBonePressEnter(lang)"
                   ></component>
                 </wrapper-multiple>
               </div>
@@ -168,7 +167,6 @@
                 :name="name"
                 :bone="state.bonestructure"
                 @change="updateValue"
-                @keydown.enter="multipleBonePressEnter()"
               ></component>
             </wrapper-multiple>
           </div>
