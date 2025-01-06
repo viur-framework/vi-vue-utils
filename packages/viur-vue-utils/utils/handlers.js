@@ -175,7 +175,7 @@ export function ListRequest(
      * cancel possible running request and reset the state
      */
     function reset() {
-      abortController.abort()
+      abortController.abort("request reset")
       state.structure = []
       state.skellist = []
       state.skellist.length = 0
