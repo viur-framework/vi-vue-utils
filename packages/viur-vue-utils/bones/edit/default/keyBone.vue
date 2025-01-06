@@ -11,7 +11,7 @@
 
 <script lang="ts">
 //@ts-nocheck
-import { reactive, defineComponent, onMounted } from "vue"
+import { reactive, defineComponent, onMounted, inject } from "vue"
 
 export default defineComponent({
   inheritAttrs: false,
@@ -26,6 +26,7 @@ export default defineComponent({
   components: {},
   emits: ["change"],
   setup(props, context) {
+    const boneState = inject("boneState")
     const state = reactive({})
 
     function changeEvent(event) {
@@ -38,6 +39,7 @@ export default defineComponent({
 
     return {
       state,
+      boneState,
       changeEvent
     }
   }
