@@ -295,6 +295,19 @@ export default defineComponent({
         font-size: 1.1em;
         font-weight: 700;
       }
+
+      a:hover{
+        text-decoration: underline;
+      }
+
+      ul{
+        list-style: disc;
+        padding-left: var(--sl-spacing-medium);
+      }
+
+      ol{
+        padding-left: var(--sl-spacing-medium);
+      }
     }
 
     .ck-toolbar {
