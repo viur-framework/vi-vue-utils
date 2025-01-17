@@ -118,6 +118,10 @@ export function useFormUtils(props, state){
 
   function sendData(alternativUrl= null, additionalData= null,removeKeyFromDataset= true){
     state.loading = true
+    if (!state.isValid){
+      state.viformelement.reportValidity()
+      return new Promise((resolve, reject)=>reject("Form is not valid"))
+    }
     let request = Request.post
     if (props.secure) request = Request.securePost
 
@@ -253,7 +257,9 @@ export function useFormUtils(props, state){
   }
 
   function updateSkel(data){
-    const {name, lang, value, index} = data
+    const {name, lang, value, index, valid} = data
+    state.valids[name] = valid
+
     let skelvalue = state.skel[name]
     if (value === undefined) return false
     if (state.readonly) return false

@@ -4,7 +4,7 @@
     @dragover.prevent="state.droparea = true"
     @dragleave="state.droparea = false"
     @drop.prevent="handleDrop"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <div
       v-if="state.loading"
