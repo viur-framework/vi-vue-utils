@@ -17,6 +17,7 @@
                 :default-language="defaultLanguage"
                 :label="label===undefined?state.label:label"
                 @change-internal="formUpdate"
+                :errorStyle="errorStyle"
               >
               </bone>
       </component>
@@ -118,7 +119,14 @@ const props = defineProps({
   fetchUrl:{
     type:[String,null],
     default:null
-  }
+  },
+  errorStyle:{
+      type:String,
+      default:"default",
+      validator(value,props){
+        return ["default","decent"].includes(value)
+      }
+    }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
