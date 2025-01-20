@@ -429,7 +429,8 @@ export default defineComponent({
           return true
         }
         return false
-      })
+      }),
+      defaultLanguage:computed(()=>props.defaultLanguage)
     })
     provide("boneState", state)
 

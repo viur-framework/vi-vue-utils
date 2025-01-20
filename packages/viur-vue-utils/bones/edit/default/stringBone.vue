@@ -11,7 +11,7 @@
     @keyup="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?null:true"
-    :pattern="boneState.params?.pattern"
+    :pattern="state.pattern"
     :maxlength="boneState.maxlength"
     :minlength="boneState.minlength"
   ></sl-input>
@@ -38,7 +38,25 @@ export default defineComponent({
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() => props.value),
-      valid:null
+      valid: null,
+      pattern: computed(() => {
+        let pat = boneState.params?.pattern
+        if (!pat) return undefined
+
+        if (typeof(pat) === "String"){
+          return pat
+        }
+        return pat?.[boneState.defaultLanguage]
+      }),
+      pattern_error:computed(()=>{
+        let pat = boneState.params?.pattern_error
+        if (!pat) return ''
+
+        if (typeof(pat) === "String"){
+          return pat
+        }
+        return pat?.[boneState.defaultLanguage]?pat?.[boneState.defaultLanguage]:''
+      })
     })
 
     const stringBone = ref(null)
@@ -47,7 +65,7 @@ export default defineComponent({
       let valid = stringBone.value.reportValidity()
       let validStates = stringBone.value.validity
       if(validStates['patternMismatch']){
-        stringBone.value.setCustomValidity(boneState.params?.pattern_error?boneState.params?.pattern_error:'')
+        stringBone.value.setCustomValidity(state.pattern_error)
       }else{
         stringBone.value.setCustomValidity('')
       }
