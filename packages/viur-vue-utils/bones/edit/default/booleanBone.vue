@@ -10,9 +10,9 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+import { reactive, onMounted, inject, computed } from "vue"
 
-  const props = defineComponent({
+  const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,

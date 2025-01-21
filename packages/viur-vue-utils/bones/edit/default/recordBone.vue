@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance } from "vue"
+import { reactive, onMounted, inject, computed, getCurrentInstance } from "vue"
 import Wrapper_nested from "../wrapper_nested.vue"
 
 

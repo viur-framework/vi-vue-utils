@@ -10,7 +10,7 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject } from "vue"
+import { reactive, onMounted, inject } from "vue"
 
   const props = defineProps( {
     name: String,

@@ -32,7 +32,7 @@
 
 <script setup>
 
-import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
+import { reactive, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
 import jsonData from "./country_information.json"

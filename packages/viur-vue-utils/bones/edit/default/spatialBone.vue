@@ -44,7 +44,7 @@ import { reactive, onMounted, inject } from "vue"
     lang: String
   })
 
-  const emits = defineEmits(["change"])
+  const emit = defineEmits(["change"])
 
     const boneState = inject("boneState")
     const state = reactive({

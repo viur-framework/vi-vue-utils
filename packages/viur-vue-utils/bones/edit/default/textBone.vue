@@ -27,7 +27,7 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, computed, watch, onBeforeMount } from "vue"
+import { reactive, onMounted, inject, computed, watch, onBeforeMount } from "vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
   const props = defineProps( {

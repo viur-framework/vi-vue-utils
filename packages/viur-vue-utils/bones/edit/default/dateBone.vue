@@ -13,7 +13,7 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, computed, inject } from "vue"
+import { reactive, onMounted, computed, inject } from "vue"
 
   const props = defineProps( {
     name: String,

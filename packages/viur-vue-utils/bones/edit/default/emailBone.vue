@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, ref, watchEffect } from "vue"
+import { reactive, onMounted, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
   const props = defineProps( {
