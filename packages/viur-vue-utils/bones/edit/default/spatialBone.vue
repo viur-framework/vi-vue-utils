@@ -34,21 +34,18 @@
   ></sl-input>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue"
+<script setup>
+import { reactive, onMounted, inject } from "vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps( {
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emits = defineEmits(["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       valueLat: null,
@@ -56,7 +53,7 @@ export default defineComponent({
     })
 
     function changeEvent() {
-      context.emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
+      emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
     }
 
     onMounted(() => {
@@ -64,16 +61,10 @@ export default defineComponent({
         state.valueLat = props.value[0]
         state.valueLng = props.value[1]
       } catch (e) {}
-      context.emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
+      emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
     })
 
-    return {
-      state,
-      boneState,
-      changeEvent
-    }
-  }
-})
+
 </script>
 
 <style scoped>

@@ -17,24 +17,21 @@
   ></sl-input>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
+<script setup>
+import { reactive, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps( {
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits( ["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() => props.value),
@@ -69,7 +66,7 @@ export default defineComponent({
       }else{
         stringBone.value.setCustomValidity('')
       }
-      context.emit("change", props.name, event.target.value, props.lang, props.index, valid)
+      emit("change", props.name, event.target.value, props.lang, props.index, valid)
     }
 
     watchEffect(() => {
@@ -85,18 +82,9 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      Utils,
-      boneState,
-      changeEvent,
-      stringBone
-    }
-  }
-})
 </script>
 
 <style scoped>

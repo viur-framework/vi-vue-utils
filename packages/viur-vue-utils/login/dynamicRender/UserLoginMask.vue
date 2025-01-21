@@ -59,16 +59,17 @@
   </form>
 </template>
 
-<script>
+<script setup>
 import { reactive, defineComponent, computed, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import { useUserStore } from "../stores/user"
 
-export default defineComponent({
-  components: {},
-  props: { username: { type: String, required: true } },
-  emits: ["onUserLogin"],
-  setup(props, ctx) {
+  const props = defineProps({
+    username: { type: String, required: true }
+  })
+
+  const emit = defineEmits(["onUserLogin"])
+
     const userStore = useUserStore()
     const nameInput = ref(null)
 
@@ -82,7 +83,7 @@ export default defineComponent({
       if (!state.name.length || !state.password.length) {
         return
       }
-      ctx.emit("onUserLogin", { name: state.name, password: state.password })
+      emit("onUserLogin", { name: state.name, password: state.password })
     }
 
     watchEffect(() => {
@@ -95,15 +96,6 @@ export default defineComponent({
         start()
       }
     })
-
-    return {
-      userStore,
-      state,
-      userLogin,
-      nameInput
-    }
-  }
-})
 </script>
 
 <style scoped>

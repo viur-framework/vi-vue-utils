@@ -26,22 +26,19 @@
   </template>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import { reactive, defineComponent, onMounted, inject, computed, watch, onBeforeMount } from "vue"
 import ClassicEditor from "@viur/ckeditor5-build-classic"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps( {
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits(["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       value: "",
@@ -50,11 +47,11 @@ export default defineComponent({
     })
 
     function changeEvent(event) {
-      context.emit("change", props.name, state.value, props.lang, props.index)
+      emit("change", props.name, state.value, props.lang, props.index)
     }
     function changeEventTextarea(event) {
       state.value = event.target.value
-      context.emit("change", props.name, state.value, props.lang, props.index)
+      emit("change", props.name, state.value, props.lang, props.index)
     }
 
     onBeforeMount(()=>{
@@ -110,7 +107,7 @@ export default defineComponent({
         state.value = props.value
       }
 
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
     function onReady(editor) {
@@ -122,7 +119,7 @@ export default defineComponent({
 
       const codePlugin = editor.plugins.get("SourceEditing")
 
-      codePlugin.on("change:isSourceEditingMode", (_eventInfo: unknown, _name: string, value: boolean) => {
+      codePlugin.on("change:isSourceEditingMode", (_eventInfo, _name, value) => {
         if (value) {
           const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
           sourceEditingTextarea.addEventListener('focusout', (event) => {
@@ -145,16 +142,7 @@ export default defineComponent({
         }
       }
     )
-    return {
-      state,
-      ClassicEditor,
-      boneState,
-      changeEvent,
-      onReady,
-      changeEventTextarea
-    }
-  }
-})
+
 </script>
 
 <style>

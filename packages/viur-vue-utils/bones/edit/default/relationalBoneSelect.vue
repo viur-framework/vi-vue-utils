@@ -36,24 +36,21 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import { reactive, defineComponent, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
 import Wrapper_nested from "../wrapper_nested.vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps( {
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     bone: Object
-  },
-  components: { Wrapper_nested },
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits( ["change"])
+
     const boneState = inject("boneState")
     const formatString = inject("formatString")
     const state = reactive({
@@ -64,7 +61,7 @@ export default defineComponent({
       selection: null
     })
 
-    function getList(search: String) {
+    function getList(search) {
       let params = ""
       if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
         params = "skelType=leaf&"
@@ -83,7 +80,7 @@ export default defineComponent({
           state.skellistdata[e["key"]] = e
         }
 
-        return data["skellist"]?.map((d: any) => {
+        return data["skellist"]?.map((d) => {
           return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
         })
       })
@@ -91,30 +88,20 @@ export default defineComponent({
 
     function changeEvent(event) {
       state.selection = { dest: state.skellistdata[event.target.value] }
-      context.emit("change", props.name, state.selection, props.lang, props.index)
+      emit("change", props.name, state.selection, props.lang, props.index)
     }
 
     function changeEventNested(data) {
       state.selection = {...state.selection, "rel":data["value"]}
-      context.emit("change", data["name"], state.selection , data["lang"], data["index"])
+      emit("change", data["name"], state.selection , data["lang"], data["index"])
     }
 
     onMounted(() => {
       state.selection = props.value
       getList()
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      boneState,
-      formatString,
-      changeEvent,
-      changeEventNested,
-      getList
-    }
-  }
-})
 </script>
 
 <style scoped>

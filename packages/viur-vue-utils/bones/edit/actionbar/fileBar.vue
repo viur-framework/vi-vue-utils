@@ -64,23 +64,21 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import { reactive, defineComponent, onMounted, inject, ref, computed, resolveComponent } from "vue"
 import { Request } from "../../../index"
 
-export default defineComponent({
-  props: {
+  const props = defineProps( {
     name: String,
     value: Object,
     index: Number,
     lang: String,
     readonly: Boolean,
     params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits(["change"])
+
     const boneState = inject("boneState")
     const addMultipleEntry = inject("addMultipleEntry")
     const formatString = inject("formatString")
@@ -95,7 +93,7 @@ export default defineComponent({
     })
 
     function uploadFile(file) {
-      const filedata: Record<string, string> = {
+      const filedata = {
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
         size: file.size.toString()
@@ -110,7 +108,7 @@ export default defineComponent({
               mode: "no-cors"
             })
               .then(async (uploadresp) => {
-                const addData: Record<string, string> = {
+                const addData = {
                   key: uploadURLdata["values"]["uploadKey"],
                   node: undefined,
                   skelType: "leaf"
@@ -169,22 +167,11 @@ export default defineComponent({
 
     onMounted(() => {
       if (!props.value || props.value.length === 0) {
-        context.emit("change", props.name, [], props.lang) //init
+        emit("change", props.name, [], props.lang) //init
       }
     })
 
-    return {
-      state,
-      boneState,
-      addMultipleEntry,
-      removeMultipleEntries,
-      uploadFile,
-      uploadinput,
-      handleUpload,
-      handleDrop
-    }
-  }
-})
+
 </script>
 
 <style scoped>

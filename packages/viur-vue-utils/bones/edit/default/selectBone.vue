@@ -23,21 +23,19 @@
   </sl-select>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import {reactive, defineComponent, onMounted, inject, computed} from "vue"
+<script setup>
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+import {reactive, onMounted, inject, computed} from "vue"
+
+  const props = defineProps( {
     name: String,
     value: null,
     index: Number,
     lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits( ["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() => {
@@ -71,21 +69,14 @@ export default defineComponent({
     }
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
     onMounted(() => {
-      context.emit("change", props.name, state.value, props.lang, props.index) //init
+      emit("change", props.name, state.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      boneState,
-      changeEvent,
-      convertObjToList,
-    }
-  }
-})
+
 </script>
 
 <style scoped>

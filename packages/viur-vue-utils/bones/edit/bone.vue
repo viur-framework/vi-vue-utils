@@ -232,8 +232,7 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import {
   reactive,
   defineComponent,
@@ -250,14 +249,9 @@ import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
 
-export default defineComponent({
-  inheritAttrs: false,
-  emits: ["change", "change-internal", "handleClick"],
-  components: {
-    wrapperMultiple,
-    BoneLabel
-  },
-  props: {
+  const emit = defineEmits(["change", "change-internal", "handleClick"])
+
+  const props = defineProps({
     is: {
       type: Object,
       default: rawBone
@@ -299,10 +293,8 @@ export default defineComponent({
         return ["default","decent"].includes(value)
       }
     }
-  },
-
-  setup(props, context) {
-    const state: any = reactive({
+  })
+    const state = reactive({
       bonestructure: computed(() => {
         return props.structure?.[props.name]
       }),
@@ -503,11 +495,11 @@ export default defineComponent({
     }
 
     function updateValue(
-      name: string,
-      val: any,
-      lang: string | null = null,
-      index: number | null = null,
-      valid: boolean = true
+      name,
+      val,
+      lang= null,
+      index = null,
+      valid = true
     ) {
       if (val === undefined) return false
 
@@ -538,11 +530,11 @@ export default defineComponent({
         valid: valid
       }
 
-      context.emit("change-internal", changeInternalObj)
+      emit("change-internal", changeInternalObj)
     }
 
     function toFormValue() {
-      function rewriteData(val: any, key: string | null = null): Array<Object> {
+      function rewriteData(val, key = null){
         let ret = []
         if (Array.isArray(val)) {
           if (state.bonestructure["type"] == "spatial" && val.length === 2 && !Array.isArray(val[0])) {
@@ -625,7 +617,7 @@ export default defineComponent({
     }
     provide("addMultipleEntry", addMultipleEntry)
 
-    function removeMultipleEntry(index: number, lang = null) {
+    function removeMultipleEntry(index, lang = null) {
       if (lang) {
         state.bonevalue?.[lang].splice(index, 1)
       } else {
@@ -658,7 +650,7 @@ export default defineComponent({
       addMultipleEntry(lang, data)
     }
 
-    function formatString(formatstr: string, boneValue: object | Array<object>) {
+    function formatString(formatstr, boneValue) {
       function getpathListFromFormatstring(formatstr) {
         let output = []
         let formatList = []
@@ -750,23 +742,6 @@ export default defineComponent({
         state.errors = props.errors
       }
     )
-
-    return {
-      state,
-      updateValue,
-      addMultipleEntry,
-      removeMultipleEntry,
-      removeMultipleEntries,
-      BoneHasMultipleHandling,
-      multipleBonePressEnter,
-      handleDragStart,
-      handleDragOver,
-      handleDrop,
-      setStateProperties,
-      resetStateProperties
-    }
-  }
-})
 </script>
 
 <style scoped>

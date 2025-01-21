@@ -2,18 +2,16 @@
   {{ getBoneValue(boneName, state.option) }}
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import boneLogic from "./boneLogic"
 import {computed, defineComponent, reactive} from "vue"
 
-export default defineComponent({
-  props: {
+   const props = defineProps({
     boneName: String,
     skel: Object,
     structure: Object
-  },
-  setup(props, context) {
+  })
+
     const state = reactive({
       option: computed(()=>{
         if (props.structure[props.boneName]["type"] === "date"){
@@ -30,9 +28,6 @@ export default defineComponent({
     })
 
     const { getBoneValue, bones_state } = boneLogic(props.skel, props.structure)
-    return { getBoneValue,state }
-  }
-})
 </script>
 
 <style scoped></style>

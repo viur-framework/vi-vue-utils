@@ -93,22 +93,19 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, ref } from "vue"
+<script setup>
+import { reactive, onMounted, inject, ref } from "vue"
 import { Request } from "../../../index"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits(["change"])
+
     const boneState = inject("boneState")
     const uploadinput = ref()
     const state = reactive({
@@ -118,7 +115,7 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
     function downloadFile() {
@@ -131,7 +128,7 @@ export default defineComponent({
     }
 
     function uploadFile(file) {
-      const filedata: Record<string, string> = {
+      const filedata = {
         fileName: file.name,
         mimeType: file.type || "application/octet-stream",
         size: file.size.toString()
@@ -146,7 +143,7 @@ export default defineComponent({
               mode: "no-cors"
             })
               .then(async (uploadresp) => {
-                const addData: Record<string, string> = {
+                const addData = {
                   key: uploadURLdata["values"]["uploadKey"],
                   node: undefined,
                   skelType: "leaf"
@@ -179,7 +176,7 @@ export default defineComponent({
       for (let file of event.target.files) {
         let fileresult = await uploadFile(file)
         uploadinput.value.value = null
-        context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
+        emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
       }
       state.loading = false
     }
@@ -190,23 +187,12 @@ export default defineComponent({
       for (let file of event.dataTransfer.files) {
         let fileresult = await uploadFile(file)
         uploadinput.value.value = null
-        context.emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
+        emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
         break
       }
       state.loading = false
     }
 
-    return {
-      state,
-      boneState,
-      downloadFile,
-      createBackgroundImage,
-      handleUpload,
-      uploadinput,
-      handleDrop
-    }
-  }
-})
 </script>
 
 <style scoped>
