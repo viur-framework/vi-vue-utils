@@ -36,7 +36,6 @@
     >
       <sl-icon
         slot="icon"
-        library="bootstrap"
         name="info-circle-fill"
       ></sl-icon>
       {{ state.bonestructure.params["tooltip"] }}
