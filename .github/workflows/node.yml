@@ -23,10 +23,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install --prefix=packages/viur-vue-utils
+    - run: npm install --prefix=src
     #- run: npm run build
     - uses: JS-DevTools/npm-publish@v3
       with:
         access: "public"
         token: ${{ secrets.NPM_TOKEN }}
-        package: ./packages/viur-vue-utils/package.json
+        package: ./src/package.json
