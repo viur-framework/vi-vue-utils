@@ -26,6 +26,7 @@ export function ListRequest(
       request_state: null,
       orders: [],
       params: params, //request params
+      headers:null,
       group: group,
       module: module,
       state: 0 // 0:not fetched, 1:fetched, 2:all fetched, -1:error
@@ -91,7 +92,8 @@ export function ListRequest(
         dataObj: state.params,
         abortController: abortController,
         group: state.group,
-        renderer: renderer
+        renderer: renderer,
+        headers:state.headers
       })
         .then(async (resp) => {
           let data = await resp.json()

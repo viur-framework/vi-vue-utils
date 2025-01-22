@@ -178,7 +178,8 @@ export default class Request {
       failedCallback = null,
       group = null,
       abortController = null,
-      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+      headers = null,
     } = {}
   ) {
     let url = `/${renderer}/${module}/list`
@@ -190,7 +191,8 @@ export default class Request {
       dataObj: dataObj,
       callback: callback,
       failedCallback: failedCallback,
-      abortController: abortController
+      abortController: abortController,
+      headers:headers
     })
   }
 
@@ -201,7 +203,8 @@ export default class Request {
       failedCallback = null,
       group = null,
       abortController = null,
-      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+      headers = null
     } = {}
   ) {
     module = module.replace(/\//g, ".")
@@ -214,7 +217,8 @@ export default class Request {
       dataObj: dataObj,
       callback: callback,
       failedCallback: failedCallback,
-      abortController: abortController
+      abortController: abortController,
+      headers:headers
     })
   }
 
@@ -227,7 +231,8 @@ export default class Request {
       failedCallback = null,
       group = null,
       abortController = null,
-      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+      headers = null
     } = {}
   ) {
     let url = `/${renderer}/${module}/view/${key}`
@@ -239,7 +244,8 @@ export default class Request {
       dataObj: dataObj,
       callback: callback,
       failedCallback: failedCallback,
-      abortController: abortController
+      abortController: abortController,
+      headers:headers
     })
   }
 
@@ -251,7 +257,8 @@ export default class Request {
       failedCallback = null,
       group = null,
       abortController = null,
-      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+      headers = null,
     } = {}
   ) {
     let url = `/${renderer}/${module}/add`
@@ -263,7 +270,8 @@ export default class Request {
       dataObj: dataObj,
       callback: callback,
       failedCallback: failedCallback,
-      abortController: abortController
+      abortController: abortController,
+      headers:headers
     })
   }
 
@@ -276,7 +284,8 @@ export default class Request {
       failedCallback = null,
       group = null,
       abortController = null,
-      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+      headers = null,
     } = {}
   ) {
     let url = `/${renderer}/${module}/edit/${key}`
@@ -288,7 +297,8 @@ export default class Request {
       dataObj: dataObj,
       callback: callback,
       failedCallback: failedCallback,
-      abortController: abortController
+      abortController: abortController,
+      headers:headers
     })
   }
 
@@ -301,7 +311,8 @@ export default class Request {
       failedCallback = null,
       group = null,
       abortController = null,
-      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json"
+      renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+      headers = null,
     } = {}
   ) {
     let url = `/${renderer}/${module}/delete/${key}`
@@ -314,7 +325,8 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      amount: 1
+      amount: 1,
+      headers:headers
     })
   }
 
