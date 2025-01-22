@@ -1,4 +1,3 @@
-//@ts-nocheck
 import rawBone from "./default/rawBone.vue"
 import keyBone from "./default/keyBone.vue"
 import stringBone from "./default/stringBone.vue"

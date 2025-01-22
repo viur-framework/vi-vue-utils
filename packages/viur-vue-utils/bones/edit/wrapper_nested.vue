@@ -24,7 +24,7 @@
 </template>
 
 <script setup>
-//@ts-nocheck
+
 import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref } from "vue"
 import { getBoneWidget } from "./index"
 import ViForm from "../../forms/ViForm.vue";

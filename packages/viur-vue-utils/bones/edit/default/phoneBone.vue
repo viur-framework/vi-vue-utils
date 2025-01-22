@@ -30,28 +30,25 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 
-import { reactive, defineComponent, onMounted, inject, computed, watchEffect, ref } from "vue"
+import { reactive, onMounted, inject, computed, watchEffect, ref } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import Utils from "../../utils"
 import jsonData from "./country_information.json"
 import parsePhoneNumber from "libphonenumber-js/min"
 import { AsYouType, validatePhoneNumberLength } from "libphonenumber-js/min"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits( ["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       value: computed(() =>
@@ -71,7 +68,7 @@ export default defineComponent({
 
     function changeEvent(event) {
       if (!event.target.value) {
-        context.emit("change", props.name, "", props.lang, props.index)
+        emit("change", props.name, "", props.lang, props.index)
         return
       }
       if (event.target.value.length > 4) {
@@ -80,7 +77,7 @@ export default defineComponent({
 
         let value = valueFormatter.input(number ? number.number : event.target.value)
         state.dialCode = "+" + number?.countryCallingCode
-        context.emit("change", props.name, value, props.lang, props.index)
+        emit("change", props.name, value, props.lang, props.index)
         return
       } else return
 
@@ -95,9 +92,6 @@ export default defineComponent({
 
           start()
         }
-        // if (!props.value.length) {
-        //   context.emit("change", props.name, state.countryCode + props.value, props.lang, props.index) //init
-        // }
       }
     })
 
@@ -127,7 +121,7 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
       state.loading = true
       countryInformation.value.forEach((country) => {
         let temp = {}
@@ -142,18 +136,6 @@ export default defineComponent({
       // let available_countries = []
     })
 
-    return {
-      state,
-      Utils,
-      boneState,
-      changeEvent,
-      phoneBone,
-      countryInformation,
-      handleSelect,
-      getCountry
-    }
-  }
-})
 </script>
 
 <style scoped>

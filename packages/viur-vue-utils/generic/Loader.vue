@@ -14,13 +14,12 @@
   </transition>
 </template>
 
-<script>
+<script setup>
 import { reactive, computed } from "vue"
 
 
 // Surroundig div musst have position:relative
-export default {
-  props: {
+  const props = defineProps( {
     size: {
       type: String,
       default: "2"
@@ -37,8 +36,7 @@ export default {
       default: "var(--sl-color-primary-500)",
       type: String
     }
-  },
-  setup(props, context) {
+  })
     const state = reactive({
       trackWidth: computed(() => {
         return `${props.size / 30}rem`
@@ -57,9 +55,6 @@ export default {
       })
     })
 
-    return { state }
-  }
-}
 </script>
 
 <style scoped>

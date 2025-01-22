@@ -19,32 +19,24 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, inject } from "vue"
-
-export default defineComponent({
-  props: {
+<script setup>
+import { reactive, onMounted, inject } from "vue"
+  const props = defineProps( {
     name: String,
     value: Object,
     index: Number,
     lang: String,
     readonly: Boolean,
     params: Object
-  },
-  components: {},
-  emits: ["change", "handleClick"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits( ["change", "handleClick"])
+
     const boneState = inject("boneState")
     const state = reactive({
       debug: false
     })
-    return {
-      state,
-      boneState
-    }
-  }
-})
+
 </script>
 
 <style scoped>

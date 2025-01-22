@@ -26,24 +26,19 @@
   </ul>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, computed, inject, ref, watchEffect } from "vue"
+<script setup>
+import { reactive, onMounted, computed, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
-export default defineComponent({
-  inheritAttrs: false,
-  emits: { change: null },
-  props: {
+  const emit = defineEmits( { change: null })
+  const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
-  },
-  components: {},
+  })
 
-  setup(props, context) {
     const boneState = inject("boneState")
     const state = reactive({
       minAmount: computed(() => {
@@ -63,7 +58,7 @@ export default defineComponent({
     const numericBone = ref(null)
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
     watchEffect(() => {
@@ -79,17 +74,9 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      context.emit("change", props.name, "" + props.value, props.lang, props.index) //init
+      emit("change", props.name, "" + props.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      boneState,
-      changeEvent,
-      numericBone
-    }
-  }
-})
 </script>
 
 <style scoped>

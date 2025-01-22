@@ -29,22 +29,20 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
+<script setup>
 import { reactive, defineComponent, onMounted, inject } from "vue"
 
-export default defineComponent({
-  props: {
+  const props = defineProps( {
     name: String,
     value: Object,
     index: Number,
     lang: String,
     readonly: Boolean,
     params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits(["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       counter: 0,
@@ -82,19 +80,11 @@ export default defineComponent({
 
     onMounted(() => {
       if (!props.value || props.value.length === 0) {
-        context.emit("change", props.name, [], props.lang) //init
+        emit("change", props.name, [], props.lang) //init
       }
     })
 
-    return {
-      state,
-      boneState,
-      handleAdd,
-      handleRemove,
-      removeMultipleEntries
-    }
-  }
-})
+
 </script>
 
 <style scoped>

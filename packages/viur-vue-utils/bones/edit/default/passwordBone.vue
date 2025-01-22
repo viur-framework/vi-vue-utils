@@ -56,23 +56,21 @@
   </ul>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, computed, inject, watch, ref, watchEffect } from "vue"
+<script setup>
+
+import { reactive,  onMounted, computed, inject, watch, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit=defineEmits( ["change"])
+
     const boneState = inject("boneState")
     const state = reactive({
       value1: "",
@@ -99,20 +97,20 @@ export default defineComponent({
         state.requiredPasswordInfo.length === 0 &&
         state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
       ) {
-        context.emit("change", props.name, state.value1, props.lang, props.index, true)
+        emit("change", props.name, state.value1, props.lang, props.index, true)
       } else {
-        context.emit("change", props.name, state.value1, props.lang, props.index, false)
+        emit("change", props.name, state.value1, props.lang, props.index, false)
       }
     }
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    function testPassword(password: string): string[] {
+    function testPassword(password) {
       state.passwordInfo = []
       state.requiredPasswordInfo = []
-      for (const test: [string, string, boolean] of boneState.bonestructure["tests"]) {
+      for (const test of boneState.bonestructure["tests"]) {
         if (!new RegExp(test[0]).test(password)) {
           if (test[2]) {
             state.requiredPasswordInfo.push(test[1])
@@ -148,14 +146,6 @@ export default defineComponent({
       }
     )
 
-    return {
-      state,
-      boneState,
-      changeEvent,
-      passwordBone
-    }
-  }
-})
 </script>
 
 <style scoped>

@@ -13,30 +13,27 @@
   ></sl-input>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, ref, watchEffect } from "vue"
+<script setup>
+import { reactive, onMounted, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 
-export default defineComponent({
-  inheritAttrs: false,
-  props: {
+  const props = defineProps( {
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     autofocus: Boolean
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits( ["change"])
+
     const boneState = inject("boneState")
     const state = reactive({})
 
     const emailBone = ref(null)
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      emit("change", props.name, event.target.value, props.lang, props.index)
     }
 
     watchEffect(() => {
@@ -52,17 +49,9 @@ export default defineComponent({
     })
 
     onMounted(() => {
-      context.emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, props.value, props.lang, props.index) //init
     })
 
-    return {
-      state,
-      boneState,
-      changeEvent,
-      emailBone
-    }
-  }
-})
 </script>
 
 <style scoped>

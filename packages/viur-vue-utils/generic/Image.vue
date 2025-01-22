@@ -60,16 +60,14 @@
   </sl-dialog>
 </template>
 
-<script>
+<script setup>
 /**
  * Image wrapper mit fallback
  * **/
 
 import { reactive, inject, computed } from "vue"
 
-export default {
-  components: {},
-  props: {
+  const props = defineProps( {
     src: {
       type: String,
       default: ""
@@ -89,9 +87,8 @@ export default {
       type: Boolean,
       default: false
     }
-  },
+  })
 
-  setup(props, context) {
     const state = reactive({
       loading: true,
       background: computed(() => {
@@ -112,9 +109,7 @@ export default {
       state.image = props.fallback
     }
 
-    return { updateLoading, state, onError }
-  }
-}
+
 </script>
 
 <style scoped>

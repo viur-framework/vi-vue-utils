@@ -42,23 +42,22 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, onMounted, inject, computed } from "vue"
+<script setup>
+
+import { reactive, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
 
-export default defineComponent({
-  props: {
+  const props = defineProps({
     name: String,
     value: Object,
     index: Number,
     lang: String,
     readonly: Boolean,
     params: Object
-  },
-  components: {},
-  emits: ["change"],
-  setup(props, context) {
+  })
+
+  const emit = defineEmits(["change"])
+
     const boneState = inject("boneState")
     const addMultipleEntry = inject("addMultipleEntry")
     const formatString = inject("formatString")
@@ -68,7 +67,7 @@ export default defineComponent({
       hasUsing: computed(() => boneState?.bonestructure["using"])
     })
 
-    function getList(search: String) {
+    function getList(search) {
       let params = ""
       if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
         params = "skelType=leaf&"
@@ -82,7 +81,7 @@ export default defineComponent({
         const data = await resp.json()
         state.skels = data["skellist"].reduce((acc, curr) => ((acc[curr["key"]] = curr), acc), {})
 
-        return data["skellist"]?.map((d: any) => {
+        return data["skellist"]?.map((d) => {
           return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
         })
       })
@@ -90,7 +89,7 @@ export default defineComponent({
 
     onMounted(() => {
       if (!props.value || props.value.length === 0) {
-        context.emit("change", props.name, [], props.lang) //init
+        emit("change", props.name, [], props.lang) //init
       }
     })
 
@@ -102,16 +101,6 @@ export default defineComponent({
       addMultipleEntry(props.lang, { dest: {}, rel: relDefault })
     }
 
-    return {
-      state,
-      boneState,
-      addMultipleEntry,
-      addMultiple,
-      removeMultipleEntries,
-      getList
-    }
-  }
-})
 </script>
 
 <style scoped>

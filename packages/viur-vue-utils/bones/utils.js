@@ -1,11 +1,10 @@
 export default class Utils {
-  static objectEmpty(obj: object) {
+  static objectEmpty(obj) {
     return Object.keys(obj).length === 0 && obj.constructor === Object
   }
 
-  static getDescr(bone: Object, value: any) {
+  static getDescr(bone, value) {
     try {
-      //@ts-ignore
       return bone["values"].filter((option) => option[0] === value)[0][1]
     } catch (e) {
       return "-"
@@ -28,10 +27,10 @@ export default class Utils {
       .replace(/&#061;/g, "=")
   }
 
-  static formatString(formatstr: string, boneValue: object | Array<object>) {
+  static formatString(formatstr, boneValue) {
     function getpathListFromFormatstring(formatstr) {
       let output = []
-      let formatList: Array<string> | boolean = []
+      let formatList = []
       let regstr = /\$\((.*?)\)/g
 
       while (formatList) {
@@ -53,7 +52,7 @@ export default class Utils {
     if (!Array.isArray(boneValue)) {
       boneValue = [boneValue]
     }
-    // @ts-ignore
+
     for (let avalue of boneValue) {
       let finalstr = formatstr
       for (let pathstr of pathlist) {

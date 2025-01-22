@@ -7,10 +7,10 @@
       'dragging-line-bottom': draggingLineBottom,
       'dragging-line-top': draggingLineTop
     }"
-    @dragover="$emit('handleDragOver', $event)"
-    @drop="$emit('handleDrop', $event)"
-    @dragstart="$emit('handleDragStart', $event)"
-    @dragend="$emit('handleDragEnd')"
+    @dragover="emit('handleDragOver', $event)"
+    @drop="emit('handleDrop', $event)"
+    @dragstart="emit('handleDragStart', $event)"
+    @dragend="emit('handleDragEnd')"
   >
     <sl-button
       :disabled="boneState.readonly"
@@ -32,7 +32,7 @@
       outline
       :title="$t('bone.del')"
       class="delete-btn"
-      @click="$emit('delete')"
+      @click="emit('delete')"
     >
       <sl-icon
         slot="prefix"
@@ -42,30 +42,22 @@
   </div>
 </template>
 
-<script lang="ts">
-//@ts-nocheck
-import { reactive, defineComponent, inject } from "vue"
+<script setup>
 
-export default defineComponent({
-  props: {
+import { reactive, inject } from "vue"
+
+  const props = defineProps( {
     isDragging: Boolean,
     draggingLineBottom: Boolean,
     draggingLineTop: Boolean
-  },
-  components: {},
-  emits: ["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"],
-  setup(props, context) {
+  })
+  const emit = defineEmits(["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"])
+
     const boneState = inject("boneState")
     const state = reactive({
       isDraggable: false
     })
 
-    return {
-      state,
-      boneState
-    }
-  }
-})
 </script>
 
 <style scoped>

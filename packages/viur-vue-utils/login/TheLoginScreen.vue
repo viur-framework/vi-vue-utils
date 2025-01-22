@@ -217,7 +217,7 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { reactive, computed, onBeforeMount, defineComponent, watch } from "vue"
 import { useRouter } from "vue-router"
 import { useUserStore } from "./stores/user.js"
@@ -225,9 +225,7 @@ import Loader from "../generic/Loader.vue"
 import { getBoneWidget } from "../bones/edit/index"
 import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
 
-export default defineComponent({
-  components: { Loader, UserLoginMask },
-  props: {
+  const props = defineProps( {
     username: { type: String, default: "" },
     isAppAuth: Boolean,
     isRedirect: { type: Boolean, default: false },
@@ -235,9 +233,9 @@ export default defineComponent({
     logo: { type: String, default: "" },
     title: { type: String, default: "Login" },
     logoSVG: { type: String, default: "" }
-  },
+  })
 
-  setup(props) {
+
     const userStore = useUserStore()
     const router = useRouter()
 
@@ -365,24 +363,6 @@ export default defineComponent({
 
       state.name = props.username ? props.username : ""
     })
-
-    return {
-      publicAsset,
-      googleLogin,
-      logout,
-      userStore,
-      userLogin,
-      state,
-      userSecondFactor,
-      userSecondFactorStart,
-      getBoneWidget,
-      updateValue,
-      secondFactorSend,
-      updateRecoveryValue,
-      sendNewPassword
-    }
-  }
-})
 </script>
 
 <style scoped>
