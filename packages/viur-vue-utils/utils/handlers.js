@@ -51,6 +51,26 @@ export function ListRequest(
       return struct
     })
 
+    async function fetchStructure(){
+      const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer}).then((structureResponse) =>
+        structureResponse.json().then((_structure) => _structure)
+      )
+      let skeltype = "viewSkel"
+      if (Object.keys(state.params).includes("skelType")) {
+        skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
+      }
+
+      if (Array.isArray(structure[skeltype])) {
+        state.structure = structure[skeltype]
+      } else {
+        // build array object
+        state.structure_object = structure[skeltype]
+        for (const [name, conf] of Object.entries(structure[skeltype])) {
+          state.structure.push([name, conf])
+        }
+      }
+    }
+
     /**
      * Fetch
      * @returns {number|Promise<Response>}
@@ -76,24 +96,7 @@ export function ListRequest(
         .then(async (resp) => {
           let data = await resp.json()
           if (data.structure === null || Object.keys(data.structure).length === 0) {
-            const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer}).then((structureResponse) =>
-              structureResponse.json().then((_structure) => _structure)
-            )
-
-            let skeltype = "viewSkel"
-            if (Object.keys(state.params).includes("skelType")) {
-              skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
-            }
-
-            if (Array.isArray(structure[skeltype])) {
-              state.structure = structure[skeltype]
-            } else {
-              // build array object
-              state.structure_object = structure[skeltype]
-              for (const [name, conf] of Object.entries(structure[skeltype])) {
-                state.structure.push([name, conf])
-              }
-            }
+            await fetchStructure()
           } else {
             if (!next) {
               // when we have the next request we not change the structure
@@ -125,7 +128,7 @@ export function ListRequest(
             state.state = 1
           }
         })
-        .catch((error) => {
+        .catch(async (error) => {
           if (error.response) {
             state.request_state = parseInt(error.response.status)
           } else {
@@ -133,6 +136,7 @@ export function ListRequest(
           }
 
           state.state = -1
+          await fetchStructure()
           throw error
         })
     }
