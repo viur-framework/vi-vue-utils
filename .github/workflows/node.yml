@@ -17,6 +17,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
+        cache-dependency-path: src/package-lock.json
         submodules: true
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
