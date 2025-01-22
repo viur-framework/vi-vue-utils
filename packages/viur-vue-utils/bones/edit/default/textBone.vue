@@ -10,7 +10,7 @@
       @input="changeEvent"
       class="widget-bone widget-bone-text widget-bone-text-default"
       :class="([`widget-bone-text-${name}`],[`widget-bone-text-${name}-html`])"
-      :data-invalid="boneState.errorMessages.length===0?undefined:true"
+      :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     >
     </ckeditor>
     <sl-textarea
@@ -21,7 +21,7 @@
       :value="value"
       @input="changeEventTextarea"
       :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-      :data-invalid="boneState.errorMessages.length===0?undefined:true"
+      :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     ></sl-textarea>
   </template>
 </template>
@@ -294,6 +294,19 @@ export default defineComponent({
       h6{
         font-size: 1.1em;
         font-weight: 700;
+      }
+
+      a:hover{
+        text-decoration: underline;
+      }
+
+      ul{
+        list-style: disc;
+        padding-left: var(--sl-spacing-medium);
+      }
+
+      ol{
+        padding-left: var(--sl-spacing-medium);
       }
     }
 

@@ -5,7 +5,7 @@
     :disabled="boneState.readonly"
     :value="value"
     @sl-change="changeEvent"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-color-picker>
 </template>
 

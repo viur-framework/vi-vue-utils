@@ -3,10 +3,10 @@
     class="widget-bone widget-bone-raw widget-bone-raw-default"
     :class="([`widget-bone-raw-${name}`])"
     :disabled="boneState?.readonly"
-    :value="JSON.stringify(value)"
+    :value="typeof value === 'object'?JSON.stringify(value):value"
     @input="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-textarea>
   <sl-textarea
     v-else
@@ -16,7 +16,7 @@
     :value="value"
     @input="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-textarea>
 </template>
 

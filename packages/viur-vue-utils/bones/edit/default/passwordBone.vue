@@ -12,7 +12,7 @@
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <sl-icon
       slot="suffix"
@@ -31,7 +31,7 @@
     @sl-clear="state.value2 = ''"
     @keyup="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <sl-icon
       slot="suffix"
@@ -85,16 +85,16 @@ export default defineComponent({
     const passwordBone = ref(null)
 
     function changeEvent(event) {
+      testPassword(state.value1)
+
       if (state.value1 === state.value2) {
         state.equal = true
       } else {
         state.equal = false
+       // dont try to update if not equal
       }
 
-      testPassword(state.value1)
-
       // boneState.bonestructure["test_threshold"] = 2  *needs to be removed by the look cuz overridees server settings
-
       if (
         state.requiredPasswordInfo.length === 0 &&
         state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]

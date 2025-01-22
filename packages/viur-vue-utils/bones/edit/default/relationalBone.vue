@@ -16,7 +16,7 @@
         hoist
         @sl-item-select="changeEvent"
         :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-        :data-invalid="boneState.errorMessages.length===0?undefined:true"
+        :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
       ></sl-combobox>
 
       <sl-button

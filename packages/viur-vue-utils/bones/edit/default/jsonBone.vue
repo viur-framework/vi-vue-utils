@@ -1,6 +1,6 @@
 <template>
   <div class="box"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-nvalid="boneState.errorMessages.length===0?undefined:true"
   >
     <!--<vue-json-pretty
       :deep="0"

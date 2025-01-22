@@ -10,7 +10,10 @@
     @sl-change="changeEvent"
     @keyup="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length===0?null:true"
+    :pattern="state.pattern"
+    :maxlength="boneState.maxlength"
+    :minlength="boneState.minlength"
   ></sl-input>
 </template>
 
@@ -34,13 +37,39 @@ export default defineComponent({
   setup(props, context) {
     const boneState = inject("boneState")
     const state = reactive({
-      value: computed(() => props.value)
+      value: computed(() => props.value),
+      valid: null,
+      pattern: computed(() => {
+        let pat = boneState.params?.pattern
+        if (!pat) return undefined
+
+        if (typeof(pat) === "String"){
+          return pat
+        }
+        return pat?.[boneState.defaultLanguage]
+      }),
+      pattern_error:computed(()=>{
+        let pat = boneState.params?.pattern_error
+        if (!pat) return ''
+
+        if (typeof(pat) === "String"){
+          return pat
+        }
+        return pat?.[boneState.defaultLanguage]?pat?.[boneState.defaultLanguage]:''
+      })
     })
 
     const stringBone = ref(null)
 
     function changeEvent(event) {
-      context.emit("change", props.name, event.target.value, props.lang, props.index)
+      let valid = stringBone.value.reportValidity()
+      let validStates = stringBone.value.validity
+      if(validStates['patternMismatch']){
+        stringBone.value.setCustomValidity(state.pattern_error)
+      }else{
+        stringBone.value.setCustomValidity('')
+      }
+      context.emit("change", props.name, event.target.value, props.lang, props.index, valid)
     }
 
     watchEffect(() => {

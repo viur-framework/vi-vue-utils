@@ -1,4 +1,5 @@
 <template>
+  <form :ref="(el)=>state.viformelement=el" @submit.prevent.stop="()=>{}">
     <slot :structure="state.structure"
           :skel="state.skel"
           :errors="state.errors"
@@ -16,10 +17,12 @@
                 :default-language="defaultLanguage"
                 :label="label===undefined?state.label:label"
                 @change-internal="formUpdate"
+                :errorStyle="errorStyle"
               >
               </bone>
       </component>
     </slot>
+  </form>
 </template>
 
 <script setup>
@@ -27,7 +30,7 @@ import Loader from "../generic/Loader.vue"
 import Request from "../utils/request"
 import { useFormUtils } from "./utils"
 import { getBoneWidget } from "../bones/edit/index"
-import { reactive, watch, onBeforeMount, computed, unref, provide } from "vue"
+import { reactive, watch, onBeforeMount, computed, unref, provide, ref } from "vue"
 import { useDebounceFn } from '@vueuse/core'
 import LayoutCategory from "./layouts/LayoutCategory.vue"
 
@@ -116,7 +119,14 @@ const props = defineProps({
   fetchUrl:{
     type:[String,null],
     default:null
-  }
+  },
+  errorStyle:{
+      type:String,
+      default:"default",
+      validator(value,props){
+        return ["default","decent"].includes(value)
+      }
+    }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
@@ -125,19 +135,30 @@ const state = reactive({
   skel: {}, // working data
   structure: {}, // working data, use dict!
   errors: [], // working data
+  valids:{}, // local validation states
   loading:false, //loading state
   categories:[], //categories to render
   values:computed(()=>props.values),
   internal:computed(()=>props.internal),
   useCategories:computed(()=>props.useCategories),
   label:computed(()=>props.label),
-  bones:computed(()=>props.bones)
+  bones:computed(()=>props.bones),
+  isValid:computed(()=>{ // is form valid?
+    let validstate = true
+    for(const [key,value] of Object.entries(state.valids)){
+      if (!value){
+        validstate = false
+        break
+      }
+    }
+    return validstate
+  }),
+  viformelement: ref(null)
 })
 provide("formState", state)
 if (!props.internal){
   provide("mainformState", state)
 }
-
 
 const {fetchData, sendData, updateSkel, initForm, logics, reload} = useFormUtils(props,state)
 

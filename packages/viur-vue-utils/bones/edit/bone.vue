@@ -36,7 +36,6 @@
     >
       <sl-icon
         slot="icon"
-        library="bootstrap"
         name="info-circle-fill"
       ></sl-icon>
       {{ state.bonestructure.params["tooltip"] }}
@@ -429,7 +428,8 @@ export default defineComponent({
           return true
         }
         return false
-      })
+      }),
+      defaultLanguage:computed(()=>props.defaultLanguage)
     })
     provide("boneState", state)
 
@@ -506,47 +506,37 @@ export default defineComponent({
       val: any,
       lang: string | null = null,
       index: number | null = null,
-      pwMatch?: boolean
+      valid: boolean = true
     ) {
       if (val === undefined) return false
-      if (lang) {
-        if (!state.bonevalue){
-          state.bonevalue = {}
-        }
-        if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
-          state.bonevalue[lang][index] = val
-        } else {
-          state.bonevalue[lang] = val
-        }
-      } else if (index !== null) {
-        state.bonevalue[index] = val
-      } else if (pwMatch === false) {
-        // do something; skip changing value on initial type
-      } else {
-        state.bonevalue = val
-      }
-      if (state.readonly) return false
 
-      let changeObj = {
-        name: name,
-        value: "",
-        lang: lang,
-        index: index
+      if (valid){
+        if (lang) {
+          if (!state.bonevalue){
+            state.bonevalue = {}
+          }
+          if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
+            state.bonevalue[lang][index] = val
+          } else {
+            state.bonevalue[lang] = val
+          }
+        } else if (index !== null) {
+          state.bonevalue[index] = val
+        } else {
+          state.bonevalue = val
+        }
       }
+
+      if (state.readonly) return false
 
       let changeInternalObj = {
         name: name,
         value: val,
         lang: lang,
-        index: index
+        index: index,
+        valid: valid
       }
 
-      if (pwMatch !== undefined && pwMatch !== null) {
-        changeObj.pwMatch = pwMatch
-        changeInternalObj.pwMatch = pwMatch
-      }
-
-      //context.emit("change", changeObj)
       context.emit("change-internal", changeInternalObj)
     }
 
@@ -1049,4 +1039,14 @@ export default defineComponent({
   background-color: #ffecec;
   color:var(--sl-color-danger-700);
 }
+</style>
+
+<style>
+sl-input[data-user-invalid]::part(base),
+sl-select[data-user-invalid]::part(combobox),
+sl-checkbox[data-user-invalid]::part(control) {
+    border-color: var(--sl-color-danger-500);
+  }
+
+
 </style>
