@@ -232,7 +232,7 @@ import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
     backgroundImage: { type: String, default: "" },
     logo: { type: String, default: "" },
     title: { type: String, default: "Login" },
-    logoSVG: { type: String, default: "" }
+    tokenSvg: { type: String, default: "" }
   })
 
 
