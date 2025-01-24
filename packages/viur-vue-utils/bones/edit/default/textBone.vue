@@ -303,10 +303,12 @@ export default defineComponent({
       ul{
         list-style: disc;
         padding-left: var(--sl-spacing-medium);
+        list-style-position: inside;
       }
 
       ol{
         padding-left: var(--sl-spacing-medium);
+        list-style-position: inside;
       }
     }
 
