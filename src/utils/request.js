@@ -20,7 +20,7 @@ function getRequestStore() {
     useRequestStore = defineStore("requestStore", () => {
       const state = reactive({
         sKeys: new Set(),
-        amount:1
+        amount:1,
       })
       function $reset() {
         state.sKeys = new Set()
@@ -33,6 +33,42 @@ function getRequestStore() {
   }
   return useRequestStore()
 }
+
+export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
+  const state = reactive({
+    cacheTime:1000 * 60 * 60 * 24 * 1,
+    cachedRequests:{},
+  })
+
+  function clearCache(prefix){
+    for (const [k,v] of Object.entries(state.cachedRequests)){
+      if (k.startsWith(prefix)){
+        delete state.cachedRequests[k]
+      }
+    }
+  }
+
+  function $reset() {}
+  return {
+    state,
+    clearCache,
+    $reset
+  }
+},{persist: true})
+
+let useCachedRequestsStoreInst = null
+function getCachedRequestsStore() {
+  if (!useCachedRequestsStoreInst) {
+    useCachedRequestsStoreInst = useCachedRequestsStore()
+    if(window.location.hostname === 'localhost'){
+      useCachedRequestsStoreInst.state.cachedRequests = {}
+    }
+  }
+  return useCachedRequestsStoreInst
+}
+
+
+
 
 export default class Request {
   static resetState() {
@@ -151,11 +187,10 @@ export default class Request {
       abortController = null,
       headers = null,
       mode = null,
-      //          milli  sec  min  Std  Tage
-      cacheTime = 1000 * 60 * 60 * 24 * 1
+      cacheTime = null
     } = {}
   ) {
-    let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, headers, abortController, mode)
+    let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, headers, abortController, mode, cached, cacheTime)
     reqPromise
       .then(function (response) {
         if (callback) {
@@ -180,6 +215,9 @@ export default class Request {
       abortController = null,
       renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
       headers = null,
+      cached = false,
+      clearCache = false,
+      cacheTime = null
     } = {}
   ) {
     let url = `/${renderer}/${module}/list`
@@ -192,7 +230,10 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers
+      headers:headers,
+      cached:cached,
+      cacheTime:cacheTime,
+      clearCache:clearCache
     })
   }
 
@@ -204,7 +245,10 @@ export default class Request {
       group = null,
       abortController = null,
       renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
-      headers = null
+      headers = null,
+      cached = false,
+      clearCache = false,
+      cacheTime = null
     } = {}
   ) {
     module = module.replace(/\//g, ".")
@@ -218,7 +262,10 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers
+      headers:headers,
+      cached:cached,
+      cacheTime:cacheTime,
+      clearCache:clearCache
     })
   }
 
@@ -232,7 +279,10 @@ export default class Request {
       group = null,
       abortController = null,
       renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
-      headers = null
+      headers = null,
+      cached = false,
+      clearCache = false,
+      cacheTime = null
     } = {}
   ) {
     let url = `/${renderer}/${module}/view/${key}`
@@ -245,7 +295,10 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers
+      headers:headers,
+      cached:cached,
+      cacheTime:cacheTime,
+      clearCache:clearCache
     })
   }
 
@@ -452,7 +505,33 @@ class cachedFetch {
     return options
   }
 
-  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
+
+  static async convertResponseToJson(response){
+    return {
+      body: await response.json(),
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers,
+      type: response.type,
+      url: response.url,
+      ok: response.ok,
+      cached: response.cached
+    }
+  }
+
+  static convertJsonToResponse(jsondata){
+    let data = JSON.parse(jsondata)
+    const stream = new ReadableStream({
+      start(controller) {
+          controller.enqueue(new TextEncoder().encode(JSON.stringify(data.body)));
+          controller.close();
+        }
+    });
+    delete data['body']
+    return new Response(stream, data);
+  }
+
+  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode = null, cached=false, cacheTime=null) {
     function buildGetUrl(url, params) {
       let requestUrl = new URL(url)
       if (params && Object.keys(params).length > 0) {
@@ -473,9 +552,42 @@ class cachedFetch {
       return requestUrl.toString()
     }
 
+    let _url  = buildGetUrl(url, params)
+
+    if (cached){
+      let _cacheTime = cacheTime
+      if (!_cacheTime){
+        _cacheTime = getCachedRequestsStore().state.cacheTime
+      }
+
+      let cacheHit = getCachedRequestsStore().state.cachedRequests?.[_url]
+      if ( cacheHit ){
+        if ( !clearCache && new Date() - cacheHit.date < _cacheTime){
+          // cacheIsHot
+          return new Promise((resolve) =>{
+            let res = cachedFetch.convertJsonToResponse(cacheHit.response)
+            res.cached = true
+            resolve(res)
+          })
+        }else{
+          delete getCachedRequestsStore().state.cachedRequests[_url]
+        }
+      }
+      
+      //cache is invalid, make a new Request
+    }
+  
     return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
       .then(async (response) => {
         if (response.ok) {
+          response.cached = false
+          if ( cached){
+            let responsedata = await cachedFetch.convertResponseToJson(response.clone())
+            getCachedRequestsStore().state.cachedRequests[_url]={
+              date:new Date(),
+              response: JSON.stringify(responsedata)
+            }
+          }
           return response
         } else {
           const errorMessage = `${response.status} ${response.statusText}: ${

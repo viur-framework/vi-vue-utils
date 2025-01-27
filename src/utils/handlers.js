@@ -13,7 +13,14 @@ import { reactive, computed, toRaw } from "vue"
  */
 export function ListRequest(
   id,
-  { module = "", params = {}, group = null, url = "", renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json" } = {}
+  { module = "", 
+    params = {}, 
+    group = null, 
+    url = "", 
+    renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
+    cached = false,
+    clearCache = false,
+    cacheTime = null } = {}
 ) {
   const useList = defineStore(id, () => {
     let abortController = new AbortController()
@@ -29,6 +36,9 @@ export function ListRequest(
       headers:null,
       group: group,
       module: module,
+      cached: false,
+      clearCache:clearCache,
+      renderer:renderer,
       state: 0 // 0:not fetched, 1:fetched, 2:all fetched, -1:error
     })
 
@@ -53,7 +63,7 @@ export function ListRequest(
     })
 
     async function fetchStructure(){
-      const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer}).then((structureResponse) =>
+      const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer, cached:cached, cacheTime:cacheTime, clearCache:clearCache}).then((structureResponse) =>
         structureResponse.json().then((_structure) => _structure)
       )
       let skeltype = "viewSkel"
@@ -93,10 +103,14 @@ export function ListRequest(
         abortController: abortController,
         group: state.group,
         renderer: renderer,
-        headers:state.headers
+        headers:state.headers,
+        cached:cached, 
+        cacheTime:cacheTime, 
+        clearCache:state.clearCache
       })
         .then(async (resp) => {
           let data = await resp.json()
+          state.cached = resp.cached
           if (data.structure === null || Object.keys(data.structure).length === 0) {
             await fetchStructure()
           } else {
