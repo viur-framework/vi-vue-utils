@@ -14,7 +14,9 @@
 <script setup>
 import { reactive, onMounted, inject, computed, getCurrentInstance } from "vue"
 import Wrapper_nested from "../wrapper_nested.vue"
-
+  defineOptions({
+    inheritAttrs: false
+  })
 
 const emit = defineEmits(["change"])
 const props = defineProps({
@@ -22,7 +24,9 @@ const props = defineProps({
     value: null,
     index: Number,
     lang: String,
-    bone:Object
+    bone:Object,
+    bone:Object,
+    autofocus: Boolean
   })
 
 const state = reactive({})

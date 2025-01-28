@@ -12,14 +12,18 @@
 <script setup>
 
 import { reactive,  onMounted, inject } from "vue"
-
+  defineOptions({
+    inheritAttrs: false
+  })
   const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     readonly: Boolean,
-    params: Object
+    params: Object,
+    bone:Object,
+    autofocus: Boolean
   })
 
   const emit = defineEmits(["change"])

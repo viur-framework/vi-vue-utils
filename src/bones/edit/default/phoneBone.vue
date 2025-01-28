@@ -38,12 +38,15 @@ import Utils from "../../utils"
 import jsonData from "./country_information.json"
 import parsePhoneNumber from "libphonenumber-js/min"
 import { AsYouType, validatePhoneNumberLength } from "libphonenumber-js/min"
-
+  defineOptions({
+    inheritAttrs: false
+  })
   const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
+    bone:Object,
     autofocus: Boolean
   })
 

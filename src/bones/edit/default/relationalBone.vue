@@ -57,13 +57,16 @@
 import { reactive, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
 import Wrapper_nested from "../wrapper_nested.vue"
-
+  defineOptions({
+    inheritAttrs: false
+  })
   const props = defineProps( {
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
-    bone: Object,
+    bone:Object,
+    autofocus: Boolean
   })
 
   const emit = defineEmits( ["change"])

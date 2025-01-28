@@ -345,7 +345,7 @@ export function useFormUtils(props, state){
     }
 
     state.skel = { ...skeldata, ...formvalues }
-    console.log(state.skel)
+
     state.categories = updateCategories()
   }
 

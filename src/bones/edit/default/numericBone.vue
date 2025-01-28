@@ -29,13 +29,16 @@
 <script setup>
 import { reactive, onMounted, computed, inject, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
-
-  const emit = defineEmits( { change: null })
+  defineOptions({
+    inheritAttrs: false
+  })
+  const emit = defineEmits( ['change'])
   const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
+    bone:Object,
     autofocus: Boolean
   })
 

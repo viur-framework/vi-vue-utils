@@ -60,12 +60,15 @@
 
 import { reactive,  onMounted, computed, inject, watch, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
-
+  defineOptions({
+    inheritAttrs: false
+  })
   const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
+    bone:Object,
     autofocus: Boolean
   })
 

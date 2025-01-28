@@ -15,14 +15,18 @@
 import { reactive, onMounted, inject } from "vue"
 //import { VueJsonPretty } from "vue-json-pretty"
 //import "vue-json-pretty/lib/styles.css"
-
+  defineOptions({
+    inheritAttrs: false
+  })
   const props = defineProps({
     name: String,
     value: [Object, String, Number, Boolean, Array],
     index: Number,
     lang: String,
     readonly: Boolean,
-    params: Object
+    params: Object,
+    bone:Object,
+    autofocus: Boolean
   })
 
   const emit = defineEmits( ["change"])
