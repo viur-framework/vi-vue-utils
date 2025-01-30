@@ -10,6 +10,7 @@
         hoist
         max-options-visible="0"
         clearable
+        :required="boneState.bonestructure.required"
         @sl-change="changeEvent"
         :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
         :data-user-invalid="boneState.errorMessages.length===0?undefined:true"

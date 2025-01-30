@@ -63,6 +63,7 @@ import Utils from "../../utils"
 
     function changeEvent(event) {
       let valid = stringBone.value.reportValidity()
+      console.log(valid)
       let validStates = stringBone.value.validity
       if(validStates['patternMismatch']){
         stringBone.value.setCustomValidity(state.pattern_error)

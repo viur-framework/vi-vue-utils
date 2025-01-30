@@ -5,6 +5,7 @@
     :disabled="boneState?.readonly"
     :value="typeof value === 'object'?JSON.stringify(value):value"
     @input="changeEvent"
+    :required="boneState.bonestructure.required"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-textarea>
@@ -14,6 +15,7 @@
     :class="([`widget-bone-raw-${name}`])"
     :disabled="boneState?.readonly"
     :value="value"
+    :required="boneState.bonestructure.required"
     @input="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"

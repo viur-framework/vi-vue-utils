@@ -8,6 +8,7 @@
     hoist
     :multiple="boneState['bonestructure']['multiple']"
     max-options-visible="0"
+    :required="boneState.bonestructure.required"
     clearable
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"

@@ -8,6 +8,7 @@
     type="email"
     :value="value"
     @sl-change="changeEvent"
+    :required="boneState.bonestructure.required"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-input>

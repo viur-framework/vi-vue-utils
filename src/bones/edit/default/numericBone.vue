@@ -9,6 +9,7 @@
     :min="state.minAmount"
     :max="state.maxAmount"
     :step="state.precision"
+    :required="boneState.bonestructure.required"
     @sl-change="changeEvent"
     @keyup="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
@@ -61,7 +62,8 @@ import { useTimeoutFn } from "@vueuse/core"
     const numericBone = ref(null)
 
     function changeEvent(event) {
-      emit("change", props.name, event.target.value, props.lang, props.index)
+      let valid = numericBone.value.reportValidity()
+      emit("change", props.name, event.target.value, props.lang, props.index,valid)
     }
 
     watchEffect(() => {

@@ -118,10 +118,11 @@ export function useFormUtils(props, state){
 
   function sendData(alternativUrl= null, additionalData= null,removeKeyFromDataset= true){
     state.loading = true
-    if (!state.isValid){
-      state.viformelement.reportValidity()
+    let isValid = state.viformelement.reportValidity()
+    if (!isValid){
       return new Promise((resolve, reject)=>reject("Form is not valid"))
     }
+    
     let request = Request.post
     if (props.secure) request = Request.securePost
 

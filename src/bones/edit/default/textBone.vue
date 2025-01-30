@@ -1,11 +1,12 @@
 <template>
   <template v-if="state.editor">
+    <template v-if="boneState.bonestructure?.['valid_html'] || boneState.bonestructure?.['validHtml']">
     <ckeditor
-      v-if="boneState.bonestructure?.['valid_html'] || boneState.bonestructure?.['validHtml']"
       v-model="state.value"
       :editor="state.editor"
       :config="state.editorConfig"
       :disabled="boneState?.readonly"
+      :required="boneState.bonestructure.required"
       @ready="onReady"
       @input="changeEvent"
       class="widget-bone widget-bone-text widget-bone-text-default"
@@ -13,6 +14,8 @@
       :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     >
     </ckeditor>
+    <input type="text" class="vi-textbone-hidden" :value="state.value" :required="boneState.bonestructure.required"></input>
+    </template>
     <sl-textarea
       v-else
       class="widget-bone widget-bone-text widget-bone-text-default"
@@ -20,6 +23,7 @@
       :disabled="boneState?.readonly"
       :value="value"
       @input="changeEventTextarea"
+      :required="boneState.bonestructure.required"
       :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
       :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     ></sl-textarea>
@@ -148,6 +152,16 @@ import ClassicEditor from "@viur/ckeditor5-build-classic"
     )
 
 </script>
+
+<style scoped>
+.vi-textbone-hidden{
+  max-height:0;
+  display:block;
+  visibility: hidden;
+  width: 100%;
+  pointer-events: none;
+}
+</style>
 
 <style>
 .bone-inner-wrap {
