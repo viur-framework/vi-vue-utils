@@ -23,8 +23,8 @@
     index="lng"
     type="number"
     :name="name"
-    :min="boneState.bonestructure.boundslat[0]"
-    :max="boneState.bonestructure.boundslat[1]"
+    :min="boneState.bonestructure.boundslng[0]"
+    :max="boneState.bonestructure.boundslng[1]"
     :disabled="boneState.readonly"
     value-as-number
     step="0.000001"
