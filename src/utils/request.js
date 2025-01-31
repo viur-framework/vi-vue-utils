@@ -583,9 +583,19 @@ class cachedFetch {
           response.cached = false
           if ( cached){
             let responsedata = await cachedFetch.convertResponseToJson(response.clone())
+              let usedKeys = []
+
+              let data = await response.clone().json()
+
+            if (data['skellist']){
+              usedKeys = data['skellist'].map(x=>x['key'])
+            }else if (data['values']){
+              usedKeys = [data['values']['key']]
+            }
             getCachedRequestsStore().state.cachedRequests[_url]={
               date:new Date(),
-              response: JSON.stringify(responsedata)
+              response: JSON.stringify(responsedata),
+              keys: usedKeys
             }
           }
           return response
