@@ -13,6 +13,14 @@ class HTTPError extends Error {
   }
 }
 
+function atest(text,reviver){
+  console.log("GJGGJGJGJ")
+  //throw "AAA"
+  return false //return JSON.parse(text,reviver)
+}
+
+
+console.log("AAAAA111")
 let useRequestStore = null
 
 function getRequestStore() {
@@ -38,6 +46,7 @@ export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
   const state = reactive({
     cacheTime:1000 * 60 * 60 * 24 * 1,
     cachedRequests:{},
+    keyToRequestMap:new Map()
   })
 
   function clearCache(prefix){
@@ -54,7 +63,12 @@ export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
     clearCache,
     $reset
   }
-},{persist: true})
+},{
+  persist: {
+    debug:true,
+    
+  }
+})
 
 let useCachedRequestsStoreInst = null
 function getCachedRequestsStore() {
@@ -561,7 +575,7 @@ class cachedFetch {
       }
 
       let cacheHit = getCachedRequestsStore().state.cachedRequests?.[_url]
-      if ( cacheHit ){
+      if (false && cacheHit ){
         if ( !clearCache && new Date() - cacheHit.date < _cacheTime){
           // cacheIsHot
           return new Promise((resolve) =>{
@@ -576,12 +590,12 @@ class cachedFetch {
       
       //cache is invalid, make a new Request
     }
-  
+    console.log(getCachedRequestsStore().state)
     return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
       .then(async (response) => {
         if (response.ok) {
           response.cached = false
-          if ( cached){
+          if (false && cached ){
             let responsedata = await cachedFetch.convertResponseToJson(response.clone())
               let usedKeys = []
 
@@ -589,8 +603,21 @@ class cachedFetch {
 
             if (data['skellist']){
               usedKeys = data['skellist'].map(x=>x['key'])
+              
+              // create key to url references
+              for(const k of usedKeys){
+                if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
+                  getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+                }
+                console.log("AAA")
+                getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
+              }
             }else if (data['values']){
               usedKeys = [data['values']['key']]
+              if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
+                getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+              }
+              getCachedRequestsStore().state.keyToRequestMap.get(k).add(usedKeys[0])
             }
             getCachedRequestsStore().state.cachedRequests[_url]={
               date:new Date(),
@@ -624,6 +651,45 @@ class cachedFetch {
   }
 
   static post(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
+
+    function checkPenultimateUrlPart(url, partName){
+      if (!url.includes(partName)) return null
+
+      let lastSlash = url.lastIndexOf("/");
+      if (lastSlash === -1 || lastSlash === url.length - 1) return null
+
+      return url.substring(lastSlash + 1)
+    } 
+    console.log("AAAA")
+    //clear caches if its a add, edit or delete post request
+    if (false && ['/delete',"/edit", "/add"].some(u => {
+      return url.includes(u+"/") || url.endsWith(u)
+    })){
+      console.log("!!!")
+      //we got a url that ends on x or contains /x/
+      let entryKey = null
+      if (params?.key) entryKey = params.key
+      console.log("!!!")
+      entryKey = ['/delete/',"/edit/", "/add/"].filter(u =>checkPenultimateUrlPart(url, u))
+      if (entryKey){
+        console.log("!!!")
+        console.dir(getCachedRequestsStore().state.keyToRequestMap)
+        if (getCachedRequestsStore().state.keyToRequestMap.has(entryKey)){
+          let urlList = getCachedRequestsStore().state.keyToRequestMap.get(entryKey) // get urlList for this key
+          console.log(urlList)
+          for(const url of urlList){
+            try{
+              delete getCachedRequestsStore().state.cachedRequests[url] //delete all url caches for this key
+            }catch(error){}
+            
+          }
+          console.log("!!!")
+          getCachedRequestsStore().state.keyToRequestMap.delete(entryKey) // delete the key to url map
+        }
+      }
+      console.log("!!!")
+    }
+    console.log("BBBBBB")
     return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
     .then(async (response) => {
       if (response.ok) {
