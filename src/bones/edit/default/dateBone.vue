@@ -10,6 +10,7 @@
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    step="1"
   ></sl-input>
 </template>
 
