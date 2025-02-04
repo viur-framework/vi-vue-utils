@@ -1,5 +1,6 @@
 import { defineStore } from "pinia"
 import { reactive } from "vue"
+import {destr} from 'destr'
 
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
@@ -34,10 +35,33 @@ function getRequestStore() {
   return useRequestStore()
 }
 
+
+function cacheDeserializer(value, options){
+  //convert keyToRequestMap back to a Map of Sets
+  let deserialized =  destr(value,options)
+  for (const [k,v] of Object.entries(deserialized['state']['keyToRequestMap'])){
+    deserialized['state']['keyToRequestMap'][k] = new Set(v)
+  }
+  deserialized['state']['keyToRequestMap'] = new Map(Object.entries(deserialized['state']['keyToRequestMap']))
+  return deserialized
+}
+
+function cacheSerializer(value, replacer){
+  return JSON.stringify(value,(key, value) => {
+    if (value instanceof Map) {
+      return Object.fromEntries(value); // Convert Map to array
+    }else if (value instanceof Set) {
+      return Array.from(value); // Convert Set to array
+    }
+    return value
+  })
+}
+
 export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
   const state = reactive({
     cacheTime:1000 * 60 * 60 * 24 * 1,
     cachedRequests:{},
+    keyToRequestMap:new Map()
   })
 
   function clearCache(prefix){
@@ -54,7 +78,16 @@ export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
     clearCache,
     $reset
   }
-},{persist: true})
+},{
+  persist: {
+    debug:true,
+    serializer: {
+      deserialize: cacheDeserializer,
+      serialize:cacheSerializer
+    }
+    
+  }
+})
 
 let useCachedRequestsStoreInst = null
 function getCachedRequestsStore() {
@@ -561,7 +594,7 @@ class cachedFetch {
       }
 
       let cacheHit = getCachedRequestsStore().state.cachedRequests?.[_url]
-      if ( cacheHit ){
+      if (cacheHit ){
         if ( !clearCache && new Date() - cacheHit.date < _cacheTime){
           // cacheIsHot
           return new Promise((resolve) =>{
@@ -576,12 +609,12 @@ class cachedFetch {
       
       //cache is invalid, make a new Request
     }
-  
+
     return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
       .then(async (response) => {
         if (response.ok) {
           response.cached = false
-          if ( cached){
+          if ( cached ){
             let responsedata = await cachedFetch.convertResponseToJson(response.clone())
               let usedKeys = []
 
@@ -589,8 +622,20 @@ class cachedFetch {
 
             if (data['skellist']){
               usedKeys = data['skellist'].map(x=>x['key'])
+              
+              // create key to url references
+              for(const k of usedKeys){
+                if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
+                  getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+                }
+                getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
+              }
             }else if (data['values']){
               usedKeys = [data['values']['key']]
+              if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
+                getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+              }
+              getCachedRequestsStore().state.keyToRequestMap.get(k).add(usedKeys[0])
             }
             getCachedRequestsStore().state.cachedRequests[_url]={
               date:new Date(),
@@ -624,9 +669,82 @@ class cachedFetch {
   }
 
   static post(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
+
+    function checkPenultimateUrlPart(url, partName){
+      if (!url.includes(partName)) return null
+
+      let lastSlash = url.lastIndexOf("/");
+      if (lastSlash === -1 || lastSlash === url.length - 1) return null
+      return url.substring(lastSlash + 1)
+    }
+
+    let isAddRequest = false
+    //clear caches if its a add, edit or delete post request
+    if (['/delete',"/edit", "/add"].some(u => {
+      return url.includes(u+"/") || url.endsWith(u)
+    })){
+      let hasExtraFields = false;
+      for (const field of params.keys()) {
+        if (field !== "key" && field !== "skey") {
+          hasExtraFields = true
+          break // Stop loop early to improve performance
+        }
+      }
+      if (hasExtraFields){
+        //only update cache if we have data in request
+        //we got a url that ends on x or contains /x/
+        let entryKey = null
+
+        if (params?.key) {
+          entryKey = params.key
+        } else if (params instanceof FormData && params.has("key")){
+          entryKey = params.get("key")
+        } else{
+          entryKey = ['/delete/',"/edit/", "/add/"].filter(u =>checkPenultimateUrlPart(url, u)).map(u =>checkPenultimateUrlPart(url, u))
+          if (entryKey.length>0){
+            entryKey = entryKey[0]
+          }else{
+            entryKey = null
+          }
+        }
+
+        if (entryKey){
+          if (getCachedRequestsStore().state.keyToRequestMap.has(entryKey)){
+            let urlList = getCachedRequestsStore().state.keyToRequestMap.get(entryKey) // get urlList for this key
+
+            for(const url of urlList){
+              try{
+                delete getCachedRequestsStore().state.cachedRequests[url] //delete all url caches for this key
+              }catch(error){}
+
+            }
+            getCachedRequestsStore().state.keyToRequestMap.delete(entryKey) // delete the key to url map
+          }
+        }else{
+          //was an add > no key
+          isAddRequest = true
+        }
+      }
+    }
+
+    function getEntriesStartingWith(map, prefix) {
+      return [...map].filter(([key]) => key.startsWith(prefix))
+    }
+
     return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
     .then(async (response) => {
       if (response.ok) {
+
+        if(isAddRequest){
+          // remove all urls that starts with the same url like the add
+          let urlList = [...Object.keys(getCachedRequestsStore().state.cachedRequests)].filter((key) => key.startsWith(url.replace("/add","")))
+          for(const url of urlList){
+              try{
+                delete getCachedRequestsStore().state.cachedRequests[url] //delete all url caches for this key
+              }catch(error){}
+          }
+        }
+
         return response
       } else {
         const errorMessage = `${response.status} ${response.statusText}: ${
