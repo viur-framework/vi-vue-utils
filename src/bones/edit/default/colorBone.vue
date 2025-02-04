@@ -4,7 +4,7 @@
     :class="([`widget-bone-color-${name}`])"
     :disabled="boneState.readonly"
     :value="value"
-    :required="boneState.bonestructure.required"
+    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
     @sl-change="changeEvent"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-color-picker>

@@ -6,7 +6,7 @@
     :type="state.typeString"
     :name="name"
     :value="state.value"
-    :required="boneState.bonestructure.required"
+    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
@@ -35,9 +35,9 @@ import { reactive, onMounted, computed, inject } from "vue"
       value: computed(() => {
         // remove timezone data if timed
         let boneValue = props.value
-        if (boneState.bonestructure["time"] && boneState.bonestructure["date"]) {
+        if (props.value && boneState.bonestructure["time"] && boneState.bonestructure["date"]) {
           boneValue = props.value?.split("+")[0]
-        } else if (boneState.bonestructure["time"]){
+        } else if (props.value && boneState.bonestructure["time"]){
           boneValue = props.value?.split("+")[0]?.split("T")[1]
         } else if (props.value) {
           //convert to readable value
