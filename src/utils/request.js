@@ -620,28 +620,33 @@ class cachedFetch {
 
               let data = await response.clone().json()
 
-            if (data['skellist']){
-              usedKeys = data['skellist'].map(x=>x['key'])
-              
-              // create key to url references
-              for(const k of usedKeys){
-                if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
+            if (data instanceof Object && !Array.isArray(data) && data !== null){
+              if (data['skellist']){
+
+                usedKeys = data['skellist'].map(x=>x['key'])
+                
+                // create key to url references
+                for(const k of usedKeys){
+                  if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
+                    getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+                  }
+                  getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
+                }
+              }else if (data['values']){
+                usedKeys = [data['values']['key']]
+                if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
                   getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
                 }
-                getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
+                getCachedRequestsStore().state.keyToRequestMap.get(k).add(usedKeys[0])
               }
-            }else if (data['values']){
-              usedKeys = [data['values']['key']]
-              if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
-                getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
-              }
-              getCachedRequestsStore().state.keyToRequestMap.get(k).add(usedKeys[0])
             }
+
             getCachedRequestsStore().state.cachedRequests[_url]={
               date:new Date(),
               response: JSON.stringify(responsedata),
               keys: usedKeys
             }
+
           }
           return response
         } else {
