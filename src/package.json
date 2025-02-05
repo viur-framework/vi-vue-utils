@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "2.1.3",
+  "version": "2.1.4",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
