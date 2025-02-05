@@ -381,7 +381,7 @@ export const useUserStore = defineStore("user", () => {
 
     function updateUser() {
         return new Promise((resolve, reject) => {
-            Request.get("/vi/user/view/self")
+            Request.get("/vi/user/view/self", {cached:true,cacheTime:1000 * 60 * 5})
                 .then(async (resp) => {
                     let data = await resp.json();
                     state["user.loggedin"] = "yes";

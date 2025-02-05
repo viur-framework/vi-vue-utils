@@ -1,6 +1,7 @@
 import { defineStore } from "pinia"
 import { reactive } from "vue"
 import {destr} from 'destr'
+import { indexedDBStorage,setupIndexDBStorage } from "./indexeddb"
 
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
@@ -22,6 +23,7 @@ function getRequestStore() {
       const state = reactive({
         sKeys: new Set(),
         amount:1,
+        maxCacheEntries: 1000
       })
       function $reset() {
         state.sKeys = new Set()
@@ -38,7 +40,7 @@ function getRequestStore() {
 
 function cacheDeserializer(value, options){
   //convert keyToRequestMap back to a Map of Sets
-  let deserialized =  destr(value,options)
+  let deserialized = destr(value,options)
   for (const [k,v] of Object.entries(deserialized['state']['keyToRequestMap'])){
     deserialized['state']['keyToRequestMap'][k] = new Set(v)
   }
@@ -81,6 +83,7 @@ export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
 },{
   persist: {
     debug:true,
+    storage:indexedDBStorage,
     serializer: {
       deserialize: cacheDeserializer,
       serialize:cacheSerializer
@@ -93,13 +96,13 @@ let useCachedRequestsStoreInst = null
 function getCachedRequestsStore() {
   if (!useCachedRequestsStoreInst) {
     useCachedRequestsStoreInst = useCachedRequestsStore()
+    setupIndexDBStorage(useCachedRequestsStoreInst,cacheDeserializer)
     if(window.location.hostname === 'localhost'){
       useCachedRequestsStoreInst.state.cachedRequests = {}
     }
   }
   return useCachedRequestsStoreInst
 }
-
 
 
 
@@ -564,7 +567,24 @@ class cachedFetch {
     return new Response(stream, data);
   }
 
+  static trimCache() {
+    const maxEntries = getRequestStore().state.maxCacheEntries
+    const cachedEntries = Object.entries(getCachedRequestsStore().state.cachedRequests);
+
+    if (cachedEntries.length > maxEntries) {
+      cachedEntries.sort((a, b) => new Date(a[1].date) - new Date(b[1].date));
+
+      while (cachedEntries.length > maxEntries) {
+        const [key] = cachedEntries.shift();
+        delete getCachedRequestsStore().state.cachedRequests[key];
+      }
+    }
+  }
+
   static get(url, params = null, clearCache = null, headers = null, abortController = null, mode = null, cached=false, cacheTime=null) {
+
+    this.trimCache()
+
     function buildGetUrl(url, params) {
       let requestUrl = new URL(url)
       if (params && Object.keys(params).length > 0) {
@@ -586,6 +606,9 @@ class cachedFetch {
     }
 
     let _url  = buildGetUrl(url, params)
+    if (headers){
+      _url += "@@@"+Object.entries(headers).map(([key, value]) => `${key}=${value}`).join('&')
+    }
 
     if (cached){
       let _cacheTime = cacheTime
@@ -594,7 +617,14 @@ class cachedFetch {
       }
 
       let cacheHit = getCachedRequestsStore().state.cachedRequests?.[_url]
+
       if (cacheHit ){
+        
+
+        if (typeof cacheHit.date === "string" ){
+          cacheHit.date = new Date(cacheHit.date)
+        }
+
         if ( !clearCache && new Date() - cacheHit.date < _cacheTime){
           // cacheIsHot
           return new Promise((resolve) =>{
@@ -609,7 +639,6 @@ class cachedFetch {
       
       //cache is invalid, make a new Request
     }
-
     return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
       .then(async (response) => {
         if (response.ok) {
@@ -619,7 +648,6 @@ class cachedFetch {
               let usedKeys = []
 
               let data = await response.clone().json()
-
             if (data instanceof Object && !Array.isArray(data) && data !== null){
               if (data['skellist']){
 
@@ -637,7 +665,7 @@ class cachedFetch {
                 if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
                   getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
                 }
-                getCachedRequestsStore().state.keyToRequestMap.get(k).add(usedKeys[0])
+                getCachedRequestsStore().state.keyToRequestMap.get(usedKeys[0]).add(_url)
               }
             }
 
@@ -669,6 +697,7 @@ class cachedFetch {
         const errorMessage = `${error.statusCode} ${error.statusText}: ${
           error.headers ? error.headers.get("x-error-descr") : ""
         }`
+        console.log(error)
         return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))
       })
   }
@@ -730,10 +759,6 @@ class cachedFetch {
           isAddRequest = true
         }
       }
-    }
-
-    function getEntriesStartingWith(map, prefix) {
-      return [...map].filter(([key]) => key.startsWith(prefix))
     }
 
     return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
