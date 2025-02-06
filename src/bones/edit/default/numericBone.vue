@@ -52,7 +52,7 @@ import { useTimeoutFn } from "@vueuse/core"
         return boneState.bonestructure["maxAmount"]
       }),
       precision: computed(() => {
-        if (boneState.bonestructure["precision"] > 1) {
+        if (boneState.bonestructure["precision"] > 0) {
           return parseFloat(`0.${"0".repeat(boneState.bonestructure["precision"] - 1)}1`)
         }
         return undefined
