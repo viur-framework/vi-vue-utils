@@ -658,12 +658,12 @@ class cachedFetch {
                   if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
                     getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
                   }
-                  getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
+                  getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url) 
                 }
               }else if (data['values']){
                 usedKeys = [data['values']['key']]
                 if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
-                  getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+                  getCachedRequestsStore().state.keyToRequestMap.set(usedKeys[0],new Set())
                 }
                 getCachedRequestsStore().state.keyToRequestMap.get(usedKeys[0]).add(_url)
               }
