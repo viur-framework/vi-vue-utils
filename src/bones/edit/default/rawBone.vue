@@ -5,7 +5,7 @@
     :disabled="boneState?.readonly"
     :value="typeof value === 'object'?JSON.stringify(value):value"
     @input="changeEvent"
-    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-textarea>
@@ -15,7 +15,7 @@
     :class="([`widget-bone-raw-${name}`])"
     :disabled="boneState?.readonly"
     :value="value"
-    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @input="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"

@@ -6,7 +6,7 @@
       :editor="state.editor"
       :config="state.editorConfig"
       :disabled="boneState?.readonly"
-      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
       @ready="onReady"
       @input="changeEvent"
       class="widget-bone widget-bone-text widget-bone-text-default"
@@ -14,7 +14,7 @@
       :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     >
     </ckeditor>
-    <input type="text" class="vi-textbone-hidden" :value="state.value" :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"></input>
+    <input type="text" class="vi-textbone-hidden" :value="state.value" :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"></input>
     </template>
     <sl-textarea
       v-else
@@ -23,7 +23,7 @@
       :disabled="boneState?.readonly"
       :value="value"
       @input="changeEventTextarea"
-      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
       :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
       :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     ></sl-textarea>

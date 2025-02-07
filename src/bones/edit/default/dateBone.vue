@@ -6,7 +6,7 @@
     :type="state.typeString"
     :name="name"
     :value="state.value"
-    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @sl-change="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"

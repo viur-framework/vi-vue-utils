@@ -9,7 +9,7 @@
     :min="state.minAmount"
     :max="state.maxAmount"
     :step="state.precision"
-    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @sl-change="changeEvent"
     @keyup="changeEvent"
     :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"

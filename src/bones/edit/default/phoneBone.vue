@@ -22,7 +22,7 @@
       type="tel"
       :disabled="boneState.readonly"
       :value="Utils.unescape(state.value)"
-      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.language"
+      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
       @sl-change="changeEvent"
       :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     >
