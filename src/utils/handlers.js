@@ -63,7 +63,7 @@ export function ListRequest(
     })
 
     async function fetchStructure(){
-      const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer, cached:cached, cacheTime:cacheTime, clearCache:clearCache}).then((structureResponse) =>
+      const structure = await Request.getStructure(state.module,{group: state.group,renderer: renderer, cached:state.cached, cacheTime:cacheTime, clearCache:clearCache}).then((structureResponse) =>
         structureResponse.json().then((_structure) => _structure)
       )
       let skeltype = "viewSkel"
@@ -104,7 +104,7 @@ export function ListRequest(
         group: state.group,
         renderer: renderer,
         headers:state.headers,
-        cached:cached, 
+        cached:state.cached, 
         cacheTime:cacheTime, 
         clearCache:state.clearCache
       })
