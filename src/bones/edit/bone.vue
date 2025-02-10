@@ -939,6 +939,7 @@ import rawBone from "./default/rawBone.vue"
       margin-left: 0.5em;
       background-color: var(--sl-color-info-50);
       border: none;
+      overflow: visible;
     }
 
     &::part(message) {

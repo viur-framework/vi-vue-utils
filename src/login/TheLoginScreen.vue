@@ -459,6 +459,10 @@ sl-button.more-login-btn:has(+ #google_oauth > *) {
     width: calc(100% - var(--sl-spacing-2x-large));
     max-width: none;
   }
+
+  sl-alert{
+    margin-bottom: var(--sl-spacing-medium);
+  }
 }
 
 .input {
@@ -524,7 +528,8 @@ sl-input {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 5px;
+    gap: var(--sl-spacing-medium);
+    margin-bottom: var(--sl-spacing-medium);
   }
 
   & :deep(.bone-inner-wrap) {
@@ -538,6 +543,12 @@ sl-input {
   & :deep(sl-input::part(base)) {
     border-bottom-left-radius: var(--sl-border-radius-medium) !important;
     border-top-left-radius: var(--sl-border-radius-medium) !important;
+    border-top-right-radius: var(--sl-border-radius-medium) !important;
+    border-bottom-right-radius: var(--sl-border-radius-medium) !important;
+  }
+
+  sl-alert{
+    margin-bottom: 0;
   }
 }
 
