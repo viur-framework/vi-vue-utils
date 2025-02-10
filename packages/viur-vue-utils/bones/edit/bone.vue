@@ -971,6 +971,7 @@ export default defineComponent({
       margin-left: 0.5em;
       background-color: var(--sl-color-info-50);
       border: none;
+      overflow: visible;
     }
 
     &::part(message) {
