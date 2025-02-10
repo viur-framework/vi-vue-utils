@@ -38,7 +38,8 @@ export default {
     "Incomplete data":"Daten unvollständig",
     "No value selected":"Kein Wert ausgewählt",
     "Invalid value selected":"Auswahl ist ungültig",
-    "Wrong OTP Token":"Falscher OTP Code"
+    "Wrong OTP Token":"Falscher OTP Code",
+    "Maximum length exceeded":"Eingabe zu lang"
 
   },
   preview: "Vorschau",
