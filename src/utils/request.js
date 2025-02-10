@@ -742,7 +742,7 @@ class cachedFetch {
           }
         }
 
-        if (entryKey){
+        if (entryKey && !url.endsWith("/add")){ //dirty. cache rework for 2.5
           if (getCachedRequestsStore().state.keyToRequestMap.has(entryKey)){
             let urlList = getCachedRequestsStore().state.keyToRequestMap.get(entryKey) // get urlList for this key
 
