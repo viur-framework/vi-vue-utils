@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 const googleConfig = {
     library: "https://accounts.google.com/gsi/client",
     defaultButtonConfig: { theme: "outline", size: "large" },
-    scopes: "email",
+    scopes: "email profile openid",
 };
 
 export const useUserStore = defineStore("user", () => {
@@ -61,12 +61,12 @@ export const useUserStore = defineStore("user", () => {
                 const script = document.createElement("script");
                 script.addEventListener("load", () => {
                     state["google.api.loaded"] = true;
-                    // @ts-ignore
                     window.google.accounts.id.initialize({
                         client_id: state["google.api.clientid"],
                         scope: googleConfig.scopes,
-                        use_fedcm_for_prompt: false, //TODO disabled till ported, FedCM will be enforced Q4 24 from google!
+                        use_fedcm_for_prompt: true, //TODO disabled till ported, FedCM will be enforced Q4 24 from google!
                         ux_mode: "popup",
+                        cancel_on_tap_outside :false,
                         prompt_parent_id: "google_oauth",
                         callback: (response) => {
                             if (response.credential) {
@@ -116,7 +116,6 @@ export const useUserStore = defineStore("user", () => {
                             }
                         },
                     });
-                    // @ts-ignore
                     resolve(window.google);
                 });
                 script.src = googleConfig.library;
@@ -131,23 +130,17 @@ export const useUserStore = defineStore("user", () => {
         return new Promise((resolve, reject) => {
             state.currentLoginMask = "google";
             state["user.loggedin"] = "loading";
-            // @ts-ignore
-            window.google.accounts.id.prompt((notification) => {
-                if (
-                    [
-                        "suppressed_by_user",
-                        "opt_out_or_no_session",
-                        "undefined",
-                    ].includes(notification.getNotDisplayedReason())
-                ) {
-                    console.log("Please delete the g_state cookie");
-                    let div = document.getElementById("google_oauth");
-                    window.google.accounts.id.renderButton(div, {
-                        theme: "outline",
-                        size: "large",
-                    });
-                }
-            });
+            
+            window.google.accounts.id.prompt()
+
+            //needed cause for securityreason we dont know if user canceled login, so we add after a short time the default login method
+            setTimeout(()=>{
+                let div = document.getElementById("google_oauth");
+                window.google.accounts.id.renderButton(div, {
+                    theme: "outline",
+                    size: "large",
+                });
+            },5000)
         });
     }
 
