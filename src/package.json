@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "2.1.9",
+  "version": "2.1.10",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -25,6 +25,7 @@
     "@ckeditor/ckeditor5-vue": "^5.1.0",
     "@viur/ckeditor5-build-classic": "^1.0.3-v38.0.1",
     "@vueuse/core": "^12.4.0",
+    "destr": "^2.0.3",
     "libphonenumber-js": "^1.11.17",
     "logics-js": "^0.3.9",
     "pinia": "^2.3.0",
