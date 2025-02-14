@@ -697,7 +697,7 @@ class cachedFetch {
         const errorMessage = `${error.statusCode} ${error.statusText}: ${
           error.headers ? error.headers.get("x-error-descr") : ""
         }`
-        console.log(error)
+
         return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))
       })
   }
