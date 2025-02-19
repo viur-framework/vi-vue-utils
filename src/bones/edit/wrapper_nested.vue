@@ -63,7 +63,17 @@ onMounted(() => {
   } else {
     state.globalRegistration = false
   }
-  emit("change", props.name, props.value, props.lang, props.index) //init
+
+  let val = {}
+  if (props.value) val = props.value
+
+  for(const [bonename, boneStructure] of Object.entries(props.bone['using'])){
+    if(!Object.keys(val).includes(bonename) && boneStructure['defaultvalue']){
+      val[bonename] = boneStructure['defaultvalue']
+    }
+  }
+
+  emit("change", props.name, val, props.lang, props.index) //init
 })
 
 function updateValue(e) {
