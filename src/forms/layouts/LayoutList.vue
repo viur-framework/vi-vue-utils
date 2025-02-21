@@ -1,10 +1,10 @@
 <template>
-  <div class="wrapper" v-id="Object.keys(formState.structure).length>0">
+  <div class="wrapper" v-if="Object.keys(formState.structure).length>0">
     <template
       v-for="(boneValue,boneName) in formState.skel"
       :key="boneName"
     >
-      <template v-if="formState.bones?.includes(boneName)">
+      <template v-if="formState.structure?.[boneName]">
         <slot :boneName="boneName"
               :widget="getBoneWidget(formState.structure[boneName]['type'])"
         >

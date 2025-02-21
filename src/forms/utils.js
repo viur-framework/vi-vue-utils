@@ -151,6 +151,8 @@ export function useFormUtils(props, state){
       state.skel = data["values"]
       //state.structure = normalizeStructure(data["structure"])
       state.errors = data["errors"]
+      state.actionparams = data['params']
+      state.actionname = data['action']
       state.loading = false
       return resp
     })
@@ -175,6 +177,8 @@ export function useFormUtils(props, state){
       initForm(data["values"], data["structure"], state.values)
 
       state.errors = data["errors"]
+      state.actionparams = data['params']
+      state.actionname = data['action']
       state.loading = false
       return resp
     })

@@ -135,6 +135,8 @@ const state = reactive({
   skel: {}, // working data
   structure: {}, // working data, use dict!
   errors: [], // working data
+  actionparams: {}, //actionskel parameters
+  actionname:null, //lastaction name
   valids:{}, // local validation states
   loading:false, //loading state
   categories:[], //categories to render
