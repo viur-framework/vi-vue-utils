@@ -48,5 +48,13 @@ export default {
   fr: "FR",
   nl: "NL",
   ch: "CH",
-  es: "ES"
+  es: "ES",
+  login: {
+    login: "Anmelden",
+    logout: "Abmelden",
+    lost_password:"Passwort vergessen?",
+    with_google: "Mit Google anmelden",
+    or: "oder",
+    login_error: "Benutzername oder Passwort falsch."
+  },
 }
