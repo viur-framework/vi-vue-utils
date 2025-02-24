@@ -35,6 +35,7 @@ export const useUserStore = defineStore("user", () => {
         "user.login.secound_factor_errors": [],
         renderErrorMsg: "",
         currentLoginMask: "",
+        renderer: import.meta?.env?.VITE_DEFAULT_RENDERER || "vi"
     });
 
     function resetLoginInformation() {
@@ -71,7 +72,7 @@ export const useUserStore = defineStore("user", () => {
                         callback: (response) => {
                             if (response.credential) {
                                 Request.securePost(
-                                    "/vi/user/auth_googleaccount/login",
+                                    `/${state.renderer}/user/auth_googleaccount/login`,
                                     {
                                         dataObj: {
                                             token: response.credential,
@@ -84,7 +85,7 @@ export const useUserStore = defineStore("user", () => {
                                             let error = await resp.json();
                                             throw error;
                                         }
-                                        Request.get("/vi/user/view/self")
+                                        Request.get(`/${state.renderer}/user/view/self`)
                                             .then(async (resp) => {
                                                 let data = await resp.json();
                                                 state["user.loggedin"] = "yes";
@@ -148,7 +149,7 @@ export const useUserStore = defineStore("user", () => {
         return new Promise((resolve, reject) => {
             state.currentLoginMask = "user";
             state["user.loggedin"] = "loading";
-            Request.securePost("/vi/user/auth_userpassword/login", {
+            Request.securePost(`/${state.renderer}/user/auth_userpassword/login`, {
                 dataObj: {
                     name: name,
                     password: password,
@@ -158,7 +159,7 @@ export const useUserStore = defineStore("user", () => {
                     try {
                         const loginResponse = await respLogin.json();
                         if (loginResponse === "OKAY") {
-                            Request.get("/vi/user/view/self")
+                            Request.get(`/${state.renderer}/user/view/self`)
                                 .then(async (resp) => {
                                     let data = await resp.json();
                                     state["user.loggedin"] = "yes";
@@ -213,7 +214,7 @@ export const useUserStore = defineStore("user", () => {
                                 : loginResponse.status;
                         }
                     } catch (error) {
-                        Request.get("/vi/user/view/self")
+                        Request.get(`/${state.renderer}/user/view/self`)
                             .then(async (resp) => {
                                 let data = await resp.json();
                                 state["user.loggedin"] = "yes";
@@ -247,7 +248,7 @@ export const useUserStore = defineStore("user", () => {
         return new Promise((resolve, reject) => {
             state["user.loggedin"] = "loading";
             Request.securePost(
-                `/vi/user/f2_${state["user.login.type"]}/verify`,
+                `/${state.renderer}/user/f2_${state["user.login.type"]}/verify`,
                 { dataObj: { otp: otp } }
             ).then(async (resp) => {
                 const opt_data = await resp.json();
@@ -257,7 +258,7 @@ export const useUserStore = defineStore("user", () => {
                         return;
                     }
                 }
-                Request.get("/vi/user/view/self")
+                Request.get(`/${state.renderer}/user/view/self`)
                     .then(async (resp) => {
                         let data = await resp.json();
 
@@ -280,7 +281,7 @@ export const useUserStore = defineStore("user", () => {
             window.google.accounts.id.revoke();
         }
 
-        return Request.securePost("/vi/user/logout")
+        return Request.securePost(`/${state.renderer}/user/logout`)
             .then(async (resp) => {
                 await router.isReady();
                 resetLoginInformation();
@@ -296,7 +297,7 @@ export const useUserStore = defineStore("user", () => {
 
     async function recoverPassword() {
         state["user.loggedin"] === "loading";
-        await Request.securePost("/vi/user/auth_userpassword/pwrecover", {
+        await Request.securePost(`/${state.renderer}/user/auth_userpassword/pwrecover`, {
         })
             .then(async (resp) => {
                 let data = await resp.json();
@@ -324,7 +325,7 @@ export const useUserStore = defineStore("user", () => {
         state["user.loggedin"] = "loading";
 
         return new Promise((resolve, reject) => {
-            Request.securePost("/json/user/auth_userpassword/pwrecover", {
+            Request.securePost(`/${state.renderer}/user/auth_userpassword/pwrecover`, {
                 dataObj: data,
                 amount: 1,
             }).then(async (resp) => {
@@ -374,7 +375,7 @@ export const useUserStore = defineStore("user", () => {
 
     function updateUser() {
         return new Promise((resolve, reject) => {
-            Request.get("/vi/user/view/self", {cached:true,cacheTime:1000 * 60 * 5})
+            Request.get(`/${state.renderer}/user/view/self`, {cached:true,cacheTime:1000 * 60 * 5})
                 .then(async (resp) => {
                     let data = await resp.json();
                     state["user.loggedin"] = "yes";
@@ -404,7 +405,7 @@ export const useUserStore = defineStore("user", () => {
 
     function getAuthMethods() {
         return new Promise((resolve, reject) => {
-            Request.get(`/vi/user/getAuthMethods`).then(async (resp) => {
+            Request.get(`/${state.renderer}/user/getAuthMethods`).then(async (resp) => {
                 const authMethods = await resp.json();
                 for (const method of authMethods) {
                     state.primaryAuthMethods.add(method[0]);
@@ -479,7 +480,7 @@ export const useUserStore = defineStore("user", () => {
                     }
                 } catch (e) {
                     if (e?.status !== 403) {
-                        Request.get("/vi/user/view/self")
+                        Request.get(`/${state.renderer}/user/view/self`)
                             .then(async (resp) => {
                                 let data = await resp.json();
                                 state["user.loggedin"] = "yes";
@@ -498,7 +499,7 @@ export const useUserStore = defineStore("user", () => {
     }
 
     function checkActiveSession() {
-        Request.get("/vi/user/view/self")
+        Request.get(`/${state.renderer}/user/view/self`)
             .then(async (resp) => {
                 let data = await resp.json();
                 getRequestStore().state.amount = 30
