@@ -84,6 +84,7 @@
           {{ $t("login.with_google") }}
         </sl-button>
       </div>
+      <slot></slot>
 
       <div v-if="userStore.state['user.loggedin'] === 'secound_factor_choice'">
         <div
