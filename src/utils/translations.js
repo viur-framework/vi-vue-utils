@@ -1,9 +1,13 @@
 import {useI18n} from 'vue-i18n'
-import Request from '../utils/request'
+import Request from './request'
 
 
-export function useTranslations() {
-  const i18n = useI18n()
+export function useTranslations(i18n=null) {
+  // If no i18n instance is provided, use the default i18n instance
+  if (!i18n){
+    i18n = useI18n()
+  }
+  
 
   /**
    * Updates the locale messages for the specified locale in the i18n instance.
@@ -21,7 +25,11 @@ export function useTranslations() {
    */
   function updateLocaleMessages(locale,messages, override=false){
     if (!override){
-      messages = {...i18n.messages.value[locale], ...messages}
+      let oldmessages  = i18n.messages.value?.[locale]
+      if(!oldmessages){
+        oldmessages = {}
+      }
+      messages = {...oldmessages, ...messages}
     }
     i18n.setLocaleMessage(locale, messages)
   }
@@ -64,6 +72,10 @@ export function useTranslations() {
    * @throws {Error} - Logs an error in the console if the fetching process fails, indicating no translation was received from the server.
    */
   async function fetchTranslations(languages=["de"],pattern=null, url="/json/_translation/get_public"){
+    if (!Array.isArray(languages)){
+      languages = [languages]
+    }
+
     let retVal = languages.reduce((acc,item)=>{acc[item]={}; return acc;},{})
 
     try {
@@ -72,7 +84,7 @@ export function useTranslations() {
         dataObj['pattern'] = pattern
       }
   
-      let translations = await Request.get(url,{dataObj:dataObj})
+      let translations = await Request.get(url,{dataObj:dataObj,cached:true})
       const data = await translations.json()
       for (let country in data) {
         retVal[country] = Object.fromEntries(
@@ -87,7 +99,7 @@ export function useTranslations() {
       }
       
     }catch(error){
-      console.log("No Translation from server", error)
+      throw new Error('Error while building translations')
     }
     return retVal
   }
