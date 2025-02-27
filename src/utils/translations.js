@@ -67,6 +67,7 @@ export function useTranslations(i18n=null) {
    * @param {string[]} [languages=["de"]] - An array of language codes for which translations are to be fetched. Default is an array with "de".
    * @param {string|null} [pattern=null] - An optional pattern to filter the translations retrieved. If not provided, all translations will be retrieved.
    * @param {string} [url="/json/_translation/get_public"] - The URL endpoint for fetching translations. Default is set to "/json/_translation/get_public".
+   * @param {boolean} [cached=true] - An option to disabled caching for fetching translations.
    * @returns {Promise<Object>} - A promise that resolves to an object containing translations for the specified languages, with each language code as keys and their corresponding translations as values.
    * 
    * @throws {Error} - Logs an error in the console if the fetching process fails, indicating no translation was received from the server.
