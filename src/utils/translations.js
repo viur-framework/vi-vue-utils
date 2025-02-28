@@ -25,7 +25,11 @@ export function useTranslations(i18n=null) {
    */
   function updateLocaleMessages(locale,messages, override=false){
     if (!override){
-      let oldmessages  = i18n.messages.value?.[locale]
+      let oldmessages = i18n.messages.value?.[locale]
+      if(!oldmessages && i18n.messages?.[locale]){
+        oldmessages = i18n.messages[locale]
+      }
+
       if(!oldmessages){
         oldmessages = {}
       }
