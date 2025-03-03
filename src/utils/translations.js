@@ -1,9 +1,13 @@
 import {useI18n} from 'vue-i18n'
-import Request from '../utils/request'
+import Request from './request'
 
 
-export function useTranslations() {
-  const i18n = useI18n()
+export function useTranslations(i18n=null) {
+  // If no i18n instance is provided, use the default i18n instance
+  if (!i18n){
+    i18n = useI18n()
+  }
+  
 
   /**
    * Updates the locale messages for the specified locale in the i18n instance.
@@ -21,7 +25,15 @@ export function useTranslations() {
    */
   function updateLocaleMessages(locale,messages, override=false){
     if (!override){
-      messages = {...i18n.messages.value[locale], ...messages}
+      let oldmessages = i18n.messages.value?.[locale]
+      if(!oldmessages && i18n.messages?.[locale]){
+        oldmessages = i18n.messages[locale]
+      }
+
+      if(!oldmessages){
+        oldmessages = {}
+      }
+      messages = {...oldmessages, ...messages}
     }
     i18n.setLocaleMessage(locale, messages)
   }
@@ -59,11 +71,16 @@ export function useTranslations() {
    * @param {string[]} [languages=["de"]] - An array of language codes for which translations are to be fetched. Default is an array with "de".
    * @param {string|null} [pattern=null] - An optional pattern to filter the translations retrieved. If not provided, all translations will be retrieved.
    * @param {string} [url="/json/_translation/get_public"] - The URL endpoint for fetching translations. Default is set to "/json/_translation/get_public".
+   * @param {boolean} [cached=true] - An option to disabled caching for fetching translations.
    * @returns {Promise<Object>} - A promise that resolves to an object containing translations for the specified languages, with each language code as keys and their corresponding translations as values.
    * 
    * @throws {Error} - Logs an error in the console if the fetching process fails, indicating no translation was received from the server.
    */
-  async function fetchTranslations(languages=["de"],pattern=null, url="/json/_translation/get_public"){
+  async function fetchTranslations(languages=["de"],pattern=null, url="/json/_translation/get_public",cached=true){
+    if (!Array.isArray(languages)){
+      languages = [languages]
+    }
+
     let retVal = languages.reduce((acc,item)=>{acc[item]={}; return acc;},{})
 
     try {
@@ -72,7 +89,7 @@ export function useTranslations() {
         dataObj['pattern'] = pattern
       }
   
-      let translations = await Request.get(url,{dataObj:dataObj})
+      let translations = await Request.get(url,{dataObj:dataObj,cached:cached})
       const data = await translations.json()
       for (let country in data) {
         retVal[country] = Object.fromEntries(
@@ -87,7 +104,7 @@ export function useTranslations() {
       }
       
     }catch(error){
-      console.log("No Translation from server", error)
+      throw new Error('Error while building translations')
     }
     return retVal
   }
