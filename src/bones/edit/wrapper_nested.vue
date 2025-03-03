@@ -15,7 +15,7 @@
              :skel="value"
              :structure="bone['using']"
              :renderer="state.renderer"
-             :collapsedCategories="bone?.params?.['collapsedCategories'] || []"
+             :collapsedCategories="state.isLastEntry?[]:(bone?.params?.['collapsedCategories']?bone?.params?.['collapsedCategories']:[])"
              @change="changeEvent"
     >
 
@@ -46,6 +46,16 @@ const mainformState = inject("mainformState")
 const state = reactive({
   renderer: import.meta.env.VITE_DEFAULT_RENDERER || 'json',
   globalRegistration: false,
+  isLastEntry:computed(()=>{
+    if(!props.bone['multiple']) return false
+
+    let val = mainformState.skel[props.name]
+    if (props.lang){
+      val = mainformState.skel[props.name][props.lang]
+    }
+
+    return val.length-1 === props.index
+  })
 })
 
 function changeEvent(val) {
