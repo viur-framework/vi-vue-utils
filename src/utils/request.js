@@ -724,7 +724,7 @@ class cachedFetch {
           break // Stop loop early to improve performance
         }
       }
-      if (hasExtraFields){
+      if (hasExtraFields || url.includes("/delete")){
         //only update cache if we have data in request
         //we got a url that ends on x or contains /x/
         let entryKey = null
