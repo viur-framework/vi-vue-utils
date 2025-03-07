@@ -53,7 +53,9 @@ const state = reactive({
     if (props.lang){
       val = mainformState.skel[props.name][props.lang]
     }
-
+    if (!val){
+      return false
+    }
     return val.length-1 === props.index
   })
 })
