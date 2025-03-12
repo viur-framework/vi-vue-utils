@@ -247,6 +247,7 @@ import wrapperMultiple from "./wrapper_multiple.vue"
 import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
+import Utils from "../utils"
 
   const emit = defineEmits(["change", "change-internal", "handleClick"])
 
@@ -716,6 +717,7 @@ import rawBone from "./default/rawBone.vue"
         let finalstr = formatstr
         for (let pathstr of pathlist) {
           let aval = readValue(pathstr, avalue)
+          aval = Utils.unescape(aval)
           finalstr = finalstr.replace("$(" + pathstr + ")", aval)
         }
         finalStrList.push(finalstr)
