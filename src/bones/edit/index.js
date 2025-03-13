@@ -118,7 +118,7 @@ export const useBoneStore = defineStore("boneStore", () => {
       return recordBone
     } else if (boneType === "numeric" || boneType.startsWith("numeric.")) {
       return numericBone
-    } else if (boneType === "relational.tree.leaf.file.file") {
+    } else if (boneType === "relational.tree.leaf.file.file"  || boneType.startsWith("relational.tree.leaf.file.")) {
       return fileBone
     } else if (boneType === "relational.select" || boneType.startsWith("relational.select.")) {
       return relationalBoneSelect
