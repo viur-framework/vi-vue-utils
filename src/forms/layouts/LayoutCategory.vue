@@ -1,8 +1,9 @@
 <template>
   <template v-for="(category,identifier) in formState.categories">
+
     <vi-form-category :name="category['name']"
                       :identifier="identifier"
-                      :visible="category['visible']"
+                      :visible="!!category['visible']"
                       :open="category['open']"
                       :hide="!formState.useCategories"
 
