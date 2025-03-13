@@ -104,7 +104,10 @@ const boneLogic = (skel, structure) => {
       return Utils.formatString(boneStructure["format"], { dest: value })
     } else if (boneStructure["type"] === "bool") {
       return value ? "Ja" : "Nein"
-    } else {
+    }else if (boneStructure["type"] === "raw.json") {
+      return JSON.stringify(value);
+    }
+    else {
       value = Utils.unescape(value)
       return value.toString()
     }
