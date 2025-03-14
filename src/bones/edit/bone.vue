@@ -403,12 +403,12 @@ import Utils from "../utils"
         let errors = []
         for (let error of props.errors) {
           if (
-            error["fieldPath"][0] === props.name && 
+            error["fieldPath"][0] === props.name &&
             (
-              error["fieldPath"].length===1 || 
+              error["fieldPath"].length===1 ||
               ((state.multilanguage || state.multiple) && error["fieldPath"].length===2) ||
               (state.multilanguage && state.multiple && error["fieldPath"].length===3)
-            ) && 
+            ) &&
             (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
           ) {
             //severity level???

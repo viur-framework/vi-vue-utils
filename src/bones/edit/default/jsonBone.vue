@@ -1,20 +1,16 @@
 <template>
-  <div class="box"
-    :data-user-nvalid="boneState.errorMessages.length===0?undefined:true"
-  >
-    <!--<vue-json-pretty
-      :deep="0"
-      :data="value"
-      @selectedChange="changeEvent"
-    ></vue-json-pretty>-->
-    {{ value }}
-  </div>
+    <JsonEditorVue
+    v-model="value_ref"
+    :onChange="changeEvent"
+    :readOnly="boneState.readonly"
+  />
+
 </template>
 
 <script setup>
-import { reactive, onMounted, inject } from "vue"
-//import { VueJsonPretty } from "vue-json-pretty"
-//import "vue-json-pretty/lib/styles.css"
+import JsonEditorVue from 'json-editor-vue'
+import {onMounted, inject, ref} from "vue"
+  const value_ref = ref();
   defineOptions({
     inheritAttrs: false
   })
@@ -30,16 +26,14 @@ import { reactive, onMounted, inject } from "vue"
   })
 
   const emit = defineEmits( ["change"])
-
     const boneState = inject("boneState")
-    const state = reactive({})
-
-    function changeEvent(newVal, oldVal) {
-      emit("change", props.name, newVal, props.lang, props.index)
+    function changeEvent(newVal) {
+      emit("change", props.name, newVal.json, props.lang, props.index)
     }
 
     onMounted(() => {
       emit("change", props.name, props.value, props.lang, props.index) //init
+      value_ref.value=props.value;
     })
 
 </script>

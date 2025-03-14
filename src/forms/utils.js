@@ -61,7 +61,10 @@ export function useFormUtils(props, state){
       } else if (bone['type'].startsWith("spatial") && val){ //spatialbones
         result.push({[currentFieldName+".lat"]: val[0]})
         result.push({[currentFieldName+".lng"]: val[1]})
-      } else if (val === Object(val)){ //normal relations
+      } else if (bone['type'].startsWith("raw.json") && val) {
+        result.push({[currentFieldName]: JSON.stringify(val)})
+      }
+      else if (val === Object(val)){ //normal relations
         result.push({[currentFieldName]:val["dest"]?.["key"]|| null})
       } else{ //everything else
         result.push({[currentFieldName]: val})
@@ -122,7 +125,7 @@ export function useFormUtils(props, state){
     if (!isValid){
       return new Promise((resolve, reject)=>reject("Form is not valid"))
     }
-    
+
     let request = Request.post
     if (props.secure) request = Request.securePost
 
