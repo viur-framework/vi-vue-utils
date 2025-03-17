@@ -125,7 +125,6 @@ export const useBoneStore = defineStore("boneStore", () => {
     } else if (boneType === "relational" || boneType.startsWith("relational.")) {
       return relationalBone
     } else if (boneType === "raw.json") {
-      console.log("get js bone")
       return jsonBone
     } else if (boneType === "color" || boneType.startsWith("color.")) {
       return colorBone
