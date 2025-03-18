@@ -218,7 +218,7 @@ export function useFormUtils(props, state){
       let boneStructure = state.structure[boneName]
 
       if (bone?.params?.category) {
-        category = bone.params.category.toLowerCase()
+        category = bone.params.category.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()
       }
 
       if (Object.keys(categories).includes(category)) {
