@@ -1,21 +1,10 @@
 <template>
   <div
     class="value-line"
-    :draggable="state.isDraggable"
-    :class="{
-      'is-dragging': isDragging,
-      'dragging-line-bottom': draggingLineBottom,
-      'dragging-line-top': draggingLineTop
-    }"
-    @dragover="emit('handleDragOver', $event)"
-    @drop="emit('handleDrop', $event)"
-    @dragstart="emit('handleDragStart', $event)"
-    @dragend="emit('handleDragEnd')"
   >
     <sl-button
       :disabled="boneState.readonly"
       class="drag-button"
-      @mousedown="state.isDraggable = true"
     >
       <sl-icon
         slot="prefix"
@@ -47,33 +36,17 @@
 import { reactive, inject } from "vue"
 
   const props = defineProps( {
-    isDragging: Boolean,
-    draggingLineBottom: Boolean,
-    draggingLineTop: Boolean
   })
-  const emit = defineEmits(["change", "delete", "handleDragStart", "handleDragEnd", "handleDragOver", "handleDrop"])
+  const emit = defineEmits(["change", "delete"])
 
     const boneState = inject("boneState")
     const state = reactive({
-      isDraggable: false
+   
     })
 
 </script>
 
 <style scoped>
-.is-dragging {
-  opacity: 0.4;
-}
-
-.dragging-line-bottom {
-  margin-bottom: calc(-1 * var(--sl-spacing-x-small));
-  border-bottom: var(--sl-spacing-x-small) solid var(--sl-color-neutral-300);
-}
-
-.dragging-line-top {
-  margin-top: calc(-1 * var(--sl-spacing-x-small));
-  border-top: var(--sl-spacing-x-small) solid var(--sl-color-neutral-300);
-}
 
 .value-line {
   display: flex;
