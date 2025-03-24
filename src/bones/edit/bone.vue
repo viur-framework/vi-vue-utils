@@ -68,40 +68,34 @@
             <!--Bone rendering for multiple bones-->
             <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
               <!--multilang and multiple-->
-              <div
-                v-for="(val, index) in state.bonevalue?.[lang]"
-                v-if="state.bonevalue?.[lang].length"
-                :key="index+'_'+state.bonevalue[lang].length"
-                class="multiple-bone"
-              >
-                <wrapper-multiple
-                  :readonly="!state.readonly"
-                  :is-dragging="state.isDragging['lang'] === lang && state.isDragging['index'] === index ? true : false"
-                  :dragging-line-bottom="
-                    state.draggingLineBottom['lang'] === lang && state.draggingLineBottom['index'] === index
-                      ? true
-                      : false
-                  "
-                  :dragging-line-top="
-                    state.draggingLineTop['lang'] === lang && state.draggingLineTop['index'] === index ? true : false
-                  "
-                  @delete="removeMultipleEntry(index, lang)"
-                  @handleDragStart="handleDragStart(index, lang, $event)"
-                  @handleDragOver="handleDragOver(index, lang, $event)"
-                  @handleDrop="handleDrop(index, lang, $event)"
+              <template v-if="state.bonevalue?.[lang]?.length">
+                <vue-draggable
+                  v-model="state.bonevalue[lang]"
+                  :animation="150"
+                  handle=".drag-button"
                 >
-                  <component
-                    :is="is"
-                    :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']:val"
-                    :index="index"
-                    :lang="lang"
-                    :name="name"
-                    :bone="state.bonestructure"
-                    @change="updateValue"
-                  ></component>
-                </wrapper-multiple>
-              </div>
-
+                  <div
+                    v-for="(val, index) in state.bonevalue?.[lang]"
+                    :key="index+'_'+state.bonevalue[lang].length"
+                    class="multiple-bone"
+                  >
+                    <wrapper-multiple
+                      :readonly="!state.readonly"
+                      @delete="removeMultipleEntry(index, lang)"
+                    >
+                      <component
+                        :is="is"
+                        :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']:val"
+                        :index="index"
+                        :lang="lang"
+                        :name="name"
+                        :bone="state.bonestructure"
+                        @change="updateValue"
+                      ></component>
+                    </wrapper-multiple>
+                  </div>
+                </vue-draggable>
+              </template>
               <div
                 v-else
                 class="multiple-placeholder"
@@ -151,13 +145,7 @@
 
             <wrapper-multiple
               :readonly="!state.readonly"
-              :is-dragging="state.isDragging.index === index ? true : false"
-              :dragging-line-bottom="state.draggingLineBottom.index === index ? true : false"
-              :dragging-line-top="state.draggingLineTop.index === index ? true : false"
               @delete="removeMultipleEntry(index)"
-              @handleDragStart="handleDragStart(index, (lang = null), $event)"
-              @handleDragOver="handleDragOver(index, (lang = null), $event)"
-              @handleDrop="handleDrop(index, (lang = null), $event)"
             >
               <component
                 :is="is"
@@ -248,6 +236,7 @@ import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
 import Utils from "../utils"
+import { VueDraggable } from 'vue-draggable-plus'
 
   const emit = defineEmits(["change", "change-internal", "handleClick"])
 
@@ -299,26 +288,6 @@ import Utils from "../utils"
         return props.structure?.[props.name]
       }),
       bonevalue: null,
-      dragStartIndex: {
-        lang: null,
-        index: Number
-      },
-      dropIndex: {
-        lang: null,
-        index: Number
-      },
-      draggingLineBottom: {
-        lang: String,
-        index: Number
-      },
-      draggingLineTop: {
-        lang: String,
-        index: Number
-      },
-      isDragging: {
-        lang: String,
-        index: Number
-      },
       multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
       languages: computed(() => {
         if (props.languages) {
@@ -431,74 +400,6 @@ import Utils from "../utils"
     })
     provide("boneState", state)
 
-    // Handle drag start event
-    function handleDragStart(index, lang, event) {
-      setStateProperties(lang, index, "isDragging")
-      setStateProperties(lang, index, "dragStartIndex")
-    }
-
-    // Handle drag over event
-    function handleDragOver(index, lang, event) {
-      event.preventDefault()
-
-      const relativePosition = event.clientY - event.target.getBoundingClientRect().top
-      const dragOverLine = event.target.closest(".value-line")
-
-      if (relativePosition < dragOverLine.offsetHeight / 2) {
-        setStateProperties(lang, index, "draggingLineTop")
-        resetStateProperties("draggingLineBottom")
-        state.dropIndex.index = index
-      } else {
-        setStateProperties(lang, index, "draggingLineBottom")
-        resetStateProperties("draggingLineTop")
-        state.dropIndex.index = index + 1
-      }
-
-      let allVals = lang ? state.bonevalue[lang] : state.bonevalue
-
-      if (state.dropIndex.index > allVals.length - 1) {
-        state.dropIndex.index -= 1
-      }
-    }
-    // Handle drop event
-    function handleDrop(index, lang, event) {
-      let dragItem = null
-
-      if (state.dragStartIndex.index !== state.dropIndex.index) {
-        if (lang) {
-          dragItem = state.bonevalue[lang].splice(state.dragStartIndex.index, 1)[0]
-          state.bonevalue[lang].splice(state.dropIndex.index, 0, dragItem)
-        } else {
-          dragItem = state.bonevalue.splice(state.dragStartIndex.index, 1)[0]
-          state.bonevalue.splice(state.dropIndex.index, 0, dragItem)
-        }
-      }
-
-      if (lang){
-        updateValue(props.name, state.bonevalue[lang], lang)
-      }else{
-        updateValue(props.name, state.bonevalue)
-      }
-
-      resetStateProperties("draggingLineBottom", "draggingLineTop", "isDragging", "dragStartIndex", "dropIndex")
-    }
-
-    // Set state properties based on lang and index
-    function setStateProperties(lang, index, property) {
-      state[property].lang = lang ? lang : null
-      state[property].index = index
-    }
-
-    // Reset state properties to null values
-    function resetStateProperties(...properties) {
-      properties.forEach((property) => {
-        state[property] = {
-          lang: null,
-          index: Number
-        }
-      })
-    }
-
     function updateValue(
       name,
       val,
@@ -536,73 +437,6 @@ import Utils from "../utils"
       }
 
       emit("change-internal", changeInternalObj)
-    }
-
-    function toFormValue() {
-      function rewriteData(val, key = null){
-        let ret = []
-        if (Array.isArray(val)) {
-          if (state.bonestructure["type"] == "spatial" && val.length === 2 && !Array.isArray(val[0])) {
-            ret.push({ [key + ".lat"]: val[0] })
-            ret.push({ [key + ".lng"]: val[1] })
-          } else if (Object.values(val).filter((c) => c === Object(c)).length > 0) {
-            //only add i if relationaldata
-            for (const [i, v] of val.entries()) {
-              if (v["rel"] !== null) {
-                ret.push(rewriteData(v, key + "." + i)) // append idx if we have rel data
-              } else {
-                ret.push(rewriteData(v, key))
-              }
-            }
-          } else {
-            if (val.length===0){
-              ret.push(rewriteData("", key))
-            }else{
-              for (const [i, v] of val.entries()) {
-                ret.push(rewriteData(v, key))
-              }
-            }
-          }
-        } else if (val === Object(val)) {
-          for (const [k, v] of Object.entries(val)) {
-            if (key) {
-              if (key.endsWith(".dest") || key.endsWith(".rel")) {
-                if (key.endsWith(".dest") && k === "key") {
-                  // if single bonename, multiple bonename, using single bonename.key, using multiple bonename.0.key
-                  // if dest we only send the key
-                  // we send key 2 times. this is ugly we need a better solution... or a better handling on server side
-
-                  if (/\.[0-9]*\.dest$/.test(key)) {
-                    ret.push(rewriteData(v, key.replace(/\.[0-9]*\.dest/, "")))
-                  } else {
-                    ret.push(rewriteData(v, key.replace(/\.dest/, "")))
-                  }
-
-                  ret.push(rewriteData(v, key.replace(/\.dest/, "") + "." + k))
-                } else if (key.endsWith(".rel")) {
-                  ret.push(rewriteData(v, key.replace(/\.rel/, "") + "." + k))
-                }
-              } else {
-                ret.push(rewriteData(v, key + "." + k))
-              }
-            } else {
-              ret.push(rewriteData(v, k))
-            }
-          }
-        } else {
-          if (val === null || val === undefined) {
-            val = ""
-          }
-          if (key !== null) {
-            ret.push({ [key]: val })
-          }
-        }
-        return ret
-      }
-
-      let value = rewriteData(state.bonevalue, props.name)
-      value = value.flat(10)
-      return value
     }
 
     function addMultipleEntry(lang = null, data = "") {
@@ -752,14 +586,6 @@ import Utils from "../utils"
 
 <style scoped>
 @layer foundation.form {
-  .dragging-top {
-    border-top: 2px solid var(--sl-color-neutral-400);
-  }
-
-  .dragging-bottom {
-    border-bottom: 2px solid var(--sl-color-neutral-400);
-  }
-
   .bone-wrapper {
     display: grid;
     grid-template-columns: 235px 1fr;
@@ -911,9 +737,7 @@ import Utils from "../utils"
 
     &:first-child {
       & :deep(.value-line) {
-        &.dragging-line-top {
-          margin-top: 0;
-        }
+       
       }
     }
   }
