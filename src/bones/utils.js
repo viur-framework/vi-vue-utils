@@ -46,9 +46,41 @@ export default class Utils {
       return output
     }
 
+    function readValue(pathstr, avalue) {
+      let path = pathstr.split(".")
+      let restPath = pathstr.split(".")
+      let aval = avalue
+      for (let entry of path) {
+        restPath.shift()
+        if (aval && aval !== "-" && Object.keys(aval).includes(entry)) {
+          if (Array.isArray(aval[entry])) {
+            let resVal = []
+            for (let val of aval[entry]) {
+              resVal.push(readValue(restPath.join("."), val))
+            }
+            aval = resVal.join(", ")
+          } else {
+            aval = readValue(restPath.join("."), aval[entry])
+          }
+
+          if (typeof aval === 'object' &&
+            !Array.isArray(aval) &&
+            aval !== null
+          ){
+            aval = Object.entries(aval).map((x)=>x[1]).join(", ")
+          }
+
+        } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
+          aval = "-"
+        }
+      }
+      return aval
+    }
+
     let pathlist = getpathListFromFormatstring(formatstr)
 
     let finalStrList = []
+
     if (!Array.isArray(boneValue)) {
       boneValue = [boneValue]
     }
@@ -56,25 +88,8 @@ export default class Utils {
     for (let avalue of boneValue) {
       let finalstr = formatstr
       for (let pathstr of pathlist) {
-        let path = pathstr.split(".")
-        let aval = avalue
-        for (let entry of path) {
-          if (aval && aval !== "-" && entry in aval && aval[entry]) {
-            aval = aval[entry]
-          } else {
-            aval = "-"
-          }
-        }
-
-        if (typeof aval === 'object' &&
-          !Array.isArray(aval) &&
-          aval !== null
-        ){
-          aval = Object.entries(aval).map((x)=>x[1]).join(", ")
-        }
-
-        aval = this.unescape(aval)
-
+        let aval = readValue(pathstr, avalue)
+        aval = Utils.unescape(aval)
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)
       }
       finalStrList.push(finalstr)
