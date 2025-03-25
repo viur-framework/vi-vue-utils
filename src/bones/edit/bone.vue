@@ -85,7 +85,7 @@
                     >
                       <component
                         :is="is"
-                        :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']:val"
+                        :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue'][lang]?.[index]:val"
                         :index="index"
                         :lang="lang"
                         :name="name"
@@ -142,14 +142,13 @@
             :key="index+'_'+state.bonevalue.length"
             class="multiple-bone"
           >
-
             <wrapper-multiple
               :readonly="!state.readonly"
               @delete="removeMultipleEntry(index)"
             >
               <component
                 :is="is"
-                :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']:val"
+                :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']?.[index]:val"
                 :index="index"
                 :name="name"
                 :bone="state.bonestructure"
