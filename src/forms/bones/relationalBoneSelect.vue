@@ -39,7 +39,7 @@
 
 <script setup>
 import { reactive, onMounted, inject, computed } from "vue"
-import { Request } from "../../../index"
+import { Request } from "../../connection/request"
 import Wrapper_nested from "../wrapper_nested.vue"
   defineOptions({
     inheritAttrs: false

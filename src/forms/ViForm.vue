@@ -26,10 +26,8 @@
 </template>
 
 <script setup>
-import Loader from "../generic/Loader.vue"
-import Request from "../utils/request"
 import { useFormUtils } from "./utils"
-import { getBoneWidget } from "../bones/edit/index"
+import { getBoneWidget } from "./index"
 import { reactive, watch, onBeforeMount, computed, unref, provide, ref } from "vue"
 import { useDebounceFn } from '@vueuse/core'
 import LayoutCategory from "./layouts/LayoutCategory.vue"

@@ -1,5 +1,5 @@
 import {useI18n} from 'vue-i18n'
-import Request from './request'
+import Request from '../connection/request'
 
 
 export function useTranslations(i18n=null) {

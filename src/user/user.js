@@ -1,6 +1,6 @@
 import { computed, reactive } from "vue";
 import { defineStore } from "pinia";
-import { Request, getRequestStore } from "../../utils/request";
+import { Request, getRequestStore } from "../connection/request";
 import { useRouter } from "vue-router";
 
 const googleConfig = {

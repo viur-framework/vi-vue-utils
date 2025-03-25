@@ -95,7 +95,7 @@
 
 <script setup>
 import { reactive, onMounted, inject, ref } from "vue"
-import { Request } from "../../../index"
+import { Request } from "../../connection/request"
   defineOptions({
     inheritAttrs: false
   })

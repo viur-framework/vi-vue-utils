@@ -27,7 +27,7 @@
 
 import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref } from "vue"
 import { getBoneWidget } from "./index"
-import ViForm from "../../forms/ViForm.vue";
+import ViForm from "./ViForm.vue";
 
 const emit = defineEmits(["change"])
 const props = defineProps({

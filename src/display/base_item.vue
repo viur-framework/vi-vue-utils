@@ -4,7 +4,7 @@
 
 <script setup>
 import boneLogic from "./boneLogic"
-import {computed, defineComponent, reactive} from "vue"
+import {computed, reactive} from "vue"
 
    const props = defineProps({
     boneName: String,

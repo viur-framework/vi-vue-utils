@@ -65,8 +65,8 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, ref, computed, resolveComponent } from "vue"
-import { Request } from "../../../index"
+import { reactive, onMounted, inject, ref, computed } from "vue"
+import { Request } from "../../connection/request"
 
   const props = defineProps( {
     name: String,

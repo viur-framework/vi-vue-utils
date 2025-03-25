@@ -221,10 +221,10 @@
 <script setup>
 import { reactive, computed, onBeforeMount, defineComponent, watch } from "vue"
 import { useRouter } from "vue-router"
-import { useUserStore } from "./stores/user.js"
+import { useUserStore } from "./user.js"
 import Loader from "../generic/Loader.vue"
-import { getBoneWidget } from "../bones/edit/index"
-import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
+import { getBoneWidget } from "../forms/index"
+import UserLoginMask from "./UserLoginMask.vue"
 
   const props = defineProps( {
     username: { type: String, default: "" },

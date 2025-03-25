@@ -233,7 +233,7 @@ import {
 import wrapperMultiple from "./wrapper_multiple.vue"
 import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
-import rawBone from "./default/rawBone.vue"
+import rawBone from "./bones/rawBone.vue"
 import Utils from "../utils"
 import { VueDraggable } from 'vue-draggable-plus'
 

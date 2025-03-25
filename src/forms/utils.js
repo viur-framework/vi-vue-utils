@@ -1,4 +1,4 @@
-import Request from "../utils/request"
+import Request from "../connection/request"
 import Logics from "logics-js"
 import {watch, inject, toRaw, reactive} from "vue"
 
