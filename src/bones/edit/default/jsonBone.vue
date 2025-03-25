@@ -45,4 +45,13 @@ import {onMounted, inject, ref} from "vue"
   border-radius: 5px;
   min-height: 40px;
 }
+
 </style>
+<style>
+:root{
+  --jse-theme-color: var(--sl-color-neutral-0);
+  --jse-menu-color: var(--sl-color-neutral-800);
+  --jse-theme-color-highlight:var(--sl-color-neutral-200);
+}
+</style>
+
