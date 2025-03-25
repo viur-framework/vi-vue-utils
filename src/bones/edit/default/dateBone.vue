@@ -34,6 +34,7 @@ import { reactive, onMounted, computed, inject } from "vue"
     const state = reactive({
       value: computed(() => {
         // remove timezone data if timed
+
         let boneValue = props.value
         if (props.value && boneState.bonestructure["time"] && boneState.bonestructure["date"]) {
           boneValue = props.value?.split("+")[0]
@@ -65,7 +66,7 @@ import { reactive, onMounted, computed, inject } from "vue"
     }
 
     onMounted(() => {
-      emit("change", props.name, props.value, props.lang, props.index) //init
+      emit("change", props.name, state.value, props.lang, props.index) //init
     })
 
 
