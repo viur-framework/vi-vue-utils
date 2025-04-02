@@ -76,7 +76,7 @@ export function useTranslations(i18n=null) {
    * 
    * @throws {Error} - Logs an error in the console if the fetching process fails, indicating no translation was received from the server.
    */
-  async function fetchTranslations(languages=["de"],pattern=null, url="/json/_translation/get_public",cached=true){
+  async function fetchTranslations(languages=["de"], pattern=null, url="/json/_translation/get_public", languageparameter="languages", cached=true){
     if (!Array.isArray(languages)){
       languages = [languages]
     }
@@ -84,13 +84,19 @@ export function useTranslations(i18n=null) {
     let retVal = languages.reduce((acc,item)=>{acc[item]={}; return acc;},{})
 
     try {
-      let dataObj = {languages:languages}
+      let dataObj = {[languageparameter]:languages}
       if(pattern){
         dataObj['pattern'] = pattern
       }
   
       let translations = await Request.get(url,{dataObj:dataObj,cached:cached})
-      const data = await translations.json()
+      let data = await translations.json()
+
+      // broken in core 3.7.x
+      if (languages.length === 1 && !Object.keys(data).includes(languages[0])){
+        data = {[languages[0]]:data}
+      }
+
       for (let country in data) {
         retVal[country] = Object.fromEntries(
           Object.entries(data[country]).map(
@@ -104,6 +110,7 @@ export function useTranslations(i18n=null) {
       }
       
     }catch(error){
+      console.log(error)
       throw new Error('Error while building translations')
     }
     return retVal
