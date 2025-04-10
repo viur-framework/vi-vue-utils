@@ -112,22 +112,10 @@ import Wrapper_nested from "../wrapper_nested.vue"
 .single-entry {
   display: flex;
   gap: var(--sl-spacing-x-small);
-
-  :deep(sl-combobox) {
-    &::part(input__base) {
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
 }
 
 sl-input {
   width: 100%;
-
-  &::part(base) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
 
   &::part(base) {
     background-color: var(--sl-color-neutral-0);
@@ -135,18 +123,6 @@ sl-input {
 }
 sl-select {
   width: 100%;
-
-  &::part(combobox) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  @media (max-width: 900px) {
-    &::part(combobox) {
-      border-top-right-radius: 0;
-      border-bottom-left-radius: var(--sl-border-radius-medium);
-    }
-  }
 }
 
 sl-option {

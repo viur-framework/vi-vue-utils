@@ -54,4 +54,3 @@ import {onMounted, inject, ref} from "vue"
   --jse-theme-color-highlight:var(--sl-color-neutral-200);
 }
 </style>
-

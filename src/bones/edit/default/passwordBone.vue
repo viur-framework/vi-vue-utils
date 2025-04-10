@@ -154,17 +154,6 @@ import { useTimeoutFn } from "@vueuse/core"
 <style scoped>
 sl-input {
   width: 100%;
-
-  &::part(base) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  @media (max-width: 900px) {
-    &::part(base) {
-      border-top-right-radius: 0;
-    }
-  }
 }
 
 .has-check {
@@ -175,11 +164,6 @@ sl-input {
 
 .password-check {
   margin-top: var(--sl-spacing-x-small);
-
-  &::part(base) {
-    border-top-right-radius: 0;
-    border-bottom-left-radius: var(--sl-border-radius-medium);
-  }
 }
 .pw-legend {
   display: flex;

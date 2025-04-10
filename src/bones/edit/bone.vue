@@ -527,8 +527,7 @@ import { VueDraggable } from 'vue-draggable-plus'
       grid-gap: 0;
 
       & > :deep(.bone-name) {
-        border-bottom-left-radius: 0;
-        border-top-right-radius: var(--sl-border-radius-medium);
+        width: 100%;
         min-width: 235px;
       }
 
@@ -564,8 +563,12 @@ import { VueDraggable } from 'vue-draggable-plus'
     }
   }
 
-  sl-tab-panel::part(base) {
-    padding: 0;
+  sl-tab-panel{
+    width: 100%;
+
+    &::part(base) {
+      padding: 0;
+    }
   }
 
   .lang-tab {
@@ -574,12 +577,12 @@ import { VueDraggable } from 'vue-draggable-plus'
     --track-color: var(--vi-border-color);
 
     &::part(body) {
-      padding-bottom: var(--sl-spacing-x-small);
+      display: flex;
       overflow-x: hidden;
     }
 
-    &::part(tabs) {
-      border-top: 1px solid var(--vi-border-color);
+    &::part(nav) {
+      margin-left: var(--sl-border-radius-medium);
     }
 
     & sl-tab {
@@ -630,6 +633,13 @@ import { VueDraggable } from 'vue-draggable-plus'
         }
       }
     }
+
+    &:has(.multiple-bone){
+      &::part(body) {
+        padding-bottom: var(--sl-spacing-medium);
+        border-bottom: 1px solid var(--vi-border-color);
+      }
+    }
   }
 
   .multiple-placeholder {
@@ -655,16 +665,21 @@ import { VueDraggable } from 'vue-draggable-plus'
     }
   }
 
-  .multiple-bone {
+  .bone-inner-wrap > .multiple-bone {
     margin-bottom: var(--sl-spacing-x-small);
+    padding-top: var(--sl-spacing-medium);
 
-    & .bone-wrapper {
-      margin-bottom: var(--sl-spacing-x-small);
-    }
+    &:deep(sl-details) {
+      &::part(header){
+        display: none;
+      }
 
-    &:first-child {
-      & :deep(.value-line) {
-       
+      &::part(base){
+        border-bottom: none !important;
+      }
+
+      &::part(content){
+        padding-top: 0;
       }
     }
   }

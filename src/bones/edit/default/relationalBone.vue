@@ -147,24 +147,10 @@ sl-input {
   width: 100%;
 
   &::part(base) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
-
-  &::part(base) {
     background-color: var(--sl-color-neutral-0);
   }
 }
 sl-combobox {
   width: 100%;
-
-  &::part(input) {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-
-    & :deep(&::part(base)) {
-      border: 1px solid red;
-    }
-  }
 }
 </style>
