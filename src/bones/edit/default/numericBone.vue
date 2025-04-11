@@ -16,7 +16,7 @@
     :data-data-invalid="boneState.errorMessages.length===0?undefined:true"
   >
   </sl-input>
-  <ul class="info">
+  <ul class="info" v-if="state.minAmount || state.maxAmount || state.precision">
     <li v-if="state.minAmount !== -9223372036854776000 && state.minAmount">
       {{ $t("bones.numeric.min", { val: state.minAmount }) }}
     </li>

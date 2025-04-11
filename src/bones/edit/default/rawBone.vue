@@ -60,7 +60,8 @@ sl-textarea {
   }
 
   &::part(textarea) {
-    border-radius: 0;
+    background-color: var(--sl-color-neutral-0);
+    border-radius: var(--sl-border-radius-medium);
   }
 }
 </style>

@@ -156,12 +156,6 @@ sl-input {
   width: 100%;
 }
 
-.has-check {
-  &::part(base) {
-    border-bottom-right-radius: 0;
-  }
-}
-
 .password-check {
   margin-top: var(--sl-spacing-x-small);
 }

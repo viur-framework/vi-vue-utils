@@ -78,10 +78,5 @@ sl-input {
   &:first-child {
     margin-bottom: 10px;
   }
-
-  &::part(base) {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-  }
 }
 </style>

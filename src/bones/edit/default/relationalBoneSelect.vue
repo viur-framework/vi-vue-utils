@@ -112,6 +112,13 @@ import Wrapper_nested from "../wrapper_nested.vue"
 .single-entry {
   display: flex;
   gap: var(--sl-spacing-x-small);
+
+  sl-input {
+    &::part(base) {
+      border-top-left-radius: 8px !important;
+      border-bottom-left-radius: 8px !important;
+    }
+  }
 }
 
 sl-input {

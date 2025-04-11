@@ -41,7 +41,7 @@ import { reactive, inject } from "vue"
 
     const boneState = inject("boneState")
     const state = reactive({
-   
+
     })
 
 </script>
@@ -57,20 +57,6 @@ import { reactive, inject } from "vue"
 .value {
   flex: 1 1 100%;
   width: 1px;
-
-  & :deep(sl-input) {
-    &::part(base) {
-      border-bottom-left-radius: var(--sl-border-radius-medium);
-      border-top-left-radius: var(--sl-border-radius-medium);
-    }
-  }
-
-  & :deep(.bone-wrapper) {
-    & sl-input::part(base) {
-      border-bottom-left-radius: 0;
-      border-top-left-radius: 0;
-    }
-  }
 
   &:deep(sl-alert){
     &::part(base){
