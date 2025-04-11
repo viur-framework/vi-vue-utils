@@ -175,7 +175,14 @@ onBeforeMount(()=>{
 watch(()=>props.skel,(oldVal,newVal)=>{
   //dragging internalforms
   // structure wont be updated, cause of logic changes on structures
-  initForm(props.skel,undefined,state.value)
+  initForm(props.skel,undefined,state.values)
+  //rerun logics after dragging
+  logics()
+})
+watch(()=>state.values,(oldVal,newVal)=>{
+  // watch values in state also
+  // structure wont be updated, cause of logic changes on structures
+  initForm(props.skel,undefined,state.values)
   //rerun logics after dragging
   logics()
 })
