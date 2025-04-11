@@ -185,7 +185,7 @@ watch(()=>state.values,(oldVal,newVal)=>{
   initForm(props.skel,undefined,state.values)
   //rerun logics after dragging
   logics()
-})
+},{ deep: true })
 watch(()=>props.structure,(oldVal,newVal)=>{
   //rerun logics if structure on mainform changes
   logics()
