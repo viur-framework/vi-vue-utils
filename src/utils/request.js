@@ -66,7 +66,13 @@ export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
     keyToRequestMap:new Map()
   })
 
-  function clearCache(prefix){
+   function clearCache(prefix){
+    if (prefix === undefined)
+    {
+      state.keyToRequestMap = new Map();
+      state.cachedRequests = {};
+      return
+    }
     for (const [k,v] of Object.entries(state.cachedRequests)){
       if (k.startsWith(prefix)){
         delete state.cachedRequests[k]
@@ -88,7 +94,7 @@ export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
       deserialize: cacheDeserializer,
       serialize:cacheSerializer
     }
-    
+
   }
 })
 
@@ -110,6 +116,7 @@ export default class Request {
   static resetState() {
     getRequestStore().$reset()
     getRequestStore().$dispose()
+    getCachedRequestsStore().clearCache()
   }
 
   static buildUrl(url) {
@@ -619,7 +626,7 @@ class cachedFetch {
       let cacheHit = getCachedRequestsStore().state.cachedRequests?.[_url]
 
       if (cacheHit ){
-        
+
 
         if (typeof cacheHit.date === "string" ){
           cacheHit.date = new Date(cacheHit.date)
@@ -636,7 +643,7 @@ class cachedFetch {
           delete getCachedRequestsStore().state.cachedRequests[_url]
         }
       }
-      
+
       //cache is invalid, make a new Request
     }
     return fetch(buildGetUrl(url, params), cachedFetch.buildOptions("GET", null, headers, abortController, mode))
@@ -652,13 +659,13 @@ class cachedFetch {
               if (data['skellist']){
 
                 usedKeys = data['skellist'].map(x=>x['key'])
-                
+
                 // create key to url references
                 for(const k of usedKeys){
                   if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
                     getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
                   }
-                  getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url) 
+                  getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
                 }
               }else if (data['values']){
                 usedKeys = [data['values']['key']]
@@ -788,7 +795,7 @@ class cachedFetch {
         const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
         return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
       }
-      
+
       if ((error instanceof DOMException && error.name == "AbortError") || typeof(error) === 'string') {
         return Promise.reject(error)
       }
