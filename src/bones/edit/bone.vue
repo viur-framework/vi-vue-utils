@@ -73,6 +73,7 @@
                   v-model="state.bonevalue[lang]"
                   :animation="150"
                   handle=".drag-button"
+                  @end="updateValue(name,state.bonevalue[lang],lang)"
                 >
                   <div
                     v-for="(val, index) in state.bonevalue?.[lang]"
@@ -138,9 +139,10 @@
         <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
           <template v-if="state.bonevalue?.length">
           <vue-draggable
-                  v-model="state.bonevalue[lang]"
+                  v-model="state.bonevalue"
                   :animation="150"
                   handle=".drag-button"
+                  @end="updateValue(name,state.bonevalue)"
           >
             <div
               v-for="(val, index) in state.bonevalue"
