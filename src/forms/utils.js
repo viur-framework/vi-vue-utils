@@ -119,7 +119,7 @@ export function useFormUtils(props, state){
   }
 
 
-  function sendData(alternativUrl= null, additionalData= null,removeKeyFromDataset= true){
+  function sendData(alternativUrl= null, additionalData= null, headers=null, removeKeyFromDataset= true){
     state.loading = true
     let isValid = state.viformelement.reportValidity()
     if (!isValid){
@@ -149,7 +149,7 @@ export function useFormUtils(props, state){
       data = {...data, ...additionalData} //inject data like contexts
     }
 
-    return request(url, {dataObj: data}).then(async (resp)=>{
+    return request(url, {dataObj: data, headers: headers}).then(async (resp)=>{
       let data = await resp.clone().json()
       state.skel = data["values"]
       //state.structure = normalizeStructure(data["structure"])
@@ -161,7 +161,7 @@ export function useFormUtils(props, state){
     })
   }
 
-  function fetchData(alternativUrl= null, additionalData=null){
+  function fetchData(alternativUrl= null, additionalData=null, headers=null){
     //fetch data
     state.loading = true
     let request = Request.post
@@ -175,7 +175,7 @@ export function useFormUtils(props, state){
       data = {...data, ...additionalData} //inject data like contexts
     }
 
-    return request(url, {dataObj: data}).then(async (resp)=>{
+    return request(url, {dataObj: data, headers: headers}).then(async (resp)=>{
       let data = await resp.clone().json()
       initForm(data["values"], data["structure"], state.values)
 
