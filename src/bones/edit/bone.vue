@@ -136,26 +136,34 @@
       <template v-else>
         <!--Bone rendering for multiple bones-->
         <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
-          <div
-            v-for="(val, index) in state.bonevalue"
-            v-if="state.bonevalue?.length"
-            :key="index+'_'+state.bonevalue.length"
-            class="multiple-bone"
+          <template v-if="state.bonevalue?.length">
+          <vue-draggable
+                  v-model="state.bonevalue[lang]"
+                  :animation="150"
+                  handle=".drag-button"
           >
-            <wrapper-multiple
-              :readonly="!state.readonly"
-              @delete="removeMultipleEntry(index)"
+            <div
+              v-for="(val, index) in state.bonevalue"
+
+              :key="index+'_'+state.bonevalue.length"
+              class="multiple-bone"
             >
-              <component
-                :is="is"
-                :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']?.[index]:val"
-                :index="index"
-                :name="name"
-                :bone="state.bonestructure"
-                @change="updateValue"
-              ></component>
-            </wrapper-multiple>
-          </div>
+              <wrapper-multiple
+                :readonly="!state.readonly"
+                @delete="removeMultipleEntry(index)"
+              >
+                <component
+                  :is="is"
+                  :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']?.[index]:val"
+                  :index="index"
+                  :name="name"
+                  :bone="state.bonestructure"
+                  @change="updateValue"
+                ></component>
+              </wrapper-multiple>
+            </div>
+            </vue-draggable>
+          </template>
           <div
             v-else
             class="multiple-placeholder"
@@ -664,7 +672,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 
     &:first-child {
       & :deep(.value-line) {
-       
+
       }
     }
   }
