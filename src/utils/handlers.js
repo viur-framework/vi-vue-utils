@@ -70,17 +70,13 @@ export function ListRequest(
       if (Object.keys(state.params).includes("skelType")) {
         skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
       }
-
       if (Array.isArray(structure[skeltype])) {
         state.structure = structure[skeltype]
       } else {
         // build array object
         state.structure_object = structure[skeltype]
-        let struct = []
-        for (const [name, conf] of Object.entries(structure[skeltype])) {
-          struct.push([name, conf])
-        }
-        state.structure = struct
+        state.structure = Object.entries(structure[skeltype])
+
       }
     }
 
@@ -123,9 +119,7 @@ export function ListRequest(
               } else {
                 // build array object
                 state.structure_object = data["structure"]
-                for (const [name, conf] of Object.entries(data["structure"])) {
-                  state.structure.push([name, conf])
-                }
+                state.structure = Object.entries(data["structure"])
               }
             }
           }
