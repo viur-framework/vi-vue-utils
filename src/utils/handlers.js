@@ -13,10 +13,10 @@ import { reactive, computed, toRaw } from "vue"
  */
 export function ListRequest(
   id,
-  { module = "", 
-    params = {}, 
-    group = null, 
-    url = "", 
+  { module = "",
+    params = {},
+    group = null,
+    url = "",
     renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
     cached = false,
     clearCache = false,
@@ -70,15 +70,13 @@ export function ListRequest(
       if (Object.keys(state.params).includes("skelType")) {
         skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
       }
-
       if (Array.isArray(structure[skeltype])) {
         state.structure = structure[skeltype]
       } else {
         // build array object
         state.structure_object = structure[skeltype]
-        for (const [name, conf] of Object.entries(structure[skeltype])) {
-          state.structure.push([name, conf])
-        }
+        state.structure = Object.entries(structure[skeltype])
+
       }
     }
 
@@ -104,14 +102,14 @@ export function ListRequest(
         group: state.group,
         renderer: renderer,
         headers:state.headers,
-        cached:state.cached, 
-        cacheTime:cacheTime, 
+        cached:state.cached,
+        cacheTime:cacheTime,
         clearCache:state.clearCache
       })
         .then(async (resp) => {
           let data = await resp.json()
           state.cached = resp.cached
-          if (data.structure === null || Object.keys(data.structure).length === 0) {
+          if (state.structure.length ===0 && (data.structure === null || Object.keys(data.structure).length === 0)) {
             await fetchStructure()
           } else {
             if (!next) {
@@ -121,9 +119,7 @@ export function ListRequest(
               } else {
                 // build array object
                 state.structure_object = data["structure"]
-                for (const [name, conf] of Object.entries(data["structure"])) {
-                  state.structure.push([name, conf])
-                }
+                state.structure = Object.entries(data["structure"])
               }
             }
           }
