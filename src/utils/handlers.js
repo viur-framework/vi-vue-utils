@@ -115,11 +115,13 @@ export function ListRequest(
             if (!next) {
               // when we have the next request we not change the structure
               if (Array.isArray(data["structure"])) {
-                state.structure = data["structure"]
+                // when structure is already fetched and abortController doesn't refetch structure
+                // and viur is configured so u do not get any structure from list requests take structure from state
+                state.structure = data["structure"] ? data["structure"] : state.structure
               } else {
                 // build array object
-                state.structure_object = data["structure"]
-                state.structure = Object.entries(data["structure"])
+                state.structure_object = data["structure"] ? data["structure"] : state.structure
+                state.structure = Object.entries(data["structure"] ? data["structure"] : state.structure)
               }
             }
           }
