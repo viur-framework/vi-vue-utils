@@ -9,7 +9,8 @@ export default {
     dragFile: "Dateien hier hinziehen",
     editFile: "Datei bearbeiten",
     list: "Auflisten",
-    addEmpty:"Neuer Eintrag"
+    addEmpty:"Neuer Eintrag",
+    no_entries:"Keine Einträge"
   },
   lang: "Sprache",
   bones: {

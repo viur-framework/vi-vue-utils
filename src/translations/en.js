@@ -8,7 +8,8 @@ export default {
     chooseFile: "Choose file",
     editFile: "Edit File",
     dragFile: "Drag and drop file here",
-    list: "List"
+    list: "List",
+    no_entries: "No entries",
   },
   bones: {
     phone: {

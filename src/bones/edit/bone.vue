@@ -105,7 +105,7 @@
                 <sl-input
                   readonly
                   size="medium"
-                  placeholder="Keine Einträge"
+                  :placeholder="$t('no_entries')"
                 ></sl-input>
               </div>
 
@@ -173,7 +173,7 @@
             <sl-input
               readonly
               size="medium"
-              placeholder="Keine Einträge"
+              :placeholder="$t('no_entries')"
             ></sl-input>
           </div>
           <!--Bone Buttonbar -->
