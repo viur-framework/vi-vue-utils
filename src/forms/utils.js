@@ -135,7 +135,10 @@ export function useFormUtils(props, state){
     const formData = new FormData()
     for (const bone of toFormData()) {
       for (const [k, v] of Object.entries(bone)) {
-        let val = v || ""
+        let val = v
+        if ([undefined,null].includes(v)){
+          val = ""
+        }
         formData.append(k, val)
       }
     }
