@@ -89,7 +89,7 @@ export function useFormUtils(props, state){
           if (!value) value=[]
           for(const [idx,val] of value.entries()){
             let currentFieldnameMultiple = currentFieldName
-            if (indexBone || val?.["rel"]){ //indexbones and relations with relSkel use idx
+            if (indexBone || val?.["rel"]!==null){ //indexbones and relations with relSkel use idx
               currentFieldnameMultiple = `${currentFieldName}.${idx}`//append idx
             }
             result = handleEntry(result, currentFieldnameMultiple, bone, val)
