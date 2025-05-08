@@ -3,13 +3,15 @@
     v-model="value_ref"
     :onChange="changeEvent"
     :readOnly="boneState.readonly"
-  />
+    ref="editorRef"
 
+  />
 </template>
 
 <script setup>
 import JsonEditorVue from 'json-editor-vue'
-import {onMounted, inject, ref} from "vue"
+import {onMounted, inject, ref, watch} from "vue"
+import { useTimeoutFn } from '@vueuse/core';
   const value_ref = ref();
   defineOptions({
     inheritAttrs: false
@@ -25,6 +27,7 @@ import {onMounted, inject, ref} from "vue"
     autofocus: Boolean
   })
 
+  const editorRef = ref(null)
   const emit = defineEmits( ["change"])
     const boneState = inject("boneState")
     function changeEvent(newVal) {
@@ -34,6 +37,14 @@ import {onMounted, inject, ref} from "vue"
     onMounted(() => {
       emit("change", props.name, props.value, props.lang, props.index) //init
       value_ref.value=props.value;
+    })
+    watch(value_ref, (newVal,oldVal)=>{
+      if(!oldVal && newVal){
+        useTimeoutFn(()=>{
+          editorRef.value.jsonEditor.collapse([],true)
+        },300)
+
+      }
     })
 
 </script>
