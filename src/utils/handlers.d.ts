@@ -74,7 +74,7 @@ export function ListRequest(
         state: number
       }
       structure: object
-      fetchAll: (do_reset?: boolean) => void
+      fetchAll: (do_reset?: boolean) => Promise<any>
       fetch: (do_reset?: boolean) => number | Promise<Response>
       next: () => number | Promise<Response>
       filter: (params: object) => number | Promise<Response>

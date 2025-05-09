@@ -159,15 +159,13 @@ export function ListRequest(
      * fetch all Entries till cursor ends
      * WARNING dont do this with large lists
      */
-    function fetchAll(do_reset = true) {
+    async function fetchAll(do_reset = true) {
       if (do_reset) reset()
-      let nextRequest = next()
+      const nextRequest = await next()
       if (nextRequest === 0) {
         return 0
       }
-      return nextRequest.then((resp) => {
-        fetchAll(false)
-      })
+      await fetchAll(false)
     }
 
     /**
