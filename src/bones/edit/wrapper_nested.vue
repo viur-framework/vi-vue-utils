@@ -10,6 +10,7 @@
     v-else
     class="form"
   >
+    <sl-spinner v-if="state.updating" style="position: absolute;top:20px;left:-10px"></sl-spinner>
     <vi-form ref="skelRef"
              :internal="mainformState"
              :skel="value"
@@ -57,16 +58,22 @@ const state = reactive({
       return false
     }
     return val.length-1 === props.index
-  })
+  }),
+  updating:false
 })
 
 function changeEvent(val) {
+  state.updating = true
   val["value"] = skelRef.value.state.skel // send whole form
   val["name"] = props.name
   val["index"] = props.index
   val["lang"] = props.lang
   emit("change", val)
 }
+
+watch(()=>props.value,(newVal,oldVal)=>{
+  state.updating=false
+})
 
 onMounted(() => {
   let app = getCurrentInstance().appContext
@@ -88,14 +95,12 @@ onMounted(() => {
   emit("change", props.name, val, props.lang, props.index) //init
 })
 
-function updateValue(e) {
-  console.log(e)
-}
 
 </script>
 
 <style scoped>
 .form {
   width: 100%;
+  position: relative;
 }
 </style>
