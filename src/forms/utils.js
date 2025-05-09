@@ -245,7 +245,7 @@ export function useFormUtils(props, state){
 
       if (
         ( props.collapsedCategories &&
-          props.collapsedCategories.map((x) => x.toLowerCase()).includes(category)) ||
+          props.collapsedCategories.map((x) => x.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()).includes(category)) ||
           category === "system" ||
           category === "internal" ||
           props.collapsedCategories?.[0] === "*"
