@@ -29,6 +29,7 @@
 import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref } from "vue"
 import { getBoneWidget } from "./index"
 import ViForm from "../../forms/ViForm.vue";
+import { useTimeoutFn } from "@vueuse/core"
 
 const emit = defineEmits(["change"])
 const props = defineProps({
@@ -69,6 +70,9 @@ function changeEvent(val) {
   val["index"] = props.index
   val["lang"] = props.lang
   emit("change", val)
+  useTimeoutFn(() => {
+    state.updating = false
+  }, 1000)
 }
 
 watch(()=>props.value,(newVal,oldVal)=>{
