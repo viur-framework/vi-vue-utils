@@ -124,7 +124,8 @@ export function useFormUtils(props, state){
     state.loading = true
     let isValid = state.viformelement.reportValidity()
     if (!isValid){
-      return new Promise((resolve, reject)=>reject("Form is not valid"))
+     state.loading = false
+     return new Promise((resolve, reject)=>reject("Form is not valid"))
     }
 
     let request = Request.post
