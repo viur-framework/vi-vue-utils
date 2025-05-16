@@ -93,6 +93,7 @@
                         :bone="state.bonestructure"
                         @change="updateValue"
                       ></component>
+                      <bone-actions></bone-actions>
                     </wrapper-multiple>
                   </div>
                 </vue-draggable>
@@ -130,6 +131,7 @@
               :bone="state.bonestructure"
               @change="updateValue"
             ></component>
+            <bone-actions></bone-actions>
           </sl-tab-panel>
         </template>
       </sl-tab-group>
@@ -162,6 +164,7 @@
                   :bone="state.bonestructure"
                   @change="updateValue"
                 ></component>
+                <bone-actions></bone-actions>
               </wrapper-multiple>
             </div>
             </vue-draggable>
@@ -198,6 +201,7 @@
           @change="updateValue"
           @keypress.enter="updateValue"
         ></component>
+        <bone-actions></bone-actions>
       </template>
       <template v-if="errorStyle==='default'">
         <sl-alert
@@ -246,6 +250,7 @@ import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
 import Utils from "../utils"
 import { VueDraggable } from 'vue-draggable-plus'
+import BoneActions from "./boneActions.vue";
 
   const emit = defineEmits(["change", "change-internal", "handleClick"])
 
