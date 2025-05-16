@@ -65,4 +65,3 @@ import { useTimeoutFn } from '@vueuse/core';
   --jse-theme-color-highlight:var(--sl-color-neutral-200);
 }
 </style>
-

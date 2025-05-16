@@ -374,11 +374,10 @@ import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
 
 .wrapper {
   height: 100%;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-position: center center;
-  background-size: cover;
 }
 
 .wrapper::before {
@@ -409,7 +408,7 @@ import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
 }
 
 .logo {
-  height: 160px;
+  height: 130px;
   padding: var(--sl-spacing-medium);
   margin-bottom: var(--sl-spacing-medium);
   align-self: center;

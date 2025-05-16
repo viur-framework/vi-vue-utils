@@ -160,6 +160,7 @@ import ClassicEditor from "@viur/ckeditor5-build-classic"
   visibility: hidden;
   width: 100%;
   pointer-events: none;
+  padding: 0;
 }
 </style>
 
@@ -254,7 +255,7 @@ import ClassicEditor from "@viur/ckeditor5-build-classic"
     width: 100% !important;
 
     .ck-content {
-      background: transparent !important;
+      background: var(--sl-color-neutral-0) !important;
       border: 1px solid var(--vi-border-color) !important;
       width: 100%;
       /*height: 250px;*/
@@ -321,12 +322,15 @@ import ClassicEditor from "@viur/ckeditor5-build-classic"
     .ck-toolbar {
       height: var(--sl-input-height-medium);
       border-color: var(--vi-border-color);
-      background-color: var(--vi-background-color);
+      background-color: var(--sl-color-neutral-0);
+      border-top-left-radius: var(--sl-border-radius-medium) !important;
+      border-top-right-radius: var(--sl-border-radius-medium) !important;
+
     }
 
     .ck-button {
       border-color: none;
-      background-color: var(--vi-background-color);
+      background-color: var(--sl-color-neutral-0);
       cursor: pointer;
 
       &:hover {

@@ -77,23 +77,6 @@ sl-input {
 
   &:first-child {
     margin-bottom: 10px;
-
-    &::part(base) {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      border-top-right-radius: var(--sl-border-radius-medium);
-    }
-
-    @media (max-width: 900px) {
-      &::part(base) {
-        border-top-right-radius: 0;
-      }
-    }
-  }
-
-  &::part(base) {
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
   }
 }
 </style>

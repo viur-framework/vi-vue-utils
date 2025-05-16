@@ -211,7 +211,7 @@ import { Request } from "../../../index"
   border: 1px solid var(--sl-color-gray-500);
   border-radius: 5px;
   height: var(--sl-input-height-medium);
-  background-color: transparent;
+  background-color: var(--sl-color-neutral-0);
 }
 
 .preview {

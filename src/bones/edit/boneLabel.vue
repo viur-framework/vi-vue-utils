@@ -51,9 +51,7 @@ import { reactive, onMounted, inject } from "vue"
     padding: 0.4em 0.7em;
     color: var(--sl-color-neutral-900);
     background-color: var(--sl-color-neutral-200);
-    border: none;
-    border-top-left-radius: var(--sl-input-border-radius-medium);
-    border-bottom-left-radius: var(--sl-input-border-radius-medium);
+    border-radius: var(--sl-input-border-radius-medium);
     word-break: break-word;
 
     @media (max-width: 900px) {
@@ -77,5 +75,6 @@ import { reactive, onMounted, inject } from "vue"
       font-size: 0.55em;
     }
   }
+
 }
 </style>

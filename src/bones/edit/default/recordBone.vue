@@ -42,6 +42,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
 sl-input {
   width: 100%;
 }

@@ -537,8 +537,7 @@ import { VueDraggable } from 'vue-draggable-plus'
       grid-gap: 0;
 
       & > :deep(.bone-name) {
-        border-bottom-left-radius: 0;
-        border-top-right-radius: var(--sl-border-radius-medium);
+        width: 100%;
         min-width: 235px;
       }
 
@@ -574,8 +573,12 @@ import { VueDraggable } from 'vue-draggable-plus'
     }
   }
 
-  sl-tab-panel::part(base) {
-    padding: 0;
+  sl-tab-panel{
+    width: 100%;
+
+    &::part(base) {
+      padding: 0;
+    }
   }
 
   .lang-tab {
@@ -584,12 +587,12 @@ import { VueDraggable } from 'vue-draggable-plus'
     --track-color: var(--vi-border-color);
 
     &::part(body) {
-      padding-bottom: var(--sl-spacing-x-small);
+      display: flex;
       overflow-x: hidden;
     }
 
-    &::part(tabs) {
-      border-top: 1px solid var(--vi-border-color);
+    &::part(nav) {
+      margin-left: var(--sl-border-radius-medium);
     }
 
     & sl-tab {
@@ -640,6 +643,25 @@ import { VueDraggable } from 'vue-draggable-plus'
         }
       }
     }
+
+    .wrapper-bone-color &,
+    .wrapper-bone-numeric:has(.info) &,
+    .wrapper-bone-password & {
+      &::part(body) {
+        padding-bottom: var(--sl-spacing-x-small);
+        border-bottom: 1px solid var(--vi-border-color);
+      }
+    }
+
+    &:has(.multiple-bone),
+    &:has(.multiple-placeholder),
+    .wrapper-bone-spatial & {
+      &::part(body) {
+        padding-bottom: var(--sl-spacing-medium);
+        border-bottom: 1px solid var(--vi-border-color);
+      }
+    }
+
   }
 
   .multiple-placeholder {
@@ -649,8 +671,6 @@ import { VueDraggable } from 'vue-draggable-plus'
 
     & sl-input {
       &::part(base) {
-        border-top-left-radius: 0;
-        border-bottom-left-radius: 0;
         opacity: 0.7;
       }
     }
@@ -665,16 +685,20 @@ import { VueDraggable } from 'vue-draggable-plus'
     }
   }
 
-  .multiple-bone {
+  .bone-inner-wrap :deep(.multiple-bone) {
     margin-bottom: var(--sl-spacing-x-small);
 
-    & .bone-wrapper {
-      margin-bottom: var(--sl-spacing-x-small);
-    }
+    &:deep(sl-details) {
+      &::part(header){
+        display: none;
+      }
 
-    &:first-child {
-      & :deep(.value-line) {
+      &::part(base){
+        border-bottom: none !important;
+      }
 
+      &::part(content){
+        padding-top: 0;
       }
     }
   }
@@ -792,5 +816,45 @@ sl-checkbox[data-user-invalid]::part(control) {
     border-color: var(--sl-color-danger-500);
   }
 
+.record, .wrapper-bone-record{
+  .viform-category{
 
+    &::part(header){
+      display: none;
+    }
+
+    &::part(base){
+      border-bottom: none;
+    }
+
+    &::part(content){
+      padding: 0 0 0 var(--sl-spacing-large);
+    }
+  }
+}
+
+.wrapper-bone-record{
+  .lang-tab{
+    &::part(body){
+      padding-bottom: var(--sl-spacing-medium);
+      border-bottom: 1px solid var(--vi-border-color);
+    }
+  }
+
+  & > .label-bone{
+    margin-bottom: var(--sl-spacing-medium);
+  }
+}
+
+.wrapper-bone-relational{
+  & > .label-bone{
+    margin-bottom: var(--sl-spacing-medium);
+  }
+}
+
+.record:has(.form){
+  .single-entry{
+    margin-bottom: var(--sl-spacing-medium);
+  }
+}
 </style>
