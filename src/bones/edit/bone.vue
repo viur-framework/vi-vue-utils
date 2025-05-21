@@ -56,6 +56,7 @@
           v-for="lang in state.languages"
           :key="lang + '_tab'"
         >
+
           <sl-tab
             slot="nav"
             :panel="'lang_' + lang"
@@ -93,7 +94,6 @@
                         :bone="state.bonestructure"
                         @change="updateValue"
                       ></component>
-                      <bone-actions></bone-actions>
                     </wrapper-multiple>
                   </div>
                 </vue-draggable>
@@ -121,17 +121,21 @@
               ></component>
             </template>
             <!--Bone rendering for normal bones-->
-            <component
-              :is="is"
-              v-else
-              :value="state.bonevalue?.[lang]"
-              :index="null"
-              :lang="lang"
-              :name="name"
-              :bone="state.bonestructure"
-              @change="updateValue"
-            ></component>
-            <bone-actions></bone-actions>
+            <div v-else class="wrapper-bone-row">
+              <div class="wrapper-bone-block">
+                <component
+                  :is="is"
+                  :value="state.bonevalue?.[lang]"
+                  :index="null"
+                  :lang="lang"
+                  :name="name"
+                  :bone="state.bonestructure"
+                  @change="updateValue"
+                ></component>
+              </div>
+              <bone-actions></bone-actions>
+            </div>
+
           </sl-tab-panel>
         </template>
       </sl-tab-group>
@@ -164,7 +168,6 @@
                   :bone="state.bonestructure"
                   @change="updateValue"
                 ></component>
-                <bone-actions></bone-actions>
               </wrapper-multiple>
             </div>
             </vue-draggable>
@@ -189,19 +192,21 @@
           ></component>
         </template>
         <!--Bone rendering for normal bones-->
-
-        <component
-          :is="is"
-          v-else
-          :value="state.bonevalue"
-          :name="name"
-          :index="null"
-          :bone="state.bonestructure"
-          :autofocus="autofocus"
-          @change="updateValue"
-          @keypress.enter="updateValue"
-        ></component>
-        <bone-actions></bone-actions>
+        <div v-else class="wrapper-bone-row">
+          <div class="wrapper-bone-block">
+            <component
+              :is="is"
+              :value="state.bonevalue"
+              :name="name"
+              :index="null"
+              :bone="state.bonestructure"
+              :autofocus="autofocus"
+              @change="updateValue"
+              @keypress.enter="updateValue"
+            ></component>
+          </div>
+          <bone-actions></bone-actions>
+        </div>
       </template>
       <template v-if="errorStyle==='default'">
         <sl-alert
@@ -787,6 +792,17 @@ import BoneActions from "./boneActions.vue";
 .error-msg::part(base){
   background-color: #ffecec;
   color:var(--sl-color-danger-700);
+}
+
+.wrapper-bone-row{
+  display:flex;
+  flex-direction: row;
+  gap:var(--sl-spacing-x-small)
+}
+
+.wrapper-bone-block{
+  display:block;
+  width:100%;
 }
 </style>
 
