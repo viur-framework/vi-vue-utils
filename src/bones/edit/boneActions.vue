@@ -1,7 +1,7 @@
 <template>
   <template v-if="bone?.params?.actions">
     <template v-if="bone.params.actions.length===1 || true">
-      <template v-for="action in bone.params.actions" :key="action['arg']+'_'+name+'_'+lang">
+      <template v-for="action in state.actions" :key="action['arg']+'_'+name+'_'+lang">
         <sl-button :disabled="disabled(action)"size="medium" variant="info" outline @click="openPopup(action)">
           <sl-icon :name="action['icon']" slot="prefix"></sl-icon>
         </sl-button>
@@ -24,10 +24,27 @@
 </template>
 
 <script setup>
-  import {reactive, inject, computed} from 'vue'
+  import {reactive, inject, computed, onMounted} from 'vue'
   import assistantWindow from './assistant/assistantWindow.vue'
 
   const emit = defineEmits(['change'])
+
+  const defaultActions={
+    "translate":{
+            "type":"assistant",
+            "arg":"translate",
+            "name":"Übersetzen",
+            "icon":"translate",
+            "library":"default"
+    },
+    "describe_image":{
+            "type":"assistant",
+            "arg":"describe_image",
+            "name":"Bildbeschreibung erstellen",
+            "icon":"file-richtext",
+            "library":"default"
+        }
+  }
 
   const props = defineProps( {
     name: String,
@@ -40,7 +57,7 @@
   const boneState = inject("boneState")
 
   const state = reactive({
-
+    actions:[]
   })
 
   function disabled(action){
@@ -48,8 +65,28 @@
       if (action["arg"] === "describe_image"){
         return !props.value?.dest?.key
       }
+      if (action["arg"] === "translate"){
+        return !props.bone.languages
+      }
     }
   }
+
+  function collectActions(){
+      let data = []
+      if (!props?.bone?.params?.actions) return data
+      for(const entry of props.bone.params.actions){
+        if (Object.keys(defaultActions).includes(entry)){
+          data.push(defaultActions[entry])
+        }else{
+          data.push(entry)
+        }
+      }
+      return data
+  }
+
+  onMounted(()=>{
+    state.actions = collectActions()
+  })
 
   function openPopup(action){
     action['_opened']=true

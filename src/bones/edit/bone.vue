@@ -145,7 +145,7 @@
         </template>
 
       </sl-tab-group>
-      <bone-actions
+      <bone-actions v-if="state.boneactions"
                 :value="state.bonevalue"
                 :name="name"
                 :index="null"
@@ -220,7 +220,7 @@
               @keypress.enter="updateValue"
             ></component>
           </div>
-          <bone-actions
+          <bone-actions v-if="state.boneactions"
               :value="state.bonevalue"
               :name="name"
               :index="null"
@@ -312,6 +312,7 @@ import BoneActions from "./boneActions.vue";
         return ["normal","top","hide","placeholder"].includes(value)
       }
     },
+    boneactions:{type:Boolean, default:false},
     showLabelInfo: { type: Boolean, required: false, default: false },
     autofocus: { type: Boolean, required: false, default: false },
     defaultLanguage: {type:String,default:"de"},
@@ -325,6 +326,7 @@ import BoneActions from "./boneActions.vue";
     }
   })
     const state = reactive({
+      boneactions:computed(()=>props.boneactions),
       bonestructure: computed(() => {
         return props.structure?.[props.name]
       }),
