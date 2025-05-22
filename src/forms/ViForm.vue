@@ -14,6 +14,7 @@
                 :structure="state.structure"
                 :skel="state.skel"
                 :errors="state.errors"
+                :boneactions="state.boneactions"
                 :default-language="defaultLanguage"
                 :label="label===undefined?state.label:label"
                 @change-internal="formUpdate"
@@ -101,6 +102,10 @@ const props = defineProps({
     type:[Object,null],
     default:null
   },
+  boneactions:{
+    type:Boolean,
+    default:false
+  },
   layout:{
     type:Object,
     default:LayoutCategory
@@ -145,6 +150,7 @@ const state = reactive({
   useCategories:computed(()=>props.useCategories),
   label:computed(()=>props.label),
   bones:computed(()=>props.bones),
+  boneactions:computed(()=>props.boneactions),
   isValid:computed(()=>{ // is form valid?
     let validstate = true
     for(const [key,value] of Object.entries(state.valids)){

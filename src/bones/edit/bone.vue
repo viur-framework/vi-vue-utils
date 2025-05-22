@@ -47,15 +47,18 @@
       )"
     >
       <!--Language chooser -->
+      <div class="wrapper-bone-row" v-if="state.multilanguage">
       <sl-tab-group
-        v-if="state.multilanguage"
+
         class="lang-tab"
         placement="bottom"
       >
+
         <template
           v-for="lang in state.languages"
           :key="lang + '_tab'"
         >
+
           <sl-tab
             slot="nav"
             :panel="'lang_' + lang"
@@ -82,6 +85,8 @@
                   >
                     <wrapper-multiple
                       :readonly="!state.readonly"
+                      :index="index"
+                      :name="name"
                       @delete="removeMultipleEntry(index, lang)"
                     >
                       <component
@@ -120,20 +125,34 @@
               ></component>
             </template>
             <!--Bone rendering for normal bones-->
-            <component
-              :is="is"
-              v-else
-              :value="state.bonevalue?.[lang]"
-              :index="null"
-              :lang="lang"
-              :name="name"
-              :bone="state.bonestructure"
-              @change="updateValue"
-            ></component>
-          </sl-tab-panel>
-        </template>
-      </sl-tab-group>
+            <div v-else class="wrapper-bone-row">
+              <div class="wrapper-bone-block">
+                <component
+                  :is="is"
+                  :value="state.bonevalue?.[lang]"
+                  :index="null"
+                  :lang="lang"
+                  :name="name"
+                  :bone="state.bonestructure"
+                  @change="updateValue"
+                ></component>
+              </div>
 
+            </div>
+
+          </sl-tab-panel>
+
+        </template>
+
+      </sl-tab-group>
+      <bone-actions v-if="state.boneactions"
+                :value="state.bonevalue"
+                :name="name"
+                :index="null"
+                :bone="state.bonestructure"
+                @change="updateValue"
+            ></bone-actions>
+            </div>
       <template v-else>
         <!--Bone rendering for multiple bones-->
         <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
@@ -152,6 +171,8 @@
             >
               <wrapper-multiple
                 :readonly="!state.readonly"
+                :index="index"
+                :name="name"
                 @delete="removeMultipleEntry(index)"
               >
                 <component
@@ -186,18 +207,28 @@
           ></component>
         </template>
         <!--Bone rendering for normal bones-->
+        <div v-else class="wrapper-bone-row">
+          <div class="wrapper-bone-block">
+            <component
+              :is="is"
+              :value="state.bonevalue"
+              :name="name"
+              :index="null"
+              :bone="state.bonestructure"
+              :autofocus="autofocus"
+              @change="updateValue"
+              @keypress.enter="updateValue"
+            ></component>
+          </div>
+          <bone-actions v-if="state.boneactions"
+              :value="state.bonevalue"
+              :name="name"
+              :index="null"
+              :bone="state.bonestructure"
+              @change="updateValue"
 
-        <component
-          :is="is"
-          v-else
-          :value="state.bonevalue"
-          :name="name"
-          :index="null"
-          :bone="state.bonestructure"
-          :autofocus="autofocus"
-          @change="updateValue"
-          @keypress.enter="updateValue"
-        ></component>
+          ></bone-actions>
+        </div>
       </template>
       <template v-if="errorStyle==='default'">
         <sl-alert
@@ -246,6 +277,7 @@ import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
 import Utils from "../utils"
 import { VueDraggable } from 'vue-draggable-plus'
+import BoneActions from "./boneActions.vue";
 
   const emit = defineEmits(["change", "change-internal", "handleClick"])
 
@@ -280,6 +312,7 @@ import { VueDraggable } from 'vue-draggable-plus'
         return ["normal","top","hide","placeholder"].includes(value)
       }
     },
+    boneactions:{type:Boolean, default:false},
     showLabelInfo: { type: Boolean, required: false, default: false },
     autofocus: { type: Boolean, required: false, default: false },
     defaultLanguage: {type:String,default:"de"},
@@ -293,6 +326,7 @@ import { VueDraggable } from 'vue-draggable-plus'
     }
   })
     const state = reactive({
+      boneactions:computed(()=>props.boneactions),
       bonestructure: computed(() => {
         return props.structure?.[props.name]
       }),
@@ -446,6 +480,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 
       emit("change-internal", changeInternalObj)
     }
+    provide("updateValue", updateValue)
 
     function addMultipleEntry(lang = null, data = "") {
       if (lang) {
@@ -579,6 +614,7 @@ import { VueDraggable } from 'vue-draggable-plus'
   }
 
   .lang-tab {
+    width:100%;
     --track-width: 0;
     --indicator-color: var(--vi-background-color);
     --track-color: var(--vi-border-color);
@@ -782,6 +818,17 @@ import { VueDraggable } from 'vue-draggable-plus'
 .error-msg::part(base){
   background-color: #ffecec;
   color:var(--sl-color-danger-700);
+}
+
+.wrapper-bone-row{
+  display:flex;
+  flex-direction: row;
+  gap:var(--sl-spacing-x-small)
+}
+
+.wrapper-bone-block{
+  display:block;
+  width:100%;
 }
 </style>
 
