@@ -47,11 +47,13 @@
       )"
     >
       <!--Language chooser -->
+      <div class="wrapper-bone-row" v-if="state.multilanguage">
       <sl-tab-group
-        v-if="state.multilanguage"
+
         class="lang-tab"
         placement="bottom"
       >
+
         <template
           v-for="lang in state.languages"
           :key="lang + '_tab'"
@@ -83,6 +85,8 @@
                   >
                     <wrapper-multiple
                       :readonly="!state.readonly"
+                      :index="index"
+                      :name="name"
                       @delete="removeMultipleEntry(index, lang)"
                     >
                       <component
@@ -133,13 +137,22 @@
                   @change="updateValue"
                 ></component>
               </div>
-              <bone-actions></bone-actions>
+
             </div>
 
           </sl-tab-panel>
-        </template>
-      </sl-tab-group>
 
+        </template>
+
+      </sl-tab-group>
+      <bone-actions
+                :value="state.bonevalue"
+                :name="name"
+                :index="null"
+                :bone="state.bonestructure"
+                @change="updateValue"
+            ></bone-actions>
+            </div>
       <template v-else>
         <!--Bone rendering for multiple bones-->
         <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
@@ -158,6 +171,8 @@
             >
               <wrapper-multiple
                 :readonly="!state.readonly"
+                :index="index"
+                :name="name"
                 @delete="removeMultipleEntry(index)"
               >
                 <component
@@ -205,7 +220,14 @@
               @keypress.enter="updateValue"
             ></component>
           </div>
-          <bone-actions></bone-actions>
+          <bone-actions
+              :value="state.bonevalue"
+              :name="name"
+              :index="null"
+              :bone="state.bonestructure"
+              @change="updateValue"
+
+          ></bone-actions>
         </div>
       </template>
       <template v-if="errorStyle==='default'">
@@ -456,6 +478,7 @@ import BoneActions from "./boneActions.vue";
 
       emit("change-internal", changeInternalObj)
     }
+    provide("updateValue", updateValue)
 
     function addMultipleEntry(lang = null, data = "") {
       if (lang) {
@@ -589,6 +612,7 @@ import BoneActions from "./boneActions.vue";
   }
 
   .lang-tab {
+    width:100%;
     --track-width: 0;
     --indicator-color: var(--vi-background-color);
     --track-color: var(--vi-border-color);

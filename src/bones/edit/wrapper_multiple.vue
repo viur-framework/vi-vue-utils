@@ -18,7 +18,14 @@
       <slot></slot>
 
       </div>
-      <bone-actions></bone-actions>
+      <bone-actions
+          :value="boneState.bonevalue"
+          :name="name"
+          :index="index"
+          :bone="boneState.bonestructure"
+          @change="updateValue"
+      >
+      </bone-actions>
       </div>
     <sl-button
       variant="danger"
@@ -42,10 +49,13 @@ import { reactive, inject } from "vue"
 import BoneActions from "./boneActions.vue";
 
   const props = defineProps( {
+    index:Number,
+    name:String
   })
   const emit = defineEmits(["change", "delete"])
 
     const boneState = inject("boneState")
+    const updateValue = inject("updateValue")
     const state = reactive({
 
     })
