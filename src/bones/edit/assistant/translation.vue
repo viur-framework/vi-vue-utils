@@ -13,7 +13,7 @@
       </div>
     </div>
     <span style="font-size: var(--sl-font-size-small);font-style: italic;text-align: center">
-      Bei der Übersetzung kommt Künstliche Intelligenz zum Einsatz, die Ergebnisse können fehlerhaft sein. Bitte prüfen Sie stehts das Ergebnis.
+      Bei der Übersetzung kommt künstliche Intelligenz zum Einsatz. Die Ergebnisse können daher fehlerhaft sein. Bitte prüfen Sie daher stets das Ergebnis.
     </span>
   </div>
 
