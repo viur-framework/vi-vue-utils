@@ -12,9 +12,22 @@
       >
       </sl-icon>
     </sl-button>
+     <div class="row-wrapper">
     <div class="value">
+
       <slot></slot>
-    </div>
+
+      </div>
+      <bone-actions
+          v-if="boneState.boneactions"
+          :value="boneState.bonevalue"
+          :name="name"
+          :index="index"
+          :bone="boneState.bonestructure"
+          @change="updateValue"
+      >
+      </bone-actions>
+      </div>
     <sl-button
       variant="danger"
       :disabled="boneState.readonly"
@@ -34,14 +47,18 @@
 <script setup>
 
 import { reactive, inject } from "vue"
+import BoneActions from "./boneActions.vue";
 
   const props = defineProps( {
+    index:Number,
+    name:String
   })
   const emit = defineEmits(["change", "delete"])
 
     const boneState = inject("boneState")
+    const updateValue = inject("updateValue")
     const state = reactive({
-   
+
     })
 
 </script>
@@ -87,5 +104,11 @@ import { reactive, inject } from "vue"
   &::part(base) {
     aspect-ratio: 1;
   }
+}
+.row-wrapper{
+  width: 100%;
+  display:flex;
+  flex-direction: row;
+  gap:var(--sl-spacing-x-small)
 }
 </style>
