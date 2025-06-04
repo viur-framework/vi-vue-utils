@@ -28,7 +28,7 @@
         * Bei der Übersetzung kommt künstliche Intelligenz zum Einsatz. Die Ergebnisse können daher fehlerhaft sein. Bitte prüfen Sie daher stets das Ergebnis.
       </span>
       <div></div>
-      <sl-button @click="translate" size="small" variant="info">
+      <sl-button @click="translate" size="small" variant="info" :loading="state.loading">
         Übersetzen
       </sl-button>
 
@@ -49,7 +49,7 @@
 
     <div class="translate-dialog-footer-spacer"></div>
 
-    <sl-button variant="success" outline @click="nextlang" size="small":disabled="!state.nextlang">
+    <sl-button variant="success" outline @click="nextlang" size="small" :disabled="!state.nextlang">
       Übernehmen und nächste leere Sprache
     </sl-button>
 
