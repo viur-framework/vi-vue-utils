@@ -62,7 +62,7 @@ const props = defineProps({
       result: null,
       currentLang:null,
       rawLang: computed(()=>state.currentLang?.split("_")[0]),
-      simple: computed(()=>state.currentLang?.split("_")?.length===2),
+      simple: computed(()=>state.currentLang?.split("-x-")?.length===2), //every private space will be validated to simple
       value_de:null,
       loading:false,
       nextlang: computed(()=>{
@@ -76,12 +76,12 @@ const props = defineProps({
     })
     function translate(){
       state.loading=true
-      Request.get("/json/assistant/translate",{dataObj:{
+      Request.post("/json/assistant/translate",{dataObj:{
         text:state.value_de,
         language:state.rawLang,
-        simplified:state.simple
+        characteristic:state.simple?'simple':null
       }}).then(async (resp)=>{
-        state.result = await resp.text()
+        state.result = await resp.json()
         state.loading = false
       }).catch(error=>{
         state.loading = false
