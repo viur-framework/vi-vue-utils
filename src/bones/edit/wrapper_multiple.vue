@@ -20,7 +20,7 @@
       </div>
       <bone-actions
           v-if="boneState.boneactions"
-          :value="boneState.bonevalue"
+          :value="boneState.bonevalue[index]"
           :name="name"
           :index="index"
           :bone="boneState.bonestructure"
