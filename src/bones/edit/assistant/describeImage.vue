@@ -8,20 +8,20 @@
       </div>
 
       <div style="width: 50%; display:flex;flex-direction: column;gap:1rem;">
-          {{ state.currentLang }}
           <sl-tab-group
             v-if="state.value"
             class="lang-tab"
             placement="bottom"
           >
             <template
-              v-for="val,lang in params.boneState.bonevalue.rel.alt"
+              v-for="val,lang in state.value"
               :key="lang + '_tab'"
             >
               <sl-tab
                 slot="nav"
                 :panel="'lang_' + lang"
                 @click="state.currentLang = lang"
+                :disabled="state.loading"
               >
                 {{ $t(lang) }}
               </sl-tab>
@@ -89,20 +89,20 @@ const props = defineProps({
     const state = reactive({
       value:null,
       currentLang:null,
-      url: computed(()=>(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) +props.params.boneState.bonevalue.dest.downloadUrl ),
+      url: computed(()=>(import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin) +props.params.value?.dest?.downloadUrl ),
       prompt:null,
       loading:false
     })
     function describe(){
       state.loading=true
       Request.post("/json/assistant/describe_image",{dataObj:{
-         filekey:props.params.boneState.bonevalue.dest.key,
+         filekey:props.params.value.dest.key,
          context:JSON.stringify(viform?.value?.state?.skel),
          prompt:state.prompt,
          language:state.currentLang
       }}).then(async (resp)=>{
 
-        state.value[state.currentLang] = await resp.text()
+        state.value[state.currentLang] = await resp.json()
         state.loading= false
       }).catch(error=>{
         state.loading=false
@@ -110,8 +110,15 @@ const props = defineProps({
     }
 
     onMounted(()=>{
-      state.value = props.params.boneState.bonevalue.rel.alt
-      state.currentLang = Object.keys(props.params.boneState.bonevalue.rel.alt)[0]
+      state.value = props.params.value?.rel?.alt
+      if (!state.value){
+        let langs = {}
+        for(const l of props.params.bone.using.alt.languages){
+          langs[l] = ""
+        }
+        state.value = langs
+      }
+      state.currentLang = props.params.bone.using.alt.languages[0]
     })
 
     function updateValue(e,lang){
@@ -119,12 +126,16 @@ const props = defineProps({
     }
 
     function CloseAction() {
-      emit("close",props.params.boneState.bonevalue)
+      emit("close",props.params.value)
     }
 
     function ApplySelection() {
-      props.params.boneState.bonevalue.rel.alt = state.value
-      emit("close", props.params.boneState.bonevalue)
+      if (!props.params.value.rel){
+        props.params.value['rel'] = {"alt":state.value}
+      }else{
+        props.params.value.rel.alt = state.value
+      }
+      emit("close", props.params.value)
     }
 </script>
 
