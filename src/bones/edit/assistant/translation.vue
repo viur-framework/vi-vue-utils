@@ -1,33 +1,54 @@
 <template>
-  <div class="body-wrapper">
-    <div style="display:flex;width:100%;justify-content: space-between;gap:10px;">
-      <div style="width: 50%">Original(de):
-        <sl-textarea :value="state.value_de" @sl-change="updateValueDe">
+  <div class="translate-wrapper">
+    <div class="translate-grid">
+      <div class="translate-flex">
+        <sl-textarea
+              :value="state.value_de"
+              label="Original Sprache (de):"
+              @sl-change="updateValueDe">
         </sl-textarea>
       </div>
 
-      <div style="width: 50%">Ziel({{state.currentLang}}):
-        <sl-textarea :value="state.result || '-'" @sl-change="updateValue">
+      <div class="translate-icon-wrap">
+        <sl-icon name="arrow-left-right"></sl-icon>
+      </div>
+
+      <div class="translate-flex">
+        <sl-textarea
+              :value="state.result || '-'"
+              :label="`Zielsprache (` + state.currentLang + `):`"
+              @sl-change="updateValue">
         </sl-textarea>
-        <sl-button @click="translate" size="small" variant="info">Übersetzen</sl-button>
       </div>
     </div>
-    <span style="font-size: var(--sl-font-size-small);font-style: italic;text-align: center">
-      Bei der Übersetzung kommt künstliche Intelligenz zum Einsatz. Die Ergebnisse können daher fehlerhaft sein. Bitte prüfen Sie daher stets das Ergebnis.
-    </span>
+
+    <div class="translate-footer">
+
+      <span class="translate-small-print">
+        * Bei der Übersetzung kommt künstliche Intelligenz zum Einsatz. Die Ergebnisse können daher fehlerhaft sein. Bitte prüfen Sie daher stets das Ergebnis.
+      </span>
+      <div></div>
+      <sl-button @click="translate" size="small" variant="info">
+        Übersetzen
+      </sl-button>
+
+    </div>
   </div>
 
   <div
     slot="footer"
-    class="footer"
+    class="translate-dialog-footer"
   >
     <sl-button
       variant="danger"
       size="small"
       outline
       @click="CloseAction"
-      >{{ $t("relation.abort") }}</sl-button
-    >
+      >{{ $t("relation.abort") }}
+    </sl-button>
+
+    <div class="translate-dialog-footer-spacer"></div>
+
     <sl-button variant="success" outline @click="nextlang" size="small":disabled="!state.nextlang">
       Übernehmen und nächste leere Sprache
     </sl-button>
@@ -124,57 +145,55 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.relation-popup {
-  &::part(base) {
-    position: absolute;
-    height: 100%;
-  }
 
-  &::part(panel) {
-
-    margin-bottom: 40px;
-  }
-
-  &::part(body) {
-    display: contents;
-    padding:20px;
-  }
-
-  &::part(footer) {
-    padding: var(--sl-spacing-small);
-  }
-
-  &::part(overlay) {
-    position: absolute;
-  }
-
-  &:deep(.bar sl-button[variant="success"]) {
-    &::part(base) {
-      background-color: transparent;
-      border: 1px solid var(--sl-color-success-500);
-      aspect-ratio: 1;
-      padding: 0;
-    }
-
-    &::part(label) {
-      display: none;
-    }
-
-    &::part(prefix) {
-      color: var(--sl-color-success-500);
-    }
-  }
-}
-
-.footer {
-  display: flex;
-  justify-content: space-between;
-}
-
-.body-wrapper{
-  padding:20px 20px 0 20px;
+.translate-wrapper{
+  padding: var(--sl-spacing-large);
   display:flex;
   flex-direction: column;
-  gap:20px;
+  gap: var(--sl-spacing-small);
+}
+
+.translate-grid{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3em minmax(0, 1fr);
+}
+
+.translate-flex{
+  display: flex;
+  flex-direction: column;
+  gap: var(--sl-spacing-x-small);
+}
+
+.translate-icon-wrap{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.translate-footer{
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3em minmax(0, 1fr);
+}
+
+.translate-small-print{
+  font-size: .7em;
+}
+
+sl-textarea{
+  &::part(form-control-label){
+    margin-bottom: var(--sl-spacing-x-small);
+    font-weight: 600;
+  }
+}
+
+.translate-dialog-footer{
+  display: flex;
+  flex-direction: row;
+  gap: var(--sl-spacing-small)
+}
+
+.translate-dialog-footer-spacer{
+  flex: 1;
 }
 </style>

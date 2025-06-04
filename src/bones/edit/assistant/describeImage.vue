@@ -1,50 +1,47 @@
 <template>
-  <div class="body-wrapper">
-    <div style="display:flex;width:100%;justify-content: space-between;gap:1rem;">
-      <div style="width: 50%;">Bild:
-        <div style="width: 10rem;">
-          <vi-image :src="state.url" style="height: 50px"> </vi-image>
-        </div>
+  <div class="image-description-wrapper">
+    <div class="image-description-grid">
+      <div>
+        <vi-image :src="state.url" style="height: 50px"> </vi-image>
       </div>
 
-      <div style="width: 50%; display:flex;flex-direction: column;gap:1rem;">
-          <sl-tab-group
-            v-if="state.value"
-            class="lang-tab"
-            placement="bottom"
+      <div class="image-description-flex">
+        <sl-tab-group
+          v-if="state.value"
+          class="lang-tab"
+          placement="bottom"
+        >
+          <template
+            v-for="val,lang in state.value"
+            :key="lang + '_tab'"
           >
-            <template
-              v-for="val,lang in state.value"
-              :key="lang + '_tab'"
+            <sl-tab
+              slot="nav"
+              :panel="'lang_' + lang"
+              @click="state.currentLang = lang"
             >
-              <sl-tab
-                slot="nav"
-                :panel="'lang_' + lang"
-                @click="state.currentLang = lang"
-                :disabled="state.loading"
-              >
-                {{ $t(lang) }}
-              </sl-tab>
+              {{ $t(lang) }}
+            </sl-tab>
 
-              <sl-tab-panel :name="'lang_' + lang">
-                Beschreibung ({{lang}}):
-                <sl-textarea :value="state.value[lang]" @sl-change="updateValue($event,lang)">
-                </sl-textarea>
+            <sl-tab-panel :name="'lang_' + lang">
+              <sl-textarea
+                  :value="state.value[lang]"
+                  :label="`Beschreibung (` + lang + `):`"
+                  @sl-change="updateValue($event,lang)">
+              </sl-textarea>
 
 
-              </sl-tab-panel>
-            </template>
-          </sl-tab-group>
-        <div>
+            </sl-tab-panel>
+          </template>
+        </sl-tab-group>
 
-        </div>
         <sl-input placeholder="weitere Anweisungen" v-model="state.prompt"></sl-input>
+        <span class="image-description-small-print">
+          * Bei der Beschreibung kommt künstliche Intelligenz zum Einsatz. Die Ergebnisse können daher fehlerhaft sein. Bitte prüfen Sie daher stets das Ergebnis.
+        </span>
         <sl-button @click="describe" size="small" variant="info" :loading="state.loading">Beschreibung erstellen</sl-button>
       </div>
     </div>
-    <span style="font-size: var(--sl-font-size-small);font-style: italic;text-align: center">
-      Bei der Beschreibung kommt künstliche Intelligenz zum Einsatz. Die Ergebnisse können daher fehlerhaft sein. Bitte prüfen Sie daher stets das Ergebnis.
-    </span>
   </div>
 
   <div
@@ -140,58 +137,41 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.relation-popup {
-  &::part(base) {
-    position: absolute;
-    height: 100%;
-  }
 
-  &::part(panel) {
-
-    margin-bottom: 40px;
-  }
-
-  &::part(body) {
-    display: contents;
-    padding:20px;
-  }
-
-  &::part(footer) {
-    padding: var(--sl-spacing-small);
-  }
-
-  &::part(overlay) {
-    position: absolute;
-  }
-
-  &:deep(.bar sl-button[variant="success"]) {
-    &::part(base) {
-      background-color: transparent;
-      border: 1px solid var(--sl-color-success-500);
-      aspect-ratio: 1;
-      padding: 0;
-    }
-
-    &::part(label) {
-      display: none;
-    }
-
-    &::part(prefix) {
-      color: var(--sl-color-success-500);
-    }
-  }
+.image-description-wrapper{
+  padding: var(--sl-spacing-large);
+  display:flex;
+  flex-direction: column;
+  gap: var(--sl-spacing-small);
 }
+
+.image-description-grid{
+  display: grid;
+  grid-template-columns: 15em minmax(0, 1fr);
+  gap: var(--sl-spacing-large)
+}
+
 
 .footer {
   display: flex;
   justify-content: space-between;
 }
 
-.body-wrapper{
-  padding:20px 20px 0 20px;
-  display:flex;
+.image-description-small-print{
+  font-size: .7em;
+}
+
+.image-description-flex{
+  display: flex;
   flex-direction: column;
-  gap:20px;
+  gap: var(--sl-spacing-small)
+}
+
+sl-textarea{
+  &::part(form-control-label){
+    margin-bottom: var(--sl-spacing-x-small);
+    font-weight: 600;
+  }
 }
 
 

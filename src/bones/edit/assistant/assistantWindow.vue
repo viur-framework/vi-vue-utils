@@ -8,7 +8,6 @@
       open
       :label="action['name'] +' - '+ name"
       class="relation-popup"
-      style="--width: 85%"
       @sl-after-hide="CloseActionEvent"
     >
 
@@ -64,20 +63,22 @@ const props = defineProps({
 
 <style scoped>
 .relation-popup {
+  --width: 85%;
+
+  &::part(body) {
+    display: contents;
+  }
+
   &::part(base) {
     position: absolute;
     height: 100%;
   }
 
   &::part(panel) {
-
     margin-bottom: 40px;
+    max-width: 1400px;
   }
 
-  &::part(body) {
-    display: contents;
-    padding:20px;
-  }
 
   &::part(footer) {
     padding: var(--sl-spacing-small);

@@ -2,7 +2,12 @@
   <template v-if="bone?.params?.actions">
     <template v-if="bone.params.actions.length===1 || true">
       <template v-for="action in state.actions" :key="action['arg']+'_'+name+'_'+lang">
-        <sl-button :disabled="disabled(action)"size="medium" variant="info" outline @click="openPopup(action)">
+        <sl-button :disabled="disabled(action)"
+                size="medium"
+                variant="info"
+                outline
+                :title="action['title']"
+                @click="openPopup(action)">
           <sl-icon :name="action['icon']" slot="prefix"></sl-icon>
         </sl-button>
 
@@ -35,14 +40,16 @@
             "arg":"translate",
             "name":"Übersetzen",
             "icon":"translate",
-            "library":"default"
+            "library":"default",
+            "title":"Übersetzen"
     },
     "describe_image":{
             "type":"assistant",
             "arg":"describe_image",
             "name":"Bildbeschreibung erstellen",
             "icon":"file-richtext",
-            "library":"default"
+            "library":"default",
+            "title":"Bild beschreiben"
         }
   }
 
