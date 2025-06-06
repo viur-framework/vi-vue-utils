@@ -22,9 +22,9 @@
   },
   "homepage": "https://github.com/viur-framework/viur-vue-utils#readme",
   "dependencies": {
-    "@ckeditor/ckeditor5-vue": "^5.1.0",
-    "@viur/ckeditor5-build-classic": "^1.0.3-v38.0.1",
+    "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@vueuse/core": "^12.4.0",
+    "ckeditor5": "^45.2.0",
     "destr": "^2.0.3",
     "json-editor-vue": "^0.18.1",
     "libphonenumber-js": "^1.11.17",
