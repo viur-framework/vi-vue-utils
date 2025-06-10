@@ -49,25 +49,26 @@
       <!--Language chooser -->
       <div class="wrapper-bone-row" v-if="state.multilanguage">
       <sl-tab-group
-
         class="lang-tab"
         placement="bottom"
       >
 
         <template
           v-for="lang in state.languages"
-          :key="lang + '_tab'"
+          :key="name+'_'+lang + '_tab'"
         >
 
           <sl-tab
             slot="nav"
             :panel="'lang_' + lang"
-            :active="defaultLanguage===lang"
+            :active="state.currentLanguage===lang"
+            :data-lang="lang"
+            @click="updateLanguage"
           >
             {{ $t(lang) }}
           </sl-tab>
 
-          <sl-tab-panel :name="'lang_' + lang" :active="defaultLanguage===lang">
+          <sl-tab-panel :name="'lang_' + lang" :active="state.currentLanguage===lang">
             <!--Bone rendering for multiple bones-->
             <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
               <!--multilang and multiple-->
@@ -86,6 +87,7 @@
                     <wrapper-multiple
                       :readonly="!state.readonly"
                       :index="index"
+                      :lang="lang"
                       :name="name"
                       @delete="removeMultipleEntry(index, lang)"
                     >
@@ -145,7 +147,7 @@
         </template>
 
       </sl-tab-group>
-      <bone-actions v-if="state.boneactions"
+      <bone-actions v-if="state.boneactions & !state.multiple"
                 :value="state.bonevalue"
                 :name="name"
                 :index="null"
@@ -439,7 +441,8 @@ import BoneActions from "./boneActions.vue";
         }
         return false
       }),
-      defaultLanguage:computed(()=>props.defaultLanguage)
+      defaultLanguage:computed(()=>props.defaultLanguage),
+      currentLanguage:null
     })
     provide("boneState", state)
 
@@ -526,6 +529,10 @@ import BoneActions from "./boneActions.vue";
       }
     }
 
+    function updateLanguage(e){
+      state.currentLanguage = e.target.dataset.lang
+    }
+
     provide("removeMultipleEntries", removeMultipleEntries)
 
     function formatString(formatstr, boneValue) {
@@ -539,6 +546,7 @@ import BoneActions from "./boneActions.vue";
       } else {
         state.bonevalue = props.skel?.[props.name]
       }
+      state.currentLanguage = state.defaultLanguage
     })
 
     watch(

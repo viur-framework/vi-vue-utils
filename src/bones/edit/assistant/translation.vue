@@ -87,12 +87,14 @@ const props = defineProps({
       value_de:null,
       loading:false,
       nextlang: computed(()=>{
-        for (const [l,v] of Object.entries(props.params.boneState.bonevalue)){
-          if (!v && state.currentLang!==l) {
+        let val = getValue()
+        if (!val)  return "de"
+        for (const [l,v] of Object.entries(val)){
+          if ((!v|| (Array.isArray(v)&& (v.length===0|| !v?.[props.params.index]))) && state.currentLang!==l) {
             return l
           }
         }
-        return Object.keys(props.params.boneState.bonevalue).filter(x=>x!=='de')?.[0]
+        return Object.keys(val).filter(x=>x!=='de')?.[0]
       })
     })
     function translate(){
@@ -109,13 +111,27 @@ const props = defineProps({
       })
     }
 
+    function getValue(lang=null){
+      let val = props.params.boneState.bonevalue
+      if (props.params.index!==null){
+        if (lang){
+          val = val?.[lang]
+           val = val?.[props.params.index]
+        }
+
+      }else if(lang){
+        val = val?.[lang]
+      }
+      return val
+    }
+
     onMounted(()=>{
-      state.value_de = props.params.boneState.bonevalue?.['de']
+      state.value_de = getValue('de')
       state.currentLang = state.nextlang
-      state.result = props.params.boneState.bonevalue?.[state.currentLang]
+      state.result = getValue(state.currentLang)
     })
 
-    watch(()=>props.params.boneState.bonevalue?.['de'],(newVal,oldVal)=>{
+    watch(()=>getValue('de'),(newVal,oldVal)=>{
       state.value_de = newVal
     })
 
@@ -130,7 +146,7 @@ const props = defineProps({
     function nextlang(){
       emit("next", state.result, state.currentLang)
       state.currentLang = state.nextlang
-      state.result = props.params.boneState.bonevalue?.[state.currentLang]
+      state.result = getValue(state.currentLang)
     }
 
 

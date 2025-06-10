@@ -19,6 +19,7 @@
               slot="nav"
               :panel="'lang_' + lang"
               @click="state.currentLang = lang"
+              :disabled="state.loading"
             >
               {{ $t(lang) }}
             </sl-tab>

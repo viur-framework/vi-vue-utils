@@ -20,8 +20,9 @@
       </div>
       <bone-actions
           v-if="boneState.boneactions"
-          :value="boneState.bonevalue[index]"
+          :value="state.value"
           :name="name"
+          :lang="lang"
           :index="index"
           :bone="boneState.bonestructure"
           @change="updateValue"
@@ -46,20 +47,30 @@
 
 <script setup>
 
-import { reactive, inject } from "vue"
+import { reactive, inject,computed } from "vue"
 import BoneActions from "./boneActions.vue";
 
   const props = defineProps( {
     index:Number,
-    name:String
+    name:String,
+    lang:{
+      default:null
+    }
   })
+
+  const state = reactive({
+    value:computed(()=>{
+      if (props.lang){
+        return boneState.bonevalue[props.lang][props.index]
+      }
+      return boneState.bonevalue[props.index]
+    })
+  })
+
   const emit = defineEmits(["change", "delete"])
 
     const boneState = inject("boneState")
     const updateValue = inject("updateValue")
-    const state = reactive({
-
-    })
 
 </script>
 
