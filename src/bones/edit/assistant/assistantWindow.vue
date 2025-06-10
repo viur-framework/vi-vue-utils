@@ -52,7 +52,6 @@ const props = defineProps({
       emit("next",val,lang,props.action)
     }
     function CloseAction(val,lang=null) {
-      console.log(val)
       emit("close",val,lang,props.action)
     }
     function CloseActionEvent(){

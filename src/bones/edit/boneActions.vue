@@ -100,7 +100,6 @@
   }
 
   function closeAssistant(val,lang,action){
-    console.log(val)
     action['_opened']=false
     if(val){
       emit("change", props.name, val, lang, props.index)
