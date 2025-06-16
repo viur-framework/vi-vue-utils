@@ -83,7 +83,7 @@
       if (!props?.bone?.params?.actions) return data
       for(const entry of props.bone.params.actions){
         if (Object.keys(defaultActions).includes(entry)){
-          data.push(defaultActions[entry])
+          data.push({...defaultActions[entry]})
         }else{
           data.push(entry)
         }
