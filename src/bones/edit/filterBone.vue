@@ -46,170 +46,13 @@
         [`wrapper-bone-widget-${name}`]
       )"
     >
-      <!--Language chooser -->
-      <div class="wrapper-bone-row" v-if="state.multilanguage">
-      <sl-tab-group
-        class="lang-tab"
-        placement="bottom"
-      >
+      <div class="wrapper-bone-row">
 
-        <template
-          v-for="lang in state.languages"
-          :key="name+'_'+lang + '_tab'"
-        >
 
-          <sl-tab
-            slot="nav"
-            :panel="'lang_' + lang"
-            :active="state.currentLanguage===lang"
-            :data-lang="lang"
-            @click="updateLanguage"
-          >
-            {{ $t(lang) }}
-          </sl-tab>
-
-          <sl-tab-panel :name="'lang_' + lang" :active="state.currentLanguage===lang">
-            <!--Bone rendering for multiple bones-->
-            <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
-              <!--multilang and multiple-->
-              <template v-if="state.bonevalue?.[lang]?.length">
-                <vue-draggable
-                  v-model="state.bonevalue[lang]"
-                  :animation="150"
-                  handle=".drag-button"
-                  @end="updateValue(name,state.bonevalue[lang],lang)"
-                >
-                  <div
-                    v-for="(val, index) in state.bonevalue?.[lang]"
-                    :key="index+'_'+state.bonevalue[lang].length"
-                    class="multiple-bone"
-                  >
-                    <wrapper-multiple
-                      :readonly="!state.readonly"
-                      :index="index"
-                      :lang="lang"
-                      :name="name"
-                      @delete="removeMultipleEntry(index, lang)"
-                    >
-                      <component
-                        :is="is"
-                        :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue'][lang]?.[index]:val"
-                        :index="index"
-                        :lang="lang"
-                        :name="name"
-                        :bone="state.bonestructure"
-                        @change="updateValue"
-                      ></component>
-                    </wrapper-multiple>
-                  </div>
-                </vue-draggable>
-              </template>
-              <div
-                v-else
-                class="multiple-placeholder"
-                :class="{ readonly: state.readonly }"
-              >
-                <sl-input
-                  readonly
-                  size="medium"
-                  :placeholder="$t('bone.no_entries')"
-                ></sl-input>
-              </div>
-
-              <!--Bone Buttonbar -->
-              <component
-                :is="state.actionbar"
-                v-if="!state.readonly"
-                :value="state.bonevalue?.[lang]"
-                :name="name"
-                :lang="lang"
-                @change="updateValue"
-              ></component>
-            </template>
-            <!--Bone rendering for normal bones-->
-            <div v-else class="wrapper-bone-row">
-              <div class="wrapper-bone-block">
-                <component
-                  :is="is"
-                  :value="state.bonevalue?.[lang]"
-                  :index="null"
-                  :lang="lang"
-                  :name="name"
-                  :bone="state.bonestructure"
-                  @change="updateValue"
-                ></component>
-              </div>
-
-            </div>
-
-          </sl-tab-panel>
-
-        </template>
-
-      </sl-tab-group>
-      <bone-actions v-if="state.boneactions & !state.multiple"
-                :value="state.bonevalue"
-                :name="name"
-                :index="null"
-                :bone="state.bonestructure"
-                @change="updateValue"
-            ></bone-actions>
-            </div>
-      <template v-else>
-        <!--Bone rendering for multiple bones-->
-        <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
-          <template v-if="state.bonevalue?.length">
-          <vue-draggable
-                  v-model="state.bonevalue"
-                  :animation="150"
-                  handle=".drag-button"
-                  @end="updateValue(name,state.bonevalue)"
-          >
-            <div
-              v-for="(val, index) in state.bonevalue"
-
-              :key="index+'_'+state.bonevalue.length"
-              class="multiple-bone"
-            >
-              <wrapper-multiple
-                :readonly="!state.readonly"
-                :index="index"
-                :name="name"
-                @delete="removeMultipleEntry(index)"
-              >
-                <component
-                  :is="is"
-                  :value="!val && state.bonestructure?.['defaultvalue']?state.bonestructure['defaultvalue']?.[index]:val"
-                  :index="index"
-                  :name="name"
-                  :bone="state.bonestructure"
-                  @change="updateValue"
-                ></component>
-              </wrapper-multiple>
-            </div>
-            </vue-draggable>
-          </template>
-          <div
-            v-else
-            class="multiple-placeholder"
-          >
-            <sl-input
-              readonly
-              size="medium"
-              :placeholder="$t('bone.no_entries')"
-            ></sl-input>
-          </div>
-          <!--Bone Buttonbar -->
-          <component
-            :is="state.actionbar"
-            v-if="!state.readonly"
-            :value="state.bonevalue"
-            :name="name"
-            @change="updateValue"
-          ></component>
-        </template>
-        <!--Bone rendering for normal bones-->
-        <div v-else class="wrapper-bone-row">
+        <sl-select style="width:100px" hoist :value="state.currentLanguage" @sl-change="updateLanguage" v-if="state.multilanguage">
+          <sl-option v-for="lang in state.languages" :value="lang">{{ $t(lang) }}</sl-option>
+        </sl-select>
+        <div class="wrapper-bone-row">
           <div class="wrapper-bone-block">
             <component
               :is="is"
@@ -231,7 +74,7 @@
 
           ></bone-actions>
         </div>
-      </template>
+      </div>
       <template v-if="errorStyle==='default'">
         <sl-alert
           v-for="message in state.errorMessages"
@@ -330,7 +173,9 @@ import BoneActions from "./boneActions.vue";
     const state = reactive({
       boneactions:computed(()=>props.boneactions),
       bonestructure: computed(() => {
-        return props.structure?.[props.name]
+        let struct = props.structure?.[props.name]
+        struct["multiple"] = false
+        return struct
       }),
       bonevalue: null,
       multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
@@ -476,7 +321,7 @@ import BoneActions from "./boneActions.vue";
       let changeInternalObj = {
         name: name,
         value: val,
-        lang: lang,
+        lang: state.multilanguage?state.currentLanguage:null,
         index: index,
         valid: valid
       }
@@ -484,6 +329,19 @@ import BoneActions from "./boneActions.vue";
       emit("change-internal", changeInternalObj)
     }
     provide("updateValue", updateValue)
+
+    function updateLanguage(e){
+      state.currentLanguage = e.target.value
+       let changeInternalObj = {
+        name: props.name,
+        value: state.bonevalue,
+        lang: state.currentLanguage,
+        index: null,
+        valid: true
+      }
+
+      emit("change-internal", changeInternalObj)
+    }
 
     function addMultipleEntry(lang = null, data = "") {
       if (lang) {
@@ -527,10 +385,6 @@ import BoneActions from "./boneActions.vue";
       }else{
         updateValue(props.name, state.bonevalue)
       }
-    }
-
-    function updateLanguage(e){
-      state.currentLanguage = e.target.dataset.lang
     }
 
     provide("removeMultipleEntries", removeMultipleEntries)
@@ -580,7 +434,8 @@ import BoneActions from "./boneActions.vue";
       grid-gap: 0;
 
       & > :deep(.bone-name) {
-        width: 100%;
+        border-bottom-left-radius: 0;
+        border-top-right-radius: var(--sl-border-radius-medium);
         min-width: 235px;
       }
 
@@ -616,12 +471,8 @@ import BoneActions from "./boneActions.vue";
     }
   }
 
-  sl-tab-panel{
-    width: 100%;
-
-    &::part(base) {
-      padding: 0;
-    }
+  sl-tab-panel::part(base) {
+    padding: 0;
   }
 
   .lang-tab {
@@ -631,12 +482,12 @@ import BoneActions from "./boneActions.vue";
     --track-color: var(--vi-border-color);
 
     &::part(body) {
-      display: flex;
+      padding-bottom: var(--sl-spacing-x-small);
       overflow-x: hidden;
     }
 
-    &::part(nav) {
-      margin-left: var(--sl-border-radius-medium);
+    &::part(tabs) {
+      border-top: 1px solid var(--vi-border-color);
     }
 
     & sl-tab {
@@ -687,25 +538,6 @@ import BoneActions from "./boneActions.vue";
         }
       }
     }
-
-    .wrapper-bone-color &,
-    .wrapper-bone-numeric:has(.info) &,
-    .wrapper-bone-password & {
-      &::part(body) {
-        padding-bottom: var(--sl-spacing-x-small);
-        border-bottom: 1px solid var(--vi-border-color);
-      }
-    }
-
-    &:has(.multiple-bone),
-    &:has(.multiple-placeholder),
-    .wrapper-bone-spatial & {
-      &::part(body) {
-        padding-bottom: var(--sl-spacing-medium);
-        border-bottom: 1px solid var(--vi-border-color);
-      }
-    }
-
   }
 
   .multiple-placeholder {
@@ -715,6 +547,8 @@ import BoneActions from "./boneActions.vue";
 
     & sl-input {
       &::part(base) {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
         opacity: 0.7;
       }
     }
@@ -729,20 +563,16 @@ import BoneActions from "./boneActions.vue";
     }
   }
 
-  .bone-inner-wrap :deep(.multiple-bone) {
+  .multiple-bone {
     margin-bottom: var(--sl-spacing-x-small);
 
-    &:deep(sl-details) {
-      &::part(header){
-        display: none;
-      }
+    & .bone-wrapper {
+      margin-bottom: var(--sl-spacing-x-small);
+    }
 
-      &::part(base){
-        border-bottom: none !important;
-      }
+    &:first-child {
+      & :deep(.value-line) {
 
-      &::part(content){
-        padding-top: 0;
       }
     }
   }
@@ -871,45 +701,5 @@ sl-checkbox[data-user-invalid]::part(control) {
     border-color: var(--sl-color-danger-500);
   }
 
-.record, .wrapper-bone-record{
-  .viform-category{
 
-    &::part(header){
-      display: none;
-    }
-
-    &::part(base){
-      border-bottom: none;
-    }
-
-    &::part(content){
-      padding: 0 0 0 var(--sl-spacing-large);
-    }
-  }
-}
-
-.wrapper-bone-record{
-  .lang-tab{
-    &::part(body){
-      padding-bottom: var(--sl-spacing-medium);
-      border-bottom: 1px solid var(--vi-border-color);
-    }
-  }
-
-  & > .label-bone{
-    margin-bottom: var(--sl-spacing-medium);
-  }
-}
-
-.wrapper-bone-relational{
-  & > .label-bone{
-    margin-bottom: var(--sl-spacing-medium);
-  }
-}
-
-.record:has(.form){
-  .single-entry{
-    margin-bottom: var(--sl-spacing-medium);
-  }
-}
 </style>

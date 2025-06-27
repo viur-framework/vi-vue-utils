@@ -32,8 +32,19 @@
 
 <script setup>
 import { reactive, onMounted, inject, computed, watch, onBeforeMount } from "vue"
-import ClassicEditor from "@viur/ckeditor5-build-classic"
-  defineOptions({
+import { Ckeditor } from '@ckeditor/ckeditor5-vue'
+import { ClassicEditor, Essentials, Paragraph, Bold, Italic, SourceEditing,
+  BlockQuote,Heading,Image,ImageStyle,ImageToolbar,ImageUpload,ImageResizeButtons, FileRepository, ImageBlock,ImageInline,
+    Indent,IndentBlock,Link,List,Table,TableToolbar,TextTransformation,Underline,Alignment,RemoveFormat,GeneralHtmlSupport
+
+
+
+} from 'ckeditor5'
+import coreTranslations from 'ckeditor5/translations/de.js'
+import 'ckeditor5/ckeditor5.css';
+import {ViURUploadAdapterPlugin} from "./texteditor/uploadAdapter";
+
+defineOptions({
     inheritAttrs: false
   })
   const props = defineProps( {
@@ -95,18 +106,112 @@ import ClassicEditor from "@viur/ckeditor5-build-classic"
         return false
       })
 
-      state.editorConfig = {toolbar:defaultSet, link: {
-          decorators: [
+      state.editorConfig = {
+          licenseKey: "GPL",
+          translations:[
+              coreTranslations
+          ],
+          toolbar: defaultSet,
+          plugins: [ Essentials,Heading, Paragraph, Bold,List,ImageUpload, Italic, Underline,ImageBlock,ImageInline,
+            Alignment,Link,BlockQuote,Indent,Table,RemoveFormat,ImageStyle,ImageToolbar,ImageResizeButtons,
+            IndentBlock,TableToolbar,TextTransformation,GeneralHtmlSupport, Image,SourceEditing,FileRepository,ViURUploadAdapterPlugin
+          ],
+          link: {
+            decorators: [
+                  {
+                      mode: 'manual',
+                      label: 'Link in neuem Fester öffnen',
+                      attributes: {
+                          target: '_blank',
+                        rel:"noopener noreferrer"
+                      }
+                  }
+              ]
+          },
+        image: {
+          toolbar: [
+            'imageStyle:inline',
+            'imageStyle:block',
+            'imageStyle:side',
+            '|',
+            'resizeImage:50',
+                  'resizeImage:75',
+                  'resizeImage:original',
+            'imageTextAlternative'
+          ],
+          resizeOptions: [
                 {
-                    mode: 'manual',
-                    label: 'Link in neuem Fester öffnen',
-                    attributes: {
-                        target: '_blank',
-                      rel:"noopener noreferrer"
-                    }
+                    name: 'resizeImage:original',
+                    value: null,
+                    icon: 'original'
+                },
+                {
+                    name: 'resizeImage:50',
+                    value: '50',
+                    icon: 'medium'
+                },
+                {
+                    name: 'resizeImage:75',
+                    value: '75',
+                    icon: 'large'
                 }
-            ]
-      }}
+            ],
+        },
+        table: {
+          contentToolbar: [
+            'tableColumn',
+            'tableRow',
+            'mergeTableCells'
+          ]
+        },
+        heading: {
+                options: [
+            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+            { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+            { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+            { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
+            { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
+            { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
+          ]
+            },
+        alignment: {
+          options: [
+            { name: 'left', className: 'viur-txt-align--left' },
+            { name: 'right', className: 'viur-txt-align--right' },
+            { name: 'center', className: 'viur-txt-align--center' },
+            { name: 'justify', className: 'viur-txt-align--justify' },
+          ]
+        },
+        indentBlock: {
+                classes: [
+                    'viur-txt-indent--1',
+                    'viur-txt-indent--2',
+                    'viur-txt-indent--3',
+                    'viur-txt-indent--4',
+                    'viur-txt-indent--5',
+                    'viur-txt-indent--6',
+                    'viur-txt-indent--7',
+                    'viur-txt-indent--8',
+                    'viur-txt-indent--9',
+                    'viur-txt-indent--10',
+                ]
+            },
+
+        htmlSupport: {
+          allow: [
+            {
+              name: 'a',
+              attributes: {
+                target: true,
+                rel: true
+              }
+            }
+          ]
+        },
+        language: 'de',
+        viur_api_url: 'http://localhost:8080'
+      }
     })
 
     onMounted(() => {
@@ -165,6 +270,50 @@ import ClassicEditor from "@viur/ckeditor5-build-classic"
 </style>
 
 <style>
+.viur-txt-align--left{
+	text-align: left;
+}
+.viur-txt-align--right{
+	text-align: right;
+}
+.viur-txt-align--center{
+	text-align: center;
+}
+.viur-txt-align--justify{
+	text-align: justify;
+}
+.viur-txt-indent--1{
+	margin-left: 1em;
+}
+.viur-txt-indent--2{
+	margin-left: 2em;
+}
+.viur-txt-indent--3{
+	margin-left: 3em;
+}
+.viur-txt-indent--4{
+	margin-left: 4em;
+}
+.viur-txt-indent--5{
+	margin-left: 5em;
+}
+.viur-txt-indent--6{
+	margin-left: 6em;
+}
+.viur-txt-indent--7{
+	margin-left: 7em;
+}
+.viur-txt-indent--8{
+	margin-left: 8em;
+}
+.viur-txt-indent--9{
+	margin-left: 9em;
+}
+.viur-txt-indent--10{
+	margin-left: 10em;
+}
+
+
 .bone-inner-wrap {
   .ck-editor {
     /* Overrides the border radius setting in the theme. */

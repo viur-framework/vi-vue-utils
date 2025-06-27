@@ -49,5 +49,6 @@ export default {
   fr: "FR",
   nl: "NL",
   ch: "CH",
-  es: "ES"
+  es: "ES",
+  "de-x-simple":"Einfache Sprache"
 }

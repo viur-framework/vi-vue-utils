@@ -1,7 +1,7 @@
 <template>
   <template v-for="(category,identifier) in formState.categories">
-
-    <vi-form-category :name="category['name']"
+    <vi-form-category v-if="hasCategoryBones(category)"
+                      :name="category['name']"
                       :identifier="identifier"
                       :visible="!!category['visible']"
                       :open="category['open']"
@@ -28,6 +28,13 @@ import {getBoneWidget} from "../../bones/edit";
 import ViFormCategory from "../ViFormCategory.vue";
 const formState = inject("formState")
 const formUpdate = inject("formUpdate")
+
+const hasCategoryBones = (category) => {
+  return category['bones'].some(bone =>
+    formState.structure[bone['name']] &&
+    formState.structure[bone['name']]['visible']
+  );
+}
 </script>
 
 <style scoped>
