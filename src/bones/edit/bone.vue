@@ -19,7 +19,7 @@
         *</span>
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
-        :content="state.bonestructure.params['tooltip']"
+        :content="$t(state.bonestructure.params['tooltip'])"
         placement="top-center"
       >
         <div class="tooltip">
