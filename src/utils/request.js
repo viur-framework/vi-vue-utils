@@ -426,12 +426,12 @@ export default class Request {
     })
   }
 
-  static downloadUrlFor(bone, thumbnail = false) {
+  static downloadUrlFor(bone, thumbnail = false, renderer=import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     if (bone && "dest" in bone) {
       if (thumbnail && "thumbnail" in bone["dest"]) {
-        return Request.buildUrl(bone["dest"]["thumbnail"])
+        return Request.buildUrl("/"+renderer+bone["dest"]["thumbnail"])
       } else if ("downloadUrl" in bone["dest"]) {
-        return Request.buildUrl(bone["dest"]["downloadUrl"])
+        return Request.buildUrl("/"+renderer+bone["dest"]["downloadUrl"])
       }
       return Request.buildUrl(null)
     }
