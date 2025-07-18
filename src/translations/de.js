@@ -40,7 +40,8 @@ export default {
     "No value selected":"Kein Wert ausgewählt",
     "Invalid value selected":"Auswahl ist ungültig",
     "Wrong OTP Token":"Falscher OTP Code",
-    "Maximum length exceeded":"Eingabe zu lang"
+    "Maximum length exceeded":"Eingabe zu lang",
+    "Invalid email entered":"Ungültige E-Mail Adresse"
 
   },
   preview: "Vorschau",
@@ -50,5 +51,14 @@ export default {
   nl: "NL",
   ch: "CH",
   es: "ES",
-  "de-x-simple":"Einfache Sprache"
+  "de-x-simple":"Einfache Sprache",
+  login: {
+    login: "Anmelden",
+    logout: "Abmelden",
+    lost_password:"Passwort vergessen?",
+    with_google: "Mit Google anmelden",
+    or: "oder",
+    login_error: "Benutzername oder Passwort falsch.",
+    back:"zurück"
+  },
 }

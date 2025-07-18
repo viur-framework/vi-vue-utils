@@ -62,7 +62,7 @@
 <script setup>
 import { reactive, defineComponent, computed, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
-import { useUserStore } from "../stores/user"
+import { useUserStore } from "../../stores/user"
 
   const props = defineProps({
     username: { type: String, required: true }
