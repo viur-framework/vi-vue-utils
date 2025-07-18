@@ -532,4 +532,9 @@ sl-textarea {
     border-bottom-left-radius: 0;
   }
 }
+
+.ck-list-bogus-paragraph {
+	display: inline!important;
+}
+
 </style>
