@@ -166,7 +166,7 @@ export function useFormUtils(props, state){
     })
   }
 
-  function fetchData(alternativUrl= null, additionalData=null, headers=null){
+  function fetchData(alternativUrl= null, additionalData=null, headers=null, ignoreErrors = true){
     //fetch data
     state.loading = true
     let request = Request.post
@@ -183,8 +183,11 @@ export function useFormUtils(props, state){
     return request(url, {dataObj: data, headers: headers}).then(async (resp)=>{
       let data = await resp.clone().json()
       initForm(data["values"], data["structure"], state.values)
+      if(ignoreErrors)
+      {
+        state.errors = data["errors"]
+      }
 
-      state.errors = data["errors"]
       state.actionparams = data['params']
       state.actionname = data['action']
       state.loading = false
