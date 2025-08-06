@@ -183,7 +183,7 @@ export function useFormUtils(props, state){
     return request(url, {dataObj: data, headers: headers}).then(async (resp)=>{
       let data = await resp.clone().json()
       initForm(data["values"], data["structure"], state.values)
-      if(ignoreErrors)
+      if(!ignoreErrors)
       {
         state.errors = data["errors"]
       }
