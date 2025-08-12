@@ -246,13 +246,13 @@
           >
           </sl-icon>
           <div class="error-msg">
-            {{ $t(`errors.${message}`) }}
+            {{errorMessage(message)}}
           </div>
         </sl-alert>
       </template>
       <template v-else>
       <div v-for="message in state.errorMessages" style="font-size:0.8em;color:red;">
-        {{ $t(`errors.${message}`) }}
+        {{errorMessage(message)}}
       </div>
       </template>
 
@@ -280,8 +280,11 @@ import rawBone from "./default/rawBone.vue"
 import Utils from "../utils"
 import { VueDraggable } from 'vue-draggable-plus'
 import BoneActions from "./boneActions.vue";
+import {useI18n} from "vue-i18n"
 
-  const emit = defineEmits(["change", "change-internal", "handleClick"])
+const {t} = useI18n()
+
+const emit = defineEmits(["change", "change-internal", "handleClick"])
 
   const props = defineProps({
     is: {
@@ -539,6 +542,15 @@ import BoneActions from "./boneActions.vue";
       return Utils.formatString(formatstr,boneValue)
     }
     provide("formatString", formatString)
+
+    function errorMessage(error){
+      const key = `errors.${error}`
+      let temp = t(key)
+      if (temp === key){
+        temp = t(error)
+      }
+      return temp
+    }
 
     onBeforeMount(() => {
       if (props.value) {
