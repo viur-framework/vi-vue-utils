@@ -15,7 +15,7 @@
         :source="getList"
         hoist
         @sl-item-select="changeEvent"
-        :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+        :placeholder="state.placeholder"
         :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
       ></sl-combobox>
 
@@ -79,7 +79,15 @@ import Wrapper_nested from "../wrapper_nested.vue"
       }),
       skellistdata: null,
       selection: null,
-      relationalData:null
+      relationalData:null,
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
+      })
     })
 
     function getList(search) {

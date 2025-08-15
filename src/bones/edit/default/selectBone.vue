@@ -11,7 +11,7 @@
     :required="boneState.bonestructure.required"
     clearable
     @sl-change="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <sl-option
@@ -58,6 +58,14 @@ import {reactive, onMounted, inject, computed} from "vue"
           return val.map((i) => i.toString())
         }
         return props.value ? props.value.toString() : ""
+      }),
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
       })
     })
 

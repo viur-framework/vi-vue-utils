@@ -9,7 +9,7 @@
     :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @sl-change="changeEvent"
     @keyup="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?null:true"
     :pattern="state.pattern"
     :maxlength="boneState.maxlength"
@@ -56,6 +56,14 @@ import Utils from "../../utils"
           return pat
         }
         return pat?.[boneState.defaultLanguage]?pat?.[boneState.defaultLanguage]:''
+      }),
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
       })
     })
 

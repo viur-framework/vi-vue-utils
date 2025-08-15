@@ -11,7 +11,7 @@
     @sl-change="changeEvent"
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <sl-icon
@@ -30,7 +30,7 @@
     @sl-change="changeEvent"
     @sl-clear="state.value2 = ''"
     @keyup="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
     <sl-icon
@@ -80,7 +80,15 @@ import { useTimeoutFn } from "@vueuse/core"
       value2: null,
       equal: false,
       passwordInfo: [],
-      requiredPasswordInfo: []
+      requiredPasswordInfo: [],
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
+      })
     })
 
     const passwordBone = ref(null)

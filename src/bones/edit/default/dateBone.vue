@@ -8,7 +8,7 @@
     :value="state.value"
     :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @sl-change="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     step="1"
   ></sl-input>
@@ -58,6 +58,14 @@ import { reactive, onMounted, computed, inject } from "vue"
           typeString = "time"
         }
         return typeString
+      }),
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
       })
     })
 

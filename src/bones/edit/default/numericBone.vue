@@ -12,7 +12,7 @@
     :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @sl-change="changeEvent"
     @keyup="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-data-invalid="boneState.errorMessages.length===0?undefined:true"
   >
   </sl-input>
@@ -56,6 +56,14 @@ import { useTimeoutFn } from "@vueuse/core"
           return parseFloat(`0.${"0".repeat(boneState.bonestructure["precision"] - 1)}1`)
         }
         return undefined
+      }),
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
       })
     })
 

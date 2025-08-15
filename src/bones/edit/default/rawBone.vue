@@ -6,7 +6,7 @@
     :value="typeof value === 'object'?JSON.stringify(value):value"
     @input="changeEvent"
     :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-textarea>
   <sl-textarea
@@ -17,13 +17,13 @@
     :value="value"
     :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
     @input="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
+    :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   ></sl-textarea>
 </template>
 
 <script setup>
-import { reactive, onMounted, inject } from "vue"
+import {reactive, onMounted, inject, computed} from "vue"
   defineOptions({
     inheritAttrs: false
   })
@@ -40,6 +40,14 @@ import { reactive, onMounted, inject } from "vue"
 
     const boneState = inject("boneState")
     const state = reactive({
+      placeholder:computed(()=>{
+        if (boneState.label!=='placeholder') return undefined
+        let name = boneState?.bonestructure?.descr
+        if (boneState.bonestructure.required){
+          name +="*"
+        }
+        return name
+      })
     })
 
     function changeEvent(event) {
