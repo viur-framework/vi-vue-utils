@@ -1,34 +1,22 @@
 <template>
-  <div
-    class="value-line"
-  >
-    <sl-button
-      :disabled="boneState.readonly"
-      class="drag-button"
-    >
-      <sl-icon
-        slot="prefix"
-        name="grip-vertical"
-      >
-      </sl-icon>
+  <div class="value-line">
+    <sl-button :disabled="boneState.readonly" class="drag-button">
+      <sl-icon slot="prefix" name="grip-vertical"></sl-icon>
     </sl-button>
-     <div class="row-wrapper">
-    <div class="value">
-
-      <slot></slot>
-
+    <div class="row-wrapper">
+      <div class="value">
+        <slot></slot>
       </div>
       <bone-actions
-          v-if="boneState.boneactions"
-          :value="state.value"
-          :name="name"
-          :lang="lang"
-          :index="index"
-          :bone="boneState.bonestructure"
-          @change="updateValue"
-      >
-      </bone-actions>
-      </div>
+        v-if="boneState.boneactions"
+        :value="state.value"
+        :name="name"
+        :lang="lang"
+        :index="index"
+        :bone="boneState.bonestructure"
+        @change="updateValue"
+      ></bone-actions>
+    </div>
     <sl-button
       variant="danger"
       :disabled="boneState.readonly"
@@ -37,45 +25,39 @@
       class="delete-btn"
       @click="emit('delete')"
     >
-      <sl-icon
-        slot="prefix"
-        name="x-lg"
-      ></sl-icon>
+      <sl-icon slot="prefix" name="x-lg"></sl-icon>
     </sl-button>
   </div>
 </template>
 
 <script setup>
+import { reactive, inject, computed } from "vue"
+import BoneActions from "./boneActions.vue"
 
-import { reactive, inject,computed } from "vue"
-import BoneActions from "./boneActions.vue";
+const props = defineProps({
+  index: Number,
+  name: String,
+  lang: {
+    default: null,
+  },
+})
 
-  const props = defineProps( {
-    index:Number,
-    name:String,
-    lang:{
-      default:null
+const state = reactive({
+  value: computed(() => {
+    if (props.lang) {
+      return boneState.bonevalue[props.lang][props.index]
     }
-  })
+    return boneState.bonevalue[props.index]
+  }),
+})
 
-  const state = reactive({
-    value:computed(()=>{
-      if (props.lang){
-        return boneState.bonevalue[props.lang][props.index]
-      }
-      return boneState.bonevalue[props.index]
-    })
-  })
+const emit = defineEmits(["change", "delete"])
 
-  const emit = defineEmits(["change", "delete"])
-
-    const boneState = inject("boneState")
-    const updateValue = inject("updateValue")
-
+const boneState = inject("boneState")
+const updateValue = inject("updateValue")
 </script>
 
 <style scoped>
-
 .value-line {
   display: flex;
   gap: var(--sl-spacing-x-small);
@@ -100,15 +82,15 @@ import BoneActions from "./boneActions.vue";
     }
   }
 
-  &:deep(sl-alert){
-    &::part(base){
+  &:deep(sl-alert) {
+    &::part(base) {
       margin-top: 0;
     }
   }
 }
 
 .delete-btn {
-  transition: all ease .3s;
+  transition: all ease 0.3s;
 }
 
 .drag-button {
@@ -116,10 +98,10 @@ import BoneActions from "./boneActions.vue";
     aspect-ratio: 1;
   }
 }
-.row-wrapper{
+.row-wrapper {
   width: 100%;
-  display:flex;
+  display: flex;
   flex-direction: row;
-  gap:var(--sl-spacing-x-small)
+  gap: var(--sl-spacing-x-small);
 }
 </style>

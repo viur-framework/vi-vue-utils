@@ -7,27 +7,26 @@
     :bone="bone"
     :disabled="bone['readonly']"
     @change="changeEvent"
-  >
-  </Wrapper_nested>
+  ></Wrapper_nested>
 </template>
 
 <script setup>
 import { reactive, onMounted, inject, computed, getCurrentInstance } from "vue"
 import Wrapper_nested from "../wrapper_nested.vue"
-  defineOptions({
-    inheritAttrs: false
-  })
+defineOptions({
+  inheritAttrs: false,
+})
 
 const emit = defineEmits(["change"])
 const props = defineProps({
-    name: String,
-    value: null,
-    index: Number,
-    lang: String,
-    bone:Object,
-    bone:Object,
-    autofocus: Boolean
-  })
+  name: String,
+  value: null,
+  index: Number,
+  lang: String,
+  bone: Object,
+  bone: Object,
+  autofocus: Boolean,
+})
 
 const state = reactive({})
 
@@ -38,7 +37,6 @@ function changeEvent(data) {
 onMounted(() => {
   emit("change", props.name, props.value, props.lang, props.index) //init
 })
-
 </script>
 
 <style scoped>

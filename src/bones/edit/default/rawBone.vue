@@ -1,63 +1,67 @@
 <template>
-  <sl-textarea v-if="boneState.bonestructure.type==='raw.json'"
+  <sl-textarea
+    v-if="boneState.bonestructure.type === 'raw.json'"
     class="widget-bone widget-bone-raw widget-bone-raw-default"
-    :class="([`widget-bone-raw-${name}`])"
+    :class="[`widget-bone-raw-${name}`]"
     :disabled="boneState?.readonly"
-    :value="typeof value === 'object'?JSON.stringify(value):value"
-    @input="changeEvent"
-    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
+    :value="typeof value === 'object' ? JSON.stringify(value) : value"
+    :required="
+      boneState.bonestructure.required && !boneState.bonestructure.multiple && !boneState.bonestructure.languages
+    "
     :placeholder="state.placeholder"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    @input="changeEvent"
   ></sl-textarea>
   <sl-textarea
     v-else
     class="widget-bone widget-bone-raw widget-bone-raw-default"
-    :class="([`widget-bone-raw-${name}`])"
+    :class="[`widget-bone-raw-${name}`]"
     :disabled="boneState?.readonly"
     :value="value"
-    :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
-    @input="changeEvent"
+    :required="
+      boneState.bonestructure.required && !boneState.bonestructure.multiple && !boneState.bonestructure.languages
+    "
     :placeholder="state.placeholder"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    @input="changeEvent"
   ></sl-textarea>
 </template>
 
 <script setup>
-import {reactive, onMounted, inject, computed} from "vue"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps( {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+import { reactive, onMounted, inject, computed } from "vue"
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit = defineEmits( ["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      placeholder:computed(()=>{
-        if (boneState.label!=='placeholder') return undefined
-        let name = boneState?.bonestructure?.descr
-        if (boneState.bonestructure.required){
-          name +="*"
-        }
-        return name
-      })
-    })
-
-    function changeEvent(event) {
-      emit("change", props.name, event.target.value, props.lang, props.index)
+const boneState = inject("boneState")
+const state = reactive({
+  placeholder: computed(() => {
+    if (boneState.label !== "placeholder") return undefined
+    let name = boneState?.bonestructure?.descr
+    if (boneState.bonestructure.required) {
+      name += "*"
     }
+    return name
+  }),
+})
 
-    onMounted(() => {
-      emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
 </script>
 
 <style scoped>

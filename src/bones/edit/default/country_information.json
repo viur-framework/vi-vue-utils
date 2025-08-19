@@ -1,1 +1,779 @@
-[{"name": "Afghanistan", "code": "AF", "emoji": "\ud83c\udde6\ud83c\uddeb", "dialCodes": ["+93"], "slug": "afghanistan"}, {"name": "Albania", "code": "AL", "emoji": "\ud83c\udde6\ud83c\uddf1", "dialCodes": ["+355"], "slug": "albania"}, {"name": "Andorra", "code": "AD", "emoji": "\ud83c\udde6\ud83c\udde9", "dialCodes": ["+376"], "slug": "andorra"}, {"name": "Angola", "code": "AO", "emoji": "\ud83c\udde6\ud83c\uddf4", "dialCodes": ["+244"], "slug": "angola"}, {"name": "Anguilla", "code": "AI", "emoji": "\ud83c\udde6\ud83c\uddee", "dialCodes": ["+1264"], "slug": "anguilla"}, {"name": "Antarctica", "code": "AQ", "emoji": "\ud83c\udde6\ud83c\uddf6", "dialCodes": ["+672"], "slug": "antarctica"}, {"name": "Antigua & Barbuda", "code": "AG", "emoji": "\ud83c\udde6\ud83c\uddec", "dialCodes": ["+1268"], "slug": "antigua-and-barbuda"}, {"name": "Argentina", "code": "AR", "emoji": "\ud83c\udde6\ud83c\uddf7", "dialCodes": ["+54"], "slug": "argentina"}, {"name": "Armenia", "code": "AM", "emoji": "\ud83c\udde6\ud83c\uddf2", "dialCodes": ["+374"], "slug": "armenia"}, {"name": "Aruba", "code": "AW", "emoji": "\ud83c\udde6\ud83c\uddfc", "dialCodes": ["+297"], "slug": "aruba"}, {"name": "Ascension Island", "code": "AC", "emoji": "\ud83c\udde6\ud83c\udde8", "slug": "ascension-island"}, {"name": "Australia", "code": "AU", "emoji": "\ud83c\udde6\ud83c\uddfa", "dialCodes": ["+61"], "slug": "australia"}, {"name": "Austria", "code": "AT", "emoji": "\ud83c\udde6\ud83c\uddf9", "dialCodes": ["+43"], "slug": "austria"}, {"name": "Azerbaijan", "code": "AZ", "emoji": "\ud83c\udde6\ud83c\uddff", "dialCodes": ["+994"], "slug": "azerbaijan"}, {"name": "Bahamas", "code": "BS", "emoji": "\ud83c\udde7\ud83c\uddf8", "dialCodes": ["+1242"], "slug": "bahamas"}, {"name": "Bahrain", "code": "BH", "emoji": "\ud83c\udde7\ud83c\udded", "dialCodes": ["+973"], "slug": "bahrain"}, {"name": "Bangladesh", "code": "BD", "emoji": "\ud83c\udde7\ud83c\udde9", "dialCodes": ["+880"], "slug": "bangladesh"}, {"name": "Barbados", "code": "BB", "emoji": "\ud83c\udde7\ud83c\udde7", "dialCodes": ["+1246"], "slug": "barbados"}, {"name": "Belarus", "code": "BY", "emoji": "\ud83c\udde7\ud83c\uddfe", "dialCodes": ["+375"], "slug": "belarus"}, {"name": "Belgium", "code": "BE", "emoji": "\ud83c\udde7\ud83c\uddea", "dialCodes": ["+32"], "slug": "belgium"}, {"name": "Belize", "code": "BZ", "emoji": "\ud83c\udde7\ud83c\uddff", "dialCodes": ["+501"], "slug": "belize"}, {"name": "Benin", "code": "BJ", "emoji": "\ud83c\udde7\ud83c\uddef", "dialCodes": ["+229"], "slug": "benin"}, {"name": "Bermuda", "code": "BM", "emoji": "\ud83c\udde7\ud83c\uddf2", "dialCodes": ["+1441"], "slug": "bermuda"}, {"name": "Bhutan", "code": "BT", "emoji": "\ud83c\udde7\ud83c\uddf9", "dialCodes": ["+975"], "slug": "bhutan"}, {"name": "Bolivia", "code": "BO", "emoji": "\ud83c\udde7\ud83c\uddf4", "dialCodes": ["+591"], "slug": "bolivia"}, {"name": "Bosnia & Herzegovina", "code": "BA", "emoji": "\ud83c\udde7\ud83c\udde6", "dialCodes": ["+387"], "slug": "bosnia-and-herzegovina"}, {"name": "Botswana", "code": "BW", "emoji": "\ud83c\udde7\ud83c\uddfc", "dialCodes": ["+267"], "slug": "botswana"}, {"name": "Brazil", "code": "BR", "emoji": "\ud83c\udde7\ud83c\uddf7", "dialCodes": ["+55"], "slug": "brazil"}, {"name": "British Indian Ocean Territory", "code": "IO", "emoji": "\ud83c\uddee\ud83c\uddf4", "slug": "british-indian-ocean-territory"}, {"name": "Brunei", "code": "BN", "emoji": "\ud83c\udde7\ud83c\uddf3", "dialCodes": ["+673"], "slug": "brunei"}, {"name": "Bulgaria", "code": "BG", "emoji": "\ud83c\udde7\ud83c\uddec", "dialCodes": ["+359"], "slug": "bulgaria"}, {"name": "Burkina Faso", "code": "BF", "emoji": "\ud83c\udde7\ud83c\uddeb", "dialCodes": ["+226"], "slug": "burkina-faso"}, {"name": "Burundi", "code": "BI", "emoji": "\ud83c\udde7\ud83c\uddee", "dialCodes": ["+257"], "slug": "burundi"}, {"name": "Cabo Verde", "code": "CV", "emoji": "\ud83c\udde8\ud83c\uddfb", "dialCodes": ["+238"], "slug": "cabo-verde"}, {"name": "Cambodia", "code": "KH", "emoji": "\ud83c\uddf0\ud83c\udded", "dialCodes": ["+855"], "slug": "cambodia"}, {"name": "Cameroon", "code": "CM", "emoji": "\ud83c\udde8\ud83c\uddf2", "dialCodes": ["+237"], "slug": "cameroon"}, {"name": "Canada", "code": "CA", "emoji": "\ud83c\udde8\ud83c\udde6", "dialCodes": ["+1"], "slug": "canada"}, {"name": "Cayman Islands", "code": "KY", "emoji": "\ud83c\uddf0\ud83c\uddfe", "dialCodes": ["+1345"], "slug": "cayman-islands"}, {"name": "Central African Republic", "code": "CF", "emoji": "\ud83c\udde8\ud83c\uddeb", "dialCodes": ["+236"], "slug": "central-african-republic"}, {"name": "Chad", "code": "TD", "emoji": "\ud83c\uddf9\ud83c\udde9", "dialCodes": ["+235"], "slug": "chad"}, {"name": "Chile", "code": "CL", "emoji": "\ud83c\udde8\ud83c\uddf1", "dialCodes": ["+56"], "slug": "chile"}, {"name": "China", "code": "CN", "emoji": "\ud83c\udde8\ud83c\uddf3", "dialCodes": ["+86"], "slug": "china"}, {"name": "Christmas Island", "code": "CX", "emoji": "\ud83c\udde8\ud83c\uddfd", "slug": "christmas-island"}, {"name": "Cocos (Keeling) Islands", "code": "CC", "emoji": "\ud83c\udde8\ud83c\udde8", "slug": "cocos-(keeling)-islands"}, {"name": "Colombia", "code": "CO", "emoji": "\ud83c\udde8\ud83c\uddf4", "dialCodes": ["+57"], "slug": "colombia"}, {"name": "Comoros", "code": "KM", "emoji": "\ud83c\uddf0\ud83c\uddf2", "dialCodes": ["+269"], "slug": "comoros"}, {"name": "Congo - Brazzaville", "code": "CG", "emoji": "\ud83c\udde8\ud83c\uddec", "dialCodes": ["+242"], "slug": "congo-brazzaville"}, {"name": "Congo - Kinshasa", "code": "CD", "emoji": "\ud83c\udde8\ud83c\udde9", "dialCodes": ["+243"], "slug": "congo-kinshasa"}, {"name": "Cook Islands", "code": "CK", "emoji": "\ud83c\udde8\ud83c\uddf0", "dialCodes": ["+682"], "slug": "cook-islands"}, {"name": "Costa Rica", "code": "CR", "emoji": "\ud83c\udde8\ud83c\uddf7", "dialCodes": ["+506"], "slug": "costa-rica"}, {"name": "Croatia", "code": "HR", "emoji": "\ud83c\udded\ud83c\uddf7", "dialCodes": ["+385"], "slug": "croatia"}, {"name": "Cuba", "code": "CU", "emoji": "\ud83c\udde8\ud83c\uddfa", "dialCodes": ["+53"], "slug": "cuba"}, {"name": "Cura\u00e7ao", "code": "CW", "emoji": "\ud83c\udde8\ud83c\uddfc", "dialCodes": ["+599"], "slug": "curacao"}, {"name": "Cyprus", "code": "CY", "emoji": "\ud83c\udde8\ud83c\uddfe", "dialCodes": ["+357"], "slug": "cyprus"}, {"name": "Czechia", "code": "CZ", "emoji": "\ud83c\udde8\ud83c\uddff", "dialCodes": ["+420"], "slug": "czechia"}, {"name": "C\u00f4te d\u2019Ivoire", "code": "CI", "emoji": "\ud83c\udde8\ud83c\uddee", "dialCodes": ["+225"], "slug": "cote-d'ivoire"}, {"name": "Denmark", "code": "DK", "emoji": "\ud83c\udde9\ud83c\uddf0", "dialCodes": ["+45"], "slug": "denmark"}, {"name": "Djibouti", "code": "DJ", "emoji": "\ud83c\udde9\ud83c\uddef", "dialCodes": ["+253"], "slug": "djibouti"}, {"name": "Dominica", "code": "DM", "emoji": "\ud83c\udde9\ud83c\uddf2", "dialCodes": ["+1767"], "slug": "dominica"}, {"name": "Dominican Republic", "code": "DO", "emoji": "\ud83c\udde9\ud83c\uddf4", "dialCodes": ["+1 809", "+1 829", "+1 849"], "slug": "dominican-republic"}, {"name": "Ecuador", "code": "EC", "emoji": "\ud83c\uddea\ud83c\udde8", "dialCodes": ["+593"], "slug": "ecuador"}, {"name": "Egypt", "code": "EG", "emoji": "\ud83c\uddea\ud83c\uddec", "dialCodes": ["+20"], "slug": "egypt"}, {"name": "El Salvador", "code": "SV", "emoji": "\ud83c\uddf8\ud83c\uddfb", "dialCodes": ["+503"], "slug": "el-salvador"}, {"name": "Equatorial Guinea", "code": "GQ", "emoji": "\ud83c\uddec\ud83c\uddf6", "dialCodes": ["+240"], "slug": "equatorial-guinea"}, {"name": "Eritrea", "code": "ER", "emoji": "\ud83c\uddea\ud83c\uddf7", "dialCodes": ["+291"], "slug": "eritrea"}, {"name": "Estonia", "code": "EE", "emoji": "\ud83c\uddea\ud83c\uddea", "dialCodes": ["+372"], "slug": "estonia"}, {"name": "Eswatini", "code": "SZ", "emoji": "\ud83c\uddf8\ud83c\uddff", "dialCodes": ["+268"], "slug": "eswatini"}, {"name": "Ethiopia", "code": "ET", "emoji": "\ud83c\uddea\ud83c\uddf9", "dialCodes": ["+251"], "slug": "ethiopia"}, {"name": "Falkland Islands", "code": "FK", "emoji": "\ud83c\uddeb\ud83c\uddf0", "dialCodes": ["+500"], "slug": "falkland-islands"}, {"name": "Faroe Islands", "code": "FO", "emoji": "\ud83c\uddeb\ud83c\uddf4", "dialCodes": ["+298"], "slug": "faroe-islands"}, {"name": "Fiji", "code": "FJ", "emoji": "\ud83c\uddeb\ud83c\uddef", "dialCodes": ["+679"], "slug": "fiji"}, {"name": "Finland", "code": "FI", "emoji": "\ud83c\uddeb\ud83c\uddee", "dialCodes": ["+358"], "slug": "finland"}, {"name": "France", "code": "FR", "emoji": "\ud83c\uddeb\ud83c\uddf7", "dialCodes": ["+33"], "slug": "france"}, {"name": "French Guiana", "code": "GF", "emoji": "\ud83c\uddec\ud83c\uddeb", "dialCodes": ["+594"], "slug": "french-guiana"}, {"name": "French Polynesia", "code": "PF", "emoji": "\ud83c\uddf5\ud83c\uddeb", "dialCodes": ["+689"], "slug": "french-polynesia"}, {"name": "French Southern Territories", "code": "TF", "emoji": "\ud83c\uddf9\ud83c\uddeb", "slug": "french-southern-territories"}, {"name": "Gabon", "code": "GA", "emoji": "\ud83c\uddec\ud83c\udde6", "dialCodes": ["+241"], "slug": "gabon"}, {"name": "Gambia", "code": "GM", "emoji": "\ud83c\uddec\ud83c\uddf2", "dialCodes": ["+220"], "slug": "gambia"}, {"name": "Georgia", "code": "GE", "emoji": "\ud83c\uddec\ud83c\uddea", "dialCodes": ["+995"], "slug": "georgia"}, {"name": "Germany", "code": "DE", "emoji": "\ud83c\udde9\ud83c\uddea", "dialCodes": ["+49"], "slug": "germany"}, {"name": "Ghana", "code": "GH", "emoji": "\ud83c\uddec\ud83c\udded", "dialCodes": ["+233"], "slug": "ghana"}, {"name": "Gibraltar", "code": "GI", "emoji": "\ud83c\uddec\ud83c\uddee", "dialCodes": ["+350"], "slug": "gibraltar"}, {"name": "Greece", "code": "GR", "emoji": "\ud83c\uddec\ud83c\uddf7", "dialCodes": ["+30"], "slug": "greece"}, {"name": "Greenland", "code": "GL", "emoji": "\ud83c\uddec\ud83c\uddf1", "dialCodes": ["+299"], "slug": "greenland"}, {"name": "Grenada", "code": "GD", "emoji": "\ud83c\uddec\ud83c\udde9", "dialCodes": ["+1473"], "slug": "grenada"}, {"name": "Guadeloupe", "code": "GP", "emoji": "\ud83c\uddec\ud83c\uddf5", "dialCodes": ["+590"], "slug": "guadeloupe"}, {"name": "Guam", "code": "GU", "emoji": "\ud83c\uddec\ud83c\uddfa", "dialCodes": ["+1671"], "slug": "guam"}, {"name": "Guatemala", "code": "GT", "emoji": "\ud83c\uddec\ud83c\uddf9", "dialCodes": ["+502"], "slug": "guatemala"}, {"name": "Guernsey", "code": "GG", "emoji": "\ud83c\uddec\ud83c\uddec", "dialCodes": ["+44"], "slug": "guernsey"}, {"name": "Guinea", "code": "GN", "emoji": "\ud83c\uddec\ud83c\uddf3", "dialCodes": ["+224"], "slug": "guinea"}, {"name": "Guinea-Bissau", "code": "GW", "emoji": "\ud83c\uddec\ud83c\uddfc", "dialCodes": ["+245"], "slug": "guinea-bissau"}, {"name": "Guyana", "code": "GY", "emoji": "\ud83c\uddec\ud83c\uddfe", "dialCodes": ["+592"], "slug": "guyana"}, {"name": "Haiti", "code": "HT", "emoji": "\ud83c\udded\ud83c\uddf9", "dialCodes": ["+509"], "slug": "haiti"}, {"name": "Heard & McDonald Islands", "code": "HM", "emoji": "\ud83c\udded\ud83c\uddf2", "slug": "heard-and-mcdonald-islands"}, {"name": "Honduras", "code": "HN", "emoji": "\ud83c\udded\ud83c\uddf3", "dialCodes": ["+504"], "slug": "honduras"}, {"name": "Hong Kong SAR China", "code": "HK", "emoji": "\ud83c\udded\ud83c\uddf0", "dialCodes": ["+852"], "slug": "hong-kong-sar-china"}, {"name": "Hungary", "code": "HU", "emoji": "\ud83c\udded\ud83c\uddfa", "dialCodes": ["+36"], "slug": "hungary"}, {"name": "Iceland", "code": "IS", "emoji": "\ud83c\uddee\ud83c\uddf8", "dialCodes": ["+354"], "slug": "iceland"}, {"name": "India", "code": "IN", "emoji": "\ud83c\uddee\ud83c\uddf3", "dialCodes": ["+91"], "slug": "india"}, {"name": "Indonesia", "code": "ID", "emoji": "\ud83c\uddee\ud83c\udde9", "dialCodes": ["+62"], "slug": "indonesia"}, {"name": "Iran", "code": "IR", "emoji": "\ud83c\uddee\ud83c\uddf7", "dialCodes": ["+98"], "slug": "iran"}, {"name": "Iraq", "code": "IQ", "emoji": "\ud83c\uddee\ud83c\uddf6", "dialCodes": ["+964"], "slug": "iraq"}, {"name": "Ireland", "code": "IE", "emoji": "\ud83c\uddee\ud83c\uddea", "dialCodes": ["+353"], "slug": "ireland"}, {"name": "Isle of Man", "code": "IM", "emoji": "\ud83c\uddee\ud83c\uddf2", "dialCodes": ["+44"], "slug": "isle-of-man"}, {"name": "Israel", "code": "IL", "emoji": "\ud83c\uddee\ud83c\uddf1", "dialCodes": ["+972"], "slug": "israel"}, {"name": "Italy", "code": "IT", "emoji": "\ud83c\uddee\ud83c\uddf9", "dialCodes": ["+39"], "slug": "italy"}, {"name": "Jamaica", "code": "JM", "emoji": "\ud83c\uddef\ud83c\uddf2", "dialCodes": ["+1 876"], "slug": "jamaica"}, {"name": "Japan", "code": "JP", "emoji": "\ud83c\uddef\ud83c\uddf5", "dialCodes": ["+81"], "slug": "japan"}, {"name": "Jersey", "code": "JE", "emoji": "\ud83c\uddef\ud83c\uddea", "dialCodes": ["+44"], "slug": "jersey"}, {"name": "Jordan", "code": "JO", "emoji": "\ud83c\uddef\ud83c\uddf4", "dialCodes": ["+962"], "slug": "jordan"}, {"name": "Kazakhstan", "code": "KZ", "emoji": "\ud83c\uddf0\ud83c\uddff", "dialCodes": ["+7"], "slug": "kazakhstan"}, {"name": "Kenya", "code": "KE", "emoji": "\ud83c\uddf0\ud83c\uddea", "dialCodes": ["+254"], "slug": "kenya"}, {"name": "Kiribati", "code": "KI", "emoji": "\ud83c\uddf0\ud83c\uddee", "dialCodes": ["+686"], "slug": "kiribati"}, {"name": "Kosovo", "code": "XK", "emoji": "\ud83c\uddfd\ud83c\uddf0", "dialCodes": ["+383"], "slug": "kosovo"}, {"name": "Kuwait", "code": "KW", "emoji": "\ud83c\uddf0\ud83c\uddfc", "dialCodes": ["+965"], "slug": "kuwait"}, {"name": "Kyrgyzstan", "code": "KG", "emoji": "\ud83c\uddf0\ud83c\uddec", "dialCodes": ["+996"], "slug": "kyrgyzstan"}, {"name": "Laos", "code": "LA", "emoji": "\ud83c\uddf1\ud83c\udde6", "dialCodes": ["+856"], "slug": "laos"}, {"name": "Latvia", "code": "LV", "emoji": "\ud83c\uddf1\ud83c\uddfb", "dialCodes": ["+371"], "slug": "latvia"}, {"name": "Lebanon", "code": "LB", "emoji": "\ud83c\uddf1\ud83c\udde7", "dialCodes": ["+961"], "slug": "lebanon"}, {"name": "Lesotho", "code": "LS", "emoji": "\ud83c\uddf1\ud83c\uddf8", "dialCodes": ["+266"], "slug": "lesotho"}, {"name": "Liberia", "code": "LR", "emoji": "\ud83c\uddf1\ud83c\uddf7", "dialCodes": ["+231"], "slug": "liberia"}, {"name": "Libya", "code": "LY", "emoji": "\ud83c\uddf1\ud83c\uddfe", "dialCodes": ["+218"], "slug": "libya"}, {"name": "Liechtenstein", "code": "LI", "emoji": "\ud83c\uddf1\ud83c\uddee", "dialCodes": ["+423"], "slug": "liechtenstein"}, {"name": "Lithuania", "code": "LT", "emoji": "\ud83c\uddf1\ud83c\uddf9", "dialCodes": ["+370"], "slug": "lithuania"}, {"name": "Luxembourg", "code": "LU", "emoji": "\ud83c\uddf1\ud83c\uddfa", "dialCodes": ["+352"], "slug": "luxembourg"}, {"name": "Macao SAR China", "code": "MO", "emoji": "\ud83c\uddf2\ud83c\uddf4", "dialCodes": ["+853"], "slug": "macao-sar-china"}, {"name": "Madagascar", "code": "MG", "emoji": "\ud83c\uddf2\ud83c\uddec", "dialCodes": ["+261"], "slug": "madagascar"}, {"name": "Malawi", "code": "MW", "emoji": "\ud83c\uddf2\ud83c\uddfc", "dialCodes": ["+265"], "slug": "malawi"}, {"name": "Malaysia", "code": "MY", "emoji": "\ud83c\uddf2\ud83c\uddfe", "dialCodes": ["+60"], "slug": "malaysia"}, {"name": "Maldives", "code": "MV", "emoji": "\ud83c\uddf2\ud83c\uddfb", "dialCodes": ["+960"], "slug": "maldives"}, {"name": "Mali", "code": "ML", "emoji": "\ud83c\uddf2\ud83c\uddf1", "dialCodes": ["+223"], "slug": "mali"}, {"name": "Malta", "code": "MT", "emoji": "\ud83c\uddf2\ud83c\uddf9", "dialCodes": ["+356"], "slug": "malta"}, {"name": "Marshall Islands", "code": "MH", "emoji": "\ud83c\uddf2\ud83c\udded", "dialCodes": ["+692"], "slug": "marshall-islands"}, {"name": "Martinique", "code": "MQ", "emoji": "\ud83c\uddf2\ud83c\uddf6", "dialCodes": ["+596"], "slug": "martinique"}, {"name": "Mauritania", "code": "MR", "emoji": "\ud83c\uddf2\ud83c\uddf7", "dialCodes": ["+222"], "slug": "mauritania"}, {"name": "Mauritius", "code": "MU", "emoji": "\ud83c\uddf2\ud83c\uddfa", "dialCodes": ["+230"], "slug": "mauritius"}, {"name": "Mayotte", "code": "YT", "emoji": "\ud83c\uddfe\ud83c\uddf9", "dialCodes": ["+262"], "slug": "mayotte"}, {"name": "Mexico", "code": "MX", "emoji": "\ud83c\uddf2\ud83c\uddfd", "dialCodes": ["+52"], "slug": "mexico"}, {"name": "Micronesia", "code": "FM", "emoji": "\ud83c\uddeb\ud83c\uddf2", "dialCodes": ["+691"], "slug": "micronesia"}, {"name": "Moldova", "code": "MD", "emoji": "\ud83c\uddf2\ud83c\udde9", "dialCodes": ["+373"], "slug": "moldova"}, {"name": "Monaco", "code": "MC", "emoji": "\ud83c\uddf2\ud83c\udde8", "dialCodes": ["+377"], "slug": "monaco"}, {"name": "Mongolia", "code": "MN", "emoji": "\ud83c\uddf2\ud83c\uddf3", "dialCodes": ["+976"], "slug": "mongolia"}, {"name": "Montenegro", "code": "ME", "emoji": "\ud83c\uddf2\ud83c\uddea", "dialCodes": ["+382"], "slug": "montenegro"}, {"name": "Montserrat", "code": "MS", "emoji": "\ud83c\uddf2\ud83c\uddf8", "dialCodes": ["+1 664"], "slug": "montserrat"}, {"name": "Morocco", "code": "MA", "emoji": "\ud83c\uddf2\ud83c\udde6", "dialCodes": ["+212"], "slug": "morocco"}, {"name": "Mozambique", "code": "MZ", "emoji": "\ud83c\uddf2\ud83c\uddff", "dialCodes": ["+258"], "slug": "mozambique"}, {"name": "Myanmar (Burma)", "code": "MM", "emoji": "\ud83c\uddf2\ud83c\uddf2", "dialCodes": ["+95"], "slug": "myanmar-(burma)"}, {"name": "Namibia", "code": "NA", "emoji": "\ud83c\uddf3\ud83c\udde6", "dialCodes": ["+264"], "slug": "namibia"}, {"name": "Nauru", "code": "NR", "emoji": "\ud83c\uddf3\ud83c\uddf7", "dialCodes": ["+674"], "slug": "nauru"}, {"name": "Nepal", "code": "NP", "emoji": "\ud83c\uddf3\ud83c\uddf5", "dialCodes": ["+977"], "slug": "nepal"}, {"name": "Netherlands", "code": "NL", "emoji": "\ud83c\uddf3\ud83c\uddf1", "dialCodes": ["+31"], "slug": "netherlands"}, {"name": "New Caledonia", "code": "NC", "emoji": "\ud83c\uddf3\ud83c\udde8", "dialCodes": ["+687"], "slug": "new-caledonia"}, {"name": "New Zealand", "code": "NZ", "emoji": "\ud83c\uddf3\ud83c\uddff", "dialCodes": ["+64"], "slug": "new-zealand"}, {"name": "Nicaragua", "code": "NI", "emoji": "\ud83c\uddf3\ud83c\uddee", "dialCodes": ["+505"], "slug": "nicaragua"}, {"name": "Niger", "code": "NE", "emoji": "\ud83c\uddf3\ud83c\uddea", "dialCodes": ["+227"], "slug": "niger"}, {"name": "Nigeria", "code": "NG", "emoji": "\ud83c\uddf3\ud83c\uddec", "dialCodes": ["+234"], "slug": "nigeria"}, {"name": "Niue", "code": "NU", "emoji": "\ud83c\uddf3\ud83c\uddfa", "dialCodes": ["+683"], "slug": "niue"}, {"name": "Norfolk Island", "code": "NF", "emoji": "\ud83c\uddf3\ud83c\uddeb", "dialCodes": ["+672"], "slug": "norfolk-island"}, {"name": "North Korea", "code": "KP", "emoji": "\ud83c\uddf0\ud83c\uddf5", "dialCodes": ["+850"], "slug": "north-korea"}, {"name": "Northern Mariana Islands", "code": "MP", "emoji": "\ud83c\uddf2\ud83c\uddf5", "dialCodes": ["+1 670"], "slug": "northern-mariana-islands"}, {"name": "Norway", "code": "NO", "emoji": "\ud83c\uddf3\ud83c\uddf4", "dialCodes": ["+47"], "slug": "norway"}, {"name": "Oman", "code": "OM", "emoji": "\ud83c\uddf4\ud83c\uddf2", "dialCodes": ["+968"], "slug": "oman"}, {"name": "Pakistan", "code": "PK", "emoji": "\ud83c\uddf5\ud83c\uddf0", "dialCodes": ["+92"], "slug": "pakistan"}, {"name": "Palau", "code": "PW", "emoji": "\ud83c\uddf5\ud83c\uddfc", "dialCodes": ["+680"], "slug": "palau"}, {"name": "Palestinian Territories", "code": "PS", "emoji": "\ud83c\uddf5\ud83c\uddf8", "dialCodes": ["+970"], "slug": "palestinian-territories"}, {"name": "Panama", "code": "PA", "emoji": "\ud83c\uddf5\ud83c\udde6", "dialCodes": ["+507"], "slug": "panama"}, {"name": "Papua New Guinea", "code": "PG", "emoji": "\ud83c\uddf5\ud83c\uddec", "dialCodes": ["+675"], "slug": "papua-new-guinea"}, {"name": "Paraguay", "code": "PY", "emoji": "\ud83c\uddf5\ud83c\uddfe", "dialCodes": ["+595"], "slug": "paraguay"}, {"name": "Peru", "code": "PE", "emoji": "\ud83c\uddf5\ud83c\uddea", "dialCodes": ["+51"], "slug": "peru"}, {"name": "Philippines", "code": "PH", "emoji": "\ud83c\uddf5\ud83c\udded", "dialCodes": ["+63"], "slug": "philippines"}, {"name": "Pitcairn Islands", "code": "PN", "emoji": "\ud83c\uddf5\ud83c\uddf3", "dialCodes": ["+64"], "slug": "pitcairn-islands"}, {"name": "Poland", "code": "PL", "emoji": "\ud83c\uddf5\ud83c\uddf1", "dialCodes": ["+48"], "slug": "poland"}, {"name": "Portugal", "code": "PT", "emoji": "\ud83c\uddf5\ud83c\uddf9", "dialCodes": ["+351"], "slug": "portugal"}, {"name": "Puerto Rico", "code": "PR", "emoji": "\ud83c\uddf5\ud83c\uddf7", "dialCodes": ["+1 787"], "slug": "puerto-rico"}, {"name": "Qatar", "code": "QA", "emoji": "\ud83c\uddf6\ud83c\udde6", "dialCodes": ["+974"], "slug": "qatar"}, {"name": "R\u00e9union", "code": "RE", "emoji": "\ud83c\uddf7\ud83c\uddea", "dialCodes": ["+262"], "slug": "reunion"}, {"name": "Romania", "code": "RO", "emoji": "\ud83c\uddf7\ud83c\uddf4", "dialCodes": ["+40"], "slug": "romania"}, {"name": "Russia", "code": "RU", "emoji": "\ud83c\uddf7\ud83c\uddfa", "dialCodes": ["+7"], "slug": "russia"}, {"name": "Rwanda", "code": "RW", "emoji": "\ud83c\uddf7\ud83c\uddfc", "dialCodes": ["+250"], "slug": "rwanda"}, {"name": "Saint Barth\u00e9lemy", "code": "BL", "emoji": "\ud83c\udde7\ud83c\uddf1", "slug": "saint-barthelemy"}, {"name": "Saint Helena", "code": "SH", "emoji": "\ud83c\uddf8\ud83c\udded", "dialCodes": ["+290"], "slug": "saint-helena"}, {"name": "Saint Kitts & Nevis", "code": "KN", "emoji": "\ud83c\uddf0\ud83c\uddf3", "dialCodes": ["+1 869"], "slug": "saint-kitts-and-nevis"}, {"name": "Saint Lucia", "code": "LC", "emoji": "\ud83c\uddf1\ud83c\udde8", "dialCodes": ["+1 758"], "slug": "saint-lucia"}, {"name": "Saint Martin", "code": "MF", "emoji": "\ud83c\uddf2\ud83c\uddeb", "slug": "saint-martin"}, {"name": "Saint Pierre & Miquelon", "code": "PM", "emoji": "\ud83c\uddf5\ud83c\uddf2", "dialCodes": ["+508"], "slug": "saint-pierre-and-miquelon"}, {"name": "Samoa", "code": "WS", "emoji": "\ud83c\uddfc\ud83c\uddf8", "dialCodes": ["+685"], "slug": "samoa"}, {"name": "San Marino", "code": "SM", "emoji": "\ud83c\uddf8\ud83c\uddf2", "dialCodes": ["+378"], "slug": "san-marino"}, {"name": "Sao Tome & Principe", "code": "ST", "emoji": "\ud83c\uddf8\ud83c\uddf9", "dialCodes": ["+239"], "slug": "sao-tome-and-principe"}, {"name": "Saudi Arabia", "code": "SA", "emoji": "\ud83c\uddf8\ud83c\udde6", "dialCodes": ["+966"], "slug": "saudi-arabia"}, {"name": "Senegal", "code": "SN", "emoji": "\ud83c\uddf8\ud83c\uddf3", "dialCodes": ["+221"], "slug": "senegal"}, {"name": "Serbia", "code": "RS", "emoji": "\ud83c\uddf7\ud83c\uddf8", "dialCodes": ["+381"], "slug": "serbia"}, {"name": "Seychelles", "code": "SC", "emoji": "\ud83c\uddf8\ud83c\udde8", "dialCodes": ["+248"], "slug": "seychelles"}, {"name": "Sierra Leone", "code": "SL", "emoji": "\ud83c\uddf8\ud83c\uddf1", "dialCodes": ["+232"], "slug": "sierra-leone"}, {"name": "Singapore", "code": "SG", "emoji": "\ud83c\uddf8\ud83c\uddec", "dialCodes": ["+65"], "slug": "singapore"}, {"name": "Sint Maarten", "code": "SX", "emoji": "\ud83c\uddf8\ud83c\uddfd", "dialCodes": ["+1 721"], "slug": "sint-maarten"}, {"name": "Slovakia", "code": "SK", "emoji": "\ud83c\uddf8\ud83c\uddf0", "dialCodes": ["+421"], "slug": "slovakia"}, {"name": "Slovenia", "code": "SI", "emoji": "\ud83c\uddf8\ud83c\uddee", "dialCodes": ["+386"], "slug": "slovenia"}, {"name": "Solomon Islands", "code": "SB", "emoji": "\ud83c\uddf8\ud83c\udde7", "dialCodes": ["+677"], "slug": "solomon-islands"}, {"name": "Somalia", "code": "SO", "emoji": "\ud83c\uddf8\ud83c\uddf4", "dialCodes": ["+252"], "slug": "somalia"}, {"name": "South Africa", "code": "ZA", "emoji": "\ud83c\uddff\ud83c\udde6", "dialCodes": ["+27"], "slug": "south-africa"}, {"name": "South Georgia & South Sandwich Islands", "code": "GS", "emoji": "\ud83c\uddec\ud83c\uddf8", "slug": "south-georgia-and-south-sandwich-islands"}, {"name": "South Korea", "code": "KR", "emoji": "\ud83c\uddf0\ud83c\uddf7", "dialCodes": ["+82"], "slug": "south-korea"}, {"name": "South Sudan", "code": "SS", "emoji": "\ud83c\uddf8\ud83c\uddf8", "dialCodes": ["+211"], "slug": "south-sudan"}, {"name": "Spain", "code": "ES", "emoji": "\ud83c\uddea\ud83c\uddf8", "dialCodes": ["+34"], "slug": "spain"}, {"name": "Sri Lanka", "code": "LK", "emoji": "\ud83c\uddf1\ud83c\uddf0", "dialCodes": ["+94"], "slug": "sri-lanka"}, {"name": "Sudan", "code": "SD", "emoji": "\ud83c\uddf8\ud83c\udde9", "dialCodes": ["+249"], "slug": "sudan"}, {"name": "Suriname", "code": "SR", "emoji": "\ud83c\uddf8\ud83c\uddf7", "dialCodes": ["+597"], "slug": "suriname"}, {"name": "Svalbard & Jan Mayen", "code": "SJ", "emoji": "\ud83c\uddf8\ud83c\uddef", "slug": "svalbard-and-jan-mayen"}, {"name": "Sweden", "code": "SE", "emoji": "\ud83c\uddf8\ud83c\uddea", "dialCodes": ["+46"], "slug": "sweden"}, {"name": "Switzerland", "code": "CH", "emoji": "\ud83c\udde8\ud83c\udded", "dialCodes": ["+41"], "slug": "switzerland"}, {"name": "Syria", "code": "SY", "emoji": "\ud83c\uddf8\ud83c\uddfe", "dialCodes": ["+963"], "slug": "syria"}, {"name": "Taiwan", "code": "TW", "emoji": "\ud83c\uddf9\ud83c\uddfc", "dialCodes": ["+886"], "slug": "taiwan"}, {"name": "Tajikistan", "code": "TJ", "emoji": "\ud83c\uddf9\ud83c\uddef", "dialCodes": ["+992"], "slug": "tajikistan"}, {"name": "Tanzania", "code": "TZ", "emoji": "\ud83c\uddf9\ud83c\uddff", "dialCodes": ["+255"], "slug": "tanzania"}, {"name": "Thailand", "code": "TH", "emoji": "\ud83c\uddf9\ud83c\udded", "dialCodes": ["+66"], "slug": "thailand"}, {"name": "Timor-Leste", "code": "TL", "emoji": "\ud83c\uddf9\ud83c\uddf1", "dialCodes": ["+670"], "slug": "timor-leste"}, {"name": "Togo", "code": "TG", "emoji": "\ud83c\uddf9\ud83c\uddec", "dialCodes": ["+228"], "slug": "togo"}, {"name": "Tokelau", "code": "TK", "emoji": "\ud83c\uddf9\ud83c\uddf0", "dialCodes": ["+690"], "slug": "tokelau"}, {"name": "Tonga", "code": "TO", "emoji": "\ud83c\uddf9\ud83c\uddf4", "dialCodes": ["+676"], "slug": "tonga"}, {"name": "Trinidad & Tobago", "code": "TT", "emoji": "\ud83c\uddf9\ud83c\uddf9", "dialCodes": ["+1 868"], "slug": "trinidad-and-tobago"}, {"name": "Tunisia", "code": "TN", "emoji": "\ud83c\uddf9\ud83c\uddf3", "dialCodes": ["+216"], "slug": "tunisia"}, {"name": "Turkey", "code": "TR", "emoji": "\ud83c\uddf9\ud83c\uddf7", "dialCodes": ["+90"], "slug": "turkey"}, {"name": "Turkmenistan", "code": "TM", "emoji": "\ud83c\uddf9\ud83c\uddf2", "dialCodes": ["+993"], "slug": "turkmenistan"}, {"name": "Turks & Caicos Islands", "code": "TC", "emoji": "\ud83c\uddf9\ud83c\udde8", "dialCodes": ["+1 649"], "slug": "turks-and-caicos-islands"}, {"name": "Tuvalu", "code": "TV", "emoji": "\ud83c\uddf9\ud83c\uddfb", "dialCodes": ["+688"], "slug": "tuvalu"}, {"name": "Uganda", "code": "UG", "emoji": "\ud83c\uddfa\ud83c\uddec", "dialCodes": ["+256"], "slug": "uganda"}, {"name": "Ukraine", "code": "UA", "emoji": "\ud83c\uddfa\ud83c\udde6", "dialCodes": ["+380"], "slug": "ukraine"}, {"name": "United Arab Emirates", "code": "AE", "emoji": "\ud83c\udde6\ud83c\uddea", "dialCodes": ["+971"], "slug": "united-arab-emirates"}, {"name": "United Kingdom", "code": "GB", "emoji": "\ud83c\uddec\ud83c\udde7", "dialCodes": ["+44"], "slug": "united-kingdom"}, {"name": "United States", "code": "US", "emoji": "\ud83c\uddfa\ud83c\uddf8", "dialCodes": ["+1"], "slug": "united-states"}, {"name": "Uruguay", "code": "UY", "emoji": "\ud83c\uddfa\ud83c\uddfe", "dialCodes": ["+598"], "slug": "uruguay"}, {"name": "Uzbekistan", "code": "UZ", "emoji": "\ud83c\uddfa\ud83c\uddff", "dialCodes": ["+998"], "slug": "uzbekistan"}, {"name": "Vanuatu", "code": "VU", "emoji": "\ud83c\uddfb\ud83c\uddfa", "dialCodes": ["+678"], "slug": "vanuatu"}, {"name": "Vatican City", "code": "VA", "emoji": "\ud83c\uddfb\ud83c\udde6", "dialCodes": ["+379"], "slug": "vatican-city"}, {"name": "Venezuela", "code": "VE", "emoji": "\ud83c\uddfb\ud83c\uddea", "dialCodes": ["+58"], "slug": "venezuela"}, {"name": "Vietnam", "code": "VN", "emoji": "\ud83c\uddfb\ud83c\uddf3", "dialCodes": ["+84"], "slug": "vietnam"}, {"name": "Wallis & Futuna", "code": "WF", "emoji": "\ud83c\uddfc\ud83c\uddeb", "dialCodes": ["+681"], "slug": "wallis-and-futuna"}]
+[
+  {
+    "name": "Afghanistan",
+    "code": "AF",
+    "emoji": "\ud83c\udde6\ud83c\uddeb",
+    "dialCodes": ["+93"],
+    "slug": "afghanistan"
+  },
+  { "name": "Albania", "code": "AL", "emoji": "\ud83c\udde6\ud83c\uddf1", "dialCodes": ["+355"], "slug": "albania" },
+  { "name": "Andorra", "code": "AD", "emoji": "\ud83c\udde6\ud83c\udde9", "dialCodes": ["+376"], "slug": "andorra" },
+  { "name": "Angola", "code": "AO", "emoji": "\ud83c\udde6\ud83c\uddf4", "dialCodes": ["+244"], "slug": "angola" },
+  { "name": "Anguilla", "code": "AI", "emoji": "\ud83c\udde6\ud83c\uddee", "dialCodes": ["+1264"], "slug": "anguilla" },
+  {
+    "name": "Antarctica",
+    "code": "AQ",
+    "emoji": "\ud83c\udde6\ud83c\uddf6",
+    "dialCodes": ["+672"],
+    "slug": "antarctica"
+  },
+  {
+    "name": "Antigua & Barbuda",
+    "code": "AG",
+    "emoji": "\ud83c\udde6\ud83c\uddec",
+    "dialCodes": ["+1268"],
+    "slug": "antigua-and-barbuda"
+  },
+  { "name": "Argentina", "code": "AR", "emoji": "\ud83c\udde6\ud83c\uddf7", "dialCodes": ["+54"], "slug": "argentina" },
+  { "name": "Armenia", "code": "AM", "emoji": "\ud83c\udde6\ud83c\uddf2", "dialCodes": ["+374"], "slug": "armenia" },
+  { "name": "Aruba", "code": "AW", "emoji": "\ud83c\udde6\ud83c\uddfc", "dialCodes": ["+297"], "slug": "aruba" },
+  { "name": "Ascension Island", "code": "AC", "emoji": "\ud83c\udde6\ud83c\udde8", "slug": "ascension-island" },
+  { "name": "Australia", "code": "AU", "emoji": "\ud83c\udde6\ud83c\uddfa", "dialCodes": ["+61"], "slug": "australia" },
+  { "name": "Austria", "code": "AT", "emoji": "\ud83c\udde6\ud83c\uddf9", "dialCodes": ["+43"], "slug": "austria" },
+  {
+    "name": "Azerbaijan",
+    "code": "AZ",
+    "emoji": "\ud83c\udde6\ud83c\uddff",
+    "dialCodes": ["+994"],
+    "slug": "azerbaijan"
+  },
+  { "name": "Bahamas", "code": "BS", "emoji": "\ud83c\udde7\ud83c\uddf8", "dialCodes": ["+1242"], "slug": "bahamas" },
+  { "name": "Bahrain", "code": "BH", "emoji": "\ud83c\udde7\ud83c\udded", "dialCodes": ["+973"], "slug": "bahrain" },
+  {
+    "name": "Bangladesh",
+    "code": "BD",
+    "emoji": "\ud83c\udde7\ud83c\udde9",
+    "dialCodes": ["+880"],
+    "slug": "bangladesh"
+  },
+  { "name": "Barbados", "code": "BB", "emoji": "\ud83c\udde7\ud83c\udde7", "dialCodes": ["+1246"], "slug": "barbados" },
+  { "name": "Belarus", "code": "BY", "emoji": "\ud83c\udde7\ud83c\uddfe", "dialCodes": ["+375"], "slug": "belarus" },
+  { "name": "Belgium", "code": "BE", "emoji": "\ud83c\udde7\ud83c\uddea", "dialCodes": ["+32"], "slug": "belgium" },
+  { "name": "Belize", "code": "BZ", "emoji": "\ud83c\udde7\ud83c\uddff", "dialCodes": ["+501"], "slug": "belize" },
+  { "name": "Benin", "code": "BJ", "emoji": "\ud83c\udde7\ud83c\uddef", "dialCodes": ["+229"], "slug": "benin" },
+  { "name": "Bermuda", "code": "BM", "emoji": "\ud83c\udde7\ud83c\uddf2", "dialCodes": ["+1441"], "slug": "bermuda" },
+  { "name": "Bhutan", "code": "BT", "emoji": "\ud83c\udde7\ud83c\uddf9", "dialCodes": ["+975"], "slug": "bhutan" },
+  { "name": "Bolivia", "code": "BO", "emoji": "\ud83c\udde7\ud83c\uddf4", "dialCodes": ["+591"], "slug": "bolivia" },
+  {
+    "name": "Bosnia & Herzegovina",
+    "code": "BA",
+    "emoji": "\ud83c\udde7\ud83c\udde6",
+    "dialCodes": ["+387"],
+    "slug": "bosnia-and-herzegovina"
+  },
+  { "name": "Botswana", "code": "BW", "emoji": "\ud83c\udde7\ud83c\uddfc", "dialCodes": ["+267"], "slug": "botswana" },
+  { "name": "Brazil", "code": "BR", "emoji": "\ud83c\udde7\ud83c\uddf7", "dialCodes": ["+55"], "slug": "brazil" },
+  {
+    "name": "British Indian Ocean Territory",
+    "code": "IO",
+    "emoji": "\ud83c\uddee\ud83c\uddf4",
+    "slug": "british-indian-ocean-territory"
+  },
+  { "name": "Brunei", "code": "BN", "emoji": "\ud83c\udde7\ud83c\uddf3", "dialCodes": ["+673"], "slug": "brunei" },
+  { "name": "Bulgaria", "code": "BG", "emoji": "\ud83c\udde7\ud83c\uddec", "dialCodes": ["+359"], "slug": "bulgaria" },
+  {
+    "name": "Burkina Faso",
+    "code": "BF",
+    "emoji": "\ud83c\udde7\ud83c\uddeb",
+    "dialCodes": ["+226"],
+    "slug": "burkina-faso"
+  },
+  { "name": "Burundi", "code": "BI", "emoji": "\ud83c\udde7\ud83c\uddee", "dialCodes": ["+257"], "slug": "burundi" },
+  {
+    "name": "Cabo Verde",
+    "code": "CV",
+    "emoji": "\ud83c\udde8\ud83c\uddfb",
+    "dialCodes": ["+238"],
+    "slug": "cabo-verde"
+  },
+  { "name": "Cambodia", "code": "KH", "emoji": "\ud83c\uddf0\ud83c\udded", "dialCodes": ["+855"], "slug": "cambodia" },
+  { "name": "Cameroon", "code": "CM", "emoji": "\ud83c\udde8\ud83c\uddf2", "dialCodes": ["+237"], "slug": "cameroon" },
+  { "name": "Canada", "code": "CA", "emoji": "\ud83c\udde8\ud83c\udde6", "dialCodes": ["+1"], "slug": "canada" },
+  {
+    "name": "Cayman Islands",
+    "code": "KY",
+    "emoji": "\ud83c\uddf0\ud83c\uddfe",
+    "dialCodes": ["+1345"],
+    "slug": "cayman-islands"
+  },
+  {
+    "name": "Central African Republic",
+    "code": "CF",
+    "emoji": "\ud83c\udde8\ud83c\uddeb",
+    "dialCodes": ["+236"],
+    "slug": "central-african-republic"
+  },
+  { "name": "Chad", "code": "TD", "emoji": "\ud83c\uddf9\ud83c\udde9", "dialCodes": ["+235"], "slug": "chad" },
+  { "name": "Chile", "code": "CL", "emoji": "\ud83c\udde8\ud83c\uddf1", "dialCodes": ["+56"], "slug": "chile" },
+  { "name": "China", "code": "CN", "emoji": "\ud83c\udde8\ud83c\uddf3", "dialCodes": ["+86"], "slug": "china" },
+  { "name": "Christmas Island", "code": "CX", "emoji": "\ud83c\udde8\ud83c\uddfd", "slug": "christmas-island" },
+  {
+    "name": "Cocos (Keeling) Islands",
+    "code": "CC",
+    "emoji": "\ud83c\udde8\ud83c\udde8",
+    "slug": "cocos-(keeling)-islands"
+  },
+  { "name": "Colombia", "code": "CO", "emoji": "\ud83c\udde8\ud83c\uddf4", "dialCodes": ["+57"], "slug": "colombia" },
+  { "name": "Comoros", "code": "KM", "emoji": "\ud83c\uddf0\ud83c\uddf2", "dialCodes": ["+269"], "slug": "comoros" },
+  {
+    "name": "Congo - Brazzaville",
+    "code": "CG",
+    "emoji": "\ud83c\udde8\ud83c\uddec",
+    "dialCodes": ["+242"],
+    "slug": "congo-brazzaville"
+  },
+  {
+    "name": "Congo - Kinshasa",
+    "code": "CD",
+    "emoji": "\ud83c\udde8\ud83c\udde9",
+    "dialCodes": ["+243"],
+    "slug": "congo-kinshasa"
+  },
+  {
+    "name": "Cook Islands",
+    "code": "CK",
+    "emoji": "\ud83c\udde8\ud83c\uddf0",
+    "dialCodes": ["+682"],
+    "slug": "cook-islands"
+  },
+  {
+    "name": "Costa Rica",
+    "code": "CR",
+    "emoji": "\ud83c\udde8\ud83c\uddf7",
+    "dialCodes": ["+506"],
+    "slug": "costa-rica"
+  },
+  { "name": "Croatia", "code": "HR", "emoji": "\ud83c\udded\ud83c\uddf7", "dialCodes": ["+385"], "slug": "croatia" },
+  { "name": "Cuba", "code": "CU", "emoji": "\ud83c\udde8\ud83c\uddfa", "dialCodes": ["+53"], "slug": "cuba" },
+  {
+    "name": "Cura\u00e7ao",
+    "code": "CW",
+    "emoji": "\ud83c\udde8\ud83c\uddfc",
+    "dialCodes": ["+599"],
+    "slug": "curacao"
+  },
+  { "name": "Cyprus", "code": "CY", "emoji": "\ud83c\udde8\ud83c\uddfe", "dialCodes": ["+357"], "slug": "cyprus" },
+  { "name": "Czechia", "code": "CZ", "emoji": "\ud83c\udde8\ud83c\uddff", "dialCodes": ["+420"], "slug": "czechia" },
+  {
+    "name": "C\u00f4te d\u2019Ivoire",
+    "code": "CI",
+    "emoji": "\ud83c\udde8\ud83c\uddee",
+    "dialCodes": ["+225"],
+    "slug": "cote-d'ivoire"
+  },
+  { "name": "Denmark", "code": "DK", "emoji": "\ud83c\udde9\ud83c\uddf0", "dialCodes": ["+45"], "slug": "denmark" },
+  { "name": "Djibouti", "code": "DJ", "emoji": "\ud83c\udde9\ud83c\uddef", "dialCodes": ["+253"], "slug": "djibouti" },
+  { "name": "Dominica", "code": "DM", "emoji": "\ud83c\udde9\ud83c\uddf2", "dialCodes": ["+1767"], "slug": "dominica" },
+  {
+    "name": "Dominican Republic",
+    "code": "DO",
+    "emoji": "\ud83c\udde9\ud83c\uddf4",
+    "dialCodes": ["+1 809", "+1 829", "+1 849"],
+    "slug": "dominican-republic"
+  },
+  { "name": "Ecuador", "code": "EC", "emoji": "\ud83c\uddea\ud83c\udde8", "dialCodes": ["+593"], "slug": "ecuador" },
+  { "name": "Egypt", "code": "EG", "emoji": "\ud83c\uddea\ud83c\uddec", "dialCodes": ["+20"], "slug": "egypt" },
+  {
+    "name": "El Salvador",
+    "code": "SV",
+    "emoji": "\ud83c\uddf8\ud83c\uddfb",
+    "dialCodes": ["+503"],
+    "slug": "el-salvador"
+  },
+  {
+    "name": "Equatorial Guinea",
+    "code": "GQ",
+    "emoji": "\ud83c\uddec\ud83c\uddf6",
+    "dialCodes": ["+240"],
+    "slug": "equatorial-guinea"
+  },
+  { "name": "Eritrea", "code": "ER", "emoji": "\ud83c\uddea\ud83c\uddf7", "dialCodes": ["+291"], "slug": "eritrea" },
+  { "name": "Estonia", "code": "EE", "emoji": "\ud83c\uddea\ud83c\uddea", "dialCodes": ["+372"], "slug": "estonia" },
+  { "name": "Eswatini", "code": "SZ", "emoji": "\ud83c\uddf8\ud83c\uddff", "dialCodes": ["+268"], "slug": "eswatini" },
+  { "name": "Ethiopia", "code": "ET", "emoji": "\ud83c\uddea\ud83c\uddf9", "dialCodes": ["+251"], "slug": "ethiopia" },
+  {
+    "name": "Falkland Islands",
+    "code": "FK",
+    "emoji": "\ud83c\uddeb\ud83c\uddf0",
+    "dialCodes": ["+500"],
+    "slug": "falkland-islands"
+  },
+  {
+    "name": "Faroe Islands",
+    "code": "FO",
+    "emoji": "\ud83c\uddeb\ud83c\uddf4",
+    "dialCodes": ["+298"],
+    "slug": "faroe-islands"
+  },
+  { "name": "Fiji", "code": "FJ", "emoji": "\ud83c\uddeb\ud83c\uddef", "dialCodes": ["+679"], "slug": "fiji" },
+  { "name": "Finland", "code": "FI", "emoji": "\ud83c\uddeb\ud83c\uddee", "dialCodes": ["+358"], "slug": "finland" },
+  { "name": "France", "code": "FR", "emoji": "\ud83c\uddeb\ud83c\uddf7", "dialCodes": ["+33"], "slug": "france" },
+  {
+    "name": "French Guiana",
+    "code": "GF",
+    "emoji": "\ud83c\uddec\ud83c\uddeb",
+    "dialCodes": ["+594"],
+    "slug": "french-guiana"
+  },
+  {
+    "name": "French Polynesia",
+    "code": "PF",
+    "emoji": "\ud83c\uddf5\ud83c\uddeb",
+    "dialCodes": ["+689"],
+    "slug": "french-polynesia"
+  },
+  {
+    "name": "French Southern Territories",
+    "code": "TF",
+    "emoji": "\ud83c\uddf9\ud83c\uddeb",
+    "slug": "french-southern-territories"
+  },
+  { "name": "Gabon", "code": "GA", "emoji": "\ud83c\uddec\ud83c\udde6", "dialCodes": ["+241"], "slug": "gabon" },
+  { "name": "Gambia", "code": "GM", "emoji": "\ud83c\uddec\ud83c\uddf2", "dialCodes": ["+220"], "slug": "gambia" },
+  { "name": "Georgia", "code": "GE", "emoji": "\ud83c\uddec\ud83c\uddea", "dialCodes": ["+995"], "slug": "georgia" },
+  { "name": "Germany", "code": "DE", "emoji": "\ud83c\udde9\ud83c\uddea", "dialCodes": ["+49"], "slug": "germany" },
+  { "name": "Ghana", "code": "GH", "emoji": "\ud83c\uddec\ud83c\udded", "dialCodes": ["+233"], "slug": "ghana" },
+  {
+    "name": "Gibraltar",
+    "code": "GI",
+    "emoji": "\ud83c\uddec\ud83c\uddee",
+    "dialCodes": ["+350"],
+    "slug": "gibraltar"
+  },
+  { "name": "Greece", "code": "GR", "emoji": "\ud83c\uddec\ud83c\uddf7", "dialCodes": ["+30"], "slug": "greece" },
+  {
+    "name": "Greenland",
+    "code": "GL",
+    "emoji": "\ud83c\uddec\ud83c\uddf1",
+    "dialCodes": ["+299"],
+    "slug": "greenland"
+  },
+  { "name": "Grenada", "code": "GD", "emoji": "\ud83c\uddec\ud83c\udde9", "dialCodes": ["+1473"], "slug": "grenada" },
+  {
+    "name": "Guadeloupe",
+    "code": "GP",
+    "emoji": "\ud83c\uddec\ud83c\uddf5",
+    "dialCodes": ["+590"],
+    "slug": "guadeloupe"
+  },
+  { "name": "Guam", "code": "GU", "emoji": "\ud83c\uddec\ud83c\uddfa", "dialCodes": ["+1671"], "slug": "guam" },
+  {
+    "name": "Guatemala",
+    "code": "GT",
+    "emoji": "\ud83c\uddec\ud83c\uddf9",
+    "dialCodes": ["+502"],
+    "slug": "guatemala"
+  },
+  { "name": "Guernsey", "code": "GG", "emoji": "\ud83c\uddec\ud83c\uddec", "dialCodes": ["+44"], "slug": "guernsey" },
+  { "name": "Guinea", "code": "GN", "emoji": "\ud83c\uddec\ud83c\uddf3", "dialCodes": ["+224"], "slug": "guinea" },
+  {
+    "name": "Guinea-Bissau",
+    "code": "GW",
+    "emoji": "\ud83c\uddec\ud83c\uddfc",
+    "dialCodes": ["+245"],
+    "slug": "guinea-bissau"
+  },
+  { "name": "Guyana", "code": "GY", "emoji": "\ud83c\uddec\ud83c\uddfe", "dialCodes": ["+592"], "slug": "guyana" },
+  { "name": "Haiti", "code": "HT", "emoji": "\ud83c\udded\ud83c\uddf9", "dialCodes": ["+509"], "slug": "haiti" },
+  {
+    "name": "Heard & McDonald Islands",
+    "code": "HM",
+    "emoji": "\ud83c\udded\ud83c\uddf2",
+    "slug": "heard-and-mcdonald-islands"
+  },
+  { "name": "Honduras", "code": "HN", "emoji": "\ud83c\udded\ud83c\uddf3", "dialCodes": ["+504"], "slug": "honduras" },
+  {
+    "name": "Hong Kong SAR China",
+    "code": "HK",
+    "emoji": "\ud83c\udded\ud83c\uddf0",
+    "dialCodes": ["+852"],
+    "slug": "hong-kong-sar-china"
+  },
+  { "name": "Hungary", "code": "HU", "emoji": "\ud83c\udded\ud83c\uddfa", "dialCodes": ["+36"], "slug": "hungary" },
+  { "name": "Iceland", "code": "IS", "emoji": "\ud83c\uddee\ud83c\uddf8", "dialCodes": ["+354"], "slug": "iceland" },
+  { "name": "India", "code": "IN", "emoji": "\ud83c\uddee\ud83c\uddf3", "dialCodes": ["+91"], "slug": "india" },
+  { "name": "Indonesia", "code": "ID", "emoji": "\ud83c\uddee\ud83c\udde9", "dialCodes": ["+62"], "slug": "indonesia" },
+  { "name": "Iran", "code": "IR", "emoji": "\ud83c\uddee\ud83c\uddf7", "dialCodes": ["+98"], "slug": "iran" },
+  { "name": "Iraq", "code": "IQ", "emoji": "\ud83c\uddee\ud83c\uddf6", "dialCodes": ["+964"], "slug": "iraq" },
+  { "name": "Ireland", "code": "IE", "emoji": "\ud83c\uddee\ud83c\uddea", "dialCodes": ["+353"], "slug": "ireland" },
+  {
+    "name": "Isle of Man",
+    "code": "IM",
+    "emoji": "\ud83c\uddee\ud83c\uddf2",
+    "dialCodes": ["+44"],
+    "slug": "isle-of-man"
+  },
+  { "name": "Israel", "code": "IL", "emoji": "\ud83c\uddee\ud83c\uddf1", "dialCodes": ["+972"], "slug": "israel" },
+  { "name": "Italy", "code": "IT", "emoji": "\ud83c\uddee\ud83c\uddf9", "dialCodes": ["+39"], "slug": "italy" },
+  { "name": "Jamaica", "code": "JM", "emoji": "\ud83c\uddef\ud83c\uddf2", "dialCodes": ["+1 876"], "slug": "jamaica" },
+  { "name": "Japan", "code": "JP", "emoji": "\ud83c\uddef\ud83c\uddf5", "dialCodes": ["+81"], "slug": "japan" },
+  { "name": "Jersey", "code": "JE", "emoji": "\ud83c\uddef\ud83c\uddea", "dialCodes": ["+44"], "slug": "jersey" },
+  { "name": "Jordan", "code": "JO", "emoji": "\ud83c\uddef\ud83c\uddf4", "dialCodes": ["+962"], "slug": "jordan" },
+  {
+    "name": "Kazakhstan",
+    "code": "KZ",
+    "emoji": "\ud83c\uddf0\ud83c\uddff",
+    "dialCodes": ["+7"],
+    "slug": "kazakhstan"
+  },
+  { "name": "Kenya", "code": "KE", "emoji": "\ud83c\uddf0\ud83c\uddea", "dialCodes": ["+254"], "slug": "kenya" },
+  { "name": "Kiribati", "code": "KI", "emoji": "\ud83c\uddf0\ud83c\uddee", "dialCodes": ["+686"], "slug": "kiribati" },
+  { "name": "Kosovo", "code": "XK", "emoji": "\ud83c\uddfd\ud83c\uddf0", "dialCodes": ["+383"], "slug": "kosovo" },
+  { "name": "Kuwait", "code": "KW", "emoji": "\ud83c\uddf0\ud83c\uddfc", "dialCodes": ["+965"], "slug": "kuwait" },
+  {
+    "name": "Kyrgyzstan",
+    "code": "KG",
+    "emoji": "\ud83c\uddf0\ud83c\uddec",
+    "dialCodes": ["+996"],
+    "slug": "kyrgyzstan"
+  },
+  { "name": "Laos", "code": "LA", "emoji": "\ud83c\uddf1\ud83c\udde6", "dialCodes": ["+856"], "slug": "laos" },
+  { "name": "Latvia", "code": "LV", "emoji": "\ud83c\uddf1\ud83c\uddfb", "dialCodes": ["+371"], "slug": "latvia" },
+  { "name": "Lebanon", "code": "LB", "emoji": "\ud83c\uddf1\ud83c\udde7", "dialCodes": ["+961"], "slug": "lebanon" },
+  { "name": "Lesotho", "code": "LS", "emoji": "\ud83c\uddf1\ud83c\uddf8", "dialCodes": ["+266"], "slug": "lesotho" },
+  { "name": "Liberia", "code": "LR", "emoji": "\ud83c\uddf1\ud83c\uddf7", "dialCodes": ["+231"], "slug": "liberia" },
+  { "name": "Libya", "code": "LY", "emoji": "\ud83c\uddf1\ud83c\uddfe", "dialCodes": ["+218"], "slug": "libya" },
+  {
+    "name": "Liechtenstein",
+    "code": "LI",
+    "emoji": "\ud83c\uddf1\ud83c\uddee",
+    "dialCodes": ["+423"],
+    "slug": "liechtenstein"
+  },
+  {
+    "name": "Lithuania",
+    "code": "LT",
+    "emoji": "\ud83c\uddf1\ud83c\uddf9",
+    "dialCodes": ["+370"],
+    "slug": "lithuania"
+  },
+  {
+    "name": "Luxembourg",
+    "code": "LU",
+    "emoji": "\ud83c\uddf1\ud83c\uddfa",
+    "dialCodes": ["+352"],
+    "slug": "luxembourg"
+  },
+  {
+    "name": "Macao SAR China",
+    "code": "MO",
+    "emoji": "\ud83c\uddf2\ud83c\uddf4",
+    "dialCodes": ["+853"],
+    "slug": "macao-sar-china"
+  },
+  {
+    "name": "Madagascar",
+    "code": "MG",
+    "emoji": "\ud83c\uddf2\ud83c\uddec",
+    "dialCodes": ["+261"],
+    "slug": "madagascar"
+  },
+  { "name": "Malawi", "code": "MW", "emoji": "\ud83c\uddf2\ud83c\uddfc", "dialCodes": ["+265"], "slug": "malawi" },
+  { "name": "Malaysia", "code": "MY", "emoji": "\ud83c\uddf2\ud83c\uddfe", "dialCodes": ["+60"], "slug": "malaysia" },
+  { "name": "Maldives", "code": "MV", "emoji": "\ud83c\uddf2\ud83c\uddfb", "dialCodes": ["+960"], "slug": "maldives" },
+  { "name": "Mali", "code": "ML", "emoji": "\ud83c\uddf2\ud83c\uddf1", "dialCodes": ["+223"], "slug": "mali" },
+  { "name": "Malta", "code": "MT", "emoji": "\ud83c\uddf2\ud83c\uddf9", "dialCodes": ["+356"], "slug": "malta" },
+  {
+    "name": "Marshall Islands",
+    "code": "MH",
+    "emoji": "\ud83c\uddf2\ud83c\udded",
+    "dialCodes": ["+692"],
+    "slug": "marshall-islands"
+  },
+  {
+    "name": "Martinique",
+    "code": "MQ",
+    "emoji": "\ud83c\uddf2\ud83c\uddf6",
+    "dialCodes": ["+596"],
+    "slug": "martinique"
+  },
+  {
+    "name": "Mauritania",
+    "code": "MR",
+    "emoji": "\ud83c\uddf2\ud83c\uddf7",
+    "dialCodes": ["+222"],
+    "slug": "mauritania"
+  },
+  {
+    "name": "Mauritius",
+    "code": "MU",
+    "emoji": "\ud83c\uddf2\ud83c\uddfa",
+    "dialCodes": ["+230"],
+    "slug": "mauritius"
+  },
+  { "name": "Mayotte", "code": "YT", "emoji": "\ud83c\uddfe\ud83c\uddf9", "dialCodes": ["+262"], "slug": "mayotte" },
+  { "name": "Mexico", "code": "MX", "emoji": "\ud83c\uddf2\ud83c\uddfd", "dialCodes": ["+52"], "slug": "mexico" },
+  {
+    "name": "Micronesia",
+    "code": "FM",
+    "emoji": "\ud83c\uddeb\ud83c\uddf2",
+    "dialCodes": ["+691"],
+    "slug": "micronesia"
+  },
+  { "name": "Moldova", "code": "MD", "emoji": "\ud83c\uddf2\ud83c\udde9", "dialCodes": ["+373"], "slug": "moldova" },
+  { "name": "Monaco", "code": "MC", "emoji": "\ud83c\uddf2\ud83c\udde8", "dialCodes": ["+377"], "slug": "monaco" },
+  { "name": "Mongolia", "code": "MN", "emoji": "\ud83c\uddf2\ud83c\uddf3", "dialCodes": ["+976"], "slug": "mongolia" },
+  {
+    "name": "Montenegro",
+    "code": "ME",
+    "emoji": "\ud83c\uddf2\ud83c\uddea",
+    "dialCodes": ["+382"],
+    "slug": "montenegro"
+  },
+  {
+    "name": "Montserrat",
+    "code": "MS",
+    "emoji": "\ud83c\uddf2\ud83c\uddf8",
+    "dialCodes": ["+1 664"],
+    "slug": "montserrat"
+  },
+  { "name": "Morocco", "code": "MA", "emoji": "\ud83c\uddf2\ud83c\udde6", "dialCodes": ["+212"], "slug": "morocco" },
+  {
+    "name": "Mozambique",
+    "code": "MZ",
+    "emoji": "\ud83c\uddf2\ud83c\uddff",
+    "dialCodes": ["+258"],
+    "slug": "mozambique"
+  },
+  {
+    "name": "Myanmar (Burma)",
+    "code": "MM",
+    "emoji": "\ud83c\uddf2\ud83c\uddf2",
+    "dialCodes": ["+95"],
+    "slug": "myanmar-(burma)"
+  },
+  { "name": "Namibia", "code": "NA", "emoji": "\ud83c\uddf3\ud83c\udde6", "dialCodes": ["+264"], "slug": "namibia" },
+  { "name": "Nauru", "code": "NR", "emoji": "\ud83c\uddf3\ud83c\uddf7", "dialCodes": ["+674"], "slug": "nauru" },
+  { "name": "Nepal", "code": "NP", "emoji": "\ud83c\uddf3\ud83c\uddf5", "dialCodes": ["+977"], "slug": "nepal" },
+  {
+    "name": "Netherlands",
+    "code": "NL",
+    "emoji": "\ud83c\uddf3\ud83c\uddf1",
+    "dialCodes": ["+31"],
+    "slug": "netherlands"
+  },
+  {
+    "name": "New Caledonia",
+    "code": "NC",
+    "emoji": "\ud83c\uddf3\ud83c\udde8",
+    "dialCodes": ["+687"],
+    "slug": "new-caledonia"
+  },
+  {
+    "name": "New Zealand",
+    "code": "NZ",
+    "emoji": "\ud83c\uddf3\ud83c\uddff",
+    "dialCodes": ["+64"],
+    "slug": "new-zealand"
+  },
+  {
+    "name": "Nicaragua",
+    "code": "NI",
+    "emoji": "\ud83c\uddf3\ud83c\uddee",
+    "dialCodes": ["+505"],
+    "slug": "nicaragua"
+  },
+  { "name": "Niger", "code": "NE", "emoji": "\ud83c\uddf3\ud83c\uddea", "dialCodes": ["+227"], "slug": "niger" },
+  { "name": "Nigeria", "code": "NG", "emoji": "\ud83c\uddf3\ud83c\uddec", "dialCodes": ["+234"], "slug": "nigeria" },
+  { "name": "Niue", "code": "NU", "emoji": "\ud83c\uddf3\ud83c\uddfa", "dialCodes": ["+683"], "slug": "niue" },
+  {
+    "name": "Norfolk Island",
+    "code": "NF",
+    "emoji": "\ud83c\uddf3\ud83c\uddeb",
+    "dialCodes": ["+672"],
+    "slug": "norfolk-island"
+  },
+  {
+    "name": "North Korea",
+    "code": "KP",
+    "emoji": "\ud83c\uddf0\ud83c\uddf5",
+    "dialCodes": ["+850"],
+    "slug": "north-korea"
+  },
+  {
+    "name": "Northern Mariana Islands",
+    "code": "MP",
+    "emoji": "\ud83c\uddf2\ud83c\uddf5",
+    "dialCodes": ["+1 670"],
+    "slug": "northern-mariana-islands"
+  },
+  { "name": "Norway", "code": "NO", "emoji": "\ud83c\uddf3\ud83c\uddf4", "dialCodes": ["+47"], "slug": "norway" },
+  { "name": "Oman", "code": "OM", "emoji": "\ud83c\uddf4\ud83c\uddf2", "dialCodes": ["+968"], "slug": "oman" },
+  { "name": "Pakistan", "code": "PK", "emoji": "\ud83c\uddf5\ud83c\uddf0", "dialCodes": ["+92"], "slug": "pakistan" },
+  { "name": "Palau", "code": "PW", "emoji": "\ud83c\uddf5\ud83c\uddfc", "dialCodes": ["+680"], "slug": "palau" },
+  {
+    "name": "Palestinian Territories",
+    "code": "PS",
+    "emoji": "\ud83c\uddf5\ud83c\uddf8",
+    "dialCodes": ["+970"],
+    "slug": "palestinian-territories"
+  },
+  { "name": "Panama", "code": "PA", "emoji": "\ud83c\uddf5\ud83c\udde6", "dialCodes": ["+507"], "slug": "panama" },
+  {
+    "name": "Papua New Guinea",
+    "code": "PG",
+    "emoji": "\ud83c\uddf5\ud83c\uddec",
+    "dialCodes": ["+675"],
+    "slug": "papua-new-guinea"
+  },
+  { "name": "Paraguay", "code": "PY", "emoji": "\ud83c\uddf5\ud83c\uddfe", "dialCodes": ["+595"], "slug": "paraguay" },
+  { "name": "Peru", "code": "PE", "emoji": "\ud83c\uddf5\ud83c\uddea", "dialCodes": ["+51"], "slug": "peru" },
+  {
+    "name": "Philippines",
+    "code": "PH",
+    "emoji": "\ud83c\uddf5\ud83c\udded",
+    "dialCodes": ["+63"],
+    "slug": "philippines"
+  },
+  {
+    "name": "Pitcairn Islands",
+    "code": "PN",
+    "emoji": "\ud83c\uddf5\ud83c\uddf3",
+    "dialCodes": ["+64"],
+    "slug": "pitcairn-islands"
+  },
+  { "name": "Poland", "code": "PL", "emoji": "\ud83c\uddf5\ud83c\uddf1", "dialCodes": ["+48"], "slug": "poland" },
+  { "name": "Portugal", "code": "PT", "emoji": "\ud83c\uddf5\ud83c\uddf9", "dialCodes": ["+351"], "slug": "portugal" },
+  {
+    "name": "Puerto Rico",
+    "code": "PR",
+    "emoji": "\ud83c\uddf5\ud83c\uddf7",
+    "dialCodes": ["+1 787"],
+    "slug": "puerto-rico"
+  },
+  { "name": "Qatar", "code": "QA", "emoji": "\ud83c\uddf6\ud83c\udde6", "dialCodes": ["+974"], "slug": "qatar" },
+  {
+    "name": "R\u00e9union",
+    "code": "RE",
+    "emoji": "\ud83c\uddf7\ud83c\uddea",
+    "dialCodes": ["+262"],
+    "slug": "reunion"
+  },
+  { "name": "Romania", "code": "RO", "emoji": "\ud83c\uddf7\ud83c\uddf4", "dialCodes": ["+40"], "slug": "romania" },
+  { "name": "Russia", "code": "RU", "emoji": "\ud83c\uddf7\ud83c\uddfa", "dialCodes": ["+7"], "slug": "russia" },
+  { "name": "Rwanda", "code": "RW", "emoji": "\ud83c\uddf7\ud83c\uddfc", "dialCodes": ["+250"], "slug": "rwanda" },
+  { "name": "Saint Barth\u00e9lemy", "code": "BL", "emoji": "\ud83c\udde7\ud83c\uddf1", "slug": "saint-barthelemy" },
+  {
+    "name": "Saint Helena",
+    "code": "SH",
+    "emoji": "\ud83c\uddf8\ud83c\udded",
+    "dialCodes": ["+290"],
+    "slug": "saint-helena"
+  },
+  {
+    "name": "Saint Kitts & Nevis",
+    "code": "KN",
+    "emoji": "\ud83c\uddf0\ud83c\uddf3",
+    "dialCodes": ["+1 869"],
+    "slug": "saint-kitts-and-nevis"
+  },
+  {
+    "name": "Saint Lucia",
+    "code": "LC",
+    "emoji": "\ud83c\uddf1\ud83c\udde8",
+    "dialCodes": ["+1 758"],
+    "slug": "saint-lucia"
+  },
+  { "name": "Saint Martin", "code": "MF", "emoji": "\ud83c\uddf2\ud83c\uddeb", "slug": "saint-martin" },
+  {
+    "name": "Saint Pierre & Miquelon",
+    "code": "PM",
+    "emoji": "\ud83c\uddf5\ud83c\uddf2",
+    "dialCodes": ["+508"],
+    "slug": "saint-pierre-and-miquelon"
+  },
+  { "name": "Samoa", "code": "WS", "emoji": "\ud83c\uddfc\ud83c\uddf8", "dialCodes": ["+685"], "slug": "samoa" },
+  {
+    "name": "San Marino",
+    "code": "SM",
+    "emoji": "\ud83c\uddf8\ud83c\uddf2",
+    "dialCodes": ["+378"],
+    "slug": "san-marino"
+  },
+  {
+    "name": "Sao Tome & Principe",
+    "code": "ST",
+    "emoji": "\ud83c\uddf8\ud83c\uddf9",
+    "dialCodes": ["+239"],
+    "slug": "sao-tome-and-principe"
+  },
+  {
+    "name": "Saudi Arabia",
+    "code": "SA",
+    "emoji": "\ud83c\uddf8\ud83c\udde6",
+    "dialCodes": ["+966"],
+    "slug": "saudi-arabia"
+  },
+  { "name": "Senegal", "code": "SN", "emoji": "\ud83c\uddf8\ud83c\uddf3", "dialCodes": ["+221"], "slug": "senegal" },
+  { "name": "Serbia", "code": "RS", "emoji": "\ud83c\uddf7\ud83c\uddf8", "dialCodes": ["+381"], "slug": "serbia" },
+  {
+    "name": "Seychelles",
+    "code": "SC",
+    "emoji": "\ud83c\uddf8\ud83c\udde8",
+    "dialCodes": ["+248"],
+    "slug": "seychelles"
+  },
+  {
+    "name": "Sierra Leone",
+    "code": "SL",
+    "emoji": "\ud83c\uddf8\ud83c\uddf1",
+    "dialCodes": ["+232"],
+    "slug": "sierra-leone"
+  },
+  { "name": "Singapore", "code": "SG", "emoji": "\ud83c\uddf8\ud83c\uddec", "dialCodes": ["+65"], "slug": "singapore" },
+  {
+    "name": "Sint Maarten",
+    "code": "SX",
+    "emoji": "\ud83c\uddf8\ud83c\uddfd",
+    "dialCodes": ["+1 721"],
+    "slug": "sint-maarten"
+  },
+  { "name": "Slovakia", "code": "SK", "emoji": "\ud83c\uddf8\ud83c\uddf0", "dialCodes": ["+421"], "slug": "slovakia" },
+  { "name": "Slovenia", "code": "SI", "emoji": "\ud83c\uddf8\ud83c\uddee", "dialCodes": ["+386"], "slug": "slovenia" },
+  {
+    "name": "Solomon Islands",
+    "code": "SB",
+    "emoji": "\ud83c\uddf8\ud83c\udde7",
+    "dialCodes": ["+677"],
+    "slug": "solomon-islands"
+  },
+  { "name": "Somalia", "code": "SO", "emoji": "\ud83c\uddf8\ud83c\uddf4", "dialCodes": ["+252"], "slug": "somalia" },
+  {
+    "name": "South Africa",
+    "code": "ZA",
+    "emoji": "\ud83c\uddff\ud83c\udde6",
+    "dialCodes": ["+27"],
+    "slug": "south-africa"
+  },
+  {
+    "name": "South Georgia & South Sandwich Islands",
+    "code": "GS",
+    "emoji": "\ud83c\uddec\ud83c\uddf8",
+    "slug": "south-georgia-and-south-sandwich-islands"
+  },
+  {
+    "name": "South Korea",
+    "code": "KR",
+    "emoji": "\ud83c\uddf0\ud83c\uddf7",
+    "dialCodes": ["+82"],
+    "slug": "south-korea"
+  },
+  {
+    "name": "South Sudan",
+    "code": "SS",
+    "emoji": "\ud83c\uddf8\ud83c\uddf8",
+    "dialCodes": ["+211"],
+    "slug": "south-sudan"
+  },
+  { "name": "Spain", "code": "ES", "emoji": "\ud83c\uddea\ud83c\uddf8", "dialCodes": ["+34"], "slug": "spain" },
+  { "name": "Sri Lanka", "code": "LK", "emoji": "\ud83c\uddf1\ud83c\uddf0", "dialCodes": ["+94"], "slug": "sri-lanka" },
+  { "name": "Sudan", "code": "SD", "emoji": "\ud83c\uddf8\ud83c\udde9", "dialCodes": ["+249"], "slug": "sudan" },
+  { "name": "Suriname", "code": "SR", "emoji": "\ud83c\uddf8\ud83c\uddf7", "dialCodes": ["+597"], "slug": "suriname" },
+  {
+    "name": "Svalbard & Jan Mayen",
+    "code": "SJ",
+    "emoji": "\ud83c\uddf8\ud83c\uddef",
+    "slug": "svalbard-and-jan-mayen"
+  },
+  { "name": "Sweden", "code": "SE", "emoji": "\ud83c\uddf8\ud83c\uddea", "dialCodes": ["+46"], "slug": "sweden" },
+  {
+    "name": "Switzerland",
+    "code": "CH",
+    "emoji": "\ud83c\udde8\ud83c\udded",
+    "dialCodes": ["+41"],
+    "slug": "switzerland"
+  },
+  { "name": "Syria", "code": "SY", "emoji": "\ud83c\uddf8\ud83c\uddfe", "dialCodes": ["+963"], "slug": "syria" },
+  { "name": "Taiwan", "code": "TW", "emoji": "\ud83c\uddf9\ud83c\uddfc", "dialCodes": ["+886"], "slug": "taiwan" },
+  {
+    "name": "Tajikistan",
+    "code": "TJ",
+    "emoji": "\ud83c\uddf9\ud83c\uddef",
+    "dialCodes": ["+992"],
+    "slug": "tajikistan"
+  },
+  { "name": "Tanzania", "code": "TZ", "emoji": "\ud83c\uddf9\ud83c\uddff", "dialCodes": ["+255"], "slug": "tanzania" },
+  { "name": "Thailand", "code": "TH", "emoji": "\ud83c\uddf9\ud83c\udded", "dialCodes": ["+66"], "slug": "thailand" },
+  {
+    "name": "Timor-Leste",
+    "code": "TL",
+    "emoji": "\ud83c\uddf9\ud83c\uddf1",
+    "dialCodes": ["+670"],
+    "slug": "timor-leste"
+  },
+  { "name": "Togo", "code": "TG", "emoji": "\ud83c\uddf9\ud83c\uddec", "dialCodes": ["+228"], "slug": "togo" },
+  { "name": "Tokelau", "code": "TK", "emoji": "\ud83c\uddf9\ud83c\uddf0", "dialCodes": ["+690"], "slug": "tokelau" },
+  { "name": "Tonga", "code": "TO", "emoji": "\ud83c\uddf9\ud83c\uddf4", "dialCodes": ["+676"], "slug": "tonga" },
+  {
+    "name": "Trinidad & Tobago",
+    "code": "TT",
+    "emoji": "\ud83c\uddf9\ud83c\uddf9",
+    "dialCodes": ["+1 868"],
+    "slug": "trinidad-and-tobago"
+  },
+  { "name": "Tunisia", "code": "TN", "emoji": "\ud83c\uddf9\ud83c\uddf3", "dialCodes": ["+216"], "slug": "tunisia" },
+  { "name": "Turkey", "code": "TR", "emoji": "\ud83c\uddf9\ud83c\uddf7", "dialCodes": ["+90"], "slug": "turkey" },
+  {
+    "name": "Turkmenistan",
+    "code": "TM",
+    "emoji": "\ud83c\uddf9\ud83c\uddf2",
+    "dialCodes": ["+993"],
+    "slug": "turkmenistan"
+  },
+  {
+    "name": "Turks & Caicos Islands",
+    "code": "TC",
+    "emoji": "\ud83c\uddf9\ud83c\udde8",
+    "dialCodes": ["+1 649"],
+    "slug": "turks-and-caicos-islands"
+  },
+  { "name": "Tuvalu", "code": "TV", "emoji": "\ud83c\uddf9\ud83c\uddfb", "dialCodes": ["+688"], "slug": "tuvalu" },
+  { "name": "Uganda", "code": "UG", "emoji": "\ud83c\uddfa\ud83c\uddec", "dialCodes": ["+256"], "slug": "uganda" },
+  { "name": "Ukraine", "code": "UA", "emoji": "\ud83c\uddfa\ud83c\udde6", "dialCodes": ["+380"], "slug": "ukraine" },
+  {
+    "name": "United Arab Emirates",
+    "code": "AE",
+    "emoji": "\ud83c\udde6\ud83c\uddea",
+    "dialCodes": ["+971"],
+    "slug": "united-arab-emirates"
+  },
+  {
+    "name": "United Kingdom",
+    "code": "GB",
+    "emoji": "\ud83c\uddec\ud83c\udde7",
+    "dialCodes": ["+44"],
+    "slug": "united-kingdom"
+  },
+  {
+    "name": "United States",
+    "code": "US",
+    "emoji": "\ud83c\uddfa\ud83c\uddf8",
+    "dialCodes": ["+1"],
+    "slug": "united-states"
+  },
+  { "name": "Uruguay", "code": "UY", "emoji": "\ud83c\uddfa\ud83c\uddfe", "dialCodes": ["+598"], "slug": "uruguay" },
+  {
+    "name": "Uzbekistan",
+    "code": "UZ",
+    "emoji": "\ud83c\uddfa\ud83c\uddff",
+    "dialCodes": ["+998"],
+    "slug": "uzbekistan"
+  },
+  { "name": "Vanuatu", "code": "VU", "emoji": "\ud83c\uddfb\ud83c\uddfa", "dialCodes": ["+678"], "slug": "vanuatu" },
+  {
+    "name": "Vatican City",
+    "code": "VA",
+    "emoji": "\ud83c\uddfb\ud83c\udde6",
+    "dialCodes": ["+379"],
+    "slug": "vatican-city"
+  },
+  { "name": "Venezuela", "code": "VE", "emoji": "\ud83c\uddfb\ud83c\uddea", "dialCodes": ["+58"], "slug": "venezuela" },
+  { "name": "Vietnam", "code": "VN", "emoji": "\ud83c\uddfb\ud83c\uddf3", "dialCodes": ["+84"], "slug": "vietnam" },
+  {
+    "name": "Wallis & Futuna",
+    "code": "WF",
+    "emoji": "\ud83c\uddfc\ud83c\uddeb",
+    "dialCodes": ["+681"],
+    "slug": "wallis-and-futuna"
+  }
+]

@@ -1,22 +1,17 @@
 <template>
   <div
     class="bone-wrapper wrapper-bone"
-    :class="
-      { 'has-subbones': state.bonestructure['using'],
-        'label-top': label==='top',
-        'label-hide': ['hide','placeholder'].includes(label),
-        [`wrapper-bone-${state.bonestructure['type'].split('.')[0]}`]:true,
-        [`wrapper-bone-${name}`]:true
-      }
-    "
+    :class="{
+      'has-subbones': state.bonestructure['using'],
+      'label-top': label === 'top',
+      'label-hide': ['hide', 'placeholder'].includes(label),
+      [`wrapper-bone-${state.bonestructure['type'].split('.')[0]}`]: true,
+      [`wrapper-bone-${name}`]: true,
+    }"
   >
-    <bone-label :name="name" v-if="!['hide','placeholder'].includes(label)">
+    <bone-label v-if="!['hide', 'placeholder'].includes(label)" :name="name">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
-      <span
-        v-if="state.required"
-        class="required"
-      >
-        *</span>
+      <span v-if="state.required" class="required">*</span>
       <sl-tooltip
         v-if="state.hasTooltip && !showLabelInfo"
         :content="state.bonestructure.params['tooltip']"
@@ -28,78 +23,64 @@
       </sl-tooltip>
     </bone-label>
 
-    <sl-alert
-      v-if="showLabelInfo && state.hasTooltip"
-      variant="info"
-      open
-      class="label-info"
-    >
-      <sl-icon
-        slot="icon"
-        name="info-circle-fill"
-      ></sl-icon>
+    <sl-alert v-if="showLabelInfo && state.hasTooltip" variant="info" open class="label-info">
+      <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
       {{ state.bonestructure.params["tooltip"] }}
     </sl-alert>
-    <sl-tooltip class="bone-tooltip" :disabled="!state.showtooltip" :content="state.bonestructure?.['descr']" style="--show-delay:1000;">
-      <div class="bone-inner-wrap wrapper-bone-widget"
-      :class="(
-        [`wrapper-bone-widget-${name}`]
-      )"
+    <sl-tooltip
+      class="bone-tooltip"
+      :disabled="!state.showtooltip"
+      :content="state.bonestructure?.['descr']"
+      style="--show-delay: 1000"
     >
-      <div class="wrapper-bone-row">
-
-
-        <sl-select style="width:100px" hoist :value="state.currentLanguage" @sl-change="updateLanguage" v-if="state.multilanguage">
-          <sl-option v-for="lang in state.languages" :value="lang">{{ $t(lang) }}</sl-option>
-        </sl-select>
+      <div class="bone-inner-wrap wrapper-bone-widget" :class="[`wrapper-bone-widget-${name}`]">
         <div class="wrapper-bone-row">
-          <div class="wrapper-bone-block">
-            <component
-              :is="is"
-              :value="state.bonevalue"
-              :name="name"
-              :index="null"
-              :bone="state.bonestructure"
-              :autofocus="autofocus"
-              @change="updateValue"
-              @keypress.enter="updateValue"
-            ></component>
-          </div>
-          <bone-actions v-if="state.boneactions"
-              :value="state.bonevalue"
-              :name="name"
-              :index="null"
-              :bone="state.bonestructure"
-              @change="updateValue"
-
-          ></bone-actions>
-        </div>
-      </div>
-      <template v-if="errorStyle==='default'">
-        <sl-alert
-          v-for="message in state.errorMessages"
-          open
-          summary="Errors"
-          variant="danger"
-          class="error-msg"
-        >
-          <sl-icon
-            slot="icon"
-            name="exclamation-triangle"
+          <sl-select
+            v-if="state.multilanguage"
+            style="width: 100px"
+            hoist
+            :value="state.currentLanguage"
+            @sl-change="updateLanguage"
           >
-          </sl-icon>
-          <div class="error-msg">
+            <sl-option v-for="lang in state.languages" :value="lang">{{ $t(lang) }}</sl-option>
+          </sl-select>
+          <div class="wrapper-bone-row">
+            <div class="wrapper-bone-block">
+              <component
+                :is="is"
+                :value="state.bonevalue"
+                :name="name"
+                :index="null"
+                :bone="state.bonestructure"
+                :autofocus="autofocus"
+                @change="updateValue"
+                @keypress.enter="updateValue"
+              ></component>
+            </div>
+            <bone-actions
+              v-if="state.boneactions"
+              :value="state.bonevalue"
+              :name="name"
+              :index="null"
+              :bone="state.bonestructure"
+              @change="updateValue"
+            ></bone-actions>
+          </div>
+        </div>
+        <template v-if="errorStyle === 'default'">
+          <sl-alert v-for="message in state.errorMessages" open summary="Errors" variant="danger" class="error-msg">
+            <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
+            <div class="error-msg">
+              {{ $t(`errors.${message}`) }}
+            </div>
+          </sl-alert>
+        </template>
+        <template v-else>
+          <div v-for="message in state.errorMessages" style="font-size: 0.8em; color: red">
             {{ $t(`errors.${message}`) }}
           </div>
-        </sl-alert>
-      </template>
-      <template v-else>
-      <div v-for="message in state.errorMessages" style="font-size:0.8em;color:red;">
-        {{ $t(`errors.${message}`) }}
+        </template>
       </div>
-      </template>
-
-    </div>
     </sl-tooltip>
   </div>
 </template>
@@ -114,308 +95,300 @@ import {
   getCurrentInstance,
   onMounted,
   watch,
-  ref
+  ref,
 } from "vue"
 import wrapperMultiple from "./wrapper_multiple.vue"
 import BoneLabel from "./boneLabel.vue"
 import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
 import rawBone from "./default/rawBone.vue"
 import Utils from "../utils"
-import { VueDraggable } from 'vue-draggable-plus'
-import BoneActions from "./boneActions.vue";
+import { VueDraggable } from "vue-draggable-plus"
+import BoneActions from "./boneActions.vue"
 
-  const emit = defineEmits(["change", "change-internal", "handleClick"])
+const emit = defineEmits(["change", "change-internal", "handleClick"])
 
-  const props = defineProps({
-    is: {
-      type: Object,
-      default: rawBone
+const props = defineProps({
+  is: {
+    type: Object,
+    default: rawBone,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  languages: Array,
+  multiple: Boolean,
+  readonly: Boolean,
+  required: Boolean,
+  params: Object,
+  value: [Object, String, Number, Boolean, Array],
+  structure: {
+    type: Object,
+    required: true,
+  },
+  skel: {
+    type: null,
+    required: true,
+  },
+  errors: Object,
+  label: {
+    type: String,
+    default: "normal",
+    validator(value, props) {
+      return ["normal", "top", "hide", "placeholder"].includes(value)
     },
-    name: {
-      type: String,
-      required: true
+  },
+  boneactions: { type: Boolean, default: false },
+  showLabelInfo: { type: Boolean, required: false, default: false },
+  autofocus: { type: Boolean, required: false, default: false },
+  defaultLanguage: { type: String, default: "de" },
+  showBoneTooltip: { type: Boolean, required: false, default: false },
+  errorStyle: {
+    type: String,
+    default: "default",
+    validator(value, props) {
+      return ["default", "decent"].includes(value)
     },
-    languages: Array,
-    multiple: Boolean,
-    readonly: Boolean,
-    required: Boolean,
-    params: Object,
-    value: [Object, String, Number, Boolean, Array],
-    structure: {
-      type: Object,
-      required: true
-    },
-    skel: {
-      type: null,
-      required: true
-    },
-    errors: Object,
-    label:{
-      type:String,
-      default:"normal",
-      validator(value,props){
-        return ["normal","top","hide","placeholder"].includes(value)
-      }
-    },
-    boneactions:{type:Boolean, default:false},
-    showLabelInfo: { type: Boolean, required: false, default: false },
-    autofocus: { type: Boolean, required: false, default: false },
-    defaultLanguage: {type:String,default:"de"},
-    showBoneTooltip: { type: Boolean, required: false, default: false },
-    errorStyle:{
-      type:String,
-      default:"default",
-      validator(value,props){
-        return ["default","decent"].includes(value)
-      }
+  },
+})
+const state = reactive({
+  boneactions: computed(() => props.boneactions),
+  bonestructure: computed(() => {
+    let struct = props.structure?.[props.name]
+    struct["multiple"] = false
+    return struct
+  }),
+  bonevalue: null,
+  multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
+  languages: computed(() => {
+    if (props.languages) {
+      return props.languages
     }
-  })
-    const state = reactive({
-      boneactions:computed(()=>props.boneactions),
-      bonestructure: computed(() => {
-        let struct = props.structure?.[props.name]
-        struct["multiple"] = false
-        return struct
-      }),
-      bonevalue: null,
-      multilanguage: computed(() => state.languages?.length && state.languages.length > 0),
-      languages: computed(() => {
-        if (props.languages) {
-          return props.languages
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("languages")
-          ? state.bonestructure["languages"]
-          : []
-      }),
-      readonly: computed(() => {
-        if (props.readonly) {
-          return props.readonly
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("readonly")
-          ? state.bonestructure["readonly"]
-          : false
-      }),
-      required: computed(() => {
-        if (props.required) {
-          return props.required
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("required")
-          ? state.bonestructure["required"]
-          : false
-      }),
-      hasTooltip: computed(() => {
-        return state.bonestructure && Object.keys(state.bonestructure["params"]).includes("tooltip") ? true : false
-      }),
+    return state.bonestructure && Object.keys(state.bonestructure).includes("languages")
+      ? state.bonestructure["languages"]
+      : []
+  }),
+  readonly: computed(() => {
+    if (props.readonly) {
+      return props.readonly
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("readonly")
+      ? state.bonestructure["readonly"]
+      : false
+  }),
+  required: computed(() => {
+    if (props.required) {
+      return props.required
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("required")
+      ? state.bonestructure["required"]
+      : false
+  }),
+  hasTooltip: computed(() => {
+    return state.bonestructure && Object.keys(state.bonestructure["params"]).includes("tooltip") ? true : false
+  }),
 
-      multiple: computed(() => {
-        if (props.multiple) {
-          return props.multiple
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("multiple")
-          ? state.bonestructure["multiple"]
-          : false
-      }),
-      params: computed(() => {
-        if (props.params) {
-          return props.params
-        }
-        return state.bonestructure && Object.keys(state.bonestructure).includes("params")
-          ? state.bonestructure["params"]
-          : {}
-      }),
-      actionbar: computed(() => {
-        return getBoneActionbar(state.bonestructure?.["type"])
-      }),
-      isEmpty: computed(() => {
-        // Function to check if an object is empty
-        function isObjectEmpty(obj) {
-          for (const [key, value] of Object.entries(obj)) {
-            if (value !== null) {
-              if (Array.isArray(value) && value.length > 0) {
-                return false
-              } else if (!Array.isArray(value)) {
-                return false
-              }
-            }
-          }
-          return true
-        }
-
-        // Ignore the computation when the state is readonly
-        if (state.readonly) return false
-
-        // Check for null or undefined values
-        if (!state.bonevalue) return true
-
-        // Check if the value is an array with elements
-        if (Array.isArray(state.bonevalue) && state.bonevalue.length === 0) return true
-
-        // Check if the value is an object and not an array, then use helper function to check if it's empty
-        if (state.bonevalue === Object(state.bonevalue) && !Array.isArray(state.bonevalue))
-          return isObjectEmpty(state.bonevalue)
-
-        return false
-      }),
-
-      errors: [],
-      errorMessages: computed(() => {
-        let errors = []
-        for (let error of props.errors) {
-          if (
-            error["fieldPath"][0] === props.name &&
-            (
-              error["fieldPath"].length===1 ||
-              ((state.multilanguage || state.multiple) && error["fieldPath"].length===2) ||
-              (state.multilanguage && state.multiple && error["fieldPath"].length===3)
-            ) &&
-            (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
-          ) {
-            //severity level???
-            errors.push(error["errorMessage"])
+  multiple: computed(() => {
+    if (props.multiple) {
+      return props.multiple
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("multiple")
+      ? state.bonestructure["multiple"]
+      : false
+  }),
+  params: computed(() => {
+    if (props.params) {
+      return props.params
+    }
+    return state.bonestructure && Object.keys(state.bonestructure).includes("params")
+      ? state.bonestructure["params"]
+      : {}
+  }),
+  actionbar: computed(() => {
+    return getBoneActionbar(state.bonestructure?.["type"])
+  }),
+  isEmpty: computed(() => {
+    // Function to check if an object is empty
+    function isObjectEmpty(obj) {
+      for (const [key, value] of Object.entries(obj)) {
+        if (value !== null) {
+          if (Array.isArray(value) && value.length > 0) {
+            return false
+          } else if (!Array.isArray(value)) {
+            return false
           }
         }
-        return errors
-      }),
-      label: computed(()=>props.label),
-      showtooltip:computed(()=>{
-        if (props.showBoneTooltip){
-          return true
-        }
-        if (['hide','placeholder'].includes(props.label)){
-          return true
-        }
-        return false
-      }),
-      defaultLanguage:computed(()=>props.defaultLanguage),
-      currentLanguage:null
-    })
-    provide("boneState", state)
-
-    function updateValue(
-      name,
-      val,
-      lang= null,
-      index = null,
-      valid = true
-    ) {
-      if (val === undefined) return false
-      if (valid){
-        if (lang) {
-          if (!state.bonevalue){
-            state.bonevalue = {}
-          }
-          if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
-            state.bonevalue[lang][index] = val
-          } else {
-            state.bonevalue[lang] = val
-          }
-        } else if (index !== null) {
-          state.bonevalue[index] = val
-        } else {
-          state.bonevalue = val
-        }
       }
-
-      if (state.readonly) return false
-
-      let changeInternalObj = {
-        name: name,
-        value: val,
-        lang: state.multilanguage?state.currentLanguage:null,
-        index: index,
-        valid: valid
-      }
-
-      emit("change-internal", changeInternalObj)
-    }
-    provide("updateValue", updateValue)
-
-    function updateLanguage(e){
-      state.currentLanguage = e.target.value
-       let changeInternalObj = {
-        name: props.name,
-        value: state.bonevalue,
-        lang: state.currentLanguage,
-        index: null,
-        valid: true
-      }
-
-      emit("change-internal", changeInternalObj)
+      return true
     }
 
-    function addMultipleEntry(lang = null, data = "") {
-      if (lang) {
-        if (Object.keys(state.bonevalue).includes(lang)) {
-          state.bonevalue[lang].push(data)
-        } else {
-          state.bonevalue[lang] = [data]
-        }
+    // Ignore the computation when the state is readonly
+    if (state.readonly) return false
+
+    // Check for null or undefined values
+    if (!state.bonevalue) return true
+
+    // Check if the value is an array with elements
+    if (Array.isArray(state.bonevalue) && state.bonevalue.length === 0) return true
+
+    // Check if the value is an object and not an array, then use helper function to check if it's empty
+    if (state.bonevalue === Object(state.bonevalue) && !Array.isArray(state.bonevalue))
+      return isObjectEmpty(state.bonevalue)
+
+    return false
+  }),
+
+  errors: [],
+  errorMessages: computed(() => {
+    let errors = []
+    for (let error of props.errors) {
+      if (
+        error["fieldPath"][0] === props.name &&
+        (error["fieldPath"].length === 1 ||
+          ((state.multilanguage || state.multiple) && error["fieldPath"].length === 2) ||
+          (state.multilanguage && state.multiple && error["fieldPath"].length === 3)) &&
+        (error["severity"] > 2 || (state.required && (error["severity"] === 2 || error["severity"] === 0)))
+      ) {
+        //severity level???
+        errors.push(error["errorMessage"])
+      }
+    }
+    return errors
+  }),
+  label: computed(() => props.label),
+  showtooltip: computed(() => {
+    if (props.showBoneTooltip) {
+      return true
+    }
+    if (["hide", "placeholder"].includes(props.label)) {
+      return true
+    }
+    return false
+  }),
+  defaultLanguage: computed(() => props.defaultLanguage),
+  currentLanguage: null,
+})
+provide("boneState", state)
+
+function updateValue(name, val, lang = null, index = null, valid = true) {
+  if (val === undefined) return false
+  if (valid) {
+    if (lang) {
+      if (!state.bonevalue) {
+        state.bonevalue = {}
+      }
+      if (Object.keys(state.bonevalue).includes(lang) && index !== null) {
+        state.bonevalue[lang][index] = val
       } else {
-        if (state.bonevalue) {
-          state.bonevalue.push(data)
-        } else {
-          state.bonevalue = [data]
-        }
+        state.bonevalue[lang] = val
       }
+    } else if (index !== null) {
+      state.bonevalue[index] = val
+    } else {
+      state.bonevalue = val
     }
-    provide("addMultipleEntry", addMultipleEntry)
+  }
 
-    function removeMultipleEntry(index, lang = null) {
-      if (lang) {
-        state.bonevalue?.[lang].splice(index, 1)
-      } else {
-        state.bonevalue.splice(index, 1)
-      }
+  if (state.readonly) return false
 
-      if (lang){
-        updateValue(props.name, state.bonevalue[lang], lang)
-      }else{
-        updateValue(props.name, state.bonevalue)
-      }
+  let changeInternalObj = {
+    name: name,
+    value: val,
+    lang: state.multilanguage ? state.currentLanguage : null,
+    index: index,
+    valid: valid,
+  }
+
+  emit("change-internal", changeInternalObj)
+}
+provide("updateValue", updateValue)
+
+function updateLanguage(e) {
+  state.currentLanguage = e.target.value
+  let changeInternalObj = {
+    name: props.name,
+    value: state.bonevalue,
+    lang: state.currentLanguage,
+    index: null,
+    valid: true,
+  }
+
+  emit("change-internal", changeInternalObj)
+}
+
+function addMultipleEntry(lang = null, data = "") {
+  if (lang) {
+    if (Object.keys(state.bonevalue).includes(lang)) {
+      state.bonevalue[lang].push(data)
+    } else {
+      state.bonevalue[lang] = [data]
     }
-
-    function removeMultipleEntries(lang = null) {
-      if (lang) {
-        state.bonevalue?.[lang].splice(0)
-      } else {
-        state.bonevalue.splice(0)
-      }
-      if (lang){
-        updateValue(props.name, state.bonevalue[lang], lang)
-      }else{
-        updateValue(props.name, state.bonevalue)
-      }
+  } else {
+    if (state.bonevalue) {
+      state.bonevalue.push(data)
+    } else {
+      state.bonevalue = [data]
     }
+  }
+}
+provide("addMultipleEntry", addMultipleEntry)
 
-    provide("removeMultipleEntries", removeMultipleEntries)
+function removeMultipleEntry(index, lang = null) {
+  if (lang) {
+    state.bonevalue?.[lang].splice(index, 1)
+  } else {
+    state.bonevalue.splice(index, 1)
+  }
 
-    function formatString(formatstr, boneValue) {
-      return Utils.formatString(formatstr,boneValue)
-    }
-    provide("formatString", formatString)
+  if (lang) {
+    updateValue(props.name, state.bonevalue[lang], lang)
+  } else {
+    updateValue(props.name, state.bonevalue)
+  }
+}
 
-    onBeforeMount(() => {
-      if (props.value) {
-        state.bonevalue = props.value
-      } else {
-        state.bonevalue = props.skel?.[props.name]
-      }
-      state.currentLanguage = state.defaultLanguage
-    })
+function removeMultipleEntries(lang = null) {
+  if (lang) {
+    state.bonevalue?.[lang].splice(0)
+  } else {
+    state.bonevalue.splice(0)
+  }
+  if (lang) {
+    updateValue(props.name, state.bonevalue[lang], lang)
+  } else {
+    updateValue(props.name, state.bonevalue)
+  }
+}
 
-    watch(
-      () => props.skel?.[props.name],
-      (newVal, oldVal) => {
-        state.bonevalue = props.skel?.[props.name]
-      }
-    )
+provide("removeMultipleEntries", removeMultipleEntries)
 
-    watch(
-      () => props.errors?.[props.name],
-      (newVal, oldVal) => {
-        state.errors = props.errors
-      }
-    )
+function formatString(formatstr, boneValue) {
+  return Utils.formatString(formatstr, boneValue)
+}
+provide("formatString", formatString)
+
+onBeforeMount(() => {
+  if (props.value) {
+    state.bonevalue = props.value
+  } else {
+    state.bonevalue = props.skel?.[props.name]
+  }
+  state.currentLanguage = state.defaultLanguage
+})
+
+watch(
+  () => props.skel?.[props.name],
+  (newVal, oldVal) => {
+    state.bonevalue = props.skel?.[props.name]
+  }
+)
+
+watch(
+  () => props.errors?.[props.name],
+  (newVal, oldVal) => {
+    state.errors = props.errors
+  }
+)
 </script>
 
 <style scoped>
@@ -476,7 +449,7 @@ import BoneActions from "./boneActions.vue";
   }
 
   .lang-tab {
-    width:100%;
+    width: 100%;
     --track-width: 0;
     --indicator-color: var(--vi-background-color);
     --track-color: var(--vi-border-color);
@@ -572,7 +545,6 @@ import BoneActions from "./boneActions.vue";
 
     &:first-child {
       & :deep(.value-line) {
-
       }
     }
   }
@@ -677,20 +649,20 @@ import BoneActions from "./boneActions.vue";
   }
 }
 
-.error-msg::part(base){
+.error-msg::part(base) {
   background-color: #ffecec;
-  color:var(--sl-color-danger-700);
+  color: var(--sl-color-danger-700);
 }
 
-.wrapper-bone-row{
-  display:flex;
+.wrapper-bone-row {
+  display: flex;
   flex-direction: row;
-  gap:var(--sl-spacing-x-small)
+  gap: var(--sl-spacing-x-small);
 }
 
-.wrapper-bone-block{
-  display:block;
-  width:100%;
+.wrapper-bone-block {
+  display: block;
+  width: 100%;
 }
 </style>
 
@@ -698,8 +670,6 @@ import BoneActions from "./boneActions.vue";
 sl-input[data-user-invalid]::part(base),
 sl-select[data-user-invalid]::part(combobox),
 sl-checkbox[data-user-invalid]::part(control) {
-    border-color: var(--sl-color-danger-500);
-  }
-
-
+  border-color: var(--sl-color-danger-500);
+}
 </style>

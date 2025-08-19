@@ -1,13 +1,7 @@
 <template>
-  <div
-    class="image-wrap"
-    :class="{'has-popup': 'popup'}"
-  >
+  <div class="image-wrap" :class="{ 'has-popup': 'popup' }">
     <picture v-if="srcset">
-      <source
-        type="image/webp"
-        :srcset="srcset"
-      />
+      <source type="image/webp" :srcset="srcset" />
 
       <img
         class="image"
@@ -32,12 +26,7 @@
     />
   </div>
 
-  <sl-dialog
-    v-if="popup"
-    @sl-hide="state.opened = false"
-    :open="state.opened"
-    :label="$t('preview')"
-  >
+  <sl-dialog v-if="popup" :open="state.opened" :label="$t('preview')" @sl-hide="state.opened = false">
     <div class="image-wrap">
       <img
         style="display: block"
@@ -48,15 +37,9 @@
         @load="updateLoading(false)"
       />
     </div>
-    <sl-button
-      :download="alt + '.jpg'"
-      :href="src"
-      variant="primary"
-      target="_blank"
-      size="small"
-      slot="footer"
-      >Download</sl-button
-    >
+    <sl-button slot="footer" :download="alt + '.jpg'" :href="src" variant="primary" target="_blank" size="small">
+      Download
+    </sl-button>
   </sl-dialog>
 </template>
 
@@ -67,49 +50,47 @@
 
 import { reactive, inject, computed } from "vue"
 
-  const props = defineProps( {
-    src: {
-      type: String,
-      default: ""
-    },
-    alt: {
-      type: String,
-      default: null
-    },
-    srcset: {
-      default: null
-    },
-    fallback: {
-      type: String,
-      default: "logo.svg"
-    },
-    popup: {
-      type: Boolean,
-      default: false
-    }
-  })
+const props = defineProps({
+  src: {
+    type: String,
+    default: "",
+  },
+  alt: {
+    type: String,
+    default: null,
+  },
+  srcset: {
+    default: null,
+  },
+  fallback: {
+    type: String,
+    default: "logo.svg",
+  },
+  popup: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-    const state = reactive({
-      loading: true,
-      background: computed(() => {
-        /*if(Object.keys(global.state).includes("fallback_image")){
+const state = reactive({
+  loading: true,
+  background: computed(() => {
+    /*if(Object.keys(global.state).includes("fallback_image")){
                     return `url(${global.state.fallback_image})`
                 }*/
-        return ""
-      }),
-      opened: false,
-      image: computed(() => (props.src ? props.src : props.fallback))
-    })
+    return ""
+  }),
+  opened: false,
+  image: computed(() => (props.src ? props.src : props.fallback)),
+})
 
-    function updateLoading(loading) {
-      state.loading = loading
-    }
+function updateLoading(loading) {
+  state.loading = loading
+}
 
-    function onError(e) {
-      state.image = props.fallback
-    }
-
-
+function onError(e) {
+  state.image = props.fallback
+}
 </script>
 
 <style scoped>
@@ -126,7 +107,7 @@ img.is-loading {
   filter: blur(4px);
 }
 
-.image-wrap{
+.image-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -134,15 +115,14 @@ img.is-loading {
   height: 100%;
   background-position: center;
   background-image: /* tint image */
-                  linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
-                  /* checkered effect */
-                  linear-gradient(to right, black 50%, white 50%),
-                  linear-gradient(to bottom, black 50%, white 50%);
+    linear-gradient(to right, rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.87)),
+    /* checkered effect */ linear-gradient(to right, black 50%, white 50%),
+    linear-gradient(to bottom, black 50%, white 50%);
   background-blend-mode: normal, difference, normal;
-  background-size: .65em .65em;
+  background-size: 0.65em 0.65em;
 }
 
-.has-popup{
+.has-popup {
   cursor: pointer;
 }
 
@@ -158,7 +138,7 @@ img.is-loading {
   object-fit: cover;
 }
 
-sl-dialog{
+sl-dialog {
   &::part(panel) {
     width: auto;
     min-width: 350px;

@@ -13,26 +13,12 @@
       class="delete-btn"
       @click="openSelector()"
     >
-      <sl-icon
-        slot="prefix"
-        name="x-lg"
-      ></sl-icon>
+      <sl-icon slot="prefix" name="x-lg"></sl-icon>
     </sl-button>
 
-    <div
-      v-if="state.droparea"
-      class="droparea"
-    >
-      Dateien hier hinziehen
-    </div>
+    <div v-if="state.droparea" class="droparea">Dateien hier hinziehen</div>
 
-    <input
-      ref="uploadinput"
-      hidden
-      type="file"
-      :multiple="boneState.multiple"
-      @change="handleUpload"
-    />
+    <input ref="uploadinput" hidden type="file" :multiple="boneState.multiple" @change="handleUpload" />
     <sl-button
       v-if="boneState.multiple && !readonly"
       outline
@@ -40,10 +26,7 @@
       class="add-btn"
       @click="addMultipleEntry(lang)"
     >
-      <sl-icon
-        slot="prefix"
-        name="plus-lg"
-      ></sl-icon>
+      <sl-icon slot="prefix" name="plus-lg"></sl-icon>
     </sl-button>
 
     <sl-button
@@ -56,10 +39,7 @@
     >
       <sl-icon name="upload"></sl-icon>
       {{ $t("bone.upload") }}
-      <sl-spinner
-        v-if="state.loading"
-        slot="suffix"
-      ></sl-spinner>
+      <sl-spinner v-if="state.loading" slot="suffix"></sl-spinner>
     </sl-button>
   </div>
 </template>
@@ -68,63 +48,59 @@
 import { reactive, defineComponent, onMounted, inject, ref, computed, resolveComponent } from "vue"
 import { Request } from "../../../index"
 
-  const props = defineProps( {
-    name: String,
-    value: Object,
-    index: Number,
-    lang: String,
-    readonly: Boolean,
-    params: Object
-  })
+const props = defineProps({
+  name: String,
+  value: Object,
+  index: Number,
+  lang: String,
+  readonly: Boolean,
+  params: Object,
+})
 
-  const emit = defineEmits(["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const addMultipleEntry = inject("addMultipleEntry")
-    const formatString = inject("formatString")
-    const removeMultipleEntries = null
-    const uploadinput = ref()
-    const state = reactive({
-      skels: {},
-      uploadinput: null,
-      loading: false,
-      droparea: false,
-      hasUsing: computed(() => boneState?.bonestructure["using"])
-    })
+const boneState = inject("boneState")
+const addMultipleEntry = inject("addMultipleEntry")
+const formatString = inject("formatString")
+const removeMultipleEntries = null
+const uploadinput = ref()
+const state = reactive({
+  skels: {},
+  uploadinput: null,
+  loading: false,
+  droparea: false,
+  hasUsing: computed(() => boneState?.bonestructure["using"]),
+})
 
-    function uploadFile(file) {
-      const filedata = {
-        fileName: file.name,
-        mimeType: file.type || "application/octet-stream",
-        size: file.size.toString()
-      }
-      return new Promise((resolve, reject) => {
-        Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
-          .then(async (resp) => {
-            let uploadURLdata = await resp.json()
-            fetch(uploadURLdata["values"]["uploadUrl"], {
-              body: file,
-              method: "POST",
-              mode: "no-cors"
-            })
-              .then(async (uploadresp) => {
-                const addData = {
-                  key: uploadURLdata["values"]["uploadKey"],
-                  node: undefined,
-                  skelType: "leaf"
+function uploadFile(file) {
+  const filedata = {
+    fileName: file.name,
+    mimeType: file.type || "application/octet-stream",
+    size: file.size.toString(),
+  }
+  return new Promise((resolve, reject) => {
+    Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
+      .then(async (resp) => {
+        let uploadURLdata = await resp.json()
+        fetch(uploadURLdata["values"]["uploadUrl"], {
+          body: file,
+          method: "POST",
+          mode: "no-cors",
+        })
+          .then(async (uploadresp) => {
+            const addData = {
+              key: uploadURLdata["values"]["uploadKey"],
+              node: undefined,
+              skelType: "leaf",
+            }
+            Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
+              .then(async (addresp) => {
+                let addData = await addresp.json()
+                if (addData["action"] === "addSuccess") {
+                  resolve(addData["values"])
+                } else {
+                  reject(addData)
                 }
-                Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
-                  .then(async (addresp) => {
-                    let addData = await addresp.json()
-                    if (addData["action"] === "addSuccess") {
-                      resolve(addData["values"])
-                    } else {
-                      reject(addData)
-                    }
-                  })
-                  .catch((error) => {
-                    reject(error)
-                  })
               })
               .catch((error) => {
                 reject(error)
@@ -134,44 +110,46 @@ import { Request } from "../../../index"
             reject(error)
           })
       })
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
+
+async function handleUpload(event) {
+  state.loading = true
+  for (let file of event.target.files) {
+    let fileresult = await uploadFile(file)
+    uploadinput.value.value = null
+    let relDefault = null
+    if (state.hasUsing) {
+      relDefault = undefined
     }
+    addMultipleEntry(props.lang, { dest: fileresult, rel: relDefault })
+  }
+  state.loading = false
+}
 
-    async function handleUpload(event) {
-      state.loading = true
-      for (let file of event.target.files) {
-        let fileresult = await uploadFile(file)
-        uploadinput.value.value = null
-        let relDefault = null
-        if (state.hasUsing) {
-          relDefault = undefined
-        }
-        addMultipleEntry(props.lang, { dest: fileresult, rel: relDefault })
-      }
-      state.loading = false
+async function handleDrop(event) {
+  state.loading = true
+  state.droparea = false
+  for (let file of event.dataTransfer.files) {
+    let fileresult = await uploadFile(file)
+    uploadinput.value.value = null
+    let relDefault = null
+    if (state.hasUsing) {
+      relDefault = undefined
     }
+    addMultipleEntry(props.lang, { dest: fileresult, rel: relDefault })
+  }
+  state.loading = false
+}
 
-    async function handleDrop(event) {
-      state.loading = true
-      state.droparea = false
-      for (let file of event.dataTransfer.files) {
-        let fileresult = await uploadFile(file)
-        uploadinput.value.value = null
-        let relDefault = null
-        if (state.hasUsing) {
-          relDefault = undefined
-        }
-        addMultipleEntry(props.lang, { dest: fileresult, rel: relDefault })
-      }
-      state.loading = false
-    }
-
-    onMounted(() => {
-      if (!props.value || props.value.length === 0) {
-        emit("change", props.name, [], props.lang) //init
-      }
-    })
-
-
+onMounted(() => {
+  if (!props.value || props.value.length === 0) {
+    emit("change", props.name, [], props.lang) //init
+  }
+})
 </script>
 
 <style scoped>

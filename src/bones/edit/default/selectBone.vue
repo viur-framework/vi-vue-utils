@@ -1,7 +1,7 @@
 <template>
   <sl-select
     class="widget-bone widget-bone-select widget-bone-select-default"
-    :class="([`widget-bone-select-${name}`])"
+    :class="[`widget-bone-select-${name}`]"
     :name="name"
     :disabled="boneState.readonly"
     :value="state.value"
@@ -10,86 +10,79 @@
     max-options-visible="0"
     :required="boneState.bonestructure.required"
     clearable
-    @sl-change="changeEvent"
     :placeholder="state.placeholder"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    @sl-change="changeEvent"
   >
-    <sl-option
-      v-for="value in convertObjToList()"
-      :key="value[0]"
-      :value="value[0]"
-    >
+    <sl-option v-for="value in convertObjToList()" :key="value[0]" :value="value[0]">
       {{ value[1] }}
     </sl-option>
   </sl-select>
 </template>
 
 <script setup>
+import { reactive, onMounted, inject, computed } from "vue"
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: null,
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-import {reactive, onMounted, inject, computed} from "vue"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps( {
-    name: String,
-    value: null,
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+const emit = defineEmits(["change"])
 
-  const emit = defineEmits( ["change"])
+const boneState = inject("boneState")
+const state = reactive({
+  value: computed(() => {
+    let val = props.value
+    if (Array.isArray(props.value)) {
+      if (boneState["bonestructure"]["values"] instanceof Array) {
+        val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
+      } else
+        val = val.filter((i) =>
+          Object.keys(boneState["bonestructure"]["values"])
+            .map((i) => i.toString())
+            .includes(i)
+        )
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: computed(() => {
-        let val = props.value
-        if (Array.isArray(props.value)) {
-          if (boneState["bonestructure"]["values"] instanceof Array) {
-            val = val.filter((i) => boneState["bonestructure"]["values"].map((i) => i[0].toString()).includes(i))
-          } else
-            val = val.filter((i) =>
-              Object.keys(boneState["bonestructure"]["values"])
-                .map((i) => i.toString())
-                .includes(i)
-            )
-
-          return val.map((i) => i.toString())
-        }
-        return props.value ? props.value.toString() : ""
-      }),
-      placeholder:computed(()=>{
-        if (boneState.label!=='placeholder') return undefined
-        let name = boneState?.bonestructure?.descr
-        if (boneState.bonestructure.required){
-          name +="*"
-        }
-        return name
-      })
-    })
-
-    function convertObjToList() {
-      if (Array.isArray(boneState["bonestructure"]["values"])) {
-        return boneState["bonestructure"]["values"]
-      } else {
-        let objToList = []
-        for (const [key, value] of Object.entries(boneState["bonestructure"]["values"])) {
-          objToList.push([key, value])
-        }
-        return objToList
-      }
+      return val.map((i) => i.toString())
     }
-
-    function changeEvent(event) {
-      emit("change", props.name, event.target.value, props.lang, props.index)
+    return props.value ? props.value.toString() : ""
+  }),
+  placeholder: computed(() => {
+    if (boneState.label !== "placeholder") return undefined
+    let name = boneState?.bonestructure?.descr
+    if (boneState.bonestructure.required) {
+      name += "*"
     }
+    return name
+  }),
+})
 
-    onMounted(() => {
-      emit("change", props.name, state.value, props.lang, props.index) //init
-    })
+function convertObjToList() {
+  if (Array.isArray(boneState["bonestructure"]["values"])) {
+    return boneState["bonestructure"]["values"]
+  } else {
+    let objToList = []
+    for (const [key, value] of Object.entries(boneState["bonestructure"]["values"])) {
+      objToList.push([key, value])
+    }
+    return objToList
+  }
+}
 
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
+onMounted(() => {
+  emit("change", props.name, state.value, props.lang, props.index) //init
+})
 </script>
 
 <style scoped>

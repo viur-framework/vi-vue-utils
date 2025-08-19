@@ -12,10 +12,11 @@
 </div>
 
 ## What does it do?
+
 ViUR Vue Utils is a library to work with the Viur Framework
 
-
 ## Installation
+
 ```bash
 $ npm i @viur/vue-utils
 ```
@@ -53,8 +54,8 @@ destroyStore(userList)
 
 ViUR Vue Utils depends on
 
-* [Vue](https://vuejs.org/)
-* [Pinia](https://pinia.vuejs.org/)
+- [Vue](https://vuejs.org/)
+- [Pinia](https://pinia.vuejs.org/)
 
 ## License
 

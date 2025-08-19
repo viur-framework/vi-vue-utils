@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import { reactive } from "vue"
-import {destr} from 'destr'
-import { indexedDBStorage,setupIndexDBStorage } from "./indexeddb"
+import { destr } from "destr"
+import { indexedDBStorage, setupIndexDBStorage } from "./indexeddb"
 
 class HTTPError extends Error {
   constructor(code, statusText, message, response) {
@@ -22,95 +22,94 @@ function getRequestStore() {
     useRequestStore = defineStore("requestStore", () => {
       const state = reactive({
         sKeys: new Set(),
-        amount:1,
-        maxCacheEntries: 1000
+        amount: 1,
+        maxCacheEntries: 1000,
       })
       function $reset() {
         state.sKeys = new Set()
       }
       return {
         state,
-        $reset
+        $reset,
       }
     })
   }
   return useRequestStore()
 }
 
-
-function cacheDeserializer(value, options){
+function cacheDeserializer(value, options) {
   //convert keyToRequestMap back to a Map of Sets
-  let deserialized = destr(value,options)
-  for (const [k,v] of Object.entries(deserialized['state']['keyToRequestMap'])){
-    deserialized['state']['keyToRequestMap'][k] = new Set(v)
+  let deserialized = destr(value, options)
+  for (const [k, v] of Object.entries(deserialized["state"]["keyToRequestMap"])) {
+    deserialized["state"]["keyToRequestMap"][k] = new Set(v)
   }
-  deserialized['state']['keyToRequestMap'] = new Map(Object.entries(deserialized['state']['keyToRequestMap']))
+  deserialized["state"]["keyToRequestMap"] = new Map(Object.entries(deserialized["state"]["keyToRequestMap"]))
   return deserialized
 }
 
-function cacheSerializer(value, replacer){
-  return JSON.stringify(value,(key, value) => {
+function cacheSerializer(value, replacer) {
+  return JSON.stringify(value, (key, value) => {
     if (value instanceof Map) {
-      return Object.fromEntries(value); // Convert Map to array
-    }else if (value instanceof Set) {
-      return Array.from(value); // Convert Set to array
+      return Object.fromEntries(value) // Convert Map to array
+    } else if (value instanceof Set) {
+      return Array.from(value) // Convert Set to array
     }
     return value
   })
 }
 
-export let useCachedRequestsStore = defineStore("cachedRequestsStore", () => {
-  const state = reactive({
-    cacheTime:1000 * 60 * 60 * 24 * 1,
-    cachedRequests:{},
-    keyToRequestMap:new Map()
-  })
+export let useCachedRequestsStore = defineStore(
+  "cachedRequestsStore",
+  () => {
+    const state = reactive({
+      cacheTime: 1000 * 60 * 60 * 24 * 1,
+      cachedRequests: {},
+      keyToRequestMap: new Map(),
+    })
 
-   function clearCache(prefix){
-    if (prefix === undefined)
-    {
-      state.keyToRequestMap = new Map();
-      state.cachedRequests = {};
-      return
-    }
-    for (const [k,v] of Object.entries(state.cachedRequests)){
-      if (k.startsWith(prefix)){
-        delete state.cachedRequests[k]
+    function clearCache(prefix) {
+      if (prefix === undefined) {
+        state.keyToRequestMap = new Map()
+        state.cachedRequests = {}
+        return
+      }
+      for (const [k, v] of Object.entries(state.cachedRequests)) {
+        if (k.startsWith(prefix)) {
+          delete state.cachedRequests[k]
+        }
       }
     }
-  }
 
-  function $reset() {}
-  return {
-    state,
-    clearCache,
-    $reset
-  }
-},{
-  persist: {
-    debug:true,
-    storage:indexedDBStorage,
-    serializer: {
-      deserialize: cacheDeserializer,
-      serialize:cacheSerializer
+    function $reset() {}
+    return {
+      state,
+      clearCache,
+      $reset,
     }
-
+  },
+  {
+    persist: {
+      debug: true,
+      storage: indexedDBStorage,
+      serializer: {
+        deserialize: cacheDeserializer,
+        serialize: cacheSerializer,
+      },
+    },
   }
-})
+)
 
 let useCachedRequestsStoreInst = null
 function getCachedRequestsStore() {
   if (!useCachedRequestsStoreInst) {
     useCachedRequestsStoreInst = useCachedRequestsStore()
-    setupIndexDBStorage(useCachedRequestsStoreInst,cacheDeserializer)
-    if(window.location.hostname === 'localhost'){
+    setupIndexDBStorage(useCachedRequestsStoreInst, cacheDeserializer)
+    if (window.location.hostname === "localhost") {
       useCachedRequestsStoreInst.state.cachedRequests = {}
     }
   }
   return useCachedRequestsStoreInst
 }
-
-
 
 export default class Request {
   static resetState() {
@@ -166,7 +165,7 @@ export default class Request {
   }
   static async getBatchSkeys(renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     await Request.get(`/${renderer}/skey`, {
-      dataObj: { amount: getRequestStore().state.amount }
+      dataObj: { amount: getRequestStore().state.amount },
     }).then(async (resp) => {
       let data = await resp.json()
       if (!Array.isArray(data)) {
@@ -185,13 +184,13 @@ export default class Request {
       renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json",
       headers = null,
       mode = null,
-      amount = null
+      amount = null,
     } = {}
   ) {
     let returnValue = null
 
     if (getRequestStore().state.sKeys.size === 0) {
-      if (amount){
+      if (amount) {
         getRequestStore().state.amount = amount
       }
       await Request.getBatchSkeys(renderer)
@@ -213,7 +212,7 @@ export default class Request {
       callback: callback,
       abortController: abortController,
       headers,
-      mode
+      mode,
     })
 
     return returnValue
@@ -230,10 +229,19 @@ export default class Request {
       abortController = null,
       headers = null,
       mode = null,
-      cacheTime = null
+      cacheTime = null,
     } = {}
   ) {
-    let reqPromise = cachedFetch.get(Request.buildUrl(url), dataObj, clearCache, headers, abortController, mode, cached, cacheTime)
+    let reqPromise = cachedFetch.get(
+      Request.buildUrl(url),
+      dataObj,
+      clearCache,
+      headers,
+      abortController,
+      mode,
+      cached,
+      cacheTime
+    )
     reqPromise
       .then(function (response) {
         if (callback) {
@@ -260,7 +268,7 @@ export default class Request {
       headers = null,
       cached = false,
       clearCache = false,
-      cacheTime = null
+      cacheTime = null,
     } = {}
   ) {
     let url = `/${renderer}/${module}/list`
@@ -273,16 +281,17 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers,
-      cached:cached,
-      cacheTime:cacheTime,
-      clearCache:clearCache
+      headers: headers,
+      cached: cached,
+      cacheTime: cacheTime,
+      clearCache: clearCache,
     })
   }
 
   static getStructure(
     module,
-    { dataObj = null,
+    {
+      dataObj = null,
       callback = null,
       failedCallback = null,
       group = null,
@@ -291,7 +300,7 @@ export default class Request {
       headers = null,
       cached = false,
       clearCache = false,
-      cacheTime = null
+      cacheTime = null,
     } = {}
   ) {
     module = module.replace(/\//g, ".")
@@ -305,10 +314,10 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers,
-      cached:cached,
-      cacheTime:cacheTime,
-      clearCache:clearCache
+      headers: headers,
+      cached: cached,
+      cacheTime: cacheTime,
+      clearCache: clearCache,
     })
   }
 
@@ -325,7 +334,7 @@ export default class Request {
       headers = null,
       cached = false,
       clearCache = false,
-      cacheTime = null
+      cacheTime = null,
     } = {}
   ) {
     let url = `/${renderer}/${module}/view/${key}`
@@ -338,10 +347,10 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers,
-      cached:cached,
-      cacheTime:cacheTime,
-      clearCache:clearCache
+      headers: headers,
+      cached: cached,
+      cacheTime: cacheTime,
+      clearCache: clearCache,
     })
   }
 
@@ -367,7 +376,7 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers
+      headers: headers,
     })
   }
 
@@ -394,7 +403,7 @@ export default class Request {
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
-      headers:headers
+      headers: headers,
     })
   }
 
@@ -422,16 +431,16 @@ export default class Request {
       failedCallback: failedCallback,
       abortController: abortController,
       amount: 1,
-      headers:headers
+      headers: headers,
     })
   }
 
-  static downloadUrlFor(bone, thumbnail = false, renderer=import.meta.env.VITE_DEFAULT_RENDERER || "json") {
+  static downloadUrlFor(bone, thumbnail = false, renderer = import.meta.env.VITE_DEFAULT_RENDERER || "json") {
     if (bone && "dest" in bone) {
       if (thumbnail && "thumbnail" in bone["dest"]) {
-        return Request.buildUrl("/"+renderer+bone["dest"]["thumbnail"])
+        return Request.buildUrl("/" + renderer + bone["dest"]["thumbnail"])
       } else if ("downloadUrl" in bone["dest"]) {
-        return Request.buildUrl("/"+renderer+bone["dest"]["downloadUrl"])
+        return Request.buildUrl("/" + renderer + bone["dest"]["downloadUrl"])
       }
       return Request.buildUrl(null)
     }
@@ -439,15 +448,15 @@ export default class Request {
     return Request.buildUrl(bone)
   }
 
-  static serveUrlFor(servingurl, size=null, filename=null, options="", download=false){
-    const pattern = /^https:\/\/(.*?)\.googleusercontent\.com\/(.*?)$/;
+  static serveUrlFor(servingurl, size = null, filename = null, options = "", download = false) {
+    const pattern = /^https:\/\/(.*?)\.googleusercontent\.com\/(.*?)$/
     let newUrl = "/file/serve"
 
-    const match = servingurl.match(pattern);
+    const match = servingurl.match(pattern)
 
     if (match) {
-      const host = match[1];
-      const key = match[2];
+      const host = match[1]
+      const key = match[2]
       newUrl += `/${host}/${key}`
 
       if (size) {
@@ -457,7 +466,7 @@ export default class Request {
         newUrl += `/${filename}`
       }
       let querylist = []
-      for (const [key, value] of Object.entries({options: options, download: download})) {
+      for (const [key, value] of Object.entries({ options: options, download: download })) {
         if (value) {
           querylist.push(`${key}=${value}`)
         }
@@ -475,10 +484,10 @@ export default class Request {
       fileName: file.name,
       mimeType: file.type || "application/octet-stream",
       size: file.size.toString(),
-      node: target
+      node: target,
     }
-    if (publicupload){
-      filedata['public'] = true
+    if (publicupload) {
+      filedata["public"] = true
     }
     return new Promise((resolve, reject) => {
       Request.securePost("/vi/file/getUploadURL", { dataObj: filedata })
@@ -487,12 +496,12 @@ export default class Request {
           fetch(uploadURLdata["values"]["uploadUrl"], {
             body: file,
             method: "POST",
-            mode: "no-cors"
+            mode: "no-cors",
           })
             .then(async (uploadresp) => {
               const addData = {
                 key: uploadURLdata["values"]["uploadKey"],
-                skelType: "leaf"
+                skelType: "leaf",
               }
               Request.securePost("/vi/file/add", { dataObj: addData })
                 .then(async (addresp) => {
@@ -527,7 +536,7 @@ class cachedFetch {
 
     options["credentials"] = "include"
     options["headers"] = {
-      Accept: "application/json, text/plain, */*"
+      Accept: "application/json, text/plain, */*",
     }
     if (headers) {
       options["headers"] = { ...options["headers"], ...headers }
@@ -548,8 +557,7 @@ class cachedFetch {
     return options
   }
 
-
-  static async convertResponseToJson(response){
+  static async convertResponseToJson(response) {
     return {
       body: await response.json(),
       status: response.status,
@@ -558,38 +566,46 @@ class cachedFetch {
       type: response.type,
       url: response.url,
       ok: response.ok,
-      cached: response.cached
+      cached: response.cached,
     }
   }
 
-  static convertJsonToResponse(jsondata){
+  static convertJsonToResponse(jsondata) {
     let data = JSON.parse(jsondata)
     const stream = new ReadableStream({
       start(controller) {
-          controller.enqueue(new TextEncoder().encode(JSON.stringify(data.body)));
-          controller.close();
-        }
-    });
-    delete data['body']
-    return new Response(stream, data);
+        controller.enqueue(new TextEncoder().encode(JSON.stringify(data.body)))
+        controller.close()
+      },
+    })
+    delete data["body"]
+    return new Response(stream, data)
   }
 
   static trimCache() {
     const maxEntries = getRequestStore().state.maxCacheEntries
-    const cachedEntries = Object.entries(getCachedRequestsStore().state.cachedRequests);
+    const cachedEntries = Object.entries(getCachedRequestsStore().state.cachedRequests)
 
     if (cachedEntries.length > maxEntries) {
-      cachedEntries.sort((a, b) => new Date(a[1].date) - new Date(b[1].date));
+      cachedEntries.sort((a, b) => new Date(a[1].date) - new Date(b[1].date))
 
       while (cachedEntries.length > maxEntries) {
-        const [key] = cachedEntries.shift();
-        delete getCachedRequestsStore().state.cachedRequests[key];
+        const [key] = cachedEntries.shift()
+        delete getCachedRequestsStore().state.cachedRequests[key]
       }
     }
   }
 
-  static get(url, params = null, clearCache = null, headers = null, abortController = null, mode = null, cached=false, cacheTime=null) {
-
+  static get(
+    url,
+    params = null,
+    clearCache = null,
+    headers = null,
+    abortController = null,
+    mode = null,
+    cached = false,
+    cacheTime = null
+  ) {
     this.trimCache()
 
     function buildGetUrl(url, params) {
@@ -612,34 +628,36 @@ class cachedFetch {
       return requestUrl.toString()
     }
 
-    let _url  = buildGetUrl(url, params)
-    if (headers){
-      _url += "@@@"+Object.entries(headers).map(([key, value]) => `${key}=${value}`).join('&')
+    let _url = buildGetUrl(url, params)
+    if (headers) {
+      _url +=
+        "@@@" +
+        Object.entries(headers)
+          .map(([key, value]) => `${key}=${value}`)
+          .join("&")
     }
 
-    if (cached){
+    if (cached) {
       let _cacheTime = cacheTime
-      if (!_cacheTime){
+      if (!_cacheTime) {
         _cacheTime = getCachedRequestsStore().state.cacheTime
       }
 
       let cacheHit = getCachedRequestsStore().state.cachedRequests?.[_url]
 
-      if (cacheHit ){
-
-
-        if (typeof cacheHit.date === "string" ){
+      if (cacheHit) {
+        if (typeof cacheHit.date === "string") {
           cacheHit.date = new Date(cacheHit.date)
         }
 
-        if ( !clearCache && new Date() - cacheHit.date < _cacheTime){
+        if (!clearCache && new Date() - cacheHit.date < _cacheTime) {
           // cacheIsHot
-          return new Promise((resolve) =>{
+          return new Promise((resolve) => {
             let res = cachedFetch.convertJsonToResponse(cacheHit.response)
             res.cached = true
             resolve(res)
           })
-        }else{
+        } else {
           delete getCachedRequestsStore().state.cachedRequests[_url]
         }
       }
@@ -650,38 +668,36 @@ class cachedFetch {
       .then(async (response) => {
         if (response.ok) {
           response.cached = false
-          if ( cached ){
+          if (cached) {
             let responsedata = await cachedFetch.convertResponseToJson(response.clone())
-              let usedKeys = []
+            let usedKeys = []
 
-              let data = await response.clone().json()
-            if (data instanceof Object && !Array.isArray(data) && data !== null){
-              if (data['skellist']){
-
-                usedKeys = data['skellist'].map(x=>x['key'])
+            let data = await response.clone().json()
+            if (data instanceof Object && !Array.isArray(data) && data !== null) {
+              if (data["skellist"]) {
+                usedKeys = data["skellist"].map((x) => x["key"])
 
                 // create key to url references
-                for(const k of usedKeys){
-                  if (!getCachedRequestsStore().state.keyToRequestMap.has(k)){
-                    getCachedRequestsStore().state.keyToRequestMap.set(k,new Set())
+                for (const k of usedKeys) {
+                  if (!getCachedRequestsStore().state.keyToRequestMap.has(k)) {
+                    getCachedRequestsStore().state.keyToRequestMap.set(k, new Set())
                   }
                   getCachedRequestsStore().state.keyToRequestMap.get(k).add(_url)
                 }
-              }else if (data['values']){
-                usedKeys = [data['values']['key']]
-                if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])){
-                  getCachedRequestsStore().state.keyToRequestMap.set(usedKeys[0],new Set())
+              } else if (data["values"]) {
+                usedKeys = [data["values"]["key"]]
+                if (!getCachedRequestsStore().state.keyToRequestMap.has(usedKeys[0])) {
+                  getCachedRequestsStore().state.keyToRequestMap.set(usedKeys[0], new Set())
                 }
                 getCachedRequestsStore().state.keyToRequestMap.get(usedKeys[0]).add(_url)
               }
             }
 
-            getCachedRequestsStore().state.cachedRequests[_url]={
-              date:new Date(),
+            getCachedRequestsStore().state.cachedRequests[_url] = {
+              date: new Date(),
               response: JSON.stringify(responsedata),
-              keys: usedKeys
+              keys: usedKeys,
             }
-
           }
           return response
         } else {
@@ -697,7 +713,7 @@ class cachedFetch {
           return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
         }
 
-        if ((error instanceof DOMException && error.name == "AbortError") || typeof(error) === 'string') {
+        if ((error instanceof DOMException && error.name == "AbortError") || typeof error === "string") {
           return Promise.reject(error)
         }
 
@@ -710,58 +726,61 @@ class cachedFetch {
   }
 
   static post(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {
-
-    function checkPenultimateUrlPart(url, partName){
+    function checkPenultimateUrlPart(url, partName) {
       if (!url.includes(partName)) return null
 
-      let lastSlash = url.lastIndexOf("/");
+      let lastSlash = url.lastIndexOf("/")
       if (lastSlash === -1 || lastSlash === url.length - 1) return null
       return url.substring(lastSlash + 1)
     }
 
     let isAddRequest = false
     //clear caches if its a add, edit or delete post request
-    if (['/delete',"/edit", "/add"].some(u => {
-      return url.includes(u+"/") || url.endsWith(u)
-    })){
-      let hasExtraFields = false;
+    if (
+      ["/delete", "/edit", "/add"].some((u) => {
+        return url.includes(u + "/") || url.endsWith(u)
+      })
+    ) {
+      let hasExtraFields = false
       for (const field of params.keys()) {
         if (field !== "key" && field !== "skey") {
           hasExtraFields = true
           break // Stop loop early to improve performance
         }
       }
-      if (hasExtraFields || url.includes("/delete")){
+      if (hasExtraFields || url.includes("/delete")) {
         //only update cache if we have data in request
         //we got a url that ends on x or contains /x/
         let entryKey = null
 
         if (params?.key) {
           entryKey = params.key
-        } else if (params instanceof FormData && params.has("key")){
+        } else if (params instanceof FormData && params.has("key")) {
           entryKey = params.get("key")
-        } else{
-          entryKey = ['/delete/',"/edit/", "/add/"].filter(u =>checkPenultimateUrlPart(url, u)).map(u =>checkPenultimateUrlPart(url, u))
-          if (entryKey.length>0){
+        } else {
+          entryKey = ["/delete/", "/edit/", "/add/"]
+            .filter((u) => checkPenultimateUrlPart(url, u))
+            .map((u) => checkPenultimateUrlPart(url, u))
+          if (entryKey.length > 0) {
             entryKey = entryKey[0]
-          }else{
+          } else {
             entryKey = null
           }
         }
 
-        if (entryKey && !url.endsWith("/add")){ //dirty. cache rework for 2.5
-          if (getCachedRequestsStore().state.keyToRequestMap.has(entryKey)){
+        if (entryKey && !url.endsWith("/add")) {
+          //dirty. cache rework for 2.5
+          if (getCachedRequestsStore().state.keyToRequestMap.has(entryKey)) {
             let urlList = getCachedRequestsStore().state.keyToRequestMap.get(entryKey) // get urlList for this key
 
-            for(const url of urlList){
-              try{
+            for (const url of urlList) {
+              try {
                 delete getCachedRequestsStore().state.cachedRequests[url] //delete all url caches for this key
-              }catch(error){}
-
+              } catch (error) {}
             }
             getCachedRequestsStore().state.keyToRequestMap.delete(entryKey) // delete the key to url map
           }
-        }else{
+        } else {
           //was an add > no key
           isAddRequest = true
         }
@@ -769,42 +788,43 @@ class cachedFetch {
     }
 
     return fetch(url, cachedFetch.buildOptions("POST", params, headers, abortController, mode))
-    .then(async (response) => {
-      if (response.ok) {
-
-        if(isAddRequest){
-          // remove all urls that starts with the same url like the add
-          let urlList = [...Object.keys(getCachedRequestsStore().state.cachedRequests)].filter((key) => key.startsWith(url.replace("/add","")))
-          for(const url of urlList){
-              try{
+      .then(async (response) => {
+        if (response.ok) {
+          if (isAddRequest) {
+            // remove all urls that starts with the same url like the add
+            let urlList = [...Object.keys(getCachedRequestsStore().state.cachedRequests)].filter((key) =>
+              key.startsWith(url.replace("/add", ""))
+            )
+            for (const url of urlList) {
+              try {
                 delete getCachedRequestsStore().state.cachedRequests[url] //delete all url caches for this key
-              }catch(error){}
+              } catch (error) {}
+            }
           }
+
+          return response
+        } else {
+          const errorMessage = `${response.status} ${response.statusText}: ${
+            response.headers ? response.headers.get("x-error-descr") : ""
+          }`
+          return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response))
+        }
+      })
+      .catch((error) => {
+        if (error instanceof TypeError) {
+          const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
+          return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
         }
 
-        return response
-      } else {
-        const errorMessage = `${response.status} ${response.statusText}: ${
-          response.headers ? response.headers.get("x-error-descr") : ""
+        if ((error instanceof DOMException && error.name == "AbortError") || typeof error === "string") {
+          return Promise.reject(error)
+        }
+
+        const errorMessage = `${error.statusCode} ${error.statusText}: ${
+          error.headers ? error.headers.get("x-error-descr") : ""
         }`
-        return Promise.reject(new HTTPError(response.status, response.statusText, errorMessage, response))
-      }
-    })
-    .catch((error) => {
-      if (error instanceof TypeError) {
-        const errorMessage = `503 ${error.message}: ${error.headers ? error.headers.get("x-error-descr") : ""}`
-        return Promise.reject(new HTTPError(503, error.message, errorMessage, error))
-      }
-
-      if ((error instanceof DOMException && error.name == "AbortError") || typeof(error) === 'string') {
-        return Promise.reject(error)
-      }
-
-      const errorMessage = `${error.statusCode} ${error.statusText}: ${
-        error.headers ? error.headers.get("x-error-descr") : ""
-      }`
-      return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))
-    })
+        return Promise.reject(new HTTPError(error.statusCode, error.statusText, errorMessage, error.response))
+      })
   }
 
   static internalpost(url, params = null, clearCache = null, headers = null, abortController = null, mode = null) {

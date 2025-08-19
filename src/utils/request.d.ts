@@ -7,7 +7,7 @@ export default class Request {
       dataObj,
       callback,
       failedCallback,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function
@@ -22,7 +22,7 @@ export default class Request {
       dataObj,
       callback,
       failedCallback,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function
@@ -40,7 +40,7 @@ export default class Request {
       cached,
       clearCache,
       abortController,
-      cacheTime
+      cacheTime,
     }?: {
       dataObj?: object
       callback?: Function
@@ -59,7 +59,7 @@ export default class Request {
       callback,
       failedCallback,
       group,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function
@@ -77,7 +77,7 @@ export default class Request {
       callback,
       failedCallback,
       group,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function
@@ -93,7 +93,7 @@ export default class Request {
       dataObj,
       callback,
       failedCallback,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function
@@ -110,7 +110,7 @@ export default class Request {
       dataObj,
       callback,
       failedCallback,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function
@@ -127,7 +127,7 @@ export default class Request {
       dataObj,
       callback,
       failedCallback,
-      abortController
+      abortController,
     }?: {
       dataObj?: object
       callback?: Function

@@ -4,16 +4,12 @@
     :value="state.value"
     hoist
     max-options-visible="0"
-    @sl-change="changeEvent"
     class="widget-bone widget-bone-boolean widget-bone-boolean-select"
-    :class="([`widget-bone-boolean-${name}`])"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    :class="[`widget-bone-boolean-${name}`]"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    @sl-change="changeEvent"
   >
-    <sl-option
-      v-for="val in [true,false]"
-      :key="val"
-      :value="val"
-    >
+    <sl-option v-for="val in [true, false]" :key="val" :value="val">
       <template v-if="val">
         {{ $t("bones.bool.true") }}
       </template>
@@ -26,39 +22,38 @@
 
 <script setup>
 import { reactive, onMounted, inject, computed } from "vue"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps( {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit = defineEmits( ["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: computed(() => {
-        return ""+![false, null, undefined, "","false"].includes(props.value)
-      })
-    })
+const boneState = inject("boneState")
+const state = reactive({
+  value: computed(() => {
+    return "" + ![false, null, undefined, "", "false"].includes(props.value)
+  }),
+})
 
-    function changeEvent(event) {
-      emit("change", props.name, event.target.value, props.lang, props.index)
-    }
+function changeEvent(event) {
+  emit("change", props.name, event.target.value, props.lang, props.index)
+}
 
-    onMounted(() => {
-      let val = props.value
-      if (!val) {
-        val = false
-      }
-      emit("change", props.name, val, props.lang, props.index) //init
-    })
-
+onMounted(() => {
+  let val = props.value
+  if (!val) {
+    val = false
+  }
+  emit("change", props.name, val, props.lang, props.index) //init
+})
 </script>
 
 <style scoped>

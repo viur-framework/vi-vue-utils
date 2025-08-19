@@ -13,8 +13,8 @@ export default {
   },
   bones: {
     phone: {
-      placeholder: "Phone/Fax"
-    }
+      placeholder: "Phone/Fax",
+    },
   },
   preview: "Preview",
   lang: "Language",
@@ -23,5 +23,5 @@ export default {
   fr: "FR",
   nl: "NL",
   ch: "CH",
-  es: "ES"
+  es: "ES",
 }
