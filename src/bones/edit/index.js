@@ -52,13 +52,13 @@ export const useBoneStore = defineStore("boneStore", () => {
       booleanBoneSelect,
       booleanBoneChoose,
       selectBoneChoose,
-      relationalBoneSelect
+      relationalBoneSelect,
     }),
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
-      "relational.": relationalBar
+      "relational.": relationalBar,
     }),
-    multibones: shallowRef(["select", "select."])
+    multibones: shallowRef(["select", "select."]),
   })
 
   function addBoneWidget(boneType, widget) {
@@ -118,7 +118,7 @@ export const useBoneStore = defineStore("boneStore", () => {
       return recordBone
     } else if (boneType === "numeric" || boneType.startsWith("numeric.")) {
       return numericBone
-    } else if (boneType === "relational.tree.leaf.file.file"  || boneType.startsWith("relational.tree.leaf.file.")) {
+    } else if (boneType === "relational.tree.leaf.file.file" || boneType.startsWith("relational.tree.leaf.file.")) {
       return fileBone
     } else if (boneType === "relational.select" || boneType.startsWith("relational.select.")) {
       return relationalBoneSelect
@@ -170,7 +170,7 @@ export const useBoneStore = defineStore("boneStore", () => {
     importWidgets,
 
     addBoneActionbar,
-    getBoneActionbar
+    getBoneActionbar,
   }
 })
 

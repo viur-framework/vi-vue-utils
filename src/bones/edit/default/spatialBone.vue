@@ -1,8 +1,8 @@
 <template>
   <sl-input
-    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
-    :class="([`widget-bone-spatial-${name}`],[`widget-bone-spatial-${name}-lat`])"
     v-model="state.valueLat"
+    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
+    :class="([`widget-bone-spatial-${name}`], [`widget-bone-spatial-${name}-lat`])"
     index="lat"
     type="number"
     :name="name"
@@ -11,15 +11,15 @@
     :disabled="boneState.readonly"
     value-as-number
     step="0.000001"
-    @sl-change="changeEvent"
     :placeholder="state.placeholder"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    @sl-change="changeEvent"
   ></sl-input>
 
   <sl-input
-    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
-    :class="([`widget-bone-spatial-${name}`],[`widget-bone-spatial-${name}-long`])"
     v-model="state.valueLng"
+    class="widget-bone widget-bone-spatial widget-bone-spatial-default"
+    :class="([`widget-bone-spatial-${name}`], [`widget-bone-spatial-${name}-long`])"
     index="lng"
     type="number"
     :name="name"
@@ -28,55 +28,53 @@
     :disabled="boneState.readonly"
     value-as-number
     step="0.000001"
-    @sl-change="changeEvent"
     :placeholder="state.placeholder"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    @sl-change="changeEvent"
   ></sl-input>
 </template>
 
 <script setup>
-import {reactive, onMounted, inject, computed} from "vue"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps( {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+import { reactive, onMounted, inject, computed } from "vue"
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit = defineEmits(["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      valueLat: null,
-      valueLng: null,
-      placeholder:computed(()=>{
-        if (boneState.label!=='placeholder') return undefined
-        let name = boneState?.bonestructure?.descr
-        if (boneState.bonestructure.required){
-          name +="*"
-        }
-        return name
-      })
-    })
-
-    function changeEvent() {
-      emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
+const boneState = inject("boneState")
+const state = reactive({
+  valueLat: null,
+  valueLng: null,
+  placeholder: computed(() => {
+    if (boneState.label !== "placeholder") return undefined
+    let name = boneState?.bonestructure?.descr
+    if (boneState.bonestructure.required) {
+      name += "*"
     }
+    return name
+  }),
+})
 
-    onMounted(() => {
-      try {
-        state.valueLat = props.value[0]
-        state.valueLng = props.value[1]
-      } catch (e) {}
-      emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
-    })
+function changeEvent() {
+  emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
+}
 
-
+onMounted(() => {
+  try {
+    state.valueLat = props.value[0]
+    state.valueLng = props.value[1]
+  } catch (e) {}
+  emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
+})
 </script>
 
 <style scoped>

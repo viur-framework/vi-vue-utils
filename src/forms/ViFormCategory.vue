@@ -4,46 +4,44 @@
   </template>
 
   <sl-details
-    class="viform-category"
-    :class="([`viform-category-${encodeURI(name.toLowerCase())}`])"
     v-else
     v-show="visible"
+    class="viform-category"
+    :class="[`viform-category-${encodeURI(name.toLowerCase())}`]"
     :summary="name"
     :open="open"
   >
     <slot></slot>
   </sl-details>
-
 </template>
 
 <script setup>
 const props = defineProps({
   // String shown a Category
-  name:{
-    type:String,
-    required:true
+  name: {
+    type: String,
+    required: true,
   },
   // internal identifiert mostly lowerCased name
-  identifier:{
-    type:String,
-    required:true
+  identifier: {
+    type: String,
+    required: true,
   },
   //is hidden
-  visible:{
-    type:Boolean,
-    default:true
+  visible: {
+    type: Boolean,
+    default: true,
   },
   //is open
-  open:{
-    type:Boolean,
-    default:true
+  open: {
+    type: Boolean,
+    default: true,
   },
   //hide wrapper
-  hide:{
-    type:Boolean,
-    default:false
-  }
-
+  hide: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 

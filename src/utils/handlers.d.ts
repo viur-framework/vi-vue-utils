@@ -12,7 +12,7 @@ export function ListRequest(
     module,
     params,
     group,
-    url
+    url,
   }?: {
     module?: string
     params?: {}

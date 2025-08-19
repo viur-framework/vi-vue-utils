@@ -11,15 +11,8 @@
       :size="'7'"
     />
 
-    <div
-      v-else
-      class="card"
-    >
-      <img
-        v-if="userStore.state.currentLoginMask !== 'secondFactor'"
-        class="logo"
-        :src="logo"
-      />
+    <div v-else class="card">
+      <img v-if="userStore.state.currentLoginMask !== 'secondFactor'" class="logo" :src="logo" />
       <!-- <sl-alert
         v-if="userStore.state['user.loggedin'] === 'error'"
         open
@@ -34,8 +27,7 @@
         v-show="userStore.state.currentLoginMask === '' || userStore.state.currentLoginMask === 'user'"
         :username="state.name"
         @on-user-login="userLogin($event.name, $event.password)"
-      >
-      </user-login-mask>
+      ></user-login-mask>
 
       <div
         v-show="
@@ -74,52 +66,28 @@
           class="more-login-btn"
           @click="googleLogin"
         >
-          <sl-icon
-            slot="prefix"
-            library="bootstrap"
-            name="google"
-            class="google-icon"
-          >
-          </sl-icon>
+          <sl-icon slot="prefix" library="bootstrap" name="google" class="google-icon"></sl-icon>
           {{ $t("login.with_google") }}
         </sl-button>
       </div>
       <slot></slot>
 
       <div v-if="userStore.state['user.loggedin'] === 'secound_factor_choice'">
-        <div
-          v-for="choice in userStore.state['user.login.secound_factor_choice']"
-          :key="choice"
-        >
+        <div v-for="choice in userStore.state['user.login.secound_factor_choice']" :key="choice">
           <sl-button @click="userSecondFactorStart(choice)">
             {{ choice["name"] }}
           </sl-button>
         </div>
       </div>
-      <div
-        v-else-if="userStore.state.currentLoginMask === 'secondFactor'"
-        class="second-factor"
-      >
+      <div v-else-if="userStore.state.currentLoginMask === 'secondFactor'" class="second-factor">
         <template
           v-for="boneName in Object.keys(userStore.state['user.login.secound_factor']['structure'])"
           :key="boneName"
         >
-          <img
-            v-if="boneName === 'otptoken'"
-            :src="tokenSvg"
-            class="token"
-          />
-          <img
-            v-else
-            :src="logo"
-            class="logo"
-          />
+          <img v-if="boneName === 'otptoken'" :src="tokenSvg" class="token" />
+          <img v-else :src="logo" class="logo" />
 
-          <form
-            style="width: 100%"
-            autocomplete="off"
-            @submit.prevent="secondFactorSend"
-          >
+          <form style="width: 100%" autocomplete="off" @submit.prevent="secondFactorSend">
             <bone
               :is="getBoneWidget(userStore.state['user.login.secound_factor']['structure'][boneName]['type'])"
               v-show="userStore.state['user.login.secound_factor']['structure'][boneName]['visible']"
@@ -131,8 +99,7 @@
               :skel="userStore.state['user.login.secound_factor']['values']"
               autocomplete="new-password"
               @change-internal="updateValue"
-            >
-            </bone>
+            ></bone>
             <sl-button
               class="more-login-btn"
               :variant="Object.keys(state.secondFactorFormdata).length > 0 ? 'primary' : 'disabled'"
@@ -145,10 +112,7 @@
           </form>
         </template>
       </div>
-      <div
-        v-else-if="userStore.state.currentLoginMask === 'pwRecovery'"
-        class="second-factor"
-      >
+      <div v-else-if="userStore.state.currentLoginMask === 'pwRecovery'" class="second-factor">
         <form
           style="width: 100%"
           autocomplete="new-password"
@@ -169,18 +133,14 @@
               :skel="userStore.state['user.login.secound_factor']['values']"
               autocomplete="new-password"
               @change-internal="updateRecoveryValue"
-            >
-            </bone>
+            ></bone>
             <sl-alert
               v-if="userStore.state['user.loggedin'] === 'error' && userStore.state.currentLoginMask === 'pwRecovery'"
               open
               variant="info"
               closable
             >
-              <sl-icon
-                slot="icon"
-                name="exclamation-triangle"
-              ></sl-icon>
+              <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
 
               <div class="error-msg">
                 {{ userStore.state.renderErrorMsg }}
@@ -226,144 +186,143 @@ import Loader from "../generic/Loader.vue"
 import { getBoneWidget } from "../bones/edit/index"
 import UserLoginMask from "./dynamicRender/UserLoginMask.vue"
 
-  const props = defineProps( {
-    username: { type: String, default: "" },
-    isAppAuth: Boolean,
-    isRedirect: { type: Boolean, default: false },
-    backgroundImage: { type: String, default: "" },
-    logo: { type: String, default: "" },
-    title: { type: String, default: "Login" },
-    tokenSvg: { type: String, default: "" }
-  })
+const props = defineProps({
+  username: { type: String, default: "" },
+  isAppAuth: Boolean,
+  isRedirect: { type: Boolean, default: false },
+  backgroundImage: { type: String, default: "" },
+  logo: { type: String, default: "" },
+  title: { type: String, default: "Login" },
+  tokenSvg: { type: String, default: "" },
+})
 
+const userStore = useUserStore()
+const router = useRouter()
 
-    const userStore = useUserStore()
-    const router = useRouter()
-
-    const state = reactive({
-      name: "",
-      password: "",
-      userDataFilled: computed(() => state.name && state.password),
-      waitForLogout: false,
-      waitFor: "init",
-      otp: "",
-      userPasswordLoginActivated: computed(() => {
-        return (
-          (userStore.state["user.login.type"] !== "user" && userStore.state["user.login.type"] !== "no") ||
-          !userStore.state.primaryAuthMethods.has("X-VIUR-AUTH-User-Password")
-        )
-      }),
-      userGoogleLoginActivated: computed(() => {
-        return (
-          (userStore.state["user.login.type"] !== "google" && userStore.state["user.login.type"] !== "no") ||
-          !userStore.state.primaryAuthMethods.has("X-VIUR-AUTH-Google-Account")
-        )
-      }),
-      secondFactorFormdata: {}
-    })
-
-    function googleLogin() {
-      userStore.state.currentLoginMask = "google"
-      state.waitForLogout = false
-      userStore.googleLogin()
-    }
-
-    function logout() {
-      state.waitForLogout = true
-      userStore.logout()
-    }
-
-    function userLogin(name, password) {
-      state.waitForLogout = false
-      state.waitFor = "" //FIXME
-      userStore.userLogin(name.trim(), password.trim())
-    }
-    function userSecondFactor() {
-      state.waitForLogout = false
-      userStore.userSecondFactor(state.otp)
-    }
-    function userSecondFactorStart(choice) {
-      userStore.userSecondFactorStart(choice)
-    }
-    function updateValue(data) {
-      if (data.value?.length > 0) {
-        state.secondFactorFormdata[data.name] = data.value //Fixme can this broke
-      } else {
-        state.secondFactorFormdata = {}
-      }
-    }
-
-    function updateRecoveryValue(data) {
-      if (data.value?.length > 0) {
-        state.secondFactorFormdata[data.name] = data.value //Fixme can this broke
-      } else {
-        delete state.secondFactorFormdata[data.name]
-      }
-    }
-
-    function secondFactorSend() {
-      if (Object.keys(state.secondFactorFormdata).length > 0) {
-        userStore.state.currentLoginMask = "secondFactor"
-        userStore.state["user.loggedin"] = "loading"
-        userStore
-          .secondFactorSend(state.secondFactorFormdata)
-          .then((resp) => {
-            state.secondFactorFormdata = {}
-          })
-          .catch((error) => {
-            userStore.state["user.login.secound_factor"] = error
-            userStore.state["user.loggedin"] = "secound_factor_input"
-          })
-      }
-    }
-
-    function publicAsset(path, prefix = "static") {
-      if (import.meta.env.DEV) {
-        return `${prefix}/${path}`
-      }
-      return `../${path}`
-    }
-
-    function sendNewPassword(data) {
-      if (Object.keys(data).length > 0) {
-        userStore.sendNewPassword(data)
-      } else {
-        userStore.state["user.loggedin"] = "error"
-        userStore.state.renderErrorMsg = "Feld darf nicht leer sein!"
-      }
-    }
-
-    watch(
-      () => userStore.state.currentLoginMask,
-      () => {
-        if (userStore.state.currentLoginMask === "") {
-          state.secondFactorFormdata = {}
-        }
-      }
+const state = reactive({
+  name: "",
+  password: "",
+  userDataFilled: computed(() => state.name && state.password),
+  waitForLogout: false,
+  waitFor: "init",
+  otp: "",
+  userPasswordLoginActivated: computed(() => {
+    return (
+      (userStore.state["user.login.type"] !== "user" && userStore.state["user.login.type"] !== "no") ||
+      !userStore.state.primaryAuthMethods.has("X-VIUR-AUTH-User-Password")
     )
+  }),
+  userGoogleLoginActivated: computed(() => {
+    return (
+      (userStore.state["user.login.type"] !== "google" && userStore.state["user.login.type"] !== "no") ||
+      !userStore.state.primaryAuthMethods.has("X-VIUR-AUTH-Google-Account")
+    )
+  }),
+  secondFactorFormdata: {},
+})
 
-    onBeforeMount(async () => {
-      await router.isReady()
+function googleLogin() {
+  userStore.state.currentLoginMask = "google"
+  state.waitForLogout = false
+  userStore.googleLogin()
+}
 
-      document.title = props.title
+function logout() {
+  state.waitForLogout = true
+  userStore.logout()
+}
 
-      // if (!props.isRedirect && userStore.state['user.loggedin'] === 'no') {
-      //   state.waitFor = "login";
-      // }
+function userLogin(name, password) {
+  state.waitForLogout = false
+  state.waitFor = "" //FIXME
+  userStore.userLogin(name.trim(), password.trim())
+}
+function userSecondFactor() {
+  state.waitForLogout = false
+  userStore.userSecondFactor(state.otp)
+}
+function userSecondFactorStart(choice) {
+  userStore.userSecondFactorStart(choice)
+}
+function updateValue(data) {
+  if (data.value?.length > 0) {
+    state.secondFactorFormdata[data.name] = data.value //Fixme can this broke
+  } else {
+    state.secondFactorFormdata = {}
+  }
+}
 
-      userStore.getAuthMethods()
+function updateRecoveryValue(data) {
+  if (data.value?.length > 0) {
+    state.secondFactorFormdata[data.name] = data.value //Fixme can this broke
+  } else {
+    delete state.secondFactorFormdata[data.name]
+  }
+}
 
-      userStore
-        .updateUser()
-        .then(() => {
-          state.waitFor = "login"
-        })
-        .catch((error) => {
-          state.waitFor = "login"
-        })
+function secondFactorSend() {
+  if (Object.keys(state.secondFactorFormdata).length > 0) {
+    userStore.state.currentLoginMask = "secondFactor"
+    userStore.state["user.loggedin"] = "loading"
+    userStore
+      .secondFactorSend(state.secondFactorFormdata)
+      .then((resp) => {
+        state.secondFactorFormdata = {}
+      })
+      .catch((error) => {
+        userStore.state["user.login.secound_factor"] = error
+        userStore.state["user.loggedin"] = "secound_factor_input"
+      })
+  }
+}
 
-      state.name = props.username ? props.username : ""
+function publicAsset(path, prefix = "static") {
+  if (import.meta.env.DEV) {
+    return `${prefix}/${path}`
+  }
+  return `../${path}`
+}
+
+function sendNewPassword(data) {
+  if (Object.keys(data).length > 0) {
+    userStore.sendNewPassword(data)
+  } else {
+    userStore.state["user.loggedin"] = "error"
+    userStore.state.renderErrorMsg = "Feld darf nicht leer sein!"
+  }
+}
+
+watch(
+  () => userStore.state.currentLoginMask,
+  () => {
+    if (userStore.state.currentLoginMask === "") {
+      state.secondFactorFormdata = {}
+    }
+  }
+)
+
+onBeforeMount(async () => {
+  await router.isReady()
+
+  document.title = props.title
+
+  // if (!props.isRedirect && userStore.state['user.loggedin'] === 'no') {
+  //   state.waitFor = "login";
+  // }
+
+  userStore.getAuthMethods()
+
+  userStore
+    .updateUser()
+    .then(() => {
+      state.waitFor = "login"
     })
+    .catch((error) => {
+      state.waitFor = "login"
+    })
+
+  state.name = props.username ? props.username : ""
+})
 </script>
 
 <style scoped>
@@ -461,7 +420,7 @@ sl-button.more-login-btn:has(+ #google_oauth > *) {
     max-width: none;
   }
 
-  sl-alert{
+  sl-alert {
     margin-bottom: var(--sl-spacing-medium);
   }
 }
@@ -548,7 +507,7 @@ sl-input {
     border-bottom-right-radius: var(--sl-border-radius-medium) !important;
   }
 
-  sl-alert{
+  sl-alert {
     margin-bottom: 0;
   }
 }
@@ -570,7 +529,7 @@ sl-input::part(input)[type="number"] {
   appearance: textfield;
 }
 
-sl-alert{
+sl-alert {
   margin-bottom: var(--sl-spacing-medium);
 }
 </style>

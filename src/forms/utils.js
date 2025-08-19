@@ -1,32 +1,29 @@
 import Request from "../utils/request"
 import Logics from "logics-js"
-import {watch, inject, toRaw, reactive} from "vue"
+import { watch, inject, toRaw, reactive } from "vue"
 
-
-export function useFormUtils(props, state){
-
-  function buildRequestUrl(){
+export function useFormUtils(props, state) {
+  function buildRequestUrl() {
     //build Url from props
     let url = `/${props.renderer}/${props.module}/${props.action}`
 
     // add uses Key as parent, clone as source and edit as target
-    const isTree = ["node","leaf"].includes(props.skeltype)
+    const isTree = ["node", "leaf"].includes(props.skeltype)
 
-
-    if (props.group){
+    if (props.group) {
       url += `/${props.group}`
-    }else if (isTree){
+    } else if (isTree) {
       url += `/${props.skeltype}`
     }
 
-    if (["edit","clone"].includes(props.action) || (isTree && props.action === "add")){
+    if (["edit", "clone"].includes(props.action) || (isTree && props.action === "add")) {
       url += `/${props.skelkey}`
     }
 
     return url
   }
 
-  function normalizeStructure(structure){
+  function normalizeStructure(structure) {
     //ensure that structure is a Object
     if (Array.isArray(structure)) {
       let struct = {}
@@ -39,93 +36,93 @@ export function useFormUtils(props, state){
     }
   }
 
-  function toFormData(){
+  function toFormData() {
     let formdata = []
 
-    function handleEntry(result, currentFieldName, bone, val){
-      if (bone["type"].startsWith("record")){
+    function handleEntry(result, currentFieldName, bone, val) {
+      if (bone["type"].startsWith("record")) {
         let struct = normalizeStructure(bone["using"])
         for (const [_fieldname, _bone] of Object.entries(struct)) {
           result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val?.[_fieldname]))
         }
-      } else if (val === Object(val) && bone["using"]) { //recusive call for nested data
-        if (val["dest"]?.["key"]){
+      } else if (val === Object(val) && bone["using"]) {
+        //recusive call for nested data
+        if (val["dest"]?.["key"]) {
           let struct = normalizeStructure(bone["using"])
           for (const [_fieldname, _bone] of Object.entries(struct)) {
             result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
           }
-          result.push({[`${currentFieldName}.key`]: val["dest"]["key"]})
-        }else{
-          result.push({[`${currentFieldName}`]: null})
+          result.push({ [`${currentFieldName}.key`]: val["dest"]["key"] })
+        } else {
+          result.push({ [`${currentFieldName}`]: null })
         }
-      } else if (bone['type'].startsWith("spatial") && val){ //spatialbones
-        result.push({[currentFieldName+".lat"]: val[0]})
-        result.push({[currentFieldName+".lng"]: val[1]})
-      } else if (bone['type'].startsWith("raw.json") && val) {
-        result.push({[currentFieldName]: JSON.stringify(val)})
-      }
-      else if (val === Object(val)){ //normal relations
-        result.push({[currentFieldName]:val["dest"]?.["key"]|| null})
-      } else{ //everything else
-        result.push({[currentFieldName]: val})
+      } else if (bone["type"].startsWith("spatial") && val) {
+        //spatialbones
+        result.push({ [currentFieldName + ".lat"]: val[0] })
+        result.push({ [currentFieldName + ".lng"]: val[1] })
+      } else if (bone["type"].startsWith("raw.json") && val) {
+        result.push({ [currentFieldName]: JSON.stringify(val) })
+      } else if (val === Object(val)) {
+        //normal relations
+        result.push({ [currentFieldName]: val["dest"]?.["key"] || null })
+      } else {
+        //everything else
+        result.push({ [currentFieldName]: val })
       }
       return result
     }
 
-    function boneToForm(fieldname,bone,value){
+    function boneToForm(fieldname, bone, value) {
       let result = []
       //only record and relational bones get indexed fields
       let indexBone = bone["type"].startsWith("record")
       let languages = bone["languages"] || ["none"]
       let languageValue = value
-      for(const lang of languages){
+      for (const lang of languages) {
         let currentFieldName = fieldname
-        if(lang!=="none"){
+        if (lang !== "none") {
           currentFieldName += `.${lang}` //append lang
           if (languageValue) value = languageValue[lang]
         }
 
-        if (bone["multiple"]){
-          if (!value) value=[]
-          for(const [idx,val] of value.entries()){
+        if (bone["multiple"]) {
+          if (!value) value = []
+          for (const [idx, val] of value.entries()) {
             let currentFieldnameMultiple = currentFieldName
 
-            if (indexBone || val?.["rel"] || (bone['using'] && val?.["rel"]!==null)){
-              currentFieldnameMultiple = `${currentFieldName}.${idx}`//append idx
+            if (indexBone || val?.["rel"] || (bone["using"] && val?.["rel"] !== null)) {
+              currentFieldnameMultiple = `${currentFieldName}.${idx}` //append idx
             }
             result = handleEntry(result, currentFieldnameMultiple, bone, val)
           }
-          if (value.length===0){
-            result.push({[currentFieldName]: null}) //send empty multiple fields
+          if (value.length === 0) {
+            result.push({ [currentFieldName]: null }) //send empty multiple fields
           }
-        }else{
+        } else {
           result = handleEntry(result, currentFieldName, bone, value)
         }
       }
       return result
     }
 
-    for (const [fieldname, bone] of Object.entries(state.structure)){
-
-      if(props.sendReadOnly){
+    for (const [fieldname, bone] of Object.entries(state.structure)) {
+      if (props.sendReadOnly) {
         formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
-      }else if (!state.structure[fieldname]["readonly"] || bone.type==="key"){
+      } else if (!state.structure[fieldname]["readonly"] || bone.type === "key") {
         formdata.push(boneToForm(fieldname, bone, state.skel[fieldname]))
       }
-
     }
 
     formdata = formdata.flat(10)
     return formdata
   }
 
-
-  function sendData(alternativUrl= null, additionalData= null, headers=null, removeKeyFromDataset= true){
+  function sendData(alternativUrl = null, additionalData = null, headers = null, removeKeyFromDataset = true) {
     state.loading = true
     let isValid = state.viformelement.reportValidity()
-    if (!isValid){
-     state.loading = false
-     return new Promise((resolve, reject)=>reject("Form is not valid"))
+    if (!isValid) {
+      state.loading = false
+      return new Promise((resolve, reject) => reject("Form is not valid"))
     }
 
     let request = Request.post
@@ -138,7 +135,7 @@ export function useFormUtils(props, state){
     for (const bone of toFormData()) {
       for (const [k, v] of Object.entries(bone)) {
         let val = v
-        if ([undefined,null].includes(v)){
+        if ([undefined, null].includes(v)) {
           val = ""
         }
         formData.append(k, val)
@@ -147,26 +144,26 @@ export function useFormUtils(props, state){
 
     let data = {}
     for (const key of formData.keys()) {
-      if (key==="key" && removeKeyFromDataset) continue
+      if (key === "key" && removeKeyFromDataset) continue
       data[[key]] = formData.getAll(key)
     }
-    if (additionalData){
-      data = {...data, ...additionalData} //inject data like contexts
+    if (additionalData) {
+      data = { ...data, ...additionalData } //inject data like contexts
     }
 
-    return request(url, {dataObj: data, headers: headers}).then(async (resp)=>{
+    return request(url, { dataObj: data, headers: headers }).then(async (resp) => {
       let data = await resp.clone().json()
       state.skel = data["values"]
       //state.structure = normalizeStructure(data["structure"])
       state.errors = data["errors"]
-      state.actionparams = data['params']
-      state.actionname = data['action']
+      state.actionparams = data["params"]
+      state.actionname = data["action"]
       state.loading = false
       return resp
     })
   }
 
-  function fetchData(alternativUrl= null, additionalData=null, headers=null){
+  function fetchData(alternativUrl = null, additionalData = null, headers = null) {
     //fetch data
     state.loading = true
     let request = Request.post
@@ -176,37 +173,43 @@ export function useFormUtils(props, state){
     if (alternativUrl) url = alternativUrl //replace saving url
 
     let data = {}
-    if (additionalData){
-      data = {...data, ...additionalData} //inject data like contexts
+    if (additionalData) {
+      data = { ...data, ...additionalData } //inject data like contexts
     }
 
-    return request(url, {dataObj: data, headers: headers}).then(async (resp)=>{
+    return request(url, { dataObj: data, headers: headers }).then(async (resp) => {
       let data = await resp.clone().json()
       initForm(data["values"], data["structure"], state.values)
 
       state.errors = data["errors"]
-      state.actionparams = data['params']
-      state.actionname = data['action']
+      state.actionparams = data["params"]
+      state.actionname = data["action"]
       state.loading = false
       return resp
     })
   }
 
-  function reload(){
-    state.loading=true
-    if (props.structure){
-      initForm(props.skel,props.structure, state.values)
-      state.loading=false
-    }else if(props.module && props.action){
-      fetchData(props.fetchUrl,props.params).then(async(resp)=>{state.loading=false}).catch(async(error)=>{state.loading=false})
-    }else{
+  function reload() {
+    state.loading = true
+    if (props.structure) {
+      initForm(props.skel, props.structure, state.values)
+      state.loading = false
+    } else if (props.module && props.action) {
+      fetchData(props.fetchUrl, props.params)
+        .then(async (resp) => {
+          state.loading = false
+        })
+        .catch(async (error) => {
+          state.loading = false
+        })
+    } else {
       console.log(props)
       console.error("Error while building Form: you need atleast module and action or structure parameters")
     }
   }
 
-  function updateCategories(){
-    if (!state.structure){
+  function updateCategories() {
+    if (!state.structure) {
       state.structure = {}
     }
 
@@ -223,7 +226,7 @@ export function useFormUtils(props, state){
       let boneStructure = state.structure[boneName]
 
       if (bone?.params?.category) {
-        category = bone.params.category.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()
+        category = bone.params.category.replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase()
       }
 
       if (Object.keys(categories).includes(category)) {
@@ -236,21 +239,20 @@ export function useFormUtils(props, state){
           bones: [
             {
               name: boneName,
-            }
-          ]
+            },
+          ],
         }
       }
       if (boneStructure["visible"] === true) {
         categories[category]["visible"] = true
       }
 
-
       if (
-        ( props.collapsedCategories &&
-          props.collapsedCategories.map((x) => x.replace(/[^a-zA-Z0-9_]/g, '_').toLowerCase()).includes(category)) ||
-          category === "system" ||
-          category === "internal" ||
-          props.collapsedCategories?.[0] === "*"
+        (props.collapsedCategories &&
+          props.collapsedCategories.map((x) => x.replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase()).includes(category)) ||
+        category === "system" ||
+        category === "internal" ||
+        props.collapsedCategories?.[0] === "*"
       ) {
         categories[category]["open"] = false
       } else {
@@ -265,12 +267,11 @@ export function useFormUtils(props, state){
         sortedCategories[key] = categories[key]
       })
 
-
     return sortedCategories
   }
 
-  function updateSkel(data){
-    const {name, lang, value, index, valid} = data
+  function updateSkel(data) {
+    const { name, lang, value, index, valid } = data
     state.valids[name] = valid
 
     let skelvalue = state.skel[name]
@@ -278,11 +279,11 @@ export function useFormUtils(props, state){
     if (state.readonly) return false
 
     if (lang) {
-      if (!skelvalue){
+      if (!skelvalue) {
         skelvalue = {}
       }
       if (Object.keys(skelvalue).includes(lang) && index !== null) {
-        if (!skelvalue[lang]){
+        if (!skelvalue[lang]) {
           skelvalue[lang] = []
         }
         skelvalue[lang][index] = value
@@ -290,20 +291,18 @@ export function useFormUtils(props, state){
         skelvalue[lang] = value
       }
     } else if (index !== null) {
-      if (!skelvalue){
+      if (!skelvalue) {
         skelvalue = []
       }
       skelvalue[index] = value
     } else {
       skelvalue = value
-
     }
     state.skel[name] = skelvalue
     logics() //postprocess all bones if needed
   }
 
-
-  function _logics(structure, skel){
+  function _logics(structure, skel) {
     for (const [boneName, bone] of Object.entries(structure)) {
       if (bone?.["params"]?.["evaluate"]) {
         let ex = new Logics(bone?.["params"]?.["evaluate"])
@@ -311,10 +310,10 @@ export function useFormUtils(props, state){
       }
 
       if (bone?.["params"]?.["visibleIf"]) {
-        try{
+        try {
           let ex = new Logics(bone?.["params"]?.["visibleIf"])
           bone["visible"] = ex.run(skel).toBool()
-        }catch(error){
+        } catch (error) {
           //console.log(bone?.["params"]?.["visibleIf"])
         }
       }
@@ -324,34 +323,34 @@ export function useFormUtils(props, state){
         bone["readonly"] = ex.run(skel).toBool()
       }
 
-      if(bone?.['using']){
-        _logics(normalizeStructure(bone['using']),skel)
+      if (bone?.["using"]) {
+        _logics(normalizeStructure(bone["using"]), skel)
       }
     }
   }
 
   function logics() {
-    let skel = {...state.skel, _skel:state.skel}
+    let skel = { ...state.skel, _skel: state.skel }
 
-    if (props.internal){
+    if (props.internal) {
       // injet mainform with _skel
-      skel = {...skel, _skel:props.internal.skel}
+      skel = { ...skel, _skel: props.internal.skel }
     }
     _logics(state.structure, skel)
   }
 
-  function initForm(skel, structure, values= {}){
+  function initForm(skel, structure, values = {}) {
     let skeldata = skel || {}
     let formvalues = {}
-    if ( values ){
+    if (values) {
       formvalues = values
     }
 
-    if (structure!==undefined){
+    if (structure !== undefined) {
       //props are refs to a js Object, removing reactivativ is not enought, we musst create copy of that object.
       //each form has its own structure and mutating dont change the structure for other forms, this is needed for multiple records with logics
       let struct = {}
-      for (const [k,v] of Object.entries(normalizeStructure(structure))){
+      for (const [k, v] of Object.entries(normalizeStructure(structure))) {
         struct[k] = toRaw(v)
       }
       state.structure = structuredClone(struct)
@@ -371,6 +370,6 @@ export function useFormUtils(props, state){
     normalizeStructure,
     initForm,
     logics,
-    reload
+    reload,
   }
 }

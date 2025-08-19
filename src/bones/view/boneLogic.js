@@ -14,7 +14,7 @@ const boneLogic = (skel, structure) => {
         return structure.value
       }
       return structure
-    })
+    }),
   })
 
   function getBoneValue(boneName, options = null, skel = null) {
@@ -80,12 +80,12 @@ const boneLogic = (skel, structure) => {
     } else if (boneStructure["type"] === "select" || boneStructure["type"].startsWith("select.")) {
       // extract description from tuple
       if (boneStructure["values"].length > 0) {
-        let returnValue = boneStructure["values"]?.filter(x=>x[0]===value)?.[0]?.[1]
-        return returnValue?returnValue:"-"
+        let returnValue = boneStructure["values"]?.filter((x) => x[0] === value)?.[0]?.[1]
+        return returnValue ? returnValue : "-"
       }
-      if (Object.keys(boneStructure["values"]).length>0){
-        let returnValue = Object.entries(boneStructure["values"])?.filter(x=>x[0]===value)?.[0]?.[1]
-        return returnValue?returnValue:"-"
+      if (Object.keys(boneStructure["values"]).length > 0) {
+        let returnValue = Object.entries(boneStructure["values"])?.filter((x) => x[0] === value)?.[0]?.[1]
+        return returnValue ? returnValue : "-"
       }
 
       return "-"
@@ -105,7 +105,7 @@ const boneLogic = (skel, structure) => {
     } else if (boneStructure["type"] === "bool") {
       return value ? "Ja" : "Nein"
     } else if (boneStructure["type"] === "raw.json") {
-      return JSON.stringify(value);
+      return JSON.stringify(value)
     } else {
       value = Utils.unescape(value)
       return value.toString()
@@ -131,7 +131,7 @@ const boneLogic = (skel, structure) => {
 
   return {
     getBoneValue,
-    bones_state
+    bones_state,
   }
 }
 

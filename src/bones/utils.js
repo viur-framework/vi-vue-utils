@@ -63,14 +63,12 @@ export default class Utils {
             aval = readValue(restPath.join("."), aval[entry])
           }
 
-          if (typeof aval === 'object' &&
-            !Array.isArray(aval) &&
-            aval !== null
-          ){
-            aval = Object.entries(aval).map((x)=>x[1]).join(", ")
+          if (typeof aval === "object" && !Array.isArray(aval) && aval !== null) {
+            aval = Object.entries(aval)
+              .map((x) => x[1])
+              .join(", ")
           }
-
-        } else if (!aval || (typeof aval[entry] === 'object' && !aval[entry])) {
+        } else if (!aval || (typeof aval[entry] === "object" && !aval[entry])) {
           aval = "-"
         }
       }
