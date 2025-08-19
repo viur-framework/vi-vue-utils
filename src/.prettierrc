@@ -4,7 +4,7 @@
   "endOfLine": "lf",
   "trailingComma": "es5",
   "printWidth": 120,
-  "semi": true,
+  "semi": false,
   "singleQuote": false,
   "overrides": [
     {

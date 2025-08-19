@@ -4,7 +4,7 @@ import { execSync } from "child_process";
 import process from "process";
 
 // Get the path argument (if provided)
-const path = process.argv[2] || "sources/";
+const path = process.argv[2] || "./";
 
 console.log(`Running check on: ${path}`);
 
