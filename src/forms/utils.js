@@ -322,7 +322,14 @@ export function useFormUtils(props, state) {
         let ex = new Logics(bone?.["params"]?.["readonlyIf"])
         bone["readonly"] = ex.run(skel).toBool()
       }
-
+      if (bone?.["params"]?.["requiredIf"]) {
+        try {
+          let ex = new Logics(bone?.["params"]?.["requiredIf"])
+          bone["required"] = ex.run(skel).toBool()
+        } catch (error) {
+          //console.log(bone?.["params"]?.["requiredIf"])
+        }
+      }
       if (bone?.["using"]) {
         _logics(normalizeStructure(bone["using"]), skel)
       }
