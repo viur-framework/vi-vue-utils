@@ -9,40 +9,40 @@ export default {
     dragFile: "Dateien hier hinziehen",
     editFile: "Datei bearbeiten",
     list: "Auflisten",
-    addEmpty:"Neuer Eintrag",
-    no_entries:"Keine Einträge"
+    addEmpty: "Neuer Eintrag",
+    no_entries: "Keine Einträge",
   },
   lang: "Sprache",
   bones: {
     numeric: {
       min: "Minimum: {val}",
       max: "Maximum: {val}",
-      precision: "Genauigkeit: {val} Stellen"
+      precision: "Genauigkeit: {val} Stellen",
     },
     bool: {
       true: "Ja",
-      false: "Nein"
+      false: "Nein",
     },
     phone: {
-      placeholder: "Telefon/Fax"
-    }
+      placeholder: "Telefon/Fax",
+    },
   },
-  errors:{
-    "Field not set":"Feld nicht ausgefüllt",
-    "No value entered":"Feld nicht ausgefüllt",
-    "invalid value entered":"Wert ist ungültig",
-    "Field not submitted":"Feld wurde nicht übertragen",
-    "Too few items":"Zuwenige Elemente",
-    "Too many items":"Zuviele Elemente",
-    "Duplicate items":"Doppelte Elemente",
-    "No Captche given!":"Captcha Code fehlt!",
-    "Incomplete data":"Daten unvollständig",
-    "No value selected":"Kein Wert ausgewählt",
-    "Invalid value selected":"Auswahl ist ungültig",
-    "Wrong OTP Token":"Falscher OTP Code",
-    "Maximum length exceeded":"Eingabe zu lang",
-    "Invalid email entered":"Ungültige E-Mail Adresse"
 
+  errors: {
+    "Field not set": "Feld nicht ausgefüllt",
+    "No value entered": "Feld nicht ausgefüllt",
+    "invalid value entered": "Wert ist ungültig",
+    "Field not submitted": "Feld wurde nicht übertragen",
+    "Too few items": "Zuwenige Elemente",
+    "Too many items": "Zuviele Elemente",
+    "Duplicate items": "Doppelte Elemente",
+    "No Captche given!": "Captcha Code fehlt!",
+    "Incomplete data": "Daten unvollständig",
+    "No value selected": "Kein Wert ausgewählt",
+    "Invalid value selected": "Auswahl ist ungültig",
+    "Wrong OTP Token": "Falscher OTP Code",
+    "Maximum length exceeded": "Eingabe zu lang",
+    "Invalid email entered": "Ungültige E-Mail Adresse",
   },
   preview: "Vorschau",
   de: "DE",
@@ -51,14 +51,14 @@ export default {
   nl: "NL",
   ch: "CH",
   es: "ES",
-  "de-x-simple":"Einfache Sprache",
+  "de-x-simple": "Einfache Sprache",
   login: {
     login: "Anmelden",
     logout: "Abmelden",
-    lost_password:"Passwort vergessen?",
+    lost_password: "Passwort vergessen?",
     with_google: "Mit Google anmelden",
     or: "oder",
     login_error: "Benutzername oder Passwort falsch.",
-    back:"zurück"
+    back: "zurück",
   },
 }

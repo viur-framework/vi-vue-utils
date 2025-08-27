@@ -1,16 +1,6 @@
 <template>
-  <form
-    autocomplete="on"
-    @submit.prevent="userLogin"
-  >
-    <sl-input
-      ref="nameInput"
-      v-model="state.name"
-      :placeholder="$t('login.email')"
-      name="username"
-      required
-      unwrap
-    />
+  <form autocomplete="on" @submit.prevent="userLogin">
+    <sl-input ref="nameInput" v-model="state.name" :placeholder="$t('login.email')" name="username" required unwrap />
     <div class="input-wrapper">
       <sl-input
         v-model="state.password"
@@ -21,23 +11,11 @@
         required
         unwrap
       />
-      <span
-        class="forgot-pw"
-        @click="userStore.recoverPassword()"
-        >Passwort vergessen?</span
-      >
+      <span class="forgot-pw" @click="userStore.recoverPassword()">Passwort vergessen?</span>
     </div>
 
-    <sl-alert
-      v-if="userStore.state['user.loggedin'] === 'error'"
-      open
-      variant="info"
-      closable
-    >
-      <sl-icon
-        slot="icon"
-        name="exclamation-triangle"
-      ></sl-icon>
+    <sl-alert v-if="userStore.state['user.loggedin'] === 'error'" open variant="info" closable>
+      <sl-icon slot="icon" name="exclamation-triangle"></sl-icon>
 
       <div class="error-msg">
         {{ userStore.state.renderErrorMsg }}
@@ -51,11 +29,7 @@
     >
       {{ $t("login.login") }}
     </sl-button>
-    <sl-button
-      v-else
-      @click="logout"
-      >{{ $t("login.logout") }}
-    </sl-button>
+    <sl-button v-else @click="logout">{{ $t("login.logout") }}</sl-button>
   </form>
 </template>
 
@@ -64,38 +38,38 @@ import { reactive, defineComponent, computed, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
 import { useUserStore } from "../../stores/user"
 
-  const props = defineProps({
-    username: { type: String, required: true }
-  })
+const props = defineProps({
+  username: { type: String, required: true },
+})
 
-  const emit = defineEmits(["onUserLogin"])
+const emit = defineEmits(["onUserLogin"])
 
-    const userStore = useUserStore()
-    const nameInput = ref(null)
+const userStore = useUserStore()
+const nameInput = ref(null)
 
-    const state = reactive({
-      name: "",
-      password: "",
-      userDataFilled: computed(() => state.name && state.password)
-    })
+const state = reactive({
+  name: "",
+  password: "",
+  userDataFilled: computed(() => state.name && state.password),
+})
 
-    function userLogin() {
-      if (!state.name.length || !state.password.length) {
-        return
-      }
-      emit("onUserLogin", { name: state.name, password: state.password })
-    }
+function userLogin() {
+  if (!state.name.length || !state.password.length) {
+    return
+  }
+  emit("onUserLogin", { name: state.name, password: state.password })
+}
 
-    watchEffect(() => {
-      if (nameInput.value && nameInput.value !== null) {
-        const { start } = useTimeoutFn(() => {
-          if (props?.username.length) state.name = props?.username ? props.username : ""
-          if (nameInput.value.value.length === 0 || nameInput.value.value.length < 1) nameInput.value.focus()
-        }, 500)
+watchEffect(() => {
+  if (nameInput.value && nameInput.value !== null) {
+    const { start } = useTimeoutFn(() => {
+      if (props?.username.length) state.name = props?.username ? props.username : ""
+      if (nameInput.value.value.length === 0 || nameInput.value.value.length < 1) nameInput.value.focus()
+    }, 500)
 
-        start()
-      }
-    })
+    start()
+  }
+})
 </script>
 
 <style scoped>

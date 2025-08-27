@@ -1,154 +1,147 @@
 <template>
   <sl-input
-    class="widget-bone widget-bone-password widget-bone-password-default"
-    :class="([`widget-bone-password-${name}`]),{ 'has-check': !boneState.readonly }"
     ref="passwordBone"
     v-model="state.value1"
+    class="widget-bone widget-bone-password widget-bone-password-default"
+    :class="([`widget-bone-password-${name}`], { 'has-check': !boneState.readonly })"
     :disabled="boneState.readonly"
     type="password"
     clearable
     password-toggle="true"
+    :placeholder="state.placeholder"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
     @sl-change="changeEvent"
     @sl-clear="state.value1 = ''"
     @keyup="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
-    <sl-icon
-      slot="suffix"
-      :name="state.equal && state.value1.length ? 'check' : 'x'"
-    ></sl-icon>
+    <sl-icon slot="suffix" :name="state.equal && state.value1.length ? 'check' : 'x'"></sl-icon>
   </sl-input>
   <sl-input
-    class="widget-bone widget-bone-boolean widget-bone-boolean-default widget-bone-boolean-repeat password-check"
-    :class="([`widget-bone-boolean-${name}`])"
     v-if="!boneState.readonly"
     v-model="state.value2"
+    class="widget-bone widget-bone-boolean widget-bone-boolean-default widget-bone-boolean-repeat password-check"
+    :class="[`widget-bone-boolean-${name}`]"
     type="password"
     clearable
     password-toggle="true"
+    :placeholder="state.placeholder"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
     @sl-change="changeEvent"
     @sl-clear="state.value2 = ''"
     @keyup="changeEvent"
-    :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
-    <sl-icon
-      slot="suffix"
-      :name="state.equal && state.value1.length ? 'check' : 'x'"
-    ></sl-icon>
+    <sl-icon slot="suffix" :name="state.equal && state.value1.length ? 'check' : 'x'"></sl-icon>
   </sl-input>
 
   <ul class="errors">
-    <li
-      v-for="(error, index) in state.passwordInfo"
-      :key="index"
-    >
+    <li v-for="(error, index) in state.passwordInfo" :key="index">
       {{ error }}
     </li>
-    <li
-      v-for="(error, index) in state.requiredPasswordInfo"
-      :key="index"
-      class="requiredInfo"
-    >
+    <li v-for="(error, index) in state.requiredPasswordInfo" :key="index" class="requiredInfo">
       {{ error }}
     </li>
   </ul>
 </template>
 
 <script setup>
-
-import { reactive,  onMounted, computed, inject, watch, ref, watchEffect } from "vue"
+import { reactive, onMounted, computed, inject, watch, ref, watchEffect } from "vue"
 import { useTimeoutFn } from "@vueuse/core"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps({
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit=defineEmits( ["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      value1: "",
-      value2: null,
-      equal: false,
-      passwordInfo: [],
-      requiredPasswordInfo: []
-    })
+const boneState = inject("boneState")
+const state = reactive({
+  value1: "",
+  value2: null,
+  equal: false,
+  passwordInfo: [],
+  requiredPasswordInfo: [],
+  placeholder: computed(() => {
+    if (boneState.label !== "placeholder") return undefined
+    let name = boneState?.bonestructure?.descr
+    if (boneState.bonestructure.required) {
+      name += "*"
+    }
+    return name
+  }),
+})
 
-    const passwordBone = ref(null)
+const passwordBone = ref(null)
 
-    function changeEvent(event) {
-      testPassword(state.value1)
+function changeEvent(event) {
+  testPassword(state.value1)
 
-      if (state.value1 === state.value2) {
-        state.equal = true
+  if (state.value1 === state.value2) {
+    state.equal = true
+  } else {
+    state.equal = false
+    // dont try to update if not equal
+  }
+
+  // boneState.bonestructure["test_threshold"] = 2  *needs to be removed by the look cuz overridees server settings
+  if (
+    state.requiredPasswordInfo.length === 0 &&
+    state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
+  ) {
+    emit("change", props.name, state.value1, props.lang, props.index, true)
+  } else {
+    emit("change", props.name, state.value1, props.lang, props.index, false)
+  }
+}
+
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
+
+function testPassword(password) {
+  state.passwordInfo = []
+  state.requiredPasswordInfo = []
+  for (const test of boneState.bonestructure["tests"]) {
+    if (!new RegExp(test[0]).test(password)) {
+      if (test[2]) {
+        state.requiredPasswordInfo.push(test[1])
       } else {
-        state.equal = false
-       // dont try to update if not equal
-      }
-
-      // boneState.bonestructure["test_threshold"] = 2  *needs to be removed by the look cuz overridees server settings
-      if (
-        state.requiredPasswordInfo.length === 0 &&
-        state.passwordInfo.length - state.requiredPasswordInfo.length <= boneState.bonestructure["test_threshold"]
-      ) {
-        emit("change", props.name, state.value1, props.lang, props.index, true)
-      } else {
-        emit("change", props.name, state.value1, props.lang, props.index, false)
+        state.passwordInfo.push(test[1])
       }
     }
+  }
+  if (!state.equal) {
+    state.requiredPasswordInfo.push("Die eingegebenen Passwörter stimmen nicht überein.")
+  }
+  if (!state.value1) {
+    state.requiredPasswordInfo.push("Das eingegebene Passwort ist leer.")
+  }
+}
 
-    onMounted(() => {
-      emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+watchEffect(() => {
+  if (props.autofocus) {
+    if (passwordBone.value && passwordBone.value !== null && passwordBone.value !== null) {
+      const { start } = useTimeoutFn(() => {
+        passwordBone.value.focus()
+      }, 600)
 
-    function testPassword(password) {
-      state.passwordInfo = []
-      state.requiredPasswordInfo = []
-      for (const test of boneState.bonestructure["tests"]) {
-        if (!new RegExp(test[0]).test(password)) {
-          if (test[2]) {
-            state.requiredPasswordInfo.push(test[1])
-          } else {
-            state.passwordInfo.push(test[1])
-          }
-        }
-      }
-      if (!state.equal) {
-        state.requiredPasswordInfo.push("Die eingegebenen Passwörter stimmen nicht überein.")
-      }
-      if (!state.value1) {
-        state.requiredPasswordInfo.push("Das eingegebene Passwort ist leer.")
-      }
+      start()
     }
+  }
+})
 
-    watchEffect(() => {
-      if (props.autofocus) {
-        if (passwordBone.value && passwordBone.value !== null && passwordBone !== null) {
-          const { start } = useTimeoutFn(() => {
-            passwordBone.value.focus()
-          }, 600)
-
-          start()
-        }
-      }
-    })
-
-    watch(
-      () => props.value,
-      (newVal, oldVal) => {
-        state.value1 = newVal
-      }
-    )
-
+watch(
+  () => props.value,
+  (newVal, oldVal) => {
+    state.value1 = newVal
+  }
+)
 </script>
 
 <style scoped>

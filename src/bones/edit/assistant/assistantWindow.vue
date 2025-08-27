@@ -1,63 +1,51 @@
 <template>
-  <teleport
-    v-if="open"
-    to="body"
-    :disabled="!open"
-  >
-    <sl-dialog
-      open
-      :label="action['name'] +' - '+ name"
-      class="relation-popup"
-      @sl-after-hide="CloseActionEvent"
-    >
-
-      <component :is="actions[action['arg']]"
-                  :name="name"
-                  :module="module"
-                  :tabId="tabId"
-                  :action="action"
-                  :params="params"
-                  @close="CloseAction"
-                  @next="NextAction"
-      >
-      </component>
+  <teleport v-if="open" to="body" :disabled="!open">
+    <sl-dialog open :label="action['name'] + ' - ' + name" class="relation-popup" @sl-after-hide="CloseActionEvent">
+      <component
+        :is="actions[action['arg']]"
+        :name="name"
+        :module="module"
+        :tab-id="tabId"
+        :action="action"
+        :params="params"
+        @close="CloseAction"
+        @next="NextAction"
+      ></component>
     </sl-dialog>
   </teleport>
 </template>
 
 <script setup>
-
-import {reactive, defineComponent, onMounted, inject, computed,watch} from "vue"
+import { reactive, defineComponent, onMounted, inject, computed, watch } from "vue"
 import { Request } from "@viur/vue-utils"
 import translation from "./translation.vue"
-import describeImage from './describeImage.vue'
+import describeImage from "./describeImage.vue"
 
 const actions = {
-  "translate":translation,
-  "describe_image":describeImage
+  translate: translation,
+  describe_image: describeImage,
 }
 
 const props = defineProps({
-    open: Boolean,
-    name: String,
-    module: String,
-    tabId: String,
-    params:Object,
-    action:Object
-  })
+  open: Boolean,
+  name: String,
+  module: String,
+  tabId: String,
+  params: Object,
+  action: Object,
+})
 
-  const emit = defineEmits(["close",'next'])
+const emit = defineEmits(["close", "next"])
 
-    function NextAction(val,lang=null) {
-      emit("next",val,lang,props.action)
-    }
-    function CloseAction(val,lang=null) {
-      emit("close",val,lang,props.action)
-    }
-    function CloseActionEvent(){
-      emit("close",null,null,props.action)
-    }
-
+function NextAction(val, lang = null) {
+  emit("next", val, lang, props.action)
+}
+function CloseAction(val, lang = null) {
+  emit("close", val, lang, props.action)
+}
+function CloseActionEvent() {
+  emit("close", null, null, props.action)
+}
 </script>
 
 <style scoped>
@@ -77,7 +65,6 @@ const props = defineProps({
     margin-bottom: 40px;
     max-width: 1400px;
   }
-
 
   &::part(footer) {
     padding: var(--sl-spacing-small);
@@ -104,5 +91,4 @@ const props = defineProps({
     }
   }
 }
-
 </style>

@@ -1,267 +1,342 @@
 <template>
   <template v-if="state.editor">
     <template v-if="boneState.bonestructure?.['valid_html'] || boneState.bonestructure?.['validHtml']">
-    <ckeditor
-      v-model="state.value"
-      :editor="state.editor"
-      :config="state.editorConfig"
-      :disabled="boneState?.readonly"
-      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
-      @ready="onReady"
-      @input="changeEvent"
-      class="widget-bone widget-bone-text widget-bone-text-default"
-      :class="([`widget-bone-text-${name}`],[`widget-bone-text-${name}-html`])"
-      :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
-    >
-    </ckeditor>
-    <input type="text" class="vi-textbone-hidden" :value="state.value" :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"></input>
+      <ckeditor
+        v-model="state.value"
+        :editor="state.editor"
+        :config="state.editorConfig"
+        :disabled="boneState?.readonly"
+        :required="
+          boneState.bonestructure.required && !boneState.bonestructure.multiple && !boneState.bonestructure.languages
+        "
+        class="widget-bone widget-bone-text widget-bone-text-default"
+        :class="([`widget-bone-text-${name}`], [`widget-bone-text-${name}-html`])"
+        :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+        @ready="onReady"
+        @input="changeEvent"
+      ></ckeditor>
+      <input
+        type="text"
+        class="vi-textbone-hidden"
+        :value="state.value"
+        :required="
+          boneState.bonestructure.required && !boneState.bonestructure.multiple && !boneState.bonestructure.languages
+        "
+      />
     </template>
     <sl-textarea
       v-else
       class="widget-bone widget-bone-text widget-bone-text-default"
-      :class="([`widget-bone-text-${name}`])"
+      :class="[`widget-bone-text-${name}`]"
       :disabled="boneState?.readonly"
       :value="value"
+      :required="
+        boneState.bonestructure.required && !boneState.bonestructure.multiple && !boneState.bonestructure.languages
+      "
+      :placeholder="state.placeholder"
+      :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
       @input="changeEventTextarea"
-      :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
-      :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-      :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
     ></sl-textarea>
   </template>
 </template>
 
 <script setup>
 import { reactive, onMounted, inject, computed, watch, onBeforeMount } from "vue"
-import { Ckeditor } from '@ckeditor/ckeditor5-vue'
-import { ClassicEditor, Essentials, Paragraph, Bold, Italic, SourceEditing,
-  BlockQuote,Heading,Image,ImageStyle,ImageToolbar,ImageUpload,ImageResizeButtons, FileRepository, ImageBlock,ImageInline,
-    Indent,IndentBlock,Link,List,Table,TableToolbar,TextTransformation,Underline,Alignment,RemoveFormat,GeneralHtmlSupport
-
-
-
-} from 'ckeditor5'
-import coreTranslations from 'ckeditor5/translations/de.js'
-import 'ckeditor5/ckeditor5.css';
-import {ViURUploadAdapterPlugin} from "./texteditor/uploadAdapter";
+import { Ckeditor } from "@ckeditor/ckeditor5-vue"
+import {
+  ClassicEditor,
+  Essentials,
+  Paragraph,
+  Bold,
+  Italic,
+  SourceEditing,
+  BlockQuote,
+  Heading,
+  Image,
+  ImageStyle,
+  ImageToolbar,
+  ImageUpload,
+  ImageResizeButtons,
+  FileRepository,
+  ImageBlock,
+  ImageInline,
+  Indent,
+  IndentBlock,
+  Link,
+  List,
+  Table,
+  TableToolbar,
+  TextTransformation,
+  Underline,
+  Alignment,
+  RemoveFormat,
+  GeneralHtmlSupport,
+} from "ckeditor5"
+import coreTranslations from "ckeditor5/translations/de.js"
+import "ckeditor5/ckeditor5.css"
+import { ViURUploadAdapterPlugin } from "./texteditor/uploadAdapter"
 
 defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps( {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit = defineEmits(["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      value: "",
-      editorConfig: {},
-      editor: computed(() => ClassicEditor)
-    })
-
-    function changeEvent(event) {
-      emit("change", props.name, state.value, props.lang, props.index)
+const boneState = inject("boneState")
+const state = reactive({
+  value: "",
+  editorConfig: {},
+  editor: computed(() => ClassicEditor),
+  placeholder: computed(() => {
+    if (boneState.label !== "placeholder") return undefined
+    let name = boneState?.bonestructure?.descr
+    if (boneState.bonestructure.required) {
+      name += "*"
     }
-    function changeEventTextarea(event) {
-      state.value = event.target.value
-      emit("change", props.name, state.value, props.lang, props.index)
+    return name
+  }),
+})
+
+function changeEvent(event) {
+  emit("change", props.name, state.value, props.lang, props.index)
+}
+function changeEventTextarea(event) {
+  state.value = event.target.value
+  emit("change", props.name, state.value, props.lang, props.index)
+}
+
+onBeforeMount(() => {
+  let toolbarActions = {
+    heading: "h1",
+    bold: "b",
+    italic: "i",
+    underline: "u",
+    numberedList: "ol",
+    bulletedList: "ul",
+    blockQuote: "blockquote",
+    link: "a",
+    insertTable: "table",
+    imageUpload: "img",
+  }
+
+  let defaultSet = [
+    "heading",
+    "|",
+    "bold",
+    "italic",
+    "underline",
+    "|",
+    "alignment",
+    "numberedList",
+    "bulletedList",
+    "blockQuote",
+    "|",
+    "indent",
+    "outdent",
+    "|",
+    "link",
+    "insertTable",
+    "imageUpload",
+    "|",
+    "undo",
+    "redo",
+    "RemoveFormat",
+    "sourceEditing",
+  ]
+
+  defaultSet = defaultSet.filter((i) => {
+    if (!Object.keys(toolbarActions).includes(i)) {
+      return true
     }
 
-    onBeforeMount(()=>{
-      let toolbarActions = {
-        "heading":"h1",
-        "bold":"b",
-        "italic":"i",
-        "underline":"u",
-        "numberedList":"ol",
-        "bulletedList":"ul",
-        "blockQuote":"blockquote",
-        "link":"a",
-        "insertTable":"table",
-        "imageUpload":"img"
-      }
+    if (boneState.bonestructure?.["valid_html"]?.["validTags"].includes(toolbarActions[i])) {
+      return true
+    }
+    if (boneState.bonestructure?.["validHtml"]?.["validTags"].includes(toolbarActions[i])) {
+      return true
+    }
+    return false
+  })
 
-      let defaultSet = ["heading","|", "bold", "italic","underline",
-        "|","alignment","numberedList", "bulletedList","blockQuote",
-        "|","indent","outdent","|","link","insertTable","imageUpload",
-        "|","undo","redo","RemoveFormat","sourceEditing"]
-
-      defaultSet = defaultSet.filter(i=>{
-        if (!Object.keys(toolbarActions).includes(i)){
-          return true
-        }
-
-        if (boneState.bonestructure?.['valid_html']?.["validTags"].includes(toolbarActions[i])){
-          return true
-        }
-        if (boneState.bonestructure?.['validHtml']?.["validTags"].includes(toolbarActions[i])){
-          return true
-        }
-        return false
-      })
-
-      state.editorConfig = {
-          licenseKey: "GPL",
-          translations:[
-              coreTranslations
-          ],
-          toolbar: defaultSet,
-          plugins: [ Essentials,Heading, Paragraph, Bold,List,ImageUpload, Italic, Underline,ImageBlock,ImageInline,
-            Alignment,Link,BlockQuote,Indent,Table,RemoveFormat,ImageStyle,ImageToolbar,ImageResizeButtons,
-            IndentBlock,TableToolbar,TextTransformation,GeneralHtmlSupport, Image,SourceEditing,FileRepository,ViURUploadAdapterPlugin
-          ],
-          link: {
-            decorators: [
-                  {
-                      mode: 'manual',
-                      label: 'Link in neuem Fester öffnen',
-                      attributes: {
-                          target: '_blank',
-                        rel:"noopener noreferrer"
-                      }
-                  }
-              ]
+  state.editorConfig = {
+    licenseKey: "GPL",
+    translations: [coreTranslations],
+    toolbar: defaultSet,
+    plugins: [
+      Essentials,
+      Heading,
+      Paragraph,
+      Bold,
+      List,
+      ImageUpload,
+      Italic,
+      Underline,
+      ImageBlock,
+      ImageInline,
+      Alignment,
+      Link,
+      BlockQuote,
+      Indent,
+      Table,
+      RemoveFormat,
+      ImageStyle,
+      ImageToolbar,
+      ImageResizeButtons,
+      IndentBlock,
+      TableToolbar,
+      TextTransformation,
+      GeneralHtmlSupport,
+      Image,
+      SourceEditing,
+      FileRepository,
+      ViURUploadAdapterPlugin,
+    ],
+    link: {
+      decorators: [
+        {
+          mode: "manual",
+          label: "Link in neuem Fester öffnen",
+          attributes: {
+            target: "_blank",
+            rel: "noopener noreferrer",
           },
-        image: {
-          toolbar: [
-            'imageStyle:inline',
-            'imageStyle:block',
-            'imageStyle:side',
-            '|',
-            'resizeImage:50',
-                  'resizeImage:75',
-                  'resizeImage:original',
-            'imageTextAlternative'
-          ],
-          resizeOptions: [
-                {
-                    name: 'resizeImage:original',
-                    value: null,
-                    icon: 'original'
-                },
-                {
-                    name: 'resizeImage:50',
-                    value: '50',
-                    icon: 'medium'
-                },
-                {
-                    name: 'resizeImage:75',
-                    value: '75',
-                    icon: 'large'
-                }
-            ],
         },
-        table: {
-          contentToolbar: [
-            'tableColumn',
-            'tableRow',
-            'mergeTableCells'
-          ]
+      ],
+    },
+    image: {
+      toolbar: [
+        "imageStyle:inline",
+        "imageStyle:block",
+        "imageStyle:side",
+        "|",
+        "resizeImage:50",
+        "resizeImage:75",
+        "resizeImage:original",
+        "imageTextAlternative",
+      ],
+      resizeOptions: [
+        {
+          name: "resizeImage:original",
+          value: null,
+          icon: "original",
         },
-        heading: {
-                options: [
-            { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-            { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
-            { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-            { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-            { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' },
-            { model: 'heading5', view: 'h5', title: 'Heading 5', class: 'ck-heading_heading5' },
-            { model: 'heading6', view: 'h6', title: 'Heading 6', class: 'ck-heading_heading6' }
-          ]
-            },
-        alignment: {
-          options: [
-            { name: 'left', className: 'viur-txt-align--left' },
-            { name: 'right', className: 'viur-txt-align--right' },
-            { name: 'center', className: 'viur-txt-align--center' },
-            { name: 'justify', className: 'viur-txt-align--justify' },
-          ]
+        {
+          name: "resizeImage:50",
+          value: "50",
+          icon: "medium",
         },
-        indentBlock: {
-                classes: [
-                    'viur-txt-indent--1',
-                    'viur-txt-indent--2',
-                    'viur-txt-indent--3',
-                    'viur-txt-indent--4',
-                    'viur-txt-indent--5',
-                    'viur-txt-indent--6',
-                    'viur-txt-indent--7',
-                    'viur-txt-indent--8',
-                    'viur-txt-indent--9',
-                    'viur-txt-indent--10',
-                ]
-            },
-
-        htmlSupport: {
-          allow: [
-            {
-              name: 'a',
-              attributes: {
-                target: true,
-                rel: true
-              }
-            }
-          ]
+        {
+          name: "resizeImage:75",
+          value: "75",
+          icon: "large",
         },
-        language: 'de',
-        viur_api_url: 'http://localhost:8080'
-      }
-    })
+      ],
+    },
+    table: {
+      contentToolbar: ["tableColumn", "tableRow", "mergeTableCells"],
+    },
+    heading: {
+      options: [
+        { model: "paragraph", title: "Paragraph", class: "ck-heading_paragraph" },
+        { model: "heading1", view: "h1", title: "Heading 1", class: "ck-heading_heading1" },
+        { model: "heading2", view: "h2", title: "Heading 2", class: "ck-heading_heading2" },
+        { model: "heading3", view: "h3", title: "Heading 3", class: "ck-heading_heading3" },
+        { model: "heading4", view: "h4", title: "Heading 4", class: "ck-heading_heading4" },
+        { model: "heading5", view: "h5", title: "Heading 5", class: "ck-heading_heading5" },
+        { model: "heading6", view: "h6", title: "Heading 6", class: "ck-heading_heading6" },
+      ],
+    },
+    alignment: {
+      options: [
+        { name: "left", className: "viur-txt-align--left" },
+        { name: "right", className: "viur-txt-align--right" },
+        { name: "center", className: "viur-txt-align--center" },
+        { name: "justify", className: "viur-txt-align--justify" },
+      ],
+    },
+    indentBlock: {
+      classes: [
+        "viur-txt-indent--1",
+        "viur-txt-indent--2",
+        "viur-txt-indent--3",
+        "viur-txt-indent--4",
+        "viur-txt-indent--5",
+        "viur-txt-indent--6",
+        "viur-txt-indent--7",
+        "viur-txt-indent--8",
+        "viur-txt-indent--9",
+        "viur-txt-indent--10",
+      ],
+    },
 
-    onMounted(() => {
+    htmlSupport: {
+      allow: [
+        {
+          name: "a",
+          attributes: {
+            target: true,
+            rel: true,
+          },
+        },
+      ],
+    },
+    language: "de",
+    viur_api_url: "http://localhost:8080",
+  }
+})
 
-      if (props.value !== null) {
-        state.value = props.value
-      }
+onMounted(() => {
+  if (props.value !== null) {
+    state.value = props.value
+  }
 
-      emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
 
-    function onReady(editor) {
+function onReady(editor) {
+  editor.editing.view.change((writer) => {
+    writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
+  })
 
+  const codePlugin = editor.plugins.get("SourceEditing")
 
-      editor.editing.view.change((writer) => {
-        writer.setStyle("min-height", "250px", editor.editing.view.document.getRoot())
+  codePlugin.on("change:isSourceEditingMode", (_eventInfo, _name, value) => {
+    if (value) {
+      const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild
+      sourceEditingTextarea.addEventListener("focusout", (event) => {
+        if (event.relatedTarget?.classList.contains("ck")) {
+          return
+        }
+        codePlugin.isSourceEditingMode = false
       })
-
-      const codePlugin = editor.plugins.get("SourceEditing")
-
-      codePlugin.on("change:isSourceEditingMode", (_eventInfo, _name, value) => {
-        if (value) {
-          const sourceEditingTextarea = editor.editing.view.getDomRoot()?.nextSibling?.firstChild;
-          sourceEditingTextarea.addEventListener('focusout', (event) => {
-            if (event.relatedTarget?.classList.contains("ck")){
-              return
-            }
-            codePlugin.isSourceEditingMode=false
-          });
-        }
-      });
     }
+  })
+}
 
-    watch(
-      () => props.value,
-      (newVal, oldVal) => {
-        if (!newVal){
-          state.value = ""
-        }else{
-          state.value = newVal
-        }
-      }
-    )
-
+watch(
+  () => props.value,
+  (newVal, oldVal) => {
+    if (!newVal) {
+      state.value = ""
+    } else {
+      state.value = newVal
+    }
+  }
+)
 </script>
 
 <style scoped>
-.vi-textbone-hidden{
-  max-height:0;
-  display:block;
+.vi-textbone-hidden {
+  max-height: 0;
+  display: block;
   visibility: hidden;
   width: 100%;
   pointer-events: none;
@@ -269,49 +344,48 @@ defineOptions({
 </style>
 
 <style>
-.viur-txt-align--left{
-	text-align: left;
+.viur-txt-align--left {
+  text-align: left;
 }
-.viur-txt-align--right{
-	text-align: right;
+.viur-txt-align--right {
+  text-align: right;
 }
-.viur-txt-align--center{
-	text-align: center;
+.viur-txt-align--center {
+  text-align: center;
 }
-.viur-txt-align--justify{
-	text-align: justify;
+.viur-txt-align--justify {
+  text-align: justify;
 }
-.viur-txt-indent--1{
-	margin-left: 1em;
+.viur-txt-indent--1 {
+  margin-left: 1em;
 }
-.viur-txt-indent--2{
-	margin-left: 2em;
+.viur-txt-indent--2 {
+  margin-left: 2em;
 }
-.viur-txt-indent--3{
-	margin-left: 3em;
+.viur-txt-indent--3 {
+  margin-left: 3em;
 }
-.viur-txt-indent--4{
-	margin-left: 4em;
+.viur-txt-indent--4 {
+  margin-left: 4em;
 }
-.viur-txt-indent--5{
-	margin-left: 5em;
+.viur-txt-indent--5 {
+  margin-left: 5em;
 }
-.viur-txt-indent--6{
-	margin-left: 6em;
+.viur-txt-indent--6 {
+  margin-left: 6em;
 }
-.viur-txt-indent--7{
-	margin-left: 7em;
+.viur-txt-indent--7 {
+  margin-left: 7em;
 }
-.viur-txt-indent--8{
-	margin-left: 8em;
+.viur-txt-indent--8 {
+  margin-left: 8em;
 }
-.viur-txt-indent--9{
-	margin-left: 9em;
+.viur-txt-indent--9 {
+  margin-left: 9em;
 }
-.viur-txt-indent--10{
-	margin-left: 10em;
+.viur-txt-indent--10 {
+  margin-left: 10em;
 }
-
 
 .bone-inner-wrap {
   .ck-editor {
@@ -421,47 +495,47 @@ defineOptions({
         }
       }
 
-      h1{
+      h1 {
         font-size: 1.6em;
         font-weight: 700;
       }
 
-      h2{
+      h2 {
         font-size: 1.5em;
         font-weight: 700;
       }
 
-      h3{
+      h3 {
         font-size: 1.4em;
         font-weight: 700;
       }
 
-      h4{
+      h4 {
         font-size: 1.3em;
         font-weight: 700;
       }
 
-      h5{
+      h5 {
         font-size: 1.2em;
         font-weight: 700;
       }
 
-      h6{
+      h6 {
         font-size: 1.1em;
         font-weight: 700;
       }
 
-      a:hover{
+      a:hover {
         text-decoration: underline;
       }
 
-      ul{
+      ul {
         list-style: disc;
         padding-left: var(--sl-spacing-medium);
         list-style-position: inside;
       }
 
-      ol{
+      ol {
         padding-left: var(--sl-spacing-medium);
         list-style-position: inside;
       }
@@ -507,14 +581,12 @@ defineOptions({
   }
 }
 
-
-.ck-body-wrapper{
-  .ck-link-form{
-    padding-top:5px!important;
-      width: 500px !important;
-      max-width: 37vw !important;
-      min-width: 180px !important;
-
+.ck-body-wrapper {
+  .ck-link-form {
+    padding-top: 5px !important;
+    width: 500px !important;
+    max-width: 37vw !important;
+    min-width: 180px !important;
   }
 }
 
@@ -531,5 +603,9 @@ sl-textarea {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+}
+
+.ck-list-bogus-paragraph {
+  display: inline !important;
 }
 </style>

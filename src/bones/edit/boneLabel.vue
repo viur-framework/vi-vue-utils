@@ -1,12 +1,8 @@
 <template>
-  <label class="bone-name label-bone"
-  >
+  <label class="bone-name label-bone">
     <slot></slot>
     <template v-if="false">
-      <div
-        class="debug"
-        @click="state.debug = !state.debug"
-      >
+      <div class="debug" @click="state.debug = !state.debug">
         <sl-icon name="bug"></sl-icon>
       </div>
     </template>
@@ -21,22 +17,21 @@
 
 <script setup>
 import { reactive, onMounted, inject } from "vue"
-  const props = defineProps( {
-    name: String,
-    value: Object,
-    index: Number,
-    lang: String,
-    readonly: Boolean,
-    params: Object
-  })
+const props = defineProps({
+  name: String,
+  value: Object,
+  index: Number,
+  lang: String,
+  readonly: Boolean,
+  params: Object,
+})
 
-  const emit = defineEmits( ["change", "handleClick"])
+const emit = defineEmits(["change", "handleClick"])
 
-    const boneState = inject("boneState")
-    const state = reactive({
-      debug: false
-    })
-
+const boneState = inject("boneState")
+const state = reactive({
+  debug: false,
+})
 </script>
 
 <style scoped>

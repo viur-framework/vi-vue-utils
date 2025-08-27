@@ -1,24 +1,16 @@
 <template>
   <div
     class="file-wrapper"
+    :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
     @dragover.prevent="state.droparea = true"
     @dragleave="state.droparea = false"
     @drop.prevent="handleDrop"
-    :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
   >
-    <div
-      v-if="state.loading"
-      class="loader"
-    >
+    <div v-if="state.loading" class="loader">
       <sl-spinner slot="suffix"></sl-spinner>
     </div>
 
-    <div
-      v-if="state.droparea"
-      class="droparea"
-    >
-      Dateien hier hinziehen
-    </div>
+    <div v-if="state.droparea" class="droparea">Dateien hier hinziehen</div>
     <sl-button
       v-if="!boneState.readonly && (!value || state.loading)"
       :title="$t('bone.upload')"
@@ -28,22 +20,9 @@
     >
       <sl-icon name="upload"></sl-icon>
     </sl-button>
-    <input
-      ref="uploadinput"
-      hidden
-      type="file"
-      :multiple="boneState.multiple"
-      @change="handleUpload"
-    />
-    <sl-button
-      v-if="value"
-      :title="$t('bone.download')"
-      @click="downloadFile"
-    >
-      <sl-icon
-        slot="prefix"
-        name="download"
-      ></sl-icon>
+    <input ref="uploadinput" hidden type="file" :multiple="boneState.multiple" @change="handleUpload" />
+    <sl-button v-if="value" :title="$t('bone.download')" @click="downloadFile">
+      <sl-icon slot="prefix" name="download"></sl-icon>
     </sl-button>
     <div class="box">
       <div
@@ -51,30 +30,17 @@
         class="preview has-preview"
         @click="state.previewopen = !state.previewopen"
       >
-        <img
-          class="preview-img"
-          :src="createBackgroundImage()"
-          alt=""
-        />
+        <img class="preview-img" :src="createBackgroundImage()" alt="" />
         <sl-dialog
           :label="decodeURIComponent(value?.['dest']?.['name'])"
           class="preview-overlay"
           :open="state.previewopen"
         >
-          <img
-            :src="createBackgroundImage()"
-            alt=""
-          />
+          <img :src="createBackgroundImage()" alt="" />
         </sl-dialog>
       </div>
-      <div
-        v-else
-        class="preview"
-      >
-        <sl-icon
-          v-if="value?.['dest']?.['name']"
-          name="file-earmark"
-        ></sl-icon>
+      <div v-else class="preview">
+        <sl-icon v-if="value?.['dest']?.['name']" name="file-earmark"></sl-icon>
       </div>
       <div v-if="value?.['dest']?.['name']">
         {{ decodeURIComponent(value?.["dest"]?.["name"]) }}
@@ -96,74 +62,70 @@
 <script setup>
 import { reactive, onMounted, inject, ref } from "vue"
 import { Request } from "../../../index"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps({
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit = defineEmits(["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const uploadinput = ref()
-    const state = reactive({
-      loading: false,
-      droparea: false,
-      previewopen: false
-    })
+const boneState = inject("boneState")
+const uploadinput = ref()
+const state = reactive({
+  loading: false,
+  droparea: false,
+  previewopen: false,
+})
 
-    onMounted(() => {
-      emit("change", props.name, props.value, props.lang, props.index) //init
-    })
+onMounted(() => {
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
 
-    function downloadFile() {
-      console.log(Request.downloadUrlFor(props.value))
-      window.open(Request.downloadUrlFor(props.value))
-    }
+function downloadFile() {
+  console.log(Request.downloadUrlFor(props.value))
+  window.open(Request.downloadUrlFor(props.value))
+}
 
-    function createBackgroundImage() {
-      return Request.downloadUrlFor(props.value, false)
-    }
+function createBackgroundImage() {
+  return Request.downloadUrlFor(props.value, false)
+}
 
-    function uploadFile(file) {
-      const filedata = {
-        fileName: file.name,
-        mimeType: file.type || "application/octet-stream",
-        size: file.size.toString()
-      }
-      return new Promise((resolve, reject) => {
-        Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
-          .then(async (resp) => {
-            let uploadURLdata = await resp.json()
-            fetch(uploadURLdata["values"]["uploadUrl"], {
-              body: file,
-              method: "POST",
-              mode: "no-cors"
-            })
-              .then(async (uploadresp) => {
-                const addData = {
-                  key: uploadURLdata["values"]["uploadKey"],
-                  node: undefined,
-                  skelType: "leaf"
+function uploadFile(file) {
+  const filedata = {
+    fileName: file.name,
+    mimeType: file.type || "application/octet-stream",
+    size: file.size.toString(),
+  }
+  return new Promise((resolve, reject) => {
+    Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/getUploadURL`, { dataObj: filedata })
+      .then(async (resp) => {
+        let uploadURLdata = await resp.json()
+        fetch(uploadURLdata["values"]["uploadUrl"], {
+          body: file,
+          method: "POST",
+          mode: "no-cors",
+        })
+          .then(async (uploadresp) => {
+            const addData = {
+              key: uploadURLdata["values"]["uploadKey"],
+              node: undefined,
+              skelType: "leaf",
+            }
+            Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
+              .then(async (addresp) => {
+                let addData = await addresp.json()
+                if (addData["action"] === "addSuccess") {
+                  resolve(addData["values"])
+                } else {
+                  reject(addData)
                 }
-                Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/file/add`, { dataObj: addData })
-                  .then(async (addresp) => {
-                    let addData = await addresp.json()
-                    if (addData["action"] === "addSuccess") {
-                      resolve(addData["values"])
-                    } else {
-                      reject(addData)
-                    }
-                  })
-                  .catch((error) => {
-                    reject(error)
-                  })
               })
               .catch((error) => {
                 reject(error)
@@ -173,30 +135,33 @@ import { Request } from "../../../index"
             reject(error)
           })
       })
-    }
+      .catch((error) => {
+        reject(error)
+      })
+  })
+}
 
-    async function handleUpload(event) {
-      state.loading = true
-      for (let file of event.target.files) {
-        let fileresult = await uploadFile(file)
-        uploadinput.value.value = null
-        emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
-      }
-      state.loading = false
-    }
+async function handleUpload(event) {
+  state.loading = true
+  for (let file of event.target.files) {
+    let fileresult = await uploadFile(file)
+    uploadinput.value.value = null
+    emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
+  }
+  state.loading = false
+}
 
-    async function handleDrop(event) {
-      state.loading = true
-      state.droparea = false
-      for (let file of event.dataTransfer.files) {
-        let fileresult = await uploadFile(file)
-        uploadinput.value.value = null
-        emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
-        break
-      }
-      state.loading = false
-    }
-
+async function handleDrop(event) {
+  state.loading = true
+  state.droparea = false
+  for (let file of event.dataTransfer.files) {
+    let fileresult = await uploadFile(file)
+    uploadinput.value.value = null
+    emit("change", props.name, { dest: fileresult, rel: null }, props.lang, props.index)
+    break
+  }
+  state.loading = false
+}
 </script>
 
 <style scoped>

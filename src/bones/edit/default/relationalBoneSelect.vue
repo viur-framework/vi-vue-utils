@@ -1,7 +1,7 @@
 <template>
   <div
     class="record widget-bone widget-bone-relational widget-bone-relational-select"
-    :class="([`widget-bone-relational-${name}`])"
+    :class="[`widget-bone-relational-${name}`]"
   >
     <div class="single-entry">
       <sl-select
@@ -10,16 +10,14 @@
         hoist
         max-options-visible="0"
         clearable
-        :required="boneState.bonestructure.required && !boneState.bonestructure.multiple  && !boneState.bonestructure.languages"
+        :required="
+          boneState.bonestructure.required && !boneState.bonestructure.multiple && !boneState.bonestructure.languages
+        "
+        :placeholder="state.placeholder"
+        :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
         @sl-change="changeEvent"
-        :placeholder="boneState.label==='placeholder'?boneState?.bonestructure?.descr:undefined"
-        :data-user-invalid="boneState.errorMessages.length===0?undefined:true"
       >
-        <sl-option
-          v-for="(obj,key) in state.skellistdata"
-          :key="key"
-          :value="key"
-        >
+        <sl-option v-for="(obj, key) in state.skellistdata" :key="key" :value="key">
           {{ formatString(state.format, obj) }}
         </sl-option>
       </sl-select>
@@ -32,8 +30,7 @@
       :bone="bone"
       :disabled="bone['readonly']"
       @change="changeEventNested"
-    >
-    </Wrapper_nested>
+    ></Wrapper_nested>
   </div>
 </template>
 
@@ -41,71 +38,78 @@
 import { reactive, onMounted, inject, computed } from "vue"
 import { Request } from "../../../index"
 import Wrapper_nested from "../wrapper_nested.vue"
-  defineOptions({
-    inheritAttrs: false
-  })
-  const props = defineProps( {
-    name: String,
-    value: [Object, String, Number, Boolean, Array],
-    index: Number,
-    lang: String,
-    bone:Object,
-    autofocus: Boolean
-  })
+defineOptions({
+  inheritAttrs: false,
+})
+const props = defineProps({
+  name: String,
+  value: [Object, String, Number, Boolean, Array],
+  index: Number,
+  lang: String,
+  bone: Object,
+  autofocus: Boolean,
+})
 
-  const emit = defineEmits( ["change"])
+const emit = defineEmits(["change"])
 
-    const boneState = inject("boneState")
-    const formatString = inject("formatString")
-    const state = reactive({
-      format: computed(() => {
-        return boneState?.bonestructure["format"]
-      }),
-      skellistdata: null,
-      selection: null
+const boneState = inject("boneState")
+const formatString = inject("formatString")
+const state = reactive({
+  format: computed(() => {
+    return boneState?.bonestructure["format"]
+  }),
+  skellistdata: null,
+  selection: null,
+  placeholder: computed(() => {
+    if (boneState.label !== "placeholder") return undefined
+    let name = boneState?.bonestructure?.descr
+    if (boneState.bonestructure.required) {
+      name += "*"
+    }
+    return name
+  }),
+})
+
+function getList(search) {
+  let params = ""
+  if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
+    params = "skelType=leaf&"
+  } else if (boneState.bonestructure["type"] === "relational.tree.node.file") {
+    params = "skelType=node&"
+  }
+
+  return Request.get(
+    `/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`
+  ).then(async (resp) => {
+    //?viurTags$lk=${search.toLowerCase()
+    const data = await resp.json()
+
+    state.skellistdata = {}
+    for (let e of data["skellist"]) {
+      state.skellistdata[e["key"]] = e
+    }
+
+    return data["skellist"]?.map((d) => {
+      return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
     })
+  })
+}
 
-    function getList(search) {
-      let params = ""
-      if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
-        params = "skelType=leaf&"
-      } else if (boneState.bonestructure["type"] === "relational.tree.node.file") {
-        params = "skelType=node&"
-      }
+function changeEvent(event) {
+  state.selection = { dest: state.skellistdata[event.target.value] }
+  emit("change", props.name, state.selection, props.lang, props.index)
+}
 
-      return Request.get(
-        `/${import.meta.env.VITE_DEFAULT_RENDERER || "vi"}/${boneState.bonestructure["module"]}/list?${params}limit=99`
-      ).then(async (resp) => {
-        //?viurTags$lk=${search.toLowerCase()
-        const data = await resp.json()
+function changeEventNested(data) {
+  state.selection = { ...state.selection, rel: data["value"] }
+  emit("change", data["name"], state.selection, data["lang"], data["index"])
+}
 
-        state.skellistdata = {}
-        for (let e of data["skellist"]) {
-          state.skellistdata[e["key"]] = e
-        }
-
-        return data["skellist"]?.map((d) => {
-          return { text: formatString(boneState.bonestructure["format"], { dest: d }), value: d.key, data: d }
-        })
-      })
-    }
-
-    function changeEvent(event) {
-      state.selection = { dest: state.skellistdata[event.target.value] }
-      emit("change", props.name, state.selection, props.lang, props.index)
-    }
-
-    function changeEventNested(data) {
-      state.selection = {...state.selection, "rel":data["value"]}
-      emit("change", data["name"], state.selection , data["lang"], data["index"])
-    }
-
-    onMounted(() => {
-      state.selection = props.value
-      getList()
-      emit("change", props.name, props.value, props.lang, props.index) //init
-    })
-
+onMounted(() => {
+  state.selection = props.value
+  getList()
+  emit("change", props.name, props.value, props.lang, props.index) //init
+})
 </script>
 
 <style scoped>
