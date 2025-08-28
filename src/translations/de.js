@@ -55,10 +55,16 @@ export default {
   login: {
     login: "Anmelden",
     logout: "Abmelden",
+    otp: "Bestätigen",
     lost_password: "Passwort vergessen?",
     with_google: "Mit Google anmelden",
+    waiting: "lade...",
     or: "oder",
     login_error: "Benutzername oder Passwort falsch.",
+    google_error: "Ein Fehler ist beim Login aufgetreten.",
+    otp_error: "Die Eingabe war ungültig.",
     back: "zurück",
+    recovery_start: "Passwort zurücksetzen",
+    recovery_error: "Ein Fehler beim zurücksetzen des Passwortes ist aufgetreten.",
   },
 }

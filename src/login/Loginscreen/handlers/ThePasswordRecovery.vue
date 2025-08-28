@@ -1,3 +1,0 @@
-<template>
-  PW RECOVER
-</template>

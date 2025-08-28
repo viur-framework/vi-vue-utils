@@ -3,7 +3,6 @@
     <div class="background-img">
       <img :src="backgroundImage" />
     </div>
-
     <Loader
       v-if="state.waitFor === 'init' || (isRedirect && userStore.state['user.loggedin'] === 'yes')"
       class="loader"
@@ -11,23 +10,37 @@
       :size="'7'"
     />
 
-    <div
-      v-else
-      class="card"
-    >
-      <img
-        class="logo"
-        :src="logo"
-      />
-
+    <div v-else class="card">
+      <img class="logo" :src="logo" />
       <span
-        v-if="state.activeHandler!=='providerselection'"
+        v-if="
+          !['select_authentication_provider', 'select_authentication_provider_success'].includes(state.currentaction)
+        "
         class="back"
-        @click="userStore.recoverPassword()"
-        >{{ $t('login.back') }}
-    </span>
+        @click="state.currentaction = 'select_authentication_provider'"
+      >
+        {{ $t("login.back") }}
+      </span>
+      <sl-alert v-if="userStore.state['user.loggedin'] === 'loading' || state.loading" variant="info" open>
+        <sl-spinner slot="icon"></sl-spinner>
+        {{ $t("login.waiting") }}
+      </sl-alert>
 
-      <the-provider-selection></the-provider-selection>
+      <SelectAuthenticationProvider
+        v-if="
+          ['select_authentication_provider', 'select_authentication_provider_success'].includes(state.currentaction)
+        "
+      ></SelectAuthenticationProvider>
+
+      <SelectSecondFactorsProvider
+        v-if="['select_secondfactor_provider', 'select_secondfactor_provider_success'].includes(state.currentaction)"
+      ></SelectSecondFactorsProvider>
+
+      <UserPasswordRecover v-if="['pwrecover'].includes(state.currentaction)"></UserPasswordRecover>
+
+      <div v-if="false && userStore.state['user.loggedin'] === 'loading'" class="overlay">
+        <sl-spinner></sl-spinner>
+      </div>
     </div>
   </div>
 </template>
@@ -58,50 +71,49 @@ import { useRouter } from "vue-router"
 import { useUserStore } from "../stores/user.js"
 import Loader from "../../generic/Loader.vue"
 import { getBoneWidget } from "../../bones/edit/index"
-import {Request} from '../../utils/request'
-import TheProviderSelection from "./handlers/TheProviderSelection.vue"
-import ThePasswordRecovery from "./handlers/ThePasswordRecovery.vue";
-import TheGoogleLogin from "./handlers/TheGoogleLogin.vue";
+import { Request } from "../../utils/request"
+import SelectAuthenticationProvider from "./SelectAuthenticationProvider.vue"
+import SelectSecondFactorsProvider from "./SelectSecondFactorsProvider.vue"
+import UserPasswordRecover from "./providers/UserPassword/UserPasswordRecover.vue"
 
-  const props = defineProps( {
-    username: { type: String, default: "" },
-    isAppAuth: Boolean,
-    isRedirect: { type: Boolean, default: false },
-    backgroundImage: { type: String, default: "" },
-    logo: { type: String, default: "" },
-    title: { type: String, default: "Login" },
-    tokenSvg: { type: String, default: "" }
+const props = defineProps({
+  username: { type: String, default: "" },
+  isAppAuth: Boolean,
+  isRedirect: { type: Boolean, default: false },
+  backgroundImage: { type: String, default: "" },
+  logo: { type: String, default: "" },
+  title: { type: String, default: "Login" },
+  tokenSvg: { type: String, default: "" },
+})
+
+const userStore = useUserStore()
+const router = useRouter()
+
+const state = reactive({
+  currentaction: "select_authentication_provider",
+  defaultProvider: null,
+  availableProviders: {},
+  availableSecondfactors: {},
+  loading: false,
+})
+provide("loginState", state)
+
+onBeforeMount(() => {
+  Request.get("/vi/user/login").then(async (resp) => {
+    let data = await resp.json()
+    state.currentaction = data["action"]
+    state.defaultProvider = data["values"]["provider"]
+
+    let providers = {}
+    for (const [k, v] of Object.entries(data["structure"]["provider"]["values"])) {
+      const match = k.match(/auth_(.+?)\/login/)
+      const extracted = match ? match[1] : null
+      providers[extracted] = { target: k, name: v }
+    }
+
+    state.availableProviders = providers
   })
-
-
-    const userStore = useUserStore()
-    const router = useRouter()
-
-
-const handlers = {
-  providerselection:TheProviderSelection,
-  googleaccount:TheGoogleLogin,
-  pwrecover:ThePasswordRecovery
-}
-
-
-    const state = reactive({
-        providerselection:null,
-        activeHandler:"providerselection"
-    })
-  provide("loginState", state)
-
-  onBeforeMount(()=>{
-    Request.get("/vi/user/login").then(async(resp)=>{
-      let data = await resp.json()
-
-
-
-      console.log(data)
-    })
-  })
-
-
+})
 </script>
 
 <style scoped>
@@ -117,6 +129,7 @@ const handlers = {
   align-items: center;
   background-position: center center;
   background-size: cover;
+  overflow: scroll;
 }
 
 .wrapper::before {
@@ -159,27 +172,8 @@ const handlers = {
   }
 }
 
-sl-button {
-  width: 100%;
-
-  &[disabled] {
-    &::part(base) {
-      opacity: 1;
-    }
-  }
-
-  &.more-login-btn {
-    &::part(base) {
-      font-weight: 400;
-    }
-  }
-}
-
-sl-button.more-login-btn:has(+ #google_oauth > *) {
-  display: none;
-}
-
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -199,94 +193,9 @@ sl-button.more-login-btn:has(+ #google_oauth > *) {
     max-width: none;
   }
 
-  sl-alert{
+  sl-alert {
     margin-bottom: var(--sl-spacing-medium);
   }
-}
-
-
-
-.or {
-  opacity: 0.5;
-  padding: var(--sl-spacing-small) 0;
-  margin: 0 auto;
-  text-align: center;
-  font-size: 0.9em;
-}
-
-.loader {
-  z-index: 10000;
-}
-
-sl-tab-group {
-  --indicator-color: var(--vi-foreground-color);
-  --track-color: transparent;
-}
-
-sl-input {
-  margin-bottom: 10px;
-}
-
-.second-factor {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  & :deep(.bone-name) {
-    background-color: transparent;
-    padding: 0;
-    margin-bottom: 0;
-    height: auto;
-    min-height: auto;
-  }
-
-  & :deep(.bone-wrapper) {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: var(--sl-spacing-medium);
-    margin-bottom: var(--sl-spacing-medium);
-  }
-
-  & :deep(.bone-inner-wrap) {
-    width: 100%;
-  }
-
-  & :deep(.bone-inner-wrap .info) {
-    display: none;
-  }
-
-  & :deep(sl-input::part(base)) {
-    border-bottom-left-radius: var(--sl-border-radius-medium) !important;
-    border-top-left-radius: var(--sl-border-radius-medium) !important;
-    border-top-right-radius: var(--sl-border-radius-medium) !important;
-    border-bottom-right-radius: var(--sl-border-radius-medium) !important;
-  }
-
-  sl-alert{
-    margin-bottom: 0;
-  }
-}
-
-.token {
-  margin-bottom: 10px;
-}
-
-/* Chrome, Safari, Edge, Opera */
-sl-input::part(input)::-webkit-outer-spin-button,
-sl-input::part(input)::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-sl-input::part(input)[type="number"] {
-  -moz-appearance: textfield;
-  appearance: textfield;
-}
-
-sl-alert{
-  margin-bottom: var(--sl-spacing-medium);
 }
 
 .back {
@@ -297,6 +206,22 @@ sl-alert{
 
   &:hover {
     color: var(--sl-color-neutral-700);
+  }
+}
+.overlay {
+  opacity: 0.8;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: var(--sl-color-neutral-100);
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & sl-spinner {
+    font-size: 5rem;
   }
 }
 </style>
