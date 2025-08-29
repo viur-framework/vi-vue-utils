@@ -27,6 +27,7 @@ export default {
       placeholder: "Telefon/Fax",
     },
   },
+
   errors: {
     "Field not set": "Feld nicht ausgefüllt",
     "No value entered": "Feld nicht ausgefüllt",
@@ -41,6 +42,7 @@ export default {
     "Invalid value selected": "Auswahl ist ungültig",
     "Wrong OTP Token": "Falscher OTP Code",
     "Maximum length exceeded": "Eingabe zu lang",
+    "Invalid email entered": "Ungültige E-Mail Adresse",
   },
   preview: "Vorschau",
   de: "DE",
@@ -50,4 +52,19 @@ export default {
   ch: "CH",
   es: "ES",
   "de-x-simple": "Einfache Sprache",
+  login: {
+    login: "Anmelden",
+    logout: "Abmelden",
+    otp: "Bestätigen",
+    lost_password: "Passwort vergessen?",
+    with_google: "Mit Google anmelden",
+    waiting: "lade...",
+    or: "oder",
+    login_error: "Benutzername oder Passwort falsch.",
+    google_error: "Ein Fehler ist beim Login aufgetreten.",
+    otp_error: "Die Eingabe war ungültig.",
+    back: "zurück",
+    recovery_start: "Passwort zurücksetzen",
+    recovery_error: "Ein Fehler beim zurücksetzen des Passwortes ist aufgetreten.",
+  },
 }

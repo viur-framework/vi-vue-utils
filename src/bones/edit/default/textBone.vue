@@ -289,7 +289,7 @@ onBeforeMount(() => {
       ],
     },
     language: "de",
-    viur_api_url: "http://localhost:8080",
+    viur_api_url: import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL : window.location.origin,
   }
 })
 
