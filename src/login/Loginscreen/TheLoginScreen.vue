@@ -42,6 +42,8 @@
         <sl-spinner></sl-spinner>
       </div>
     </div>
+
+    <slot></slot>
   </div>
 </template>
 
