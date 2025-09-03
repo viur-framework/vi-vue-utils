@@ -16,7 +16,11 @@ onBeforeMount(() => {
     .then(async (resp) => {
       try {
         const data = await resp.json()
-        state.loginComponent = LoginScreen
+        if (Array.isArray(data)) {
+          state.loginComponent = LoginScreen37
+        } else {
+          state.loginComponent = LoginScreen
+        }
       } catch (error) {
         state.loginComponent = LoginScreen37
       }

@@ -27,10 +27,12 @@
       </sl-alert>
 
       <SelectAuthenticationProvider
-        v-if="
-          ['select_authentication_provider', 'select_authentication_provider_success'].includes(state.currentaction)
-        "
+        v-if="['select_authentication_provider'].includes(state.currentaction)"
       ></SelectAuthenticationProvider>
+
+      <FormLogin
+        v-if="['select_authentication_provider_success'].includes(state.currentaction) && state.formByPass"
+      ></FormLogin>
 
       <SelectSecondFactorsProvider
         v-if="['select_secondfactor_provider', 'select_secondfactor_provider_success'].includes(state.currentaction)"
@@ -48,26 +50,6 @@
 </template>
 
 <script setup>
-/*
-
-http://localhost:8080/vi/user/getAuthMethods
-> [["X-VIUR-AUTH-User-Password", "X-VIUR-2FACTOR-TimeBasedOTP"], ["X-VIUR-AUTH-Google-Account", null]]
-
->>> SEnd to
-http://localhost:8080/vi/user/auth_userpassword/login
-
-> FOrm (edit): otp
->params
-action_name= otp
-action_url: /vi/user/f2_timebasedotp/otp
-name = "time bsed OTp"
-
-
-http://localhost:8080/vi/user/auth_userpassword/pwrecover
-> FORM
-
-*/
-
 import { reactive, computed, onBeforeMount, defineComponent, watch, provide } from "vue"
 import { useRouter } from "vue-router"
 import { useUserStore } from "../stores/user.js"
@@ -77,6 +59,7 @@ import { Request } from "../../utils/request"
 import SelectAuthenticationProvider from "./SelectAuthenticationProvider.vue"
 import SelectSecondFactorsProvider from "./SelectSecondFactorsProvider.vue"
 import UserPasswordRecover from "./providers/UserPassword/UserPasswordRecover.vue"
+import FormLogin from "./providers/FormLogin.vue"
 
 const props = defineProps({
   username: { type: String, default: "" },
@@ -97,6 +80,7 @@ const state = reactive({
   availableProviders: {},
   availableSecondfactors: {},
   loading: false,
+  formByPass: false, //master of craps
 })
 provide("loginState", state)
 
@@ -106,6 +90,9 @@ onBeforeMount(() => {
     state.currentaction = data["action"]
     state.defaultProvider = data["values"]["provider"]
 
+    if (state.currentaction === "select_authentication_provider_success" && data["next_url"]) {
+      state.formByPass = data["next_url"]
+    }
     let providers = {}
     for (const [k, v] of Object.entries(data["structure"]["provider"]["values"])) {
       const match = k.match(/auth_(.+?)\/login/)
