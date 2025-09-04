@@ -4,7 +4,7 @@
       <img :src="backgroundImage" />
     </div>
     <Loader
-      v-if="state.waitFor === 'init' || (isRedirect && userStore.state['user.loggedin'] === 'yes')"
+      v-if="state.waitFor === 'init' || (isRedirect && isUserLoggedIn)"
       class="loader"
       :logo="logo"
       :size="'7'"
@@ -21,7 +21,7 @@
       >
         {{ $t("login.back") }}
       </span>
-      <sl-alert v-if="userStore.state['user.loggedin'] === 'loading' || state.loading" variant="info" open>
+      <sl-alert v-if="isUserLoading || state.loading" variant="info" open>
         <sl-spinner slot="icon"></sl-spinner>
         {{ $t("login.waiting") }}
       </sl-alert>
@@ -40,7 +40,7 @@
 
       <UserPasswordRecover v-if="['pwrecover'].includes(state.currentaction)"></UserPasswordRecover>
 
-      <div v-if="false && userStore.state['user.loggedin'] === 'loading'" class="overlay">
+      <div v-if="false && isUserLoading" class="overlay">
         <sl-spinner></sl-spinner>
       </div>
     </div>
@@ -69,6 +69,9 @@ const props = defineProps({
   logo: { type: String, default: "" },
   title: { type: String, default: "Login" },
   tokenSvg: { type: String, default: "" },
+  isLoggedIn: { type: Boolean, required: false },
+  isLoading: { type: Boolean, required: false },
+
 })
 
 const userStore = useUserStore()
@@ -83,6 +86,25 @@ const state = reactive({
   formByPass: false, //master of craps
 })
 provide("loginState", state)
+
+// Computed properties for dynamic state checking
+const isUserLoggedIn = computed(() => {
+  // If isLoggedIn prop is defined, use it
+  if (props.isLoggedIn !== undefined) {
+    return props.isLoggedIn
+  }
+  // Otherwise fallback to userStore
+  return userStore.state['user.loggedin'] === 'yes'
+})
+
+const isUserLoading = computed(() => {
+  // If isLoading prop is defined, use it
+  if (props.isLoading !== undefined) {
+    return props.isLoading
+  }
+  // Otherwise fallback to userStore
+  return userStore.state['user.loggedin'] === 'loading'
+})
 
 onBeforeMount(() => {
   Request.get("/vi/user/login").then(async (resp) => {
