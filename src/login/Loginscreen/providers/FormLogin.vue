@@ -16,6 +16,7 @@
     :fetch-url="state.currentUrl"
     label="placeholder"
     :layout="DefaultLayout"
+    @keypress-enter="buttonAction"
   ></vi-form>
 
   <sl-button

@@ -1,6 +1,4 @@
 <template>
-  {{ widget }}
-
   <form :ref="(el) => (state.viformelement = el)" @submit.prevent.stop="() => {}">
     <slot :structure="state.structure" :skel="state.skel" :errors="state.errors" :categories="state.categories">
       <component :is="layout" v-slot="{ boneName, widget, visible, label }">
@@ -9,6 +7,7 @@
           v-if="widget !== undefined"
           v-show="visible === undefined ? state.structure[boneName]['visible'] : visible"
           :name="boneName"
+          :autofocus="true"
           :structure="state.structure"
           :skel="state.skel"
           :errors="state.errors"
@@ -16,6 +15,7 @@
           :default-language="defaultLanguage"
           :label="label === undefined ? state.label : label"
           :error-style="errorStyle"
+          @keypress.enter="handlePressEnter($event, boneName)"
           @change-internal="formUpdate"
         ></bone>
       </component>
@@ -24,15 +24,12 @@
 </template>
 
 <script setup>
-import Loader from "../generic/Loader.vue"
-import Request from "../utils/request"
 import { useFormUtils } from "./utils"
-import { getBoneWidget } from "../bones/edit/index"
-import { reactive, watch, onBeforeMount, computed, unref, provide, ref } from "vue"
+import { reactive, watch, onBeforeMount, computed, provide, ref } from "vue"
 import { useDebounceFn } from "@vueuse/core"
 import LayoutCategory from "./layouts/LayoutCategory.vue"
 
-const emit = defineEmits(["change"])
+const emit = defineEmits(["change", "keypress-enter"])
 const props = defineProps({
   //modulename
   module: {
@@ -197,8 +194,27 @@ watch(
 )
 
 function formUpdate(data) {
+  console.log(data)
   updateSkel(data)
   formUpdateEvent(data)
+}
+
+function handlePressEnter(ev, name) {
+  const value = ev.originalTarget.value
+
+  // intercept event to adjust it so it triggers the same change event like @change-internal
+  let data = {
+    name: name,
+    value: value,
+    // TODO: needs to be implemented naturally and not interceptive
+    lang: null,
+    index: null,
+    valid: true,
+  }
+
+  formUpdate(data)
+
+  emit("keypress-enter")
 }
 provide("formUpdate", formUpdate)
 
