@@ -3,12 +3,7 @@
     <div class="background-img">
       <img :src="backgroundImage" />
     </div>
-    <Loader
-      v-if="state.waitFor === 'init' || (isRedirect && isUserLoggedIn)"
-      class="loader"
-      :logo="logo"
-      :size="'7'"
-    />
+    <Loader v-if="state.waitFor === 'init' || (isRedirect && isUserLoggedIn)" class="loader" :logo="logo" :size="'7'" />
 
     <div v-else class="card">
       <img class="logo" :src="logo" />
@@ -63,6 +58,7 @@ import FormLogin from "./providers/FormLogin.vue"
 
 const props = defineProps({
   username: { type: String, default: "" },
+  loginRenderer: { type: String, default: "vi" },
   isAppAuth: Boolean,
   isRedirect: { type: Boolean, default: false },
   backgroundImage: { type: String, default: "" },
@@ -71,7 +67,6 @@ const props = defineProps({
   tokenSvg: { type: String, default: "" },
   isLoggedIn: { type: Boolean, required: false },
   isLoading: { type: Boolean, required: false },
-
 })
 
 const userStore = useUserStore()
@@ -94,7 +89,7 @@ const isUserLoggedIn = computed(() => {
     return props.isLoggedIn
   }
   // Otherwise fallback to userStore
-  return userStore.state['user.loggedin'] === 'yes'
+  return userStore.state["user.loggedin"] === "yes"
 })
 
 const isUserLoading = computed(() => {
@@ -103,11 +98,11 @@ const isUserLoading = computed(() => {
     return props.isLoading
   }
   // Otherwise fallback to userStore
-  return userStore.state['user.loggedin'] === 'loading'
+  return userStore.state["user.loggedin"] === "loading"
 })
 
 onBeforeMount(() => {
-  Request.get("/vi/user/login").then(async (resp) => {
+  Request.get(`/${props.loginRenderer}/user/login`).then(async (resp) => {
     let data = await resp.json()
     state.currentaction = data["action"]
     state.defaultProvider = data["values"]["provider"]
@@ -118,6 +113,7 @@ onBeforeMount(() => {
     let providers = {}
     for (const [k, v] of Object.entries(data["structure"]["provider"]["values"])) {
       const match = k.match(/auth_(.+?)\/login/)
+      console.log("hier kadir", match)
       const extracted = match ? match[1] : null
       providers[extracted] = { target: k, name: v }
     }

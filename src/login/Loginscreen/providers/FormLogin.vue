@@ -53,6 +53,14 @@ const state = reactive({
 onMounted(() => {
   state.currentUrl = loginState.formByPass
 })
+
+function calcCurrentUrlOnAction(url, actionName) {
+  let lastSlashIndex = url.lastIndexOf("/")
+  lastSlashIndex = lastSlashIndex > url.indexOf("://") + 2 ? url.slice(0, lastSlashIndex) : url
+  lastSlashIndex += "/" + actionName
+  return lastSlashIndex
+}
+
 function buttonAction() {
   state.showCustomError = false
   loginState.loading = true
@@ -64,6 +72,7 @@ function buttonAction() {
       if (!ViFormRef.value.state.actionname.endsWith("_success")) {
         ViFormRef.value.state.skel = data["values"]
         ViFormRef.value.state.structure = data["structure"]
+        state.currentUrl = calcCurrentUrlOnAction(state.currentUrl, data["action"])
       } else if (ViFormRef.value.state.actionname.endsWith("_success") && data["next_url"]) {
         if (data["next_url"].startsWith("https://")) {
           window.location.href = Request.buildUrl(data["next_url"])
