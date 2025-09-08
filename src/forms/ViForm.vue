@@ -126,6 +126,10 @@ const props = defineProps({
       return ["default", "decent"].includes(value)
     },
   },
+  allowEnter: {
+    type: Boolean,
+    default: false,
+  },
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
@@ -194,12 +198,16 @@ watch(
 )
 
 function formUpdate(data) {
-  console.log(data)
   updateSkel(data)
   formUpdateEvent(data)
 }
 
 function handlePressEnter(ev, name) {
+  // IF FLAG IS SET
+  if (!props.allowEnter) {
+    return
+  }
+
   const value = ev.originalTarget.value
 
   // intercept event to adjust it so it triggers the same change event like @change-internal

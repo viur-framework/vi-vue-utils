@@ -58,7 +58,6 @@ import FormLogin from "./providers/FormLogin.vue"
 
 const props = defineProps({
   username: { type: String, default: "" },
-  loginRenderer: { type: String, default: "vi" },
   isAppAuth: Boolean,
   isRedirect: { type: Boolean, default: false },
   backgroundImage: { type: String, default: "" },
@@ -102,7 +101,7 @@ const isUserLoading = computed(() => {
 })
 
 onBeforeMount(() => {
-  Request.get(`/${props.loginRenderer}/user/login`).then(async (resp) => {
+  Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`).then(async (resp) => {
     let data = await resp.json()
     state.currentaction = data["action"]
     state.defaultProvider = data["values"]["provider"]
@@ -113,7 +112,7 @@ onBeforeMount(() => {
     let providers = {}
     for (const [k, v] of Object.entries(data["structure"]["provider"]["values"])) {
       const match = k.match(/auth_(.+?)\/login/)
-      console.log("hier kadir", match)
+
       const extracted = match ? match[1] : null
       providers[extracted] = { target: k, name: v }
     }

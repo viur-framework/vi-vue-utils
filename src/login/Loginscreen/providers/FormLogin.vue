@@ -16,6 +16,7 @@
     :fetch-url="state.currentUrl"
     label="placeholder"
     :layout="DefaultLayout"
+    :allow-enter="true"
     @keypress-enter="buttonAction"
   ></vi-form>
 
@@ -29,6 +30,7 @@
     {{ $t("login.login") }}
   </sl-button>
 </template>
+
 <script setup>
 // THIS IST BULLSHIT, CRAP BY DESIGN...
 import { computed, inject, onMounted, reactive, useTemplateRef, watch } from "vue"
