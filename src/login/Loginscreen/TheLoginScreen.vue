@@ -28,7 +28,7 @@
       <FormLogin
         v-if="['select_authentication_provider_success'].includes(state.currentaction) && state.formByPass"
       ></FormLogin>
-
+      <slot name="additional-actions"></slot>
       <SelectSecondFactorsProvider
         v-if="['select_secondfactor_provider', 'select_secondfactor_provider_success'].includes(state.currentaction)"
       ></SelectSecondFactorsProvider>
@@ -39,8 +39,6 @@
         <sl-spinner></sl-spinner>
       </div>
     </div>
-
-    <slot></slot>
   </div>
 </template>
 
