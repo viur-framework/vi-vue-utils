@@ -98,6 +98,15 @@ const isUserLoading = computed(() => {
   return userStore.state["user.loggedin"] === "loading"
 })
 
+function setCurrentAction(actionUrl) {
+  Request.get(actionUrl).then(async (resp) => {
+    let data = await resp.json()
+    state.currentaction = data["action"]
+    state.formByPass = actionUrl
+
+  })
+}
+
 onBeforeMount(() => {
   Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`).then(async (resp) => {
     let data = await resp.json()
@@ -117,6 +126,10 @@ onBeforeMount(() => {
 
     state.availableProviders = providers
   })
+})
+
+defineExpose({
+  setCurrentAction
 })
 </script>
 
