@@ -61,15 +61,7 @@
                     >
                       <div
                         v-for="(val, index) in state.bonevalue?.[lang]"
-                        :key="
-                          index +
-                          '_' +
-                          state.bonevalue[lang].length +
-                          '_' +
-                          JSON.stringify(val)
-                            .replace(/[^a-zA-Z0-9]/g, '')
-                            .slice(0, 1000)
-                        "
+                        :key="val?._key ? val._key : index + '_' + state.bonevalue[lang].length"
                         class="multiple-bone"
                       >
                         <wrapper-multiple
@@ -148,15 +140,7 @@
               >
                 <div
                   v-for="(val, index) in state.bonevalue"
-                  :key="
-                    index +
-                    '_' +
-                    state.bonevalue.length +
-                    '_' +
-                    JSON.stringify(val)
-                      .replace(/[^a-zA-Z0-9]/g, '')
-                      .slice(0, 1000)
-                  "
+                  :key="val?._key ? val._key : index + '_' + state.bonevalue.length"
                   class="multiple-bone"
                 >
                   <wrapper-multiple
@@ -246,6 +230,7 @@ import {
   onMounted,
   watch,
   ref,
+  watchEffect,
 } from "vue"
 import wrapperMultiple from "./wrapper_multiple.vue"
 import BoneLabel from "./boneLabel.vue"
@@ -420,6 +405,19 @@ const state = reactive({
   currentLanguage: null,
 })
 provide("boneState", state)
+
+function ensureKeys(arr) {
+  for (const it of arr) {
+    if (!it._key && typeof it === "object") {
+      it._key = crypto.randomUUID()
+    }
+  }
+}
+watchEffect(() => {
+  if (Array.isArray(state.bonevalue)) {
+    ensureKeys(state.bonevalue)
+  }
+})
 
 function updateValue(name, val, lang = null, index = null, valid = true) {
   if (val === undefined) return false
