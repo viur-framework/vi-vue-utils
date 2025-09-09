@@ -1,4 +1,5 @@
 <template>
+
   <div class="wrapper">
     <div class="background-img">
       <img :src="backgroundImage" />
@@ -21,19 +22,27 @@
         {{ $t("login.waiting") }}
       </sl-alert>
 
+      <!-- select provider component -->
       <SelectAuthenticationProvider
         v-if="['select_authentication_provider'].includes(state.currentaction)"
       ></SelectAuthenticationProvider>
 
+      <!-- user login or other login methods -->
       <FormLogin
-        v-if="['select_authentication_provider_success'].includes(state.currentaction) && state.formByPass"
+        v-if="['select_authentication_provider_success', 'pwrecover_success'].includes(state.currentaction) && state.formByPass"
       ></FormLogin>
-      <slot name="additional-actions"></slot>
+
+      <!-- second factor -->
       <SelectSecondFactorsProvider
         v-if="['select_secondfactor_provider', 'select_secondfactor_provider_success'].includes(state.currentaction)"
       ></SelectSecondFactorsProvider>
 
-      <UserPasswordRecover v-if="['pwrecover'].includes(state.currentaction)"></UserPasswordRecover>
+      <!-- bad hack for pw recovery process to reactively rerender the formlogin -->
+      <FormLogin
+        v-if="['pwrecover'].includes(state.currentaction) && state.formByPass"
+      ></FormLogin>
+
+      <slot name="additional-actions"></slot>
 
       <div v-if="false && isUserLoading" class="overlay">
         <sl-spinner></sl-spinner>
@@ -103,7 +112,6 @@ function setCurrentAction(actionUrl) {
     let data = await resp.json()
     state.currentaction = data["action"]
     state.formByPass = actionUrl
-
   })
 }
 

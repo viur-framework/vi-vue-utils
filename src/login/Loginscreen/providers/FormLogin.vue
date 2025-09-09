@@ -8,6 +8,7 @@
     <sl-icon slot="icon" name="info"></sl-icon>
     {{ $t(state.tooltip) }}
   </sl-alert>
+
   <vi-form
     v-if="state.currentUrl"
     ref="ViFormRef"
@@ -67,11 +68,13 @@ function calcCurrentUrlOnAction(url, actionName) {
 function buttonAction() {
   state.showCustomError = false
   loginState.loading = true
+
   ViFormRef.value
     .sendData(state.currentUrl)
     .then(async (resp) => {
       loginState.loading = false
       let data = await resp.json()
+
       if (!ViFormRef.value.state.actionname.endsWith("_success")) {
         ViFormRef.value.state.skel = data["values"]
         ViFormRef.value.state.structure = data["structure"]
@@ -79,7 +82,11 @@ function buttonAction() {
       } else if (ViFormRef.value.state.actionname.endsWith("_success") && data["next_url"]) {
         if (data["next_url"].startsWith("https://")) {
           window.location.href = Request.buildUrl(data["next_url"])
-        } else {
+        }  else {
+          if(data.action === "pwrecover_success") {
+            location.reload()
+            return
+          }
           state.currentUrl = data["next_url"]
           buttonAction()
         }
