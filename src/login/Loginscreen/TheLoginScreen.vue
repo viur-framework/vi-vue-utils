@@ -1,14 +1,10 @@
 <template>
+
   <div class="wrapper">
     <div class="background-img">
       <img :src="backgroundImage" />
     </div>
-    <Loader
-      v-if="state.waitFor === 'init' || (isRedirect && userStore.state['user.loggedin'] === 'yes')"
-      class="loader"
-      :logo="logo"
-      :size="'7'"
-    />
+    <Loader v-if="state.waitFor === 'init' || (isRedirect && isUserLoggedIn)" class="loader" :logo="logo" :size="'7'" />
 
     <div v-else class="card">
       <img class="logo" :src="logo" />
@@ -21,31 +17,37 @@
       >
         {{ $t("login.back") }}
       </span>
-      <sl-alert v-if="userStore.state['user.loggedin'] === 'loading' || state.loading" variant="info" open>
+      <sl-alert v-if="isUserLoading || state.loading" variant="info" open>
         <sl-spinner slot="icon"></sl-spinner>
         {{ $t("login.waiting") }}
       </sl-alert>
 
+      <!-- select provider component -->
       <SelectAuthenticationProvider
         v-if="['select_authentication_provider'].includes(state.currentaction)"
       ></SelectAuthenticationProvider>
 
+      <!-- user login or other login methods -->
       <FormLogin
-        v-if="['select_authentication_provider_success'].includes(state.currentaction) && state.formByPass"
+        v-if="['select_authentication_provider_success', 'pwrecover_success'].includes(state.currentaction) && state.formByPass"
       ></FormLogin>
 
+      <!-- second factor -->
       <SelectSecondFactorsProvider
         v-if="['select_secondfactor_provider', 'select_secondfactor_provider_success'].includes(state.currentaction)"
       ></SelectSecondFactorsProvider>
 
-      <UserPasswordRecover v-if="['pwrecover'].includes(state.currentaction)"></UserPasswordRecover>
+      <!-- bad hack for pw recovery process to reactively rerender the formlogin -->
+      <FormLogin
+        v-if="['pwrecover'].includes(state.currentaction) && state.formByPass"
+      ></FormLogin>
 
-      <div v-if="false && userStore.state['user.loggedin'] === 'loading'" class="overlay">
+      <slot name="additional-actions"></slot>
+
+      <div v-if="false && isUserLoading" class="overlay">
         <sl-spinner></sl-spinner>
       </div>
     </div>
-
-    <slot></slot>
   </div>
 </template>
 
@@ -69,6 +71,8 @@ const props = defineProps({
   logo: { type: String, default: "" },
   title: { type: String, default: "Login" },
   tokenSvg: { type: String, default: "" },
+  isLoggedIn: { type: Boolean, required: false },
+  isLoading: { type: Boolean, required: false },
 })
 
 const userStore = useUserStore()
@@ -84,8 +88,35 @@ const state = reactive({
 })
 provide("loginState", state)
 
+// Computed properties for dynamic state checking
+const isUserLoggedIn = computed(() => {
+  // If isLoggedIn prop is defined, use it
+  if (props.isLoggedIn !== undefined) {
+    return props.isLoggedIn
+  }
+  // Otherwise fallback to userStore
+  return userStore.state["user.loggedin"] === "yes"
+})
+
+const isUserLoading = computed(() => {
+  // If isLoading prop is defined, use it
+  if (props.isLoading !== undefined) {
+    return props.isLoading
+  }
+  // Otherwise fallback to userStore
+  return userStore.state["user.loggedin"] === "loading"
+})
+
+function setCurrentAction(actionUrl) {
+  Request.get(actionUrl).then(async (resp) => {
+    let data = await resp.json()
+    state.currentaction = data["action"]
+    state.formByPass = actionUrl
+  })
+}
+
 onBeforeMount(() => {
-  Request.get("/vi/user/login").then(async (resp) => {
+  Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`).then(async (resp) => {
     let data = await resp.json()
     state.currentaction = data["action"]
     state.defaultProvider = data["values"]["provider"]
@@ -96,12 +127,17 @@ onBeforeMount(() => {
     let providers = {}
     for (const [k, v] of Object.entries(data["structure"]["provider"]["values"])) {
       const match = k.match(/auth_(.+?)\/login/)
+
       const extracted = match ? match[1] : null
       providers[extracted] = { target: k, name: v }
     }
 
     state.availableProviders = providers
   })
+})
+
+defineExpose({
+  setCurrentAction
 })
 </script>
 

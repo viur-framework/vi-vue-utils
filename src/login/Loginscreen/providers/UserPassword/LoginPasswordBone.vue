@@ -1,6 +1,6 @@
 <template>
   <sl-input
-    ref="emailBone"
+    ref="loginPasswordBone"
     class="widget-bone widget-bone-email widget-bone-email-default"
     :class="[`widget-bone-email-${name}`]"
     :name="name"
@@ -33,6 +33,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["change"])
+const loginPasswordBone = ref(null)
 
 const boneState = inject("boneState")
 const state = reactive({})
@@ -42,6 +43,18 @@ const emailBone = ref(null)
 function changeEvent(event) {
   emit("change", props.name, event.target.value, props.lang, props.index)
 }
+
+watchEffect(() => {
+  if (props.autofocus) {
+    if (loginPasswordBone.value && loginPasswordBone.value !== null && loginPasswordBone.value !== null) {
+      const { start } = useTimeoutFn(() => {
+        loginPasswordBone.value.focus()
+      }, 300)
+
+      start()
+    }
+  }
+})
 
 onMounted(() => {
   emit("change", props.name, props.value.trim(), props.lang, props.index) //init

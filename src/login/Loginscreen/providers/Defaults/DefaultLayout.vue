@@ -20,7 +20,7 @@ import LoginPasswordBone from "../UserPassword/LoginPasswordBone.vue"
 const formState = inject("formState")
 const formUpdate = inject("formUpdate")
 function getWidget(boneStructure) {
-  if (boneStructure["type"] === "password") {
+  if (boneStructure["type"] === "password" && !boneStructure["tests"].length) {
     return LoginPasswordBone
   }
   return getBoneWidget(boneStructure["type"])

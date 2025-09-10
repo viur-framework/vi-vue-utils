@@ -8,6 +8,7 @@
     <sl-icon slot="icon" name="info"></sl-icon>
     {{ $t(state.tooltip) }}
   </sl-alert>
+
   <vi-form
     v-if="state.currentUrl"
     ref="ViFormRef"
@@ -16,6 +17,8 @@
     :fetch-url="state.currentUrl"
     label="placeholder"
     :layout="DefaultLayout"
+    :allow-enter="true"
+    @keypress-enter="buttonAction"
   ></vi-form>
 
   <sl-button
@@ -28,6 +31,7 @@
     {{ $t("login.login") }}
   </sl-button>
 </template>
+
 <script setup>
 // THIS IST BULLSHIT, CRAP BY DESIGN...
 import { computed, inject, onMounted, reactive, useTemplateRef, watch } from "vue"
@@ -53,21 +57,36 @@ const state = reactive({
 onMounted(() => {
   state.currentUrl = loginState.formByPass
 })
+
+function calcCurrentUrlOnAction(url, actionName) {
+  let lastSlashIndex = url.lastIndexOf("/")
+  lastSlashIndex = lastSlashIndex > url.indexOf("://") + 2 ? url.slice(0, lastSlashIndex) : url
+  lastSlashIndex += "/" + actionName
+  return lastSlashIndex
+}
+
 function buttonAction() {
   state.showCustomError = false
   loginState.loading = true
+
   ViFormRef.value
     .sendData(state.currentUrl)
     .then(async (resp) => {
       loginState.loading = false
       let data = await resp.json()
+
       if (!ViFormRef.value.state.actionname.endsWith("_success")) {
         ViFormRef.value.state.skel = data["values"]
         ViFormRef.value.state.structure = data["structure"]
+        state.currentUrl = calcCurrentUrlOnAction(state.currentUrl, data["action"])
       } else if (ViFormRef.value.state.actionname.endsWith("_success") && data["next_url"]) {
         if (data["next_url"].startsWith("https://")) {
           window.location.href = Request.buildUrl(data["next_url"])
-        } else {
+        }  else {
+          if(data.action === "pwrecover_success") {
+            location.reload()
+            return
+          }
           state.currentUrl = data["next_url"]
           buttonAction()
         }
