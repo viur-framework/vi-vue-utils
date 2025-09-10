@@ -80,11 +80,13 @@ const boneLogic = (skel, structure) => {
     } else if (boneStructure["type"] === "select" || boneStructure["type"].startsWith("select.")) {
       // extract description from tuple
       if (boneStructure["values"].length > 0) {
-        let returnValue = boneStructure["values"]?.filter((x) => x[0] === value)?.[0]?.[1]
+        let returnValue = boneStructure["values"]?.filter((x) => x[0].toString() === value.toString())?.[0]?.[1]
         return returnValue ? returnValue : "-"
       }
       if (Object.keys(boneStructure["values"]).length > 0) {
-        let returnValue = Object.entries(boneStructure["values"])?.filter((x) => x[0] === value)?.[0]?.[1]
+        let returnValue = Object.entries(boneStructure["values"])?.filter(
+          (x) => x[0].toString() === value.toString()
+        )?.[0]?.[1]
         return returnValue ? returnValue : "-"
       }
 
