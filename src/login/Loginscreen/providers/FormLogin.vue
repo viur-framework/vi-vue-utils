@@ -28,7 +28,7 @@
     type="submit"
     @click="buttonAction"
   >
-    {{ $t("login.login") }}
+    {{ $t(`viur.core.modules.user.btn.${getActionNameFromUrl(loginState.formByPass)}`) }}
   </sl-button>
 </template>
 
@@ -65,6 +65,11 @@ function calcCurrentUrlOnAction(url, actionName) {
   return lastSlashIndex
 }
 
+function getActionNameFromUrl(url) {
+  let splitted = url.split("/")
+  return splitted[splitted.length - 1]
+}
+
 function buttonAction() {
   state.showCustomError = false
   loginState.loading = true
@@ -82,8 +87,8 @@ function buttonAction() {
       } else if (ViFormRef.value.state.actionname.endsWith("_success") && data["next_url"]) {
         if (data["next_url"].startsWith("https://")) {
           window.location.href = Request.buildUrl(data["next_url"])
-        }  else {
-          if(data.action === "pwrecover_success") {
+        } else {
+          if (data.action === "pwrecover_success") {
             location.reload()
             return
           }
