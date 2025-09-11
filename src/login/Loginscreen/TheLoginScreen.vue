@@ -115,9 +115,13 @@ function setCurrentAction(actionUrl) {
   })
 }
 
-onBeforeMount(() => {
-  Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`).then(async (resp) => {
-    let data = await resp.json()
+onBeforeMount(async () => {
+  try {
+    await userStore.updateUser()
+  } catch (e) {
+    //Load login data only when the user is not logged in
+    const loginResp = await Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`);
+    const data = await loginResp.json()
     state.currentaction = data["action"]
     state.defaultProvider = data["values"]["provider"]
 
@@ -129,11 +133,11 @@ onBeforeMount(() => {
       const match = k.match(/auth_(.+?)\/login/)
 
       const extracted = match ? match[1] : null
-      providers[extracted] = { target: k, name: v }
+      providers[extracted] = {target: k, name: v}
     }
 
     state.availableProviders = providers
-  })
+  }
 })
 
 defineExpose({
