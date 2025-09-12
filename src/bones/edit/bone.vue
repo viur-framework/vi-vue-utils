@@ -7,6 +7,7 @@
       'label-hide': ['hide', 'placeholder'].includes(label),
       [`wrapper-bone-${state.bonestructure['type'].split('.')[0]}`]: true,
       [`wrapper-bone-${name}`]: true,
+      'wrapper-bone-required': state.required,
     }"
   >
     <bone-label v-if="!['hide', 'placeholder'].includes(label)" :name="name">
@@ -33,7 +34,10 @@
       :content="state.bonestructure?.['descr']"
       style="--show-delay: 1000"
     >
-      <div class="bone-inner-wrap wrapper-bone-widget" :class="[`wrapper-bone-widget-${name}`]">
+      <div
+        class="bone-inner-wrap wrapper-bone-widget"
+        :class="{ 'wrapper-bone-required': state.required, [`wrapper-bone-widget-${name}`]: true }"
+      >
         <!--Language chooser -->
         <div v-if="state.multilanguage" class="wrapper-bone-row">
           <sl-tab-group class="lang-tab" placement="bottom">
