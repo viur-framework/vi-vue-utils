@@ -1,20 +1,22 @@
 <template>
-  <sl-alert :open="state.showCustomError" variant="danger">
-    <sl-icon slot="icon" name="x-lg"></sl-icon>
-    {{ $t("login.otp_error") }}
-  </sl-alert>
-  <vi-form
-    ref="ViFormRef"
-    module="user"
-    action="edit"
-    :fetch-url="state.currentUrl"
-    label="placeholder"
-    :use-categories="false"
-    :layout="UserPasswordLoginLayout"
-  ></vi-form>
-  <sl-button variant="primary" type="submit" @click="sendotp">
-    {{ $t("login.otp") }}
-  </sl-button>
+  <div class="login-time-otp-auth">
+    <sl-alert :open="state.showCustomError" variant="danger">
+      <sl-icon slot="icon" name="exclamation-circle-fill"></sl-icon>
+      {{ $t("login.otp_error") }}
+    </sl-alert>
+    <vi-form
+      ref="ViFormRef"
+      module="user"
+      action="edit"
+      :fetch-url="state.currentUrl"
+      label="placeholder"
+      :use-categories="false"
+      :layout="UserPasswordLoginLayout"
+    ></vi-form>
+    <sl-button variant="primary" type="submit" @click="sendotp" class="login-time-otp-auth-btn">
+      {{ $t("login.otp") }}
+    </sl-button>
+  </div>
 </template>
 <script setup>
 import { computed, reactive, useTemplateRef, inject, watch } from "vue"

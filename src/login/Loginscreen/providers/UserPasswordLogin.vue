@@ -1,31 +1,36 @@
 <template>
-  <sl-alert :open="state.showCustomError" variant="danger">
-    <sl-icon slot="icon" name="x-lg"></sl-icon>
-    {{ $t("login.login_error") }}
-  </sl-alert>
-  <vi-form
-    ref="ViFormRef"
-    module="user"
-    action="edit"
-    :fetch-url="state.currentUrl"
-    label="placeholder"
-    :layout="UserPasswordLoginLayout"
-  ></vi-form>
+  <div class="login-forgot-password">
+    <sl-alert :open="state.showCustomError" variant="danger">
+      <sl-icon slot="icon" name="exclamation-circle-fill"></sl-icon>
+      {{ $t("login.login_error") }}
+    </sl-alert>
+    <vi-form
+      ref="ViFormRef"
+      module="user"
+      action="edit"
+      :fetch-url="state.currentUrl"
+      label="placeholder"
+      :layout="UserPasswordLoginLayout"
+    ></vi-form>
 
-  <sl-button
-    v-if="['no', 'loading', 'error'].includes(userStore.state['user.loggedin'])"
-    variant="primary"
-    type="submit"
-    @click="userLogin"
-  >
-    {{ $t("login.login") }}
-  </sl-button>
+    <sl-button
+      v-if="['no', 'loading', 'error'].includes(userStore.state['user.loggedin'])"
+      variant="primary"
+      type="submit"
+      class="login-forgot-password-submit"
+      @click="userLogin"
+    >
+      {{ $t("login.login") }}
+    </sl-button>
 
-  <sl-button v-else @click="logout">{{ $t("login.logout") }}</sl-button>
+    <sl-button v-else
+      class="login-forgot-password-logout"
+      @click="logout">{{ $t("login.logout") }}</sl-button>
 
-  <sl-bar style="width: 100%">
-    <span slot="right" class="forgot-pw" @click="PasswortRecover">{{ $t("login.lost_password") }}</span>
-  </sl-bar>
+    <sl-bar style="width: 100%">
+      <span slot="right" class="login-forgot-password-link" @click="PasswortRecover">{{ $t("login.lost_password") }}</span>
+    </sl-bar>
+  </div>
 </template>
 
 <script setup>
@@ -119,6 +124,13 @@ watch(
 </script>
 
 <style scoped>
+
+.login-forgot-password{
+  display: flex;
+  flex-direction: column;
+  gap: var(--sl-spacing-medium);
+}
+
 sl-button {
   width: 100%;
 
@@ -129,11 +141,7 @@ sl-button {
   }
 }
 
-sl-alert {
-  margin-bottom: 10px;
-}
-
-.forgot-pw {
+.login-forgot-password-link {
   cursor: pointer;
   font-size: 0.8rem;
   color: var(--sl-color-neutral-500);

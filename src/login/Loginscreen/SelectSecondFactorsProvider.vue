@@ -1,19 +1,22 @@
 <template>
-  <template v-if="!state.selection">
-    <template v-for="(provider, name, idx) in loginState.availableSecondfactors" :key="name">
-      <sl-button @click="providerSelection(name)">{{ provider["name"] }}</sl-button>
 
-      <div v-if="idx < Object.entries(loginState.availableSecondfactors).length - 1" class="or">
-        {{ $t("login.or") }}
-      </div>
+  <div class="login-2nd-factor-provider-list">
+    <template v-if="!state.selection">
+      <template v-for="(provider, name, idx) in loginState.availableSecondfactors" :key="name">
+        <sl-button @click="providerSelection(name)">{{ provider["name"] }}</sl-button>
+
+        <div v-if="idx < Object.entries(loginState.availableSecondfactors).length - 1" class="or">
+          {{ $t("login.or") }}
+        </div>
+      </template>
     </template>
-  </template>
 
-  <component
-    :is="providers[state.selection]"
-    v-else
-    :url="loginState.availableSecondfactors[state.selection]['target']"
-  ></component>
+    <component
+      :is="providers[state.selection]"
+      v-else
+      :url="loginState.availableSecondfactors[state.selection]['target']"
+    ></component>
+  </div>
 </template>
 <script setup>
 import providers from "./secondfactors/index.js"
