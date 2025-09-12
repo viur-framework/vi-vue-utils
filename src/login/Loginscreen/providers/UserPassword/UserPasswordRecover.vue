@@ -1,11 +1,11 @@
 <template>
   <sl-alert :open="state.showCustomError" variant="danger">
-    <sl-icon slot="icon" name="x-lg"></sl-icon>
+    <sl-icon slot="icon" name="exclamation-circle-fill"></sl-icon>
     {{ $t("login.recovery_error") }}
   </sl-alert>
 
   <sl-alert v-if="state.tooltip" open variant="info">
-    <sl-icon slot="icon" name="info"></sl-icon>
+    <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
     {{ $t(state.tooltip) }}
   </sl-alert>
   <vi-form

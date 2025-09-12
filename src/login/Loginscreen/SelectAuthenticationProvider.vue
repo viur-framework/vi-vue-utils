@@ -1,10 +1,12 @@
 <template>
-  <template v-for="(provider, name, idx) in loginState.availableProviders" :key="name">
-    <component :is="getWidget(name)" :name="name"></component>
-    <div v-if="idx < Object.entries(loginState.availableProviders).length - 1" class="or">
-      {{ $t("login.or") }}
-    </div>
-  </template>
+  <div class="login-auth-provider-list">
+    <template v-for="(provider, name, idx) in loginState.availableProviders" :key="name">
+      <component :is="getWidget(name)" :name="name"></component>
+      <div v-if="idx < Object.entries(loginState.availableProviders).length - 1" class="or">
+        {{ $t("login.or") }}
+      </div>
+    </template>
+  </div>
 </template>
 <script setup>
 import providers from "./providers/index.js"
@@ -25,5 +27,11 @@ function getWidget(name) {
   margin: 0 auto;
   text-align: center;
   font-size: 0.9em;
+}
+
+.login-auth-provider-list{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 </style>

@@ -1,13 +1,13 @@
 <template>
 
-  <div class="wrapper">
-    <div class="background-img">
+  <div class="login-wrapper">
+    <div class="login-background-img">
       <img :src="backgroundImage" />
     </div>
     <Loader v-if="state.waitFor === 'init' || (isRedirect && isUserLoggedIn)" class="loader" :logo="logo" :size="'7'" />
 
-    <div v-else class="card">
-      <img class="logo" :src="logo" />
+    <div v-else class="login-card">
+      <img class="login-logo" :src="logo" />
       <span
         v-if="
           !['select_authentication_provider', 'select_authentication_provider_success'].includes(state.currentaction)
@@ -42,9 +42,11 @@
         v-if="['pwrecover'].includes(state.currentaction) && state.formByPass"
       ></FormLogin>
 
-      <slot name="additional-actions"></slot>
+      <div class="login-additional-actions">
+        <slot name="additional-actions"></slot>
+      </div>
 
-      <div v-if="false && isUserLoading" class="overlay">
+      <div v-if="false && isUserLoading" class="login-overlay">
         <sl-spinner></sl-spinner>
       </div>
     </div>
@@ -151,7 +153,7 @@ defineExpose({
   justify-content: center;
 }
 
-.wrapper {
+.login-wrapper {
   height: 100%;
   display: flex;
   justify-content: center;
@@ -159,21 +161,21 @@ defineExpose({
   background-position: center center;
   background-size: cover;
   overflow: scroll;
+
+  &:before {
+    content: "";
+    opacity: 0.7;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background: linear-gradient(to top left, var(--sl-color-primary-700), var(--sl-color-primary-500));
+  }
 }
 
-.wrapper::before {
-  content: "";
-  opacity: 0.7;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  background: linear-gradient(to top left, var(--sl-color-primary-700), var(--sl-color-primary-500));
-}
-
-.background-img {
+.login-background-img {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -188,7 +190,7 @@ defineExpose({
   }
 }
 
-.logo {
+.login-logo {
   height: 160px;
   padding: var(--sl-spacing-medium);
   margin-bottom: var(--sl-spacing-medium);
@@ -201,7 +203,7 @@ defineExpose({
   }
 }
 
-.card {
+.login-card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -237,7 +239,8 @@ defineExpose({
     color: var(--sl-color-neutral-700);
   }
 }
-.overlay {
+
+.login-overlay {
   opacity: 0.8;
   position: absolute;
   width: 100%;
@@ -251,6 +254,15 @@ defineExpose({
 
   & sl-spinner {
     font-size: 5rem;
+  }
+}
+
+.login-additional-actions{
+  display: flex;
+  flex-direction: column;
+
+  &:has(*){
+    margin-top: var(--sl-spacing-large);
   }
 }
 </style>
