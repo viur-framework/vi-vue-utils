@@ -158,9 +158,7 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
-  background-position: center center;
-  background-size: cover;
-  overflow: scroll;
+  padding: var(--sl-spacing-large);
 
   &:before {
     content: "";
@@ -191,7 +189,9 @@ defineExpose({
 }
 
 .login-logo {
+  display: flex;
   height: 160px;
+  min-height: 160px;
   padding: var(--sl-spacing-medium);
   margin-bottom: var(--sl-spacing-medium);
   align-self: center;
@@ -216,6 +216,8 @@ defineExpose({
   width: 30vw;
   padding: var(--sl-spacing-large);
   border-radius: var(--sl-border-radius-medium);
+  overflow-y: auto;
+  max-height: 100%;
 
   @media (max-width: 530px) {
     padding: var(--sl-spacing-medium);
