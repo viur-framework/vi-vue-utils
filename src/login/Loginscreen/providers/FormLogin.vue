@@ -1,7 +1,7 @@
 <template>
   <sl-alert :open="state.showCustomError" variant="danger" style="margin-bottom: 20px">
     <sl-icon slot="icon" name="x-lg"></sl-icon>
-    {{ $t("login.error") }}
+    {{ $t("viur.core.login.error") }}
   </sl-alert>
 
   <sl-alert v-if="state.tooltip" open variant="info">
