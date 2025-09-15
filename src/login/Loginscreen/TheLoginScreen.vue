@@ -1,5 +1,4 @@
 <template>
-
   <div class="wrapper">
     <div class="background-img">
       <img :src="backgroundImage" />
@@ -15,11 +14,11 @@
         class="back"
         @click="state.currentaction = 'select_authentication_provider'"
       >
-        {{ $t("login.back") }}
+        {{ $t("viur.core.login.back") }}
       </span>
       <sl-alert v-if="isUserLoading || state.loading" variant="info" open>
         <sl-spinner slot="icon"></sl-spinner>
-        {{ $t("login.waiting") }}
+        {{ $t("viur.core.login.waiting") }}
       </sl-alert>
 
       <!-- select provider component -->
@@ -29,7 +28,10 @@
 
       <!-- user login or other login methods -->
       <FormLogin
-        v-if="['select_authentication_provider_success', 'pwrecover_success'].includes(state.currentaction) && state.formByPass"
+        v-if="
+          ['select_authentication_provider_success', 'pwrecover_success'].includes(state.currentaction) &&
+          state.formByPass
+        "
       ></FormLogin>
 
       <!-- second factor -->
@@ -38,9 +40,7 @@
       ></SelectSecondFactorsProvider>
 
       <!-- bad hack for pw recovery process to reactively rerender the formlogin -->
-      <FormLogin
-        v-if="['pwrecover'].includes(state.currentaction) && state.formByPass"
-      ></FormLogin>
+      <FormLogin v-if="['pwrecover'].includes(state.currentaction) && state.formByPass"></FormLogin>
 
       <slot name="additional-actions"></slot>
 
@@ -60,8 +60,8 @@ import { getBoneWidget } from "../../bones/edit/index"
 import { Request } from "../../utils/request"
 import SelectAuthenticationProvider from "./SelectAuthenticationProvider.vue"
 import SelectSecondFactorsProvider from "./SelectSecondFactorsProvider.vue"
-import UserPasswordRecover from "./providers/UserPassword/UserPasswordRecover.vue"
 import FormLogin from "./providers/FormLogin.vue"
+import UserPasswordRecover from "./providers/UserPassword/UserPasswordRecover.vue"
 
 const props = defineProps({
   username: { type: String, default: "" },
@@ -120,7 +120,7 @@ onBeforeMount(async () => {
     await userStore.updateUser()
   } catch (e) {
     //Load login data only when the user is not logged in
-    const loginResp = await Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`);
+    const loginResp = await Request.get(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/login`)
     const data = await loginResp.json()
     state.currentaction = data["action"]
     state.defaultProvider = data["values"]["provider"]
@@ -133,7 +133,7 @@ onBeforeMount(async () => {
       const match = k.match(/auth_(.+?)\/login/)
 
       const extracted = match ? match[1] : null
-      providers[extracted] = {target: k, name: v}
+      providers[extracted] = { target: k, name: v }
     }
 
     state.availableProviders = providers
@@ -141,7 +141,7 @@ onBeforeMount(async () => {
 })
 
 defineExpose({
-  setCurrentAction
+  setCurrentAction,
 })
 </script>
 
