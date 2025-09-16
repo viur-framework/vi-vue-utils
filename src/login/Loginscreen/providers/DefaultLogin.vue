@@ -1,5 +1,5 @@
 <template>
-  <sl-button class="more-login-btn" @click="buttonAction">
+  <sl-button class="more-login-btn" @click="buttonAction(loginState.availableProviders[name].target)">
     <sl-icon slot="prefix" library="bootstrap" name="google" class="google-icon"></sl-icon>
     {{ loginState["availableProviders"][name]["name"] }}
   </sl-button>
@@ -18,8 +18,18 @@ const props = defineProps({
   },
 })
 
-function buttonAction() {
-  window.location.href = Request.buildUrl(loginState["availableProviders"][props.name]["target"])
+async function buttonAction(ev) {
+  try {
+    const resp = await Request.securePost("/json/user/select_authentication_provider/" + ev)
+    if(!resp.ok) {
+      throw new Error("Fehler")
+    }
+    let data = await resp.json()
+    loginState.currentaction = data.action
+    loginState.formByPass = data.next_url
+  } catch(err) {
+    console.log(err)
+  }
 }
 </script>
 
