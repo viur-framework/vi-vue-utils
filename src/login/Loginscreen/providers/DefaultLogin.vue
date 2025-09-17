@@ -29,6 +29,10 @@ async function buttonAction(ev) {
     console.log("response ist hier", resp)
     let data = await resp.json()
 
+    if (ev.startsWith("https://")) {
+      window.location.href = data.next_url
+    }
+
     loginState.currentaction = data.action
     loginState.formByPass = data.next_url
   } catch (err) {
