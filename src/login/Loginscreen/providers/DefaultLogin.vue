@@ -20,8 +20,10 @@ const props = defineProps({
 
 async function buttonAction(ev) {
   try {
-    const resp = await Request.securePost(`/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/select_authentication_provider/${ev}`)
-    if(!resp.ok) {
+    const resp = await Request.securePost(
+      `/${import.meta.env.VITE_DEFAULT_RENDERER || "json"}/user/select_authentication_provider/${ev}`
+    )
+    if (!resp.ok) {
       throw new Error("Fehler")
     }
     console.log("response ist hier", resp)
@@ -29,7 +31,7 @@ async function buttonAction(ev) {
 
     loginState.currentaction = data.action
     loginState.formByPass = data.next_url
-  } catch(err) {
+  } catch (err) {
     console.log(err)
   }
 }
