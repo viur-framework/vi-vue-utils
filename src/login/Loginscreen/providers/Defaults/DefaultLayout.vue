@@ -1,5 +1,5 @@
 <template>
-  <div v-if="Object.keys(formState.structure).length > 0" class="wrapper">
+  <div v-if="Object.keys(formState.structure).length > 0" class="default-login-wrapper">
     <template v-for="(boneValue, boneName) in formState.skel" :key="boneName">
       <template v-if="formState.structure?.[boneName] && ensureValidBones(formState.structure[boneName]['type'])">
         <slot
@@ -37,5 +37,9 @@ function ensureValidBones(type) {
 <style scoped>
 :deep(.bone-wrapper) {
   margin: 0;
+}
+
+:deep(.widget-bone[type="password"]){
+  margin-bottom: 0;
 }
 </style>

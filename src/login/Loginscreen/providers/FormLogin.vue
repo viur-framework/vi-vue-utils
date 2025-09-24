@@ -1,35 +1,37 @@
 <template>
-  <sl-alert :open="state.showCustomError" variant="danger" style="margin-bottom: 20px">
-    <sl-icon slot="icon" name="x-lg"></sl-icon>
-    {{ $t("viur.core.login.error") }}
-  </sl-alert>
+  <div class="login-basic-form">
+    <sl-alert :open="state.showCustomError" variant="danger" class="login-basic-error">
+      <sl-icon slot="icon" name="exclamation-circle-fill"></sl-icon>
+      {{ $t("viur.core.login.error") }}
+    </sl-alert>
 
-  <sl-alert v-if="state.tooltip" open variant="info">
-    <sl-icon slot="icon" name="info"></sl-icon>
-    {{ $t(state.tooltip) }}
-  </sl-alert>
+    <sl-alert v-if="state.tooltip" open variant="info" class="login-basic-info">
+      <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
+      {{ $t(state.tooltip) }}
+    </sl-alert>
 
-  <vi-form
-    v-if="state.currentUrl"
-    ref="ViFormRef"
-    module="user"
-    action="edit"
-    :fetch-url="state.currentUrl"
-    label="placeholder"
-    :layout="DefaultLayout"
-    :allow-enter="true"
-    @keypress-enter="buttonAction"
-  ></vi-form>
+    <vi-form
+      v-if="state.currentUrl"
+      ref="ViFormRef"
+      module="user"
+      action="edit"
+      :fetch-url="state.currentUrl"
+      label="placeholder"
+      :layout="DefaultLayout"
+      :allow-enter="true"
+      @keypress-enter="buttonAction"
+    ></vi-form>
 
-  <sl-button
-    v-if="['no', 'loading', 'error'].includes(userStore.state['user.loggedin'])"
-    style="margin-top: 20px"
-    variant="primary"
-    type="submit"
-    @click="buttonAction"
-  >
-    {{ $t(`viur.core.modules.user.btn.${getActionNameFromUrl(loginState.formByPass)}`) }}
-  </sl-button>
+    <sl-button
+      v-if="['no', 'loading', 'error'].includes(userStore.state['user.loggedin'])"
+      variant="primary"
+      type="submit"
+      class="login-basic-sumbit-btn"
+      @click="buttonAction"
+    >
+      {{ $t(`viur.core.modules.user.btn.${getActionNameFromUrl(loginState.formByPass)}`) }}
+    </sl-button>
+  </div>
 </template>
 
 <script setup>
@@ -126,3 +128,10 @@ watch(
   }
 )
 </script>
+<style>
+.login-basic-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sl-spacing-medium);
+}
+</style>

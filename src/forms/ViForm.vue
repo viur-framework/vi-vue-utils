@@ -7,7 +7,7 @@
           v-if="widget !== undefined"
           v-show="visible === undefined ? state.structure[boneName]['visible'] : visible"
           :name="boneName"
-          :autofocus="true"
+          :autofocus="false"
           :structure="state.structure"
           :skel="state.skel"
           :errors="state.errors"
