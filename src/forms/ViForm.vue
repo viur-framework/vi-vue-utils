@@ -7,7 +7,7 @@
           v-if="widget !== undefined"
           v-show="visible === undefined ? state.structure[boneName]['visible'] : visible"
           :name="boneName"
-          :autofocus="false"
+          :autofocus="autofocus"
           :structure="state.structure"
           :skel="state.skel"
           :errors="state.errors"
@@ -129,6 +129,10 @@ const props = defineProps({
   allowEnter: {
     type: Boolean,
     default: false,
+  },
+  autofocus: {
+    default: false,
+    type: Boolean,
   },
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []

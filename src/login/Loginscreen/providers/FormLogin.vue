@@ -15,6 +15,7 @@
       ref="ViFormRef"
       module="user"
       action="edit"
+      :autofocus="true"
       :fetch-url="state.currentUrl"
       label="placeholder"
       :layout="DefaultLayout"
