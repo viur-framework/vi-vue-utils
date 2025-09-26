@@ -67,4 +67,7 @@ export default {
     recovery_start: "Passwort zurücksetzen",
     recovery_error: "Ein Fehler beim zurücksetzen des Passwortes ist aufgetreten.",
   },
+  "viur.core.login.error": "Benutzername oder Passwort falsch.",
+  "viur.core.login.waiting": "lade...",
+  "viur.core.login.back": "zurück",
 }
