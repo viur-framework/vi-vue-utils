@@ -525,6 +525,83 @@ export default class Request {
         })
     })
   }
+
+  static skelDataToFormData(skel, structure) {
+    let formdata = []
+
+    function handleEntry(result, currentFieldName, bone, val) {
+      if (bone["type"].startsWith("record")) {
+        let struct = normalizeStructure(bone["using"])
+        for (const [_fieldname, _bone] of Object.entries(struct)) {
+          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val?.[_fieldname]))
+        }
+      } else if (val === Object(val) && bone["using"]) {
+        //recusive call for nested data
+        if (val["dest"]?.["key"]) {
+          let struct = normalizeStructure(bone["using"])
+          for (const [_fieldname, _bone] of Object.entries(struct)) {
+            result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
+          }
+          result.push({ [`${currentFieldName}.key`]: val["dest"]["key"] })
+        } else {
+          result.push({ [`${currentFieldName}`]: null })
+        }
+      } else if (bone["type"].startsWith("spatial") && val) {
+        //spatialbones
+        result.push({ [currentFieldName + ".lat"]: val[0] })
+        result.push({ [currentFieldName + ".lng"]: val[1] })
+      } else if (bone["type"].startsWith("raw.json") && val) {
+        result.push({ [currentFieldName]: JSON.stringify(val) })
+      } else if (val === Object(val)) {
+        //normal relations
+        result.push({ [currentFieldName]: val["dest"]?.["key"] || null })
+      } else {
+        //everything else
+        result.push({ [currentFieldName]: val })
+      }
+      return result
+    }
+
+    function boneToForm(fieldname, bone, value) {
+      let result = []
+      //only record and relational bones get indexed fields
+      let indexBone = bone["type"].startsWith("record")
+      let languages = bone["languages"] || ["none"]
+      let languageValue = value
+      for (const lang of languages) {
+        let currentFieldName = fieldname
+        if (lang !== "none") {
+          currentFieldName += `.${lang}` //append lang
+          if (languageValue) value = languageValue[lang]
+        }
+
+        if (bone["multiple"]) {
+          if (!value) value = []
+          for (const [idx, val] of value.entries()) {
+            let currentFieldnameMultiple = currentFieldName
+
+            if (indexBone || val?.["rel"] || (bone["using"] && val?.["rel"] !== null)) {
+              currentFieldnameMultiple = `${currentFieldName}.${idx}` //append idx
+            }
+            result = handleEntry(result, currentFieldnameMultiple, bone, val)
+          }
+          if (value.length === 0) {
+            result.push({ [currentFieldName]: null }) //send empty multiple fields
+          }
+        } else {
+          result = handleEntry(result, currentFieldName, bone, value)
+        }
+      }
+      return result
+    }
+
+    for (const [fieldname, bone] of Object.entries(structure)) {
+      formdata.push(boneToForm(fieldname, bone, skel[fieldname]))
+    }
+
+    formdata = formdata.flat(10)
+    return formdata
+  }
 }
 
 // TODO CACHING LOGIC
