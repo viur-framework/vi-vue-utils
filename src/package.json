@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "3.1.22",
+  "version": "3.2.0-rc1",
   "type": "module",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
