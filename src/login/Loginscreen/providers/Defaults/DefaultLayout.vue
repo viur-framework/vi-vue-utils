@@ -16,12 +16,15 @@
 import { inject } from "vue"
 import { getBoneWidget } from "../../../../bones/edit"
 import LoginPasswordBone from "../UserPassword/LoginPasswordBone.vue"
+import LoginUsernameBone from "../UserPassword/LoginUsernameBone.vue"
 
 const formState = inject("formState")
 const formUpdate = inject("formUpdate")
 function getWidget(boneStructure) {
   if (boneStructure["type"] === "password" && !boneStructure["tests"].length) {
     return LoginPasswordBone
+  } else if (boneStructure["type"] === "str.email") {
+    return LoginUsernameBone
   }
   return getBoneWidget(boneStructure["type"])
 }

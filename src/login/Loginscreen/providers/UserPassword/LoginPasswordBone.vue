@@ -14,6 +14,7 @@
     :placeholder="boneState.label === 'placeholder' ? boneState?.bonestructure?.descr : undefined"
     :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
     @sl-change="changeEvent"
+    unwrap
   ></sl-input>
 </template>
 

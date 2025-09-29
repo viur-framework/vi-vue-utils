@@ -14,6 +14,7 @@
     :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
     autocomplete="username"
     @sl-change="changeEvent"
+    unwrap
   ></sl-input>
 </template>
 
