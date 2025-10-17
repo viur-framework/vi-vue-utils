@@ -15,6 +15,7 @@
           :default-language="defaultLanguage"
           :label="label === undefined ? state.label : label"
           :error-style="errorStyle"
+          :readonly="true"
           @keypress.enter="handlePressEnter($event, boneName)"
           @change-internal="formUpdate"
         ></bone>
@@ -134,6 +135,10 @@ const props = defineProps({
     default: false,
     type: Boolean,
   },
+  readonly: {
+    type: [Boolean, null],
+    default: null,
+  }
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
