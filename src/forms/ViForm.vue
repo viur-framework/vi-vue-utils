@@ -15,7 +15,7 @@
           :default-language="defaultLanguage"
           :label="label === undefined ? state.label : label"
           :error-style="errorStyle"
-          :readonly="true"
+          :readonly="readonly"
           @keypress.enter="handlePressEnter($event, boneName)"
           @change-internal="formUpdate"
         ></bone>
