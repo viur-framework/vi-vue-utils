@@ -138,7 +138,11 @@ const props = defineProps({
   readonly: {
     type: [Boolean, null],
     default: null,
-  }
+  },
+  debug: {
+    type: Boolean,
+    default: false,
+  },
   // add errors, from the outside (maybe relevant if form is build with slots)
   // errors: []
 })
@@ -170,6 +174,7 @@ const state = reactive({
     return validstate
   }),
   viformelement: ref(null),
+  debug: computed(() => props.debug),
 })
 provide("formState", state)
 if (!props.internal) {

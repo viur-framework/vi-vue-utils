@@ -1,6 +1,11 @@
 <template>
   <label class="bone-name label-bone">
     <slot></slot>
+    <!--<sl-tooltip>
+      <slot></slot>
+      <div slot="content">{{ name }}</div>
+    </sl-tooltip>-->
+
     <template v-if="false">
       <div class="debug" @click="state.debug = !state.debug">
         <sl-icon name="bug"></sl-icon>
