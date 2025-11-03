@@ -176,6 +176,7 @@ const state = reactive({
   }),
   viformelement: ref(null),
   debug: computed(() => props.debug),
+  readonly: computed(() => props.readonly),
 })
 provide("formState", state)
 if (!props.internal) {

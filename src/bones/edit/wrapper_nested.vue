@@ -13,6 +13,7 @@
       :collapsed-categories="
         state.isLastEntry ? [] : bone?.params?.['collapsedCategories'] ? bone?.params?.['collapsedCategories'] : []
       "
+      :readonly="mainformState.readonly"
       @change="changeEvent"
     ></vi-form>
   </div>
