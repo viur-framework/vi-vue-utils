@@ -16,6 +16,7 @@
           :label="label === undefined ? state.label : label"
           :error-style="errorStyle"
           :readonly="readonly"
+          :debug="state.debug"
           @keypress.enter="handlePressEnter($event, boneName)"
           @change-internal="formUpdate"
         ></bone>

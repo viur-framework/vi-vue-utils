@@ -10,7 +10,7 @@
       'wrapper-bone-required': state.required,
     }"
   >
-    <bone-label v-if="!['hide', 'placeholder'].includes(label)" :name="name">
+    <bone-label v-if="!['hide', 'placeholder'].includes(label)" :name="name" :debug="state.debug">
       <span :class="{ required: state.required }">{{ state.bonestructure["descr"] }}</span>
       <span v-if="state.required" class="required">*</span>
       <sl-tooltip
@@ -292,6 +292,10 @@ const props = defineProps({
       return ["default", "decent"].includes(value)
     },
   },
+  debug: {
+    type: Boolean,
+    default: false,
+  },
 })
 const state = reactive({
   boneactions: computed(() => props.boneactions),
@@ -407,6 +411,7 @@ const state = reactive({
   }),
   defaultLanguage: computed(() => props.defaultLanguage),
   currentLanguage: null,
+  debug: computed(() => props.debug),
 })
 provide("boneState", state)
 

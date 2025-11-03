@@ -1,23 +1,23 @@
 <template>
   <label class="bone-name label-bone">
-    <slot></slot>
-    <!--<sl-tooltip>
+    <slot v-if="!debug"></slot>
+    <sl-tooltip v-else>
       <slot></slot>
       <div slot="content">{{ name }}</div>
-    </sl-tooltip>-->
-
-    <template v-if="false">
+    </sl-tooltip>
+    <template v-if="debug">
       <div class="debug" @click="state.debug = !state.debug">
         <sl-icon name="bug"></sl-icon>
       </div>
     </template>
   </label>
-  <div v-if="state.debug">
-    <div class="bone">{{ name }}</div>
+
+  <sl-dialog v-if="state.debug" open :label="name" @sl-after-hide="state.debug = false">
     <pre>
-    {{ boneState }}
-    </pre>
-  </div>
+        {{ boneState }}
+      </pre
+    >
+  </sl-dialog>
 </template>
 
 <script setup>
@@ -29,6 +29,10 @@ const props = defineProps({
   lang: String,
   readonly: Boolean,
   params: Object,
+  debug: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(["change", "handleClick"])
