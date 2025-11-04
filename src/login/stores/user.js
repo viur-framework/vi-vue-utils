@@ -269,6 +269,14 @@ export const useUserStore = defineStore("user", () => {
         resetLoginInformation()
         Request.resetState()
         router.push("/")
+        try {
+          const data = await resp.json();
+          if (data["next_url"].startsWith("https://")) {
+            window.location.href = Request.buildUrl(data["next_url"])
+          }
+        } catch (e) {
+          console.error("No json return")
+        }
       })
       .catch(async (error) => {
         Request.resetState()
