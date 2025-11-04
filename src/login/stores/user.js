@@ -35,7 +35,7 @@ export const useUserStore = defineStore("user", () => {
     "user.login.secound_factor_errors": [],
     renderErrorMsg: "",
     currentLoginMask: "",
-    renderer: import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+    renderer: computed(() => import.meta?.env?.VITE_DEFAULT_RENDERER || "json"),
   })
 
   function resetLoginInformation() {
