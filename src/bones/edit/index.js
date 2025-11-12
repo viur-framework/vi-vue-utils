@@ -15,6 +15,7 @@ import jsonBone from "./default/jsonBone.vue"
 import fileBone from "./default/fileBone.vue"
 import textBone from "./default/textBone.vue"
 import spatialBone from "./default/spatialBone.vue"
+import codeBone from "./default/codeBone.vue"
 
 import booleanBoneSelect from "./default/booleanBoneSelect.vue"
 import booleanBoneChoose from "./default/booleanBoneChoose.vue"
@@ -53,6 +54,7 @@ export const useBoneStore = defineStore("boneStore", () => {
       booleanBoneChoose,
       selectBoneChoose,
       relationalBoneSelect,
+      codeBone,
     }),
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
@@ -126,6 +128,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return relationalBone
     } else if (boneType === "raw.json") {
       return jsonBone
+    } else if (boneType.startsWith("raw.code.")) {
+      return codeBone
     } else if (boneType === "color" || boneType.startsWith("color.")) {
       return colorBone
     } else if (boneType === "text" || boneType.startsWith("text.")) {

@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/viur-framework/viur-vue-utils#readme",
   "dependencies": {
+    "codemirror": "^6.0.1",
+    "@codemirror/language-data": "^6.5.2",
     "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@vueuse/core": "^12.4.0",
     "ckeditor5": "^45.2.0",
