@@ -36,7 +36,6 @@
     <sl-button variant="success" outline size="small" :disabled="!state.nextlang" @click="nextlang">
       Übernehmen und nächste leere Sprache
     </sl-button>
-
     <sl-button variant="success" size="small" @click="ApplySelection">
       Ziel für {{ state.currentLang }} übernehmen
     </sl-button>
@@ -109,6 +108,9 @@ function getValue(lang = null) {
 onMounted(() => {
   state.value_de = getValue("de")
   state.currentLang = state.nextlang
+  if (state.nextlang !== "de"){
+    state.currentLang = props.params.boneState.currentLanguage
+  }
   state.result = getValue(state.currentLang)
 })
 
