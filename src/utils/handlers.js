@@ -125,7 +125,7 @@ export function ListRequest(
                 state.structure = data["structure"] ? data["structure"] : state.structure
               } else {
                 // build array object
-                state.structure_object = data["structure"] ? data["structure"] : state.structure
+                state.structure_object = data["structure"] ? data["structure"] : state.structure_object
                 state.structure = Object.entries(data["structure"] ? data["structure"] : state.structure)
               }
             }
