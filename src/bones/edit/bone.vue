@@ -697,6 +697,10 @@ watch(
   .multiple-bone {
     margin-bottom: var(--sl-spacing-x-small);
 
+    &:first-child{
+        padding-top:var(--sl-spacing-x-small);
+    }
+
     & .bone-wrapper {
       margin-bottom: var(--sl-spacing-x-small);
     }

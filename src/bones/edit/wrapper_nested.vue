@@ -10,6 +10,7 @@
       :skel="value"
       :structure="bone['using']"
       :renderer="state.renderer"
+      :use-categories="!bone?.params?.['disableCategories']"
       :collapsed-categories="
         state.isLastEntry ? [] : bone?.params?.['collapsedCategories'] ? bone?.params?.['collapsedCategories'] : []
       "
