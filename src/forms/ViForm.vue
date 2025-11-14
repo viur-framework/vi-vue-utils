@@ -90,6 +90,10 @@ const props = defineProps({
     type: Array,
     default: [],
   },
+  categoryDefaultname: {
+    type: String,
+    default: "Allgemein",
+  },
   sendReadOnly: {
     type: Boolean,
     default: false,
@@ -177,6 +181,7 @@ const state = reactive({
   viformelement: ref(null),
   debug: computed(() => props.debug),
   readonly: computed(() => props.readonly),
+  categoryDefaultname: computed(() => props.categoryDefaultname),
 })
 provide("formState", state)
 if (!props.internal) {

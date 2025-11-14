@@ -4,13 +4,15 @@
   </sl-alert>
   <div v-else class="form">
     <sl-spinner v-if="state.updating" style="position: absolute; top: 20px; left: -10px"></sl-spinner>
+
     <vi-form
       ref="skelRef"
       :internal="mainformState"
       :skel="value"
       :structure="bone['using']"
       :renderer="state.renderer"
-      :use-categories="!bone?.params?.['disableCategories']"
+      :use-categories="bone?.params['categoryDefaultname'] !== null"
+      :category-defaultname="bone?.params?.['categoryDefaultname']"
       :collapsed-categories="
         state.isLastEntry ? [] : bone?.params?.['collapsedCategories'] ? bone?.params?.['collapsedCategories'] : []
       "

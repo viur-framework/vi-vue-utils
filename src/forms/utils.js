@@ -1,6 +1,7 @@
 import Request from "../utils/request"
 import Logics from "logics-js"
 import { watch, inject, toRaw, reactive } from "vue"
+import Utils from "../bones/utils"
 
 export function useFormUtils(props, state) {
   function buildRequestUrl() {
@@ -212,8 +213,11 @@ export function useFormUtils(props, state) {
     if (!state.structure) {
       state.structure = {}
     }
-
-    let categories = { default: { name: "Allgemein", bones: [], visible: false, open: true } }
+    let catname = state.categoryDefaultname
+    if (!!catname && state.categoryDefaultname.includes("$(")) {
+      catname = Utils.formatString(catname, state.skel)
+    }
+    let categories = { default: { name: catname, bones: [], visible: false, open: true } }
 
     for (const [boneName, bone] of Object.entries(state.structure)) {
       if (props.bones.length > 0) {
