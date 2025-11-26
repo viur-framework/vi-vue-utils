@@ -12,7 +12,7 @@
     "
     :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
-    @sl-change="changeEvent"
+    @sl-input="changeEvent"
   ></sl-input>
 </template>
 
@@ -48,6 +48,7 @@ const state = reactive({
 const emailBone = ref(null)
 
 function changeEvent(event) {
+  console.log(event.target.value)
   emit("change", props.name, event.target.value, props.lang, props.index)
 }
 
