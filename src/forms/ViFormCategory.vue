@@ -8,7 +8,7 @@
     v-show="visible"
     class="viform-category"
     :class="[`viform-category-${encodeURI(name.toLowerCase())}`]"
-    :summary="name"
+    :summary="setCategoryName()"
     :open="open"
   >
     <slot></slot>
@@ -43,6 +43,10 @@ const props = defineProps({
     default: false,
   },
 })
+
+const setCategoryName = () => {
+  return props.name ? props.name.replace(/<[^>]*>/g, '') : props.name
+}
 </script>
 
 <style scoped>
