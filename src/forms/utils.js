@@ -213,10 +213,12 @@ export function useFormUtils(props, state) {
     if (!state.structure) {
       state.structure = {}
     }
+
     let catname = state.categoryDefaultname
     if (!!catname && state.categoryDefaultname.includes("$(")) {
-      catname = Utils.formatString(catname, state.skel)
+      catname = Utils.stripHtml(Utils.formatString(catname, state.skel))
     }
+
     let categories = { default: { name: catname, bones: [], visible: false, open: true } }
 
     for (const [boneName, bone] of Object.entries(state.structure)) {

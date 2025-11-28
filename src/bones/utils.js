@@ -11,6 +11,12 @@ export default class Utils {
     }
   }
 
+  static stripHtml(html) {
+    const div = document.createElement("div")
+    div.innerHTML = html
+    return div.textContent || div.innerText || ""
+  }
+
   static unescape(value) {
     if (!value) value = ""
     return String(value)
@@ -87,6 +93,9 @@ export default class Utils {
       let finalstr = formatstr
       for (let pathstr of pathlist) {
         let aval = readValue(pathstr, avalue)
+        if (typeof aval !== "string" || aval === "-") {
+          aval = "Allgemein"
+        }
         aval = Utils.unescape(aval)
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)
       }
