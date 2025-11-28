@@ -13,6 +13,7 @@
     :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
     @sl-change="changeEvent"
+    @keyup="changeEvent"
   ></sl-input>
 </template>
 

@@ -12,7 +12,7 @@
       :structure="bone['using']"
       :renderer="state.renderer"
       :use-categories="bone?.params['categoryDefaultname'] !== null"
-      :category-defaultname="bone?.params?.['categoryDefaultname']"
+      :category-defaultname="nestedCategory()"
       :collapsed-categories="
         state.isLastEntry ? [] : bone?.params?.['collapsedCategories'] ? bone?.params?.['collapsedCategories'] : []
       "
@@ -97,6 +97,14 @@ onMounted(() => {
 
   emit("change", props.name, val, props.lang, props.index) //init
 })
+function nestedCategory() {
+  if (props.bone?.params?.["categoryDefaultname"]) {
+    return props.bone.params["categoryDefaultname"]
+  } else if (props.bone?.format) {
+    return props.bone.format
+  }
+  return undefined
+}
 </script>
 
 <style scoped>
