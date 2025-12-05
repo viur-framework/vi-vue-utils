@@ -177,17 +177,22 @@ export function useFormUtils(props, state) {
     if (additionalData) {
       data = { ...data, ...additionalData } //inject data like contexts
     }
+    state.failed = null
+    return request(url, { dataObj: data, headers: headers })
+      .then(async (resp) => {
+        let data = await resp.clone().json()
+        initForm(data["values"], data["structure"], state.values)
 
-    return request(url, { dataObj: data, headers: headers }).then(async (resp) => {
-      let data = await resp.clone().json()
-      initForm(data["values"], data["structure"], state.values)
-
-      state.errors = data["errors"]
-      state.actionparams = data["params"]
-      state.actionname = data["action"]
-      state.loading = false
-      return resp
-    })
+        state.errors = data["errors"]
+        state.actionparams = data["params"]
+        state.actionname = data["action"]
+        state.loading = false
+        return resp
+      })
+      .catch(async (error) => {
+        state.failed = error
+        throw error
+      })
   }
 
   function reload() {

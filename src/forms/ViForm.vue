@@ -31,7 +31,7 @@ import { reactive, watch, onBeforeMount, computed, provide, ref } from "vue"
 import { useDebounceFn } from "@vueuse/core"
 import LayoutCategory from "./layouts/LayoutCategory.vue"
 
-const emit = defineEmits(["change", "keypress-enter"])
+const emit = defineEmits(["change", "keypress-enter", "failed"])
 const props = defineProps({
   //modulename
   module: {
@@ -182,6 +182,7 @@ const state = reactive({
   debug: computed(() => props.debug),
   readonly: computed(() => props.readonly),
   categoryDefaultname: computed(() => props.categoryDefaultname),
+  failed: null,
 })
 provide("formState", state)
 if (!props.internal) {
@@ -197,6 +198,13 @@ const formUpdateEvent = useDebounceFn((data) => {
 onBeforeMount(() => {
   reload()
 })
+
+watch(
+  () => state.failed,
+  (newVal, oldVal) => {
+    emit("failed", state.failed)
+  }
+)
 
 watch(
   () => props.skel,
