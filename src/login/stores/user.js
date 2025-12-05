@@ -270,7 +270,7 @@ export const useUserStore = defineStore("user", () => {
         Request.resetState()
         router.push("/")
         try {
-          const data = await resp.json();
+          const data = await resp.json()
           if (data["next_url"].startsWith("https://")) {
             window.location.href = Request.buildUrl(data["next_url"])
           }
@@ -364,9 +364,9 @@ export const useUserStore = defineStore("user", () => {
       Request.get(`/${state.renderer}/user/view/self`, { cached: true, cacheTime: 1000 * 60 * 5 })
         .then(async (resp) => {
           let data = await resp.json()
-          state["user.loggedin"] = "yes"
           state["user"] = data.values
           state["user.login.type"] = "user"
+          state["user.loggedin"] = "yes"
           getRequestStore().state.amount = 30
           if (data.values["admin_config"]) {
             const obj = data.values["admin_config"]
@@ -489,7 +489,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   const userAccess = computed(() => {
-    if (!state.user) return []
+    if (!state.user || state.user["access"] === null) return []
 
     return state.user["access"]
   })
