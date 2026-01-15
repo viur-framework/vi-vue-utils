@@ -33,7 +33,7 @@ export default class Utils {
       .replace(/&#061;/g, "=")
   }
 
-  static formatString(formatstr, boneValue) {
+  static formatString(formatstr, boneValue, fallback = "-") {
     function getpathListFromFormatstring(formatstr) {
       let output = []
       let formatList = []
@@ -94,7 +94,7 @@ export default class Utils {
       for (let pathstr of pathlist) {
         let aval = readValue(pathstr, avalue)
         if (typeof aval !== "string" || aval === "-") {
-          aval = "Allgemein"
+          aval = fallback
         }
         aval = Utils.unescape(aval)
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)

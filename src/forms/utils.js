@@ -221,7 +221,7 @@ export function useFormUtils(props, state) {
 
     let catname = state.categoryDefaultname
     if (!!catname && state.categoryDefaultname.includes("$(")) {
-      catname = Utils.stripHtml(Utils.formatString(catname, state.skel))
+      catname = Utils.stripHtml(Utils.formatString(catname, state.skel, "Allgemein"))
     }
 
     let categories = { default: { name: catname, bones: [], visible: false, open: true } }
