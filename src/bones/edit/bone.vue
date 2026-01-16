@@ -547,6 +547,11 @@ watch(
     state.errors = props.errors
   }
 )
+
+watch(()=>state.defaultLanguage,(newVal, oldVal)=>{
+  state.currentLanguage = newVal
+})
+
 </script>
 
 <style scoped>
