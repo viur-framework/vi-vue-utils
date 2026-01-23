@@ -66,8 +66,11 @@ export default {
     back: "Back",
     recovery_start: "Reset password",
     recovery_error: "An error occurred while resetting the password.",
+    password: "Password",
+    email: "E-Mail",
   },
   "viur.core.login.error": "Incorrect username or password.",
   "viur.core.login.waiting": "loading...",
   "viur.core.login.back": "Back",
+  "viur.core.modules.user.btn.send": "Send",
 }

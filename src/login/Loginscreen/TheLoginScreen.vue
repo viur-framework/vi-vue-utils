@@ -40,7 +40,7 @@
       ></SelectSecondFactorsProvider>
 
       <!-- bad hack for pw recovery process to reactively rerender the formlogin -->
-      <FormLogin v-if="['pwrecover'].includes(state.currentaction) && state.formByPass"></FormLogin>
+      <FormLogin v-if="['pwrecover'].includes(state.currentaction)"></FormLogin>
 
       <div class="login-additional-actions">
         <slot name="additional-actions"></slot>
