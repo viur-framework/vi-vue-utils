@@ -35,7 +35,7 @@
     "destr": "^2.0.3",
     "json-editor-vue": "^0.18.1",
     "libphonenumber-js": "^1.11.17",
-    "logics-js": "^0.3.9",
+    "logics-js": "^0.4.1",
     "pinia": "^2.3.0",
     "vue": "^3.5.13",
     "vue-draggable-plus": "^0.6.0",
