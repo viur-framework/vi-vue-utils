@@ -2,7 +2,7 @@ import Utils from "../utils"
 import { computed, reactive } from "vue"
 
 export const languageMap = [
-  { lang: "en", country: "US", label: "English", flag: "\ud83c\uddfa\ud83c\uddf8" },
+  { lang: "en", country: "US", label: "English", flag: "\uD83C\uDDEC\uD83C\uDDE7" },
   { lang: "de", country: "DE", label: "Deutsch", flag: "\ud83c\udde9\ud83c\uddea" },
   { lang: "ch", country: "CH", label: "Schweiz", flag: "\ud83c\udde8\ud83c\udded" },
   { lang: "fr", country: "FR", label: "Français", flag: "\ud83c\uddeb\ud83c\uddf7" },
