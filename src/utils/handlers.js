@@ -76,12 +76,13 @@ export function ListRequest(
       if (Object.keys(state.params).includes("skelType")) {
         skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
       }
-      if (Array.isArray(structure[skeltype])) {
-        state.structure = structure[skeltype]
+      const resolvedStructure = structure?.[skeltype] ?? structure?.["viewSkel"] ?? {}
+      if (Array.isArray(resolvedStructure)) {
+        state.structure = resolvedStructure
       } else {
         // build array object
-        state.structure_object = structure[skeltype]
-        state.structure = Object.entries(structure[skeltype])
+        state.structure_object = resolvedStructure
+        state.structure = Object.entries(resolvedStructure)
       }
     }
 
