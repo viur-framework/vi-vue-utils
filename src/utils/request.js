@@ -113,8 +113,8 @@ function getCachedRequestsStore() {
 
 export default class Request {
   static resetState() {
-    getRequestStore().$reset()
     getRequestStore().$dispose()
+    useRequestStore = null
     getCachedRequestsStore().clearCache()
   }
 
