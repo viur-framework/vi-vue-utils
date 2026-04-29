@@ -118,7 +118,7 @@ export function useFormUtils(props, state) {
     return formdata
   }
 
-  function sendData(alternativUrl = null, additionalData = null, headers = null, removeKeyFromDataset = true) {
+  async function sendData(alternativUrl = null, additionalData = null, headers = null, removeKeyFromDataset = true) {
     state.loading = true
     let isValid = state.viformelement.reportValidity()
     if (!isValid) {
@@ -131,7 +131,9 @@ export function useFormUtils(props, state) {
 
     let url = buildRequestUrl()
     if (alternativUrl) url = alternativUrl //replace saving url
-
+    for (const hook of state.beforeSend) {
+      await hook()
+    }
     const formData = new FormData()
     for (const bone of toFormData()) {
       for (const [k, v] of Object.entries(bone)) {
@@ -151,6 +153,8 @@ export function useFormUtils(props, state) {
     if (additionalData) {
       data = { ...data, ...additionalData } //inject data like contexts
     }
+
+
 
     return request(url, { dataObj: data, headers: headers }).then(async (resp) => {
       let data = await resp.clone().json()

@@ -183,6 +183,7 @@ const state = reactive({
   readonly: computed(() => props.readonly),
   categoryDefaultname: computed(() => props.categoryDefaultname),
   failed: null,
+  beforeSend: [],
 })
 provide("formState", state)
 if (!props.internal) {
