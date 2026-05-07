@@ -4,6 +4,19 @@ import { watch, inject, toRaw, reactive } from "vue"
 import Utils from "../bones/utils"
 
 export function useFormUtils(props, state) {
+  function applyResponseState(data, { updateStructure = false } = {}) {
+    if (updateStructure && data["structure"] !== undefined) {
+      initForm(data["values"], data["structure"], state.values)
+    } else if (data["values"] !== undefined) {
+      state.skel = data["values"]
+    }
+
+    state.errors = data["errors"]
+    state.actionparams = data["params"]
+    state.actionname = data["action"]
+    state.loading = false
+  }
+
   function buildRequestUrl() {
     //build Url from props
     let url = `/${props.renderer}/${props.module}/${props.action}`
@@ -154,13 +167,21 @@ export function useFormUtils(props, state) {
 
     return request(url, { dataObj: data, headers: headers }).then(async (resp) => {
       let data = await resp.clone().json()
-      state.skel = data["values"]
-      //state.structure = normalizeStructure(data["structure"])
-      state.errors = data["errors"]
-      state.actionparams = data["params"]
-      state.actionname = data["action"]
-      state.loading = false
+      applyResponseState(data, { updateStructure: data["structure"] !== undefined })
       return resp
+    }).catch(async (error) => {
+      if (error?.response) {
+        try {
+          const data = await error.response.clone().json()
+          applyResponseState(data, { updateStructure: true })
+        } catch {
+          state.loading = false
+        }
+      } else {
+        state.loading = false
+      }
+      state.failed = error
+      throw error
     })
   }
 
