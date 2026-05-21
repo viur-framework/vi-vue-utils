@@ -57,40 +57,45 @@
                 <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
                   <!--multilang and multiple-->
                   <template v-if="state.bonevalue?.[lang]?.length">
-                    <vue-draggable
-                      v-model="state.bonevalue[lang]"
-                      :animation="150"
-                      handle=".drag-button"
-                      @end="updateValue(name, state.bonevalue[lang], lang)"
+                    <wrapper-details
+                      :wrap="state.bonestructure?.params?.collapse !== undefined"
+                      :open="!state.bonestructure?.params?.collapse"
                     >
-                      <div
-                        v-for="(val, index) in state.bonevalue?.[lang]"
-                        :key="val?._key ? val._key : index + '_' + state.bonevalue[lang].length"
-                        class="multiple-bone"
+                      <vue-draggable
+                        v-model="state.bonevalue[lang]"
+                        :animation="150"
+                        handle=".drag-button"
+                        @end="updateValue(name, state.bonevalue[lang], lang)"
                       >
-                        <wrapper-multiple
-                          :readonly="!state.readonly"
-                          :index="index"
-                          :lang="lang"
-                          :name="name"
-                          @delete="removeMultipleEntry(index, lang)"
+                        <div
+                          v-for="(val, index) in state.bonevalue?.[lang]"
+                          :key="val?._key ? val._key : index + '_' + state.bonevalue[lang].length"
+                          class="multiple-bone"
                         >
-                          <component
-                            :is="is"
-                            :value="
+                          <wrapper-multiple
+                            :readonly="!state.readonly"
+                            :index="index"
+                            :lang="lang"
+                            :name="name"
+                            @delete="removeMultipleEntry(index, lang)"
+                          >
+                            <component
+                              :is="is"
+                              :value="
                               !val && state.bonestructure?.['defaultvalue']
                                 ? state.bonestructure['defaultvalue'][lang]?.[index]
                                 : val
                             "
-                            :index="index"
-                            :lang="lang"
-                            :name="name"
-                            :bone="state.bonestructure"
-                            @change="updateValue"
-                          ></component>
-                        </wrapper-multiple>
-                      </div>
-                    </vue-draggable>
+                              :index="index"
+                              :lang="lang"
+                              :name="name"
+                              :bone="state.bonestructure"
+                              @change="updateValue"
+                            ></component>
+                          </wrapper-multiple>
+                        </div>
+                      </vue-draggable>
+                    </wrapper-details>
                   </template>
                   <div v-else class="multiple-placeholder" :class="{ readonly: state.readonly }">
                     <sl-input readonly size="medium" :placeholder="$t('bone.no_entries')"></sl-input>
@@ -134,40 +139,46 @@
         </div>
         <template v-else>
           <!--Bone rendering for multiple bones-->
+
           <template v-if="state.multiple && !BoneHasMultipleHandling(state.bonestructure['type'])">
             <template v-if="state.bonevalue?.length">
-              <vue-draggable
-                v-model="state.bonevalue"
-                :animation="150"
-                handle=".drag-button"
-                @end="updateValue(name, state.bonevalue)"
+              <wrapper-details
+                :wrap="state.bonestructure?.params?.collapse !== undefined"
+                :open="!state.bonestructure?.params?.collapse"
               >
-                <div
-                  v-for="(val, index) in state.bonevalue"
-                  :key="val?._key ? val._key : index + '_' + state.bonevalue.length"
-                  class="multiple-bone"
+                <vue-draggable
+                  v-model="state.bonevalue"
+                  :animation="150"
+                  handle=".drag-button"
+                  @end="updateValue(name, state.bonevalue)"
                 >
-                  <wrapper-multiple
-                    :readonly="!state.readonly"
-                    :index="index"
-                    :name="name"
-                    @delete="removeMultipleEntry(index)"
+                  <div
+                    v-for="(val, index) in state.bonevalue"
+                    :key="val?._key ? val._key : index + '_' + state.bonevalue.length"
+                    class="multiple-bone"
                   >
-                    <component
-                      :is="is"
-                      :value="
+                    <wrapper-multiple
+                      :readonly="!state.readonly"
+                      :index="index"
+                      :name="name"
+                      @delete="removeMultipleEntry(index)"
+                    >
+                      <component
+                        :is="is"
+                        :value="
                         !val && state.bonestructure?.['defaultvalue']
                           ? state.bonestructure['defaultvalue']?.[index]
                           : val
                       "
-                      :index="index"
-                      :name="name"
-                      :bone="state.bonestructure"
-                      @change="updateValue"
-                    ></component>
-                  </wrapper-multiple>
-                </div>
-              </vue-draggable>
+                        :index="index"
+                        :name="name"
+                        :bone="state.bonestructure"
+                        @change="updateValue"
+                      ></component>
+                    </wrapper-multiple>
+                  </div>
+                </vue-draggable>
+              </wrapper-details>
             </template>
             <div v-else class="multiple-placeholder">
               <sl-input readonly size="medium" :placeholder="$t('bone.no_entries')"></sl-input>
@@ -181,6 +192,7 @@
               @change="updateValue"
             ></component>
           </template>
+
           <!--Bone rendering for normal bones-->
           <div v-else class="wrapper-bone-row">
             <div class="wrapper-bone-block">
@@ -237,15 +249,16 @@ import {
   watchEffect,
 } from "vue"
 import wrapperMultiple from "./wrapper_multiple.vue"
+import WrapperDetails from "./wrapper_details.vue"
 import BoneLabel from "./boneLabel.vue"
-import { BoneHasMultipleHandling, getBoneActionbar } from "./index"
+import {BoneHasMultipleHandling, getBoneActionbar} from "./index"
 import rawBone from "./default/rawBone.vue"
 import Utils from "../utils"
-import { VueDraggable } from "vue-draggable-plus"
+import {VueDraggable} from "vue-draggable-plus"
 import BoneActions from "./boneActions.vue"
-import { useI18n } from "vue-i18n"
+import {useI18n} from "vue-i18n"
 
-const { t } = useI18n()
+const {t} = useI18n()
 
 const emit = defineEmits(["change", "change-internal", "handleClick"])
 
@@ -280,11 +293,11 @@ const props = defineProps({
       return ["normal", "top", "hide", "placeholder"].includes(value)
     },
   },
-  boneactions: { type: Boolean, default: false },
-  showLabelInfo: { type: Boolean, required: false, default: false },
-  autofocus: { type: Boolean, required: false, default: false },
-  defaultLanguage: { type: String, default: "de" },
-  showBoneTooltip: { type: Boolean, required: false, default: false },
+  boneactions: {type: Boolean, default: false},
+  showLabelInfo: {type: Boolean, required: false, default: false},
+  autofocus: {type: Boolean, required: false, default: false},
+  defaultLanguage: {type: String, default: "de"},
+  showBoneTooltip: {type: Boolean, required: false, default: false},
   errorStyle: {
     type: String,
     default: "default",
@@ -422,6 +435,7 @@ function ensureKeys(arr) {
     }
   }
 }
+
 watchEffect(() => {
   if (Array.isArray(state.bonevalue)) {
     ensureKeys(state.bonevalue)
@@ -459,6 +473,7 @@ function updateValue(name, val, lang = null, index = null, valid = true) {
 
   emit("change-internal", changeInternalObj)
 }
+
 provide("updateValue", updateValue)
 
 function addMultipleEntry(lang = null, data = "") {
@@ -476,6 +491,7 @@ function addMultipleEntry(lang = null, data = "") {
     }
   }
 }
+
 provide("addMultipleEntry", addMultipleEntry)
 
 function removeMultipleEntry(index, lang = null) {
@@ -514,6 +530,7 @@ provide("removeMultipleEntries", removeMultipleEntries)
 function formatString(formatstr, boneValue) {
   return Utils.formatString(formatstr, boneValue)
 }
+
 provide("formatString", formatString)
 
 function errorMessage(error) {
