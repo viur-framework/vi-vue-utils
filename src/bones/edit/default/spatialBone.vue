@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { reactive, onMounted, inject, computed } from "vue"
+import { reactive, onMounted, inject, computed, watch } from "vue"
 defineOptions({
   inheritAttrs: false,
 })
@@ -51,6 +51,8 @@ const props = defineProps({
 const emit = defineEmits(["change"])
 
 const boneState = inject("boneState")
+const formState = inject("formState")
+
 const state = reactive({
   valueLat: null,
   valueLng: null,
@@ -62,18 +64,50 @@ const state = reactive({
     }
     return name
   }),
+  isVisible: computed(() => {
+    const visibleIf = boneState.bonestructure?.params?.visibleIf
+    if (!visibleIf) return true
+    return evaluateVisibleIf(visibleIf, formState?.skel ?? {})
+  }),
 })
 
+watch(() => state.isVisible, () => emitCurrentValue())
+
+watch(
+  () => props.value,
+  (newVal) => {
+    state.valueLat = newVal?.[0] ?? null
+    state.valueLng = newVal?.[1] ?? null
+    if (!state.isVisible) emitCurrentValue()
+  }
+)
+
+function evaluateVisibleIf(expression, skel) {
+  const trimmed = expression.trim()
+  const eqMatch = trimmed.match(/^(\w+)==(.+)$/)
+  if (eqMatch) return String(skel[eqMatch[1]]) === eqMatch[2].trim()
+  const neqMatch = trimmed.match(/^(\w+)!=(.+)$/)
+  if (neqMatch) return String(skel[neqMatch[1]]) !== neqMatch[2].trim()
+  return true
+}
+
 function changeEvent() {
+  if (!state.isVisible) return
   emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
 }
 
+function emitCurrentValue() {
+  if (state.isVisible) {
+    emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index)
+  } else {
+    emit("change", props.name, null, props.lang, props.index)
+  }
+}
+
 onMounted(() => {
-  try {
-    state.valueLat = props.value[0]
-    state.valueLng = props.value[1]
-  } catch (e) {}
-  emit("change", props.name, [state.valueLat, state.valueLng], props.lang, props.index) //init
+  state.valueLat = props.value?.[0] ?? null
+  state.valueLng = props.value?.[1] ?? null
+  emitCurrentValue()
 })
 </script>
 
