@@ -16,6 +16,7 @@ import fileBone from "./default/fileBone.vue"
 import textBone from "./default/textBone.vue"
 import spatialBone from "./default/spatialBone.vue"
 import codeBone from "./default/codeBone.vue"
+import captchaBone from "./default/captchaBone.vue"
 
 import booleanBoneSelect from "./default/booleanBoneSelect.vue"
 import booleanBoneChoose from "./default/booleanBoneChoose.vue"
@@ -25,6 +26,7 @@ import relationalBoneSelect from "./default/relationalBoneSelect.vue"
 import defaultBar from "./actionbar/defaultBar.vue"
 import relationalBar from "./actionbar/relationalBar.vue"
 import fileBar from "./actionbar/fileBar.vue"
+
 
 import { reactive, shallowRef } from "vue"
 import { defineStore } from "pinia"
@@ -55,6 +57,7 @@ export const useBoneStore = defineStore("boneStore", () => {
       selectBoneChoose,
       relationalBoneSelect,
       codeBone,
+      captchaBone,
     }),
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
@@ -136,6 +139,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return textBone
     } else if (boneType === "spatial" || boneType.startsWith("spatial.")) {
       return spatialBone
+    } else if (boneType === "captcha") {
+      return captchaBone
     }
 
     return rawBone
