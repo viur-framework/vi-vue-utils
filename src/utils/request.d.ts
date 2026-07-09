@@ -139,3 +139,12 @@ export default class Request {
 
   static downloadUrlFor(bone: object, thumbnail?: boolean): string
 }
+
+/**
+ * Normalize a viur-actions envelope-v2 response body back to the classic v1
+ * shape (`values` / `skellist` / `structure` / `errors` / `action`). v1 bodies,
+ * arrays and non-objects pass through unchanged. Applied transparently to every
+ * response this library returns; exported for consumers that parse responses
+ * themselves.
+ */
+export function normalizeEnvelope<T = any>(data: T): T

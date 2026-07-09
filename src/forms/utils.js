@@ -5,16 +5,78 @@ import Utils from "../bones/utils"
 
 export function useFormUtils(props, state) {
   function applyResponseState(data, { updateStructure = false } = {}) {
-    if (updateStructure && data["structure"] !== undefined) {
-      initForm(data["values"], data["structure"], state.values)
-    } else if (data["values"] !== undefined) {
-      state.skel = data["values"]
+    state.datatype = data["datatype"] ?? null
+
+    if (data["datatype"] === "list") {
+      // List envelope: no form structure (it is `null`). Don't build a form —
+      // expose the list for custom rendering via the `list` slot instead, and
+      // never crash on the null structure a list carries.
+      const items = data["data"] !== undefined ? data["data"] : data["skellist"]
+      state.list = Array.isArray(items) ? items : []
+      state.cursor = data["cursor"] ?? null
+      state.orders = data["orders"] || []
+      state.structure = {}
+      state.skel = {}
+    } else {
+      // Entity: accept both the normalized v1 shape (`values`) and a raw
+      // envelope-v2 body (`data`) — a cloned Response bypasses the .json()
+      // normalization, so the body here may still carry `data` not `values`.
+      const values = data["values"] !== undefined ? data["values"] : data["data"]
+      if (updateStructure && data["structure"] != null) {
+        initForm(values, data["structure"], state.values)
+      } else if (values !== undefined) {
+        state.skel = values
+      }
+      state.list = null
     }
 
     state.errors = data["errors"]
     state.actionparams = data["params"]
     state.actionname = data["action"]
+
+    // Envelope-v2 multi-step fields. Absent on classic v1 bodies → reset to
+    // null (harmless for single-step forms). `follow` becomes the POST target
+    // for the *current* step; on a POST response it is the *next* step's URL.
+    state.step = data["step"] ?? null
+    state.stepStatus = data["step_status"] ?? null
+    state.steps = data["steps"] ?? null
+    state.status = data["status"] ?? null
+    if (data["follow"] !== undefined) {
+      state.postUrl = data["follow"]
+    }
     state.loading = false
+  }
+
+  // GET-render a step of a follow-driven multi-step action. Unlike fetchData
+  // (which POSTs — a submit), this renders the step's *initial* form.
+  async function loadStep(url) {
+    state.loading = true
+    state.failed = null
+    try {
+      const resp = await Request.get(url)
+      const data = await resp.clone().json()
+      applyResponseState(data, { updateStructure: true })
+      return data
+    } catch (error) {
+      state.failed = error
+      state.loading = false
+      throw error
+    }
+  }
+
+  // Back one step in a multi-step flow. The target is the previous step's
+  // **backend-provided** endpoint URL (`steps[prevKey].url` in the envelope) —
+  // no client-side history. GET-rendering it prefills from the server session.
+  // No-op on the first step or when the previous step carries no url.
+  async function back() {
+    if (!state.steps || !state.step) return
+    const keys = Object.keys(state.steps)
+    const idx = keys.indexOf(state.step)
+    if (idx <= 0) return
+    const prev = state.steps[keys[idx - 1]]
+    const url = prev && (prev.url || prev.endpoint)
+    if (!url) return
+    return loadStep(url)
   }
 
   function buildRequestUrl() {
@@ -133,7 +195,8 @@ export function useFormUtils(props, state) {
 
   function sendData(alternativUrl = null, additionalData = null, headers = null, removeKeyFromDataset = true) {
     state.loading = true
-    let isValid = state.viformelement.reportValidity()
+    // No <form> element in list mode — nothing to validate.
+    let isValid = state.viformelement ? state.viformelement.reportValidity() : true
     if (!isValid) {
       state.loading = false
       return new Promise((resolve, reject) => reject("Form is not valid"))
@@ -218,7 +281,17 @@ export function useFormUtils(props, state) {
 
   function reload() {
     state.loading = true
-    if (props.structure) {
+    if (props.multistep && props.module && props.action) {
+      // Follow-driven multi-step: GET-render the entry step. The submit chain
+      // (POST → follow → GET next) is driven by ViForm via loadStep/sendData.
+      loadStep(buildRequestUrl())
+        .then(() => {
+          state.loading = false
+        })
+        .catch(() => {
+          state.loading = false
+        })
+    } else if (props.structure) {
       initForm(props.skel, props.structure, state.values)
       state.loading = false
     } else if (props.module && props.action) {
@@ -385,7 +458,9 @@ export function useFormUtils(props, state) {
       formvalues = values
     }
 
-    if (structure !== undefined) {
+    if (structure != null) {
+      // != null guards against a null structure (e.g. a list envelope) — a
+      // form is only (re)built from a real structure object.
       //props are refs to a js Object, removing reactivativ is not enought, we musst create copy of that object.
       //each form has its own structure and mutating dont change the structure for other forms, this is needed for multiple records with logics
       let struct = {}
@@ -403,6 +478,8 @@ export function useFormUtils(props, state) {
   return {
     fetchData,
     sendData,
+    loadStep,
+    back,
     buildRequestUrl,
     updateCategories,
     updateSkel,

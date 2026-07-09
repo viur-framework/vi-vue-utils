@@ -15,6 +15,109 @@ class HTTPError extends Error {
   }
 }
 
+// --------------------------------------------------------------------------- //
+// Envelope-v2 normalization                                                   //
+// --------------------------------------------------------------------------- //
+//
+// viur-actions serves a versioned "envelope v2" response shape (see
+// sources/viur-actions). To let this library — and everything built on it,
+// including old_admin4 — keep consuming the classic v1 fields
+// (`values` / `skellist` / `structure` / `errors` / `action`) unchanged, we
+// normalize a v2 envelope back to that shape at the `.json()` boundary.
+//
+// It is a transparent, always-on no-op for v1 responses (they carry no
+// `version: "2"`), so nothing breaks whether the server serves v1 or v2. To
+// *target* v2 explicitly, point the renderer at the versioned prefix (e.g.
+// set VITE_DEFAULT_RENDERER to "json/v2" or "vi/v2"); no code change needed,
+// since the renderer string is interpolated straight into the request URL.
+
+/**
+ * Map a v2 `(action, status)` pair back to the v1 `action` string old_admin4
+ * checks against (`addSuccess` / `editSuccess` / …). Non-terminal states keep
+ * the plain verb (`add` / `edit` / `view` / `clone` / `list` / custom).
+ */
+function v1ActionString(action, status) {
+  if (status === "success") {
+    switch (action) {
+      case "add":
+        return "addSuccess"
+      case "edit":
+        return "editSuccess"
+      case "clone":
+        return "cloneSuccess"
+      case "delete":
+        return "deleteSuccess"
+      default:
+        return action
+    }
+  }
+  return action
+}
+
+/**
+ * Normalize a viur-actions envelope-v2 body to the v1 response shape.
+ *
+ * - v1 bodies (no `version: "2"`), arrays and non-objects pass through
+ *   unchanged.
+ * - v2 entity → adds `values` (from `data`).
+ * - v2 list  → adds `skellist` (from `data`), `cursor`, `orders`.
+ * - `action` is rewritten to the v1 string; `structure` / `errors` / a
+ *   `next_url` alias for `follow` are carried over. The original v2 fields are
+ *   kept alongside, so a v2-aware consumer can still read them.
+ *
+ * Idempotent: running it on an already-normalized (superset) object yields the
+ * same result.
+ *
+ * @param {*} data parsed response body
+ * @returns {*} v1-shaped body (or the input unchanged)
+ */
+function normalizeEnvelope(data) {
+  if (!data || typeof data !== "object" || Array.isArray(data) || data["version"] !== "2") {
+    return data
+  }
+
+  const out = { ...data }
+  out["action"] = v1ActionString(data["action"], data["status"])
+  out["errors"] = data["errors"] || []
+  if (data["next_url"] === undefined) {
+    out["next_url"] = data["follow"] ?? null
+  }
+
+  if (data["datatype"] === "list") {
+    out["skellist"] = Array.isArray(data["data"]) ? data["data"] : []
+    out["cursor"] = data["cursor"] ?? null
+    out["orders"] = data["orders"] || []
+    out["structure"] = data["structure"] ?? null
+  } else {
+    out["values"] = data["data"]
+    out["structure"] = data["structure"] ?? null
+  }
+
+  return out
+}
+
+/**
+ * Wrap a `Response` so its `.json()` normalizes an envelope-v2 body to the v1
+ * shape. Transparent for v1 responses. Applied to every response this library
+ * hands back, so downstream consumers need no change.
+ *
+ * @param {Response} response
+ * @returns {Response} the same response, with `.json()` normalizing
+ */
+function withEnvelopeNormalization(response) {
+  if (!response || typeof response.json !== "function" || response.__viurEnvelopeNormalized) {
+    return response
+  }
+  const originalJson = response.json.bind(response)
+  response.json = async () => normalizeEnvelope(await originalJson())
+  try {
+    Object.defineProperty(response, "__viurEnvelopeNormalized", { value: true })
+  } catch (e) {
+    /* frozen response — the override above still applies */
+  }
+  return response
+}
+
 let useRequestStore = null
 
 function getRequestStore() {
@@ -732,7 +835,7 @@ class cachedFetch {
           return new Promise((resolve) => {
             let res = cachedFetch.convertJsonToResponse(cacheHit.response)
             res.cached = true
-            resolve(res)
+            resolve(withEnvelopeNormalization(res))
           })
         } else {
           delete getCachedRequestsStore().state.cachedRequests[_url]
@@ -749,7 +852,9 @@ class cachedFetch {
             let responsedata = await cachedFetch.convertResponseToJson(response.clone())
             let usedKeys = []
 
-            let data = await response.clone().json()
+            // normalize a v2 envelope so the cache key extraction below finds
+            // `skellist` / `values` (no-op for v1 bodies)
+            let data = normalizeEnvelope(await response.clone().json())
             if (data instanceof Object && !Array.isArray(data) && data !== null) {
               if (data["skellist"]) {
                 usedKeys = data["skellist"].map((x) => x["key"])
@@ -776,7 +881,7 @@ class cachedFetch {
               keys: usedKeys,
             }
           }
-          return response
+          return withEnvelopeNormalization(response)
         } else {
           const errorMessage = `${response.status} ${response.statusText}: ${
             response.headers ? response.headers.get("x-error-descr") : ""
@@ -879,7 +984,7 @@ class cachedFetch {
             }
           }
 
-          return response
+          return withEnvelopeNormalization(response)
         } else {
           const errorMessage = `${response.status} ${response.statusText}: ${
             response.headers ? response.headers.get("x-error-descr") : ""
@@ -909,4 +1014,4 @@ class cachedFetch {
   }
 }
 
-export { Request, HTTPError, getRequestStore }
+export { Request, HTTPError, getRequestStore, normalizeEnvelope }
