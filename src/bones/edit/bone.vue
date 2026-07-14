@@ -430,7 +430,7 @@ provide("boneState", state)
 
 function ensureKeys(arr) {
   for (const it of arr) {
-    if (!it._key && typeof it === "object") {
+    if (it != null && typeof it === "object" && !it._key) {
       it._key = crypto.randomUUID()
     }
   }
