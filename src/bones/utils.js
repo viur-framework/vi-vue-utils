@@ -91,15 +91,20 @@ export default class Utils {
 
     for (let avalue of boneValue) {
       let finalstr = formatstr
+      let hasValue = false
       for (let pathstr of pathlist) {
         let aval = readValue(pathstr, avalue)
-        if (typeof aval !== "string" || aval === "-") {
-          aval = fallback
+        if (aval === null || aval === undefined || aval === "" || aval === "-" || typeof aval === "object") {
+          aval = ""
+        } else {
+          aval = String(aval)
+          hasValue = true
         }
         aval = Utils.unescape(aval)
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)
       }
-      finalStrList.push(finalstr)
+
+      finalStrList.push(pathlist.length === 0 || hasValue ? finalstr : fallback)
     }
     return finalStrList.join(", ")
   }
