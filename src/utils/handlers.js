@@ -65,23 +65,27 @@ export function ListRequest(
     })
 
     async function fetchStructure() {
-      const structure = await Request.getStructure(state.module, {
+      // `/{module}/structure` returns a single skeleton with the bones directly
+      // under `structure` — the tree prototype selects node/leaf via the URL,
+      // not via a `viewNodeSkel` / `viewLeafSkel` key in the response.
+      const response = await Request.getStructure(state.module, {
         group: state.group,
+        skelType: state.params["skelType"] ?? null,
         renderer: renderer,
         cached: state.cached,
         cacheTime: cacheTime,
         clearCache: clearCache,
-      }).then((structureResponse) => structureResponse.json().then((_structure) => _structure))
-      let skeltype = "viewSkel"
-      if (Object.keys(state.params).includes("skelType")) {
-        skeltype = state.params["skelType"] === "node" ? "viewNodeSkel" : "viewLeafSkel"
+      })
+      const skels = (await response.json())?.["structure"] ?? null
+      if (!skels) {
+        return
       }
-      if (Array.isArray(structure[skeltype])) {
-        state.structure = structure[skeltype]
+      if (Array.isArray(skels)) {
+        state.structure = skels
       } else {
         // build array object
-        state.structure_object = structure[skeltype]
-        state.structure = Object.entries(structure[skeltype])
+        state.structure_object = skels
+        state.structure = Object.entries(skels)
       }
     }
 

@@ -72,7 +72,7 @@ function v1ActionString(action, status) {
  * @returns {*} v1-shaped body (or the input unchanged)
  */
 function normalizeEnvelope(data) {
-  if (!data || typeof data !== "object" || Array.isArray(data) || data["version"] !== "2") {
+  if (!data || typeof data !== "object" || Array.isArray(data) || String(data["version"]) !== "2") {
     return data
   }
 
@@ -84,9 +84,10 @@ function normalizeEnvelope(data) {
   }
 
   if (data["datatype"] === "list") {
+    const meta = data["meta"] && typeof data["meta"] === "object" ? data["meta"] : {}
     out["skellist"] = Array.isArray(data["data"]) ? data["data"] : []
-    out["cursor"] = data["cursor"] ?? null
-    out["orders"] = data["orders"] || []
+    out["cursor"] = data["cursor"] ?? meta["cursor"] ?? null
+    out["orders"] = data["orders"] || meta["orders"] || []
     out["structure"] = data["structure"] ?? null
   } else {
     out["values"] = data["data"]
@@ -110,6 +111,13 @@ function withEnvelopeNormalization(response) {
   }
   const originalJson = response.json.bind(response)
   response.json = async () => normalizeEnvelope(await originalJson())
+  // `clone()` hands back a fresh Response carrying the *native* json(), so a
+  // consumer doing `resp.clone().json()` would bypass the normalization above
+  // and see the raw v2 envelope (`data` instead of `values`). Re-wrap clones.
+  if (typeof response.clone === "function") {
+    const originalClone = response.clone.bind(response)
+    response.clone = () => withEnvelopeNormalization(originalClone())
+  }
   try {
     Object.defineProperty(response, "__viurEnvelopeNormalized", { value: true })
   } catch (e) {
@@ -391,6 +399,18 @@ export default class Request {
     })
   }
 
+  /**
+   * Fetch a module's bone structure.
+   *
+   * Uses the per-module `/{renderer}/{module}/structure` endpoint; the former
+   * `/{renderer}/getStructure/{module}` is deprecated. The two differ in shape:
+   * `getStructure` returned every skeleton keyed by name (`viewSkel`,
+   * `editSkel`, …), whereas `structure` returns *one* skeleton — selected by
+   * `action` — with the bones directly under the response's `structure` key.
+   *
+   * @param skelType tree prototype only: `"node"` or `"leaf"` (path segment)
+   * @param action which skeleton to render: `view` (default), `edit`, `add`, `clone`
+   */
   static getStructure(
     module,
     {
@@ -398,6 +418,8 @@ export default class Request {
       callback = null,
       failedCallback = null,
       group = null,
+      skelType = null,
+      action = "view",
       abortController = null,
       renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
       headers = null,
@@ -407,13 +429,17 @@ export default class Request {
     } = {}
   ) {
     module = module.replace(/\//g, ".")
-    let url = `/${renderer}/getStructure/${module}`
+    let url = `/${renderer}/${module}/structure`
+    if (skelType) {
+      // tree prototype: structure(skelType, action)
+      url += `/${skelType}`
+    }
     if (group) {
       url += `/${group}`
     }
 
     return Request.get(url, {
-      dataObj: dataObj,
+      dataObj: { action: action, ...(dataObj || {}) },
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
