@@ -11,6 +11,8 @@
     "
     :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    :min="boneState.bonestructure.params?.min"
+    :max="boneState.bonestructure.params?.max"
     step="1"
     @sl-change="changeEvent"
   ></sl-input>
