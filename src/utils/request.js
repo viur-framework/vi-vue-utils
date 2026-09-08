@@ -428,10 +428,6 @@ export default class Request {
       cacheTime = null,
     } = {}
   ) {
-    // `/{module}/structure` is a real module route, so nested modules need
-    // their path separators — unlike the deprecated `getStructure/{module}`,
-    // which took the module as a single dotted path segment. Callers pass
-    // either form (admin routes use "shop.order", handlers "shop/order").
     module = module.replace(/\./g, "/")
     let url = `/${renderer}/${module}/structure`
     if (skelType) {
