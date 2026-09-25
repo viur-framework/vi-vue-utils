@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref } from "vue"
+import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref, toRaw } from "vue"
 import { getBoneWidget } from "./index"
 import ViForm from "../../forms/ViForm.vue"
 import { useTimeoutFn } from "@vueuse/core"
@@ -91,7 +91,12 @@ onMounted(() => {
 
   for (const [bonename, boneStructure] of Object.entries(props.bone["using"])) {
     if (!Object.keys(val).includes(bonename) && boneStructure["defaultvalue"]) {
-      val[bonename] = boneStructure["defaultvalue"]
+      // Copy, never share: a multilanguage or multiple defaultvalue is an
+      // object, and handing the same one to every new entry makes them all
+      // show the same value once one is edited (and taints the structure's
+      // defaultvalue for the next entry). toRaw first — structuredClone
+      // cannot clone a reactive proxy.
+      val[bonename] = structuredClone(toRaw(boneStructure["defaultvalue"]))
     }
   }
 
