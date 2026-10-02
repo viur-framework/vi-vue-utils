@@ -7,7 +7,8 @@
 
     <sl-alert v-if="state.tooltip" open variant="info" class="login-basic-info">
       <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
-      <div v-html="$t(state.tooltip)"></div>
+      {{ $t(state.tooltip) }}
+      <strong v-if="state.tooltipBold" class="login-basic-info-bold">{{ $t(state.tooltipBold) }}</strong>
     </sl-alert>
 
     <vi-form
@@ -53,6 +54,12 @@ const state = reactive({
   tooltip: computed(() => {
     if (!ViFormRef?.value?.state?.structure) return null
     let params = Object.entries(ViFormRef?.value?.state?.structure)[0]?.[1]?.params?.tooltip
+    if (!params) return null
+    return params
+  }),
+  tooltipBold: computed(() => {
+    if (!ViFormRef?.value?.state?.structure) return null
+    let params = Object.entries(ViFormRef?.value?.state?.structure)[0]?.[1]?.params?.["tooltip.bold"]
     if (!params) return null
     return params
   }),
@@ -134,5 +141,11 @@ watch(
   display: flex;
   flex-direction: column;
   gap: var(--sl-spacing-medium);
+}
+
+.login-basic-info-bold {
+  display: block;
+  margin-top: var(--sl-spacing-medium);
+  font-weight: var(--sl-font-weight-bold);
 }
 </style>
