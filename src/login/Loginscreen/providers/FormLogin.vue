@@ -7,7 +7,7 @@
 
     <sl-alert v-if="state.tooltip" open variant="info" class="login-basic-info">
       <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
-      {{ $t(state.tooltip) }}
+      <div v-html="$t(state.tooltip)"></div>
     </sl-alert>
 
     <vi-form
