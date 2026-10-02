@@ -7,28 +7,50 @@ on:
       - "v2.*"
       - "v3.*"
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24.15.0]
 
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           cache-dependency-path: src/package-lock.json
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+      - name: Ensure npm supports trusted publishing
+        run: npm install -g npm@latest
+
       - run: npm ci --prefix=src
-      #- run: npm run build
-      - uses: JS-DevTools/npm-publish@v3
-        with:
-          access: "public"
-          token: ${{ secrets.NPM_TOKEN }}
-          package: ./src/package.json
+
+      - name: Determine npm tag
+        id: npm_tag
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME}"
+          echo "Detected tag: $TAG_NAME"
+
+          if [[ "$TAG_NAME" =~ -alpha[0-9]*$ ]]; then
+            echo "tag=alpha" >> $GITHUB_OUTPUT
+          elif [[ "$TAG_NAME" =~ -beta[0-9]*$ ]]; then
+            echo "tag=beta" >> $GITHUB_OUTPUT
+          elif [[ "$TAG_NAME" =~ -rc[0-9]*$ ]]; then
+            echo "tag=rc" >> $GITHUB_OUTPUT
+          else
+            echo "tag=latest" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to npm (Trusted Publishing)
+        working-directory: src
+        run: npm publish --access public --tag ${{ steps.npm_tag.outputs.tag }}

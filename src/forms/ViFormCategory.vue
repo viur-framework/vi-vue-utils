@@ -8,9 +8,9 @@
     v-show="visible"
     class="viform-category"
     :class="[`viform-category-${encodeURI(name.toLowerCase())}`]"
-    :summary="name"
     :open="open"
   >
+    <div slot="summary" v-html="name"></div>
     <slot></slot>
   </sl-details>
 </template>

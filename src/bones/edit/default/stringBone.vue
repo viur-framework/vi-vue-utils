@@ -45,7 +45,7 @@ const state = reactive({
     let pat = boneState.params?.pattern
     if (!pat) return undefined
 
-    if (typeof pat === "String") {
+    if (typeof pat === "string") {
       return pat
     }
     return pat?.[boneState.defaultLanguage]
@@ -54,7 +54,7 @@ const state = reactive({
     let pat = boneState.params?.pattern_error
     if (!pat) return ""
 
-    if (typeof pat === "String") {
+    if (typeof pat === "string") {
       return pat
     }
     return pat?.[boneState.defaultLanguage] ? pat?.[boneState.defaultLanguage] : ""

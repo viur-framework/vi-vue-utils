@@ -54,6 +54,13 @@ const ViFormRef = useTemplateRef("ViFormRef")
 const loginState = inject("loginState")
 const userStore = useUserStore()
 
+const props = defineProps({
+  url: {
+    type: String,
+    default: "/vi/user/auth_userpassword/pwrecover",
+  },
+})
+
 const state = reactive({
   currentUrl: null,
   showCustomError: false,
@@ -65,7 +72,11 @@ const state = reactive({
   }),
 })
 onMounted(() => {
-  state.currentUrl = loginState.formByPass
+  if (loginState.formByPass) {
+    state.currentUrl = loginState.formByPass
+  } else {
+    state.currentUrl = props.url
+  }
 })
 
 function calcCurrentUrlOnAction(url, actionName) {
@@ -76,8 +87,12 @@ function calcCurrentUrlOnAction(url, actionName) {
 }
 
 function getActionNameFromUrl(url) {
-  let splitted = url.split("/")
-  return splitted[splitted.length - 1]
+  try {
+    let splitted = url.split("/")
+    return splitted[splitted.length - 1]
+  } catch (error) {
+    return "send"
+  }
 }
 
 function buttonAction() {

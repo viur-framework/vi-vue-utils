@@ -13,8 +13,8 @@ import numericBone from "./default/numericBone.vue"
 import relationalBone from "./default/relationalBone.vue"
 import jsonBone from "./default/jsonBone.vue"
 import fileBone from "./default/fileBone.vue"
-import textBone from "./default/textBone.vue"
 import spatialBone from "./default/spatialBone.vue"
+import codeBone from "./default/codeBone.vue"
 
 import booleanBoneSelect from "./default/booleanBoneSelect.vue"
 import booleanBoneChoose from "./default/booleanBoneChoose.vue"
@@ -25,8 +25,13 @@ import defaultBar from "./actionbar/defaultBar.vue"
 import relationalBar from "./actionbar/relationalBar.vue"
 import fileBar from "./actionbar/fileBar.vue"
 
-import { reactive, shallowRef } from "vue"
+import { reactive, shallowRef, defineAsyncComponent } from "vue"
 import { defineStore } from "pinia"
+
+// textBone pulls in CKEditor, which is large (~hundreds of kB). Load it lazily so
+// CKEditor is only fetched when a CKEditor-based text widget is actually rendered.
+// Projects that register their own "text" widget never load CKEditor at all.
+const textBone = defineAsyncComponent(() => import("./default/textBone.vue"))
 
 export const useBoneStore = defineStore("boneStore", () => {
   const state = reactive({
@@ -53,6 +58,7 @@ export const useBoneStore = defineStore("boneStore", () => {
       booleanBoneChoose,
       selectBoneChoose,
       relationalBoneSelect,
+      codeBone,
     }),
     actionbars: shallowRef({
       "relational.tree.leaf.file.file": fileBar,
@@ -126,6 +132,8 @@ export const useBoneStore = defineStore("boneStore", () => {
       return relationalBone
     } else if (boneType === "raw.json") {
       return jsonBone
+    } else if (boneType.startsWith("raw.code.")) {
+      return codeBone
     } else if (boneType === "color" || boneType.startsWith("color.")) {
       return colorBone
     } else if (boneType === "text" || boneType.startsWith("text.")) {

@@ -11,6 +11,8 @@
     "
     :placeholder="state.placeholder"
     :data-user-invalid="boneState.errorMessages.length === 0 ? undefined : true"
+    :min="boneState.bonestructure.params?.min"
+    :max="boneState.bonestructure.params?.max"
     step="1"
     @sl-change="changeEvent"
   ></sl-input>
@@ -40,9 +42,9 @@ const state = reactive({
     let boneValue = props.value
     if (props.value && boneState.bonestructure["time"] && boneState.bonestructure["date"]) {
       boneValue = props.value?.split("+")[0]
-    } else if (props.value && boneState.bonestructure["time"]) {
+    } else if (props.value && boneState.bonestructure["time"] && props.value.includes("T")) {
       boneValue = props.value?.split("+")[0]?.split("T")[1]
-    } else if (props.value) {
+    } else if (props.value && props.value.includes("T")) {
       //convert to readable value
       boneValue = new Date(props.value).toISOString().substr(0, 10)
     }

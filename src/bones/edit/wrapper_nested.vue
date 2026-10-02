@@ -4,22 +4,26 @@
   </sl-alert>
   <div v-else class="form">
     <sl-spinner v-if="state.updating" style="position: absolute; top: 20px; left: -10px"></sl-spinner>
+
     <vi-form
       ref="skelRef"
       :internal="mainformState"
       :skel="value"
       :structure="bone['using']"
       :renderer="state.renderer"
+      :use-categories="bone?.params['categoryDefaultname'] !== null"
+      :category-defaultname="nestedCategory()"
       :collapsed-categories="
         state.isLastEntry ? [] : bone?.params?.['collapsedCategories'] ? bone?.params?.['collapsedCategories'] : []
       "
+      :readonly="mainformState.readonly"
       @change="changeEvent"
     ></vi-form>
   </div>
 </template>
 
 <script setup>
-import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref } from "vue"
+import { reactive, defineComponent, onMounted, inject, computed, getCurrentInstance, watch, ref, toRaw } from "vue"
 import { getBoneWidget } from "./index"
 import ViForm from "../../forms/ViForm.vue"
 import { useTimeoutFn } from "@vueuse/core"
@@ -87,12 +91,25 @@ onMounted(() => {
 
   for (const [bonename, boneStructure] of Object.entries(props.bone["using"])) {
     if (!Object.keys(val).includes(bonename) && boneStructure["defaultvalue"]) {
-      val[bonename] = boneStructure["defaultvalue"]
+      // Copy, never share: a multilanguage or multiple defaultvalue is an
+      // object, and handing the same one to every new entry makes them all
+      // show the same value once one is edited (and taints the structure's
+      // defaultvalue for the next entry). toRaw first — structuredClone
+      // cannot clone a reactive proxy.
+      val[bonename] = structuredClone(toRaw(boneStructure["defaultvalue"]))
     }
   }
 
   emit("change", props.name, val, props.lang, props.index) //init
 })
+function nestedCategory() {
+  if (props.bone?.params?.["categoryDefaultname"]) {
+    return props.bone.params["categoryDefaultname"]
+  } else if (props.bone?.format) {
+    return props.bone.format
+  }
+  return undefined
+}
 </script>
 
 <style scoped>

@@ -62,9 +62,9 @@ const state = reactive({
 
 function getList(search) {
   let params = ""
-  if (boneState.bonestructure["type"] === "relational.tree.leaf.file") {
+  if (boneState.bonestructure["type"].startsWith("relational.tree.leaf")) {
     params = "skelType=leaf&"
-  } else if (boneState.bonestructure["type"] === "relational.tree.node.file") {
+  } else if (boneState.bonestructure["type"].startsWith("relational.tree.node")) {
     params = "skelType=node&"
   }
   return Request.get(

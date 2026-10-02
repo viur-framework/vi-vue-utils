@@ -35,7 +35,13 @@ export const useUserStore = defineStore("user", () => {
     "user.login.secound_factor_errors": [],
     renderErrorMsg: "",
     currentLoginMask: "",
-    renderer: import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
+    renderer: computed(() => {
+      try {
+        return import.meta.env.VITE_DEFAULT_RENDERER
+      } catch (e) {
+        return "json"
+      }
+    }),
   })
 
   function resetLoginInformation() {
@@ -263,6 +269,14 @@ export const useUserStore = defineStore("user", () => {
         resetLoginInformation()
         Request.resetState()
         router.push("/")
+        try {
+          const data = await resp.json()
+          if (data["next_url"].startsWith("https://")) {
+            window.location.href = Request.buildUrl(data["next_url"])
+          }
+        } catch (e) {
+          console.error("No json return")
+        }
       })
       .catch(async (error) => {
         Request.resetState()
@@ -350,9 +364,9 @@ export const useUserStore = defineStore("user", () => {
       Request.get(`/${state.renderer}/user/view/self`, { cached: true, cacheTime: 1000 * 60 * 5 })
         .then(async (resp) => {
           let data = await resp.json()
-          state["user.loggedin"] = "yes"
           state["user"] = data.values
           state["user.login.type"] = "user"
+          state["user.loggedin"] = "yes"
           getRequestStore().state.amount = 30
           if (data.values["admin_config"]) {
             const obj = data.values["admin_config"]
@@ -475,7 +489,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   const userAccess = computed(() => {
-    if (!state.user) return []
+    if (!state.user || state.user["access"] === null) return []
 
     return state.user["access"]
   })

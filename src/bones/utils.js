@@ -11,6 +11,12 @@ export default class Utils {
     }
   }
 
+  static stripHtml(html) {
+    const div = document.createElement("div")
+    div.innerHTML = html
+    return div.textContent || div.innerText || ""
+  }
+
   static unescape(value) {
     if (!value) value = ""
     return String(value)
@@ -27,7 +33,7 @@ export default class Utils {
       .replace(/&#061;/g, "=")
   }
 
-  static formatString(formatstr, boneValue) {
+  static formatString(formatstr, boneValue, fallback = "-") {
     function getpathListFromFormatstring(formatstr) {
       let output = []
       let formatList = []
@@ -85,12 +91,20 @@ export default class Utils {
 
     for (let avalue of boneValue) {
       let finalstr = formatstr
+      let hasValue = false
       for (let pathstr of pathlist) {
         let aval = readValue(pathstr, avalue)
+        if (aval === null || aval === undefined || aval === "" || aval === "-" || typeof aval === "object") {
+          aval = ""
+        } else {
+          aval = String(aval)
+          hasValue = true
+        }
         aval = Utils.unescape(aval)
         finalstr = finalstr.replace("$(" + pathstr + ")", aval)
       }
-      finalStrList.push(finalstr)
+
+      finalStrList.push(pathlist.length === 0 || hasValue ? finalstr : fallback)
     }
     return finalStrList.join(", ")
   }

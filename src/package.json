@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "3.1.22",
+  "version": "3.4.3",
   "type": "module",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/viur-framework/viur-vue-utils.git"
+    "url": "https://github.com/viur-framework/vi-vue-utils"
   },
   "author": "Andreas H. Kelch",
   "contributors": [
@@ -27,13 +27,15 @@
   },
   "homepage": "https://github.com/viur-framework/viur-vue-utils#readme",
   "dependencies": {
+    "codemirror": "^6.0.1",
+    "@codemirror/language-data": "^6.5.2",
     "@ckeditor/ckeditor5-vue": "^7.3.0",
     "@vueuse/core": "^12.4.0",
     "ckeditor5": "^45.2.0",
     "destr": "^2.0.3",
     "json-editor-vue": "^0.18.1",
     "libphonenumber-js": "^1.11.17",
-    "logics-js": "^0.3.9",
+    "logics-js": "^0.4.1",
     "pinia": "^2.3.0",
     "vue": "^3.5.13",
     "vue-draggable-plus": "^0.6.0",

@@ -15,6 +15,117 @@ class HTTPError extends Error {
   }
 }
 
+// --------------------------------------------------------------------------- //
+// Envelope-v2 normalization                                                   //
+// --------------------------------------------------------------------------- //
+//
+// viur-actions serves a versioned "envelope v2" response shape (see
+// sources/viur-actions). To let this library — and everything built on it,
+// including old_admin4 — keep consuming the classic v1 fields
+// (`values` / `skellist` / `structure` / `errors` / `action`) unchanged, we
+// normalize a v2 envelope back to that shape at the `.json()` boundary.
+//
+// It is a transparent, always-on no-op for v1 responses (they carry no
+// `version: "2"`), so nothing breaks whether the server serves v1 or v2. To
+// *target* v2 explicitly, point the renderer at the versioned prefix (e.g.
+// set VITE_DEFAULT_RENDERER to "json/v2" or "vi/v2"); no code change needed,
+// since the renderer string is interpolated straight into the request URL.
+
+/**
+ * Map a v2 `(action, status)` pair back to the v1 `action` string old_admin4
+ * checks against (`addSuccess` / `editSuccess` / …). Non-terminal states keep
+ * the plain verb (`add` / `edit` / `view` / `clone` / `list` / custom).
+ */
+function v1ActionString(action, status) {
+  if (status === "success") {
+    switch (action) {
+      case "add":
+        return "addSuccess"
+      case "edit":
+        return "editSuccess"
+      case "clone":
+        return "cloneSuccess"
+      case "delete":
+        return "deleteSuccess"
+      default:
+        return action
+    }
+  }
+  return action
+}
+
+/**
+ * Normalize a viur-actions envelope-v2 body to the v1 response shape.
+ *
+ * - v1 bodies (no `version: "2"`), arrays and non-objects pass through
+ *   unchanged.
+ * - v2 entity → adds `values` (from `data`).
+ * - v2 list  → adds `skellist` (from `data`), `cursor`, `orders`.
+ * - `action` is rewritten to the v1 string; `structure` / `errors` / a
+ *   `next_url` alias for `follow` are carried over. The original v2 fields are
+ *   kept alongside, so a v2-aware consumer can still read them.
+ *
+ * Idempotent: running it on an already-normalized (superset) object yields the
+ * same result.
+ *
+ * @param {*} data parsed response body
+ * @returns {*} v1-shaped body (or the input unchanged)
+ */
+function normalizeEnvelope(data) {
+  if (!data || typeof data !== "object" || Array.isArray(data) || String(data["version"]) !== "2") {
+    return data
+  }
+
+  const out = { ...data }
+  out["action"] = v1ActionString(data["action"], data["status"])
+  out["errors"] = data["errors"] || []
+  if (data["next_url"] === undefined) {
+    out["next_url"] = data["follow"] ?? null
+  }
+
+  if (data["datatype"] === "list") {
+    const meta = data["meta"] && typeof data["meta"] === "object" ? data["meta"] : {}
+    out["skellist"] = Array.isArray(data["data"]) ? data["data"] : []
+    out["cursor"] = data["cursor"] ?? meta["cursor"] ?? null
+    out["orders"] = data["orders"] || meta["orders"] || []
+    out["structure"] = data["structure"] ?? null
+  } else {
+    out["values"] = data["data"]
+    out["structure"] = data["structure"] ?? null
+  }
+
+  return out
+}
+
+/**
+ * Wrap a `Response` so its `.json()` normalizes an envelope-v2 body to the v1
+ * shape. Transparent for v1 responses. Applied to every response this library
+ * hands back, so downstream consumers need no change.
+ *
+ * @param {Response} response
+ * @returns {Response} the same response, with `.json()` normalizing
+ */
+function withEnvelopeNormalization(response) {
+  if (!response || typeof response.json !== "function" || response.__viurEnvelopeNormalized) {
+    return response
+  }
+  const originalJson = response.json.bind(response)
+  response.json = async () => normalizeEnvelope(await originalJson())
+  // `clone()` hands back a fresh Response carrying the *native* json(), so a
+  // consumer doing `resp.clone().json()` would bypass the normalization above
+  // and see the raw v2 envelope (`data` instead of `values`). Re-wrap clones.
+  if (typeof response.clone === "function") {
+    const originalClone = response.clone.bind(response)
+    response.clone = () => withEnvelopeNormalization(originalClone())
+  }
+  try {
+    Object.defineProperty(response, "__viurEnvelopeNormalized", { value: true })
+  } catch (e) {
+    /* frozen response — the override above still applies */
+  }
+  return response
+}
+
 let useRequestStore = null
 
 function getRequestStore() {
@@ -113,8 +224,8 @@ function getCachedRequestsStore() {
 
 export default class Request {
   static resetState() {
-    getRequestStore().$reset()
     getRequestStore().$dispose()
+    useRequestStore = null
     getCachedRequestsStore().clearCache()
   }
 
@@ -288,6 +399,18 @@ export default class Request {
     })
   }
 
+  /**
+   * Fetch a module's bone structure.
+   *
+   * Uses the per-module `/{renderer}/{module}/structure` endpoint; the former
+   * `/{renderer}/getStructure/{module}` is deprecated. The two differ in shape:
+   * `getStructure` returned every skeleton keyed by name (`viewSkel`,
+   * `editSkel`, …), whereas `structure` returns *one* skeleton — selected by
+   * `action` — with the bones directly under the response's `structure` key.
+   *
+   * @param skelType tree prototype only: `"node"` or `"leaf"` (path segment)
+   * @param action which skeleton to render: `view` (default), `edit`, `add`, `clone`
+   */
   static getStructure(
     module,
     {
@@ -295,6 +418,8 @@ export default class Request {
       callback = null,
       failedCallback = null,
       group = null,
+      skelType = null,
+      action = "view",
       abortController = null,
       renderer = import.meta?.env?.VITE_DEFAULT_RENDERER || "json",
       headers = null,
@@ -303,14 +428,18 @@ export default class Request {
       cacheTime = null,
     } = {}
   ) {
-    module = module.replace(/\//g, ".")
-    let url = `/${renderer}/getStructure/${module}`
+    module = module.replace(/\./g, "/")
+    let url = `/${renderer}/${module}/structure`
+    if (skelType) {
+      // tree prototype: structure(skelType, action)
+      url += `/${skelType}`
+    }
     if (group) {
       url += `/${group}`
     }
 
     return Request.get(url, {
-      dataObj: dataObj,
+      dataObj: { action: action, ...(dataObj || {}) },
       callback: callback,
       failedCallback: failedCallback,
       abortController: abortController,
@@ -525,6 +654,83 @@ export default class Request {
         })
     })
   }
+
+  static skelDataToFormData(skel, structure) {
+    let formdata = []
+
+    function handleEntry(result, currentFieldName, bone, val) {
+      if (bone["type"].startsWith("record")) {
+        let struct = normalizeStructure(bone["using"])
+        for (const [_fieldname, _bone] of Object.entries(struct)) {
+          result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val?.[_fieldname]))
+        }
+      } else if (val === Object(val) && bone["using"]) {
+        //recusive call for nested data
+        if (val["dest"]?.["key"]) {
+          let struct = normalizeStructure(bone["using"])
+          for (const [_fieldname, _bone] of Object.entries(struct)) {
+            result = result.concat(boneToForm(`${currentFieldName}.${_fieldname}`, _bone, val["rel"]?.[_fieldname]))
+          }
+          result.push({ [`${currentFieldName}.key`]: val["dest"]["key"] })
+        } else {
+          result.push({ [`${currentFieldName}`]: null })
+        }
+      } else if (bone["type"].startsWith("spatial") && val) {
+        //spatialbones
+        result.push({ [currentFieldName + ".lat"]: val[0] })
+        result.push({ [currentFieldName + ".lng"]: val[1] })
+      } else if (bone["type"].startsWith("raw.json") && val) {
+        result.push({ [currentFieldName]: JSON.stringify(val) })
+      } else if (val === Object(val)) {
+        //normal relations
+        result.push({ [currentFieldName]: val["dest"]?.["key"] || null })
+      } else {
+        //everything else
+        result.push({ [currentFieldName]: val })
+      }
+      return result
+    }
+
+    function boneToForm(fieldname, bone, value) {
+      let result = []
+      //only record and relational bones get indexed fields
+      let indexBone = bone["type"].startsWith("record")
+      let languages = bone["languages"] || ["none"]
+      let languageValue = value
+      for (const lang of languages) {
+        let currentFieldName = fieldname
+        if (lang !== "none") {
+          currentFieldName += `.${lang}` //append lang
+          if (languageValue) value = languageValue[lang]
+        }
+
+        if (bone["multiple"]) {
+          if (!value) value = []
+          for (const [idx, val] of value.entries()) {
+            let currentFieldnameMultiple = currentFieldName
+
+            if (indexBone || val?.["rel"] || (bone["using"] && val?.["rel"] !== null)) {
+              currentFieldnameMultiple = `${currentFieldName}.${idx}` //append idx
+            }
+            result = handleEntry(result, currentFieldnameMultiple, bone, val)
+          }
+          if (value.length === 0) {
+            result.push({ [currentFieldName]: null }) //send empty multiple fields
+          }
+        } else {
+          result = handleEntry(result, currentFieldName, bone, value)
+        }
+      }
+      return result
+    }
+
+    for (const [fieldname, bone] of Object.entries(structure)) {
+      formdata.push(boneToForm(fieldname, bone, skel[fieldname]))
+    }
+
+    formdata = formdata.flat(10)
+    return formdata
+  }
 }
 
 // TODO CACHING LOGIC
@@ -655,7 +861,7 @@ class cachedFetch {
           return new Promise((resolve) => {
             let res = cachedFetch.convertJsonToResponse(cacheHit.response)
             res.cached = true
-            resolve(res)
+            resolve(withEnvelopeNormalization(res))
           })
         } else {
           delete getCachedRequestsStore().state.cachedRequests[_url]
@@ -672,7 +878,9 @@ class cachedFetch {
             let responsedata = await cachedFetch.convertResponseToJson(response.clone())
             let usedKeys = []
 
-            let data = await response.clone().json()
+            // normalize a v2 envelope so the cache key extraction below finds
+            // `skellist` / `values` (no-op for v1 bodies)
+            let data = normalizeEnvelope(await response.clone().json())
             if (data instanceof Object && !Array.isArray(data) && data !== null) {
               if (data["skellist"]) {
                 usedKeys = data["skellist"].map((x) => x["key"])
@@ -699,7 +907,7 @@ class cachedFetch {
               keys: usedKeys,
             }
           }
-          return response
+          return withEnvelopeNormalization(response)
         } else {
           const errorMessage = `${response.status} ${response.statusText}: ${
             response.headers ? response.headers.get("x-error-descr") : ""
@@ -802,7 +1010,7 @@ class cachedFetch {
             }
           }
 
-          return response
+          return withEnvelopeNormalization(response)
         } else {
           const errorMessage = `${response.status} ${response.statusText}: ${
             response.headers ? response.headers.get("x-error-descr") : ""
@@ -832,4 +1040,4 @@ class cachedFetch {
   }
 }
 
-export { Request, HTTPError, getRequestStore }
+export { Request, HTTPError, getRequestStore, normalizeEnvelope }
