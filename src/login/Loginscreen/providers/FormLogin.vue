@@ -7,7 +7,14 @@
 
     <sl-alert v-if="state.tooltip" open variant="info" class="login-basic-info">
       <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
-      <div v-html="$t(state.tooltip)"></div>
+      <i18n-t :keypath="state.tooltip" scope="global">
+        <template #br><br /></template>
+        <template #strong>
+          <strong v-if="$te(`${state.tooltip}.strong`)" class="login-basic-info-strong">
+            {{ $t(`${state.tooltip}.strong`) }}
+          </strong>
+        </template>
+      </i18n-t>
     </sl-alert>
 
     <vi-form
@@ -149,5 +156,9 @@ watch(
   display: flex;
   flex-direction: column;
   gap: var(--sl-spacing-medium);
+}
+
+.login-basic-info-strong {
+  font-weight: var(--sl-font-weight-bold);
 }
 </style>

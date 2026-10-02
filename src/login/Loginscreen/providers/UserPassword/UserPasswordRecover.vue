@@ -6,7 +6,14 @@
 
   <sl-alert v-if="state.tooltip" open variant="info">
     <sl-icon slot="icon" name="info-circle-fill"></sl-icon>
-    <div v-html="$t(state.tooltip)"></div>
+    <i18n-t :keypath="state.tooltip" scope="global">
+      <template #br><br /></template>
+      <template #strong>
+        <strong v-if="$te(`${state.tooltip}.strong`)" class="login-recover-info-strong">
+          {{ $t(`${state.tooltip}.strong`) }}
+        </strong>
+      </template>
+    </i18n-t>
   </sl-alert>
   <vi-form
     ref="ViFormRef"
