@@ -56,7 +56,7 @@
     </ul>
   </slot>
 
-  <form v-else :ref="(el) => (state.viformelement = el)" @submit.prevent.stop="() => {}">
+  <form v-else v-bind="$attrs" :ref="(el) => (state.viformelement = el)" @submit.prevent.stop="() => {}">
     <slot :structure="state.structure" :skel="state.skel" :errors="state.errors" :categories="state.categories">
       <component :is="layout" v-slot="{ boneName, widget, visible, label }">
         <bone
@@ -113,6 +113,12 @@ import { useFormUtils } from "./utils"
 import { reactive, watch, onBeforeMount, computed, provide, ref } from "vue"
 import { useDebounceFn } from "@vueuse/core"
 import LayoutCategory from "./layouts/LayoutCategory.vue"
+
+// The template has several root nodes (steps, form, actions), so Vue would drop
+// attributes like `class` passed to <vi-form>. Forward them to the <form>.
+defineOptions({
+  inheritAttrs: false,
+})
 
 const emit = defineEmits(["change", "keypress-enter", "failed", "success", "step-change"])
 const props = defineProps({
