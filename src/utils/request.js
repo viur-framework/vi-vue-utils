@@ -999,9 +999,11 @@ class cachedFetch {
       .then(async (response) => {
         if (response.ok) {
           if (isAddRequest) {
-            // remove all urls that starts with the same url like the add
+            // alle gecachten URLs des Moduls verwerfen (list/view/...): der neue Eintrag muss in
+            // Listen und Suchen sofort auftauchen. `url.replace("/add", "")` traf `/list/`-URLs nicht.
+            const modulePrefix = url.replace(/\/add(\/.*)?$/, "/")
             let urlList = [...Object.keys(getCachedRequestsStore().state.cachedRequests)].filter((key) =>
-              key.startsWith(url.replace("/add", ""))
+              key.startsWith(modulePrefix)
             )
             for (const url of urlList) {
               try {

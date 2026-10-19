@@ -26,6 +26,9 @@ export function ListRequest(
 ) {
   const useList = defineStore(id, () => {
     let abortController = new AbortController()
+    // Laufnummer je fetch()/reset(): Antworten aelterer Runden duerfen den Store nicht mehr
+    // veraendern (Race bei Suche/Kontextwechsel: verschwindende oder doppelte Eintraege)
+    let requestGeneration = 0
 
     const state = reactive({
       skellist: [], // holds our entries
@@ -105,18 +108,23 @@ export function ListRequest(
       }
 
       abortController = new AbortController()
+      const generation = ++requestGeneration
       return request(firstparameter, {
         dataObj: state.params,
         abortController: abortController,
         group: state.group,
         renderer: renderer,
         headers: state.headers,
-        cached: state.cached,
+        // Suchanfragen nie aus dem Cache: neue oder geaenderte Eintraege muessen sofort gefunden werden
+        cached: state.cached && !Object.keys(state.params).includes("search"),
         cacheTime: cacheTime,
         clearCache: state.clearCache,
       })
         .then(async (resp) => {
           let data = await resp.json()
+          if (generation !== requestGeneration) {
+            return resp // veraltete Antwort, inzwischen laeuft eine neuere Runde
+          }
           state.cached = resp.cached
           if (state.structure.length === 0 && (data.structure === null || Object.keys(data.structure).length === 0)) {
             await fetchStructure()
@@ -152,6 +160,9 @@ export function ListRequest(
           }
         })
         .catch(async (error) => {
+          if (generation !== requestGeneration) {
+            throw error // abgebrochen/ueberholt - kein Fehlerzustand fuer die laufende Runde
+          }
           if (error.response) {
             state.request_state = parseInt(error.response.status)
           } else {
@@ -200,6 +211,7 @@ export function ListRequest(
      * cancel possible running request and reset the state
      */
     function reset() {
+      requestGeneration += 1
       abortController.abort("request reset")
       state.structure = []
       state.skellist = []
