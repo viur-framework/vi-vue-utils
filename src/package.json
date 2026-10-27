@@ -29,9 +29,9 @@
   "dependencies": {
     "codemirror": "^6.0.1",
     "@codemirror/language-data": "^6.5.2",
-    "@ckeditor/ckeditor5-vue": "^7.4.2",
+    "@ckeditor/ckeditor5-vue": "^9.0.0",
     "@vueuse/core": "^12.4.0",
-    "ckeditor5": "^47.7.6",
+    "ckeditor5": "^49.0.1",
     "destr": "^2.0.3",
     "json-editor-vue": "^0.18.1",
     "libphonenumber-js": "^1.11.17",
