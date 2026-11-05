@@ -524,7 +524,7 @@ sl-input::part(input)::-webkit-inner-spin-button {
 }
 
 /* Firefox */
-sl-input::part(input)[type="number"] {
+sl-input[type="number"]::part(input) {
   -moz-appearance: textfield;
   appearance: textfield;
 }
