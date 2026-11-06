@@ -1,6 +1,6 @@
 {
   "name": "@viur/vue-utils",
-  "version": "3.4.5",
+  "version": "3.4.6",
   "type": "module",
   "description": "Some ViUR related vue3 utils",
   "scripts": {
@@ -59,6 +59,9 @@
     "vue-router": "^4.5.0 || ^5.0.0"
   },
   "overrides": {
+    "eslint": {
+      "minimatch": "^11.0.5"
+    },
     "eslint-plugin-vue": {
       "postcss-selector-parser": "^7.1.6"
     }
